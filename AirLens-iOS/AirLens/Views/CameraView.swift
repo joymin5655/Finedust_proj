@@ -84,10 +84,25 @@ struct CameraView: View {
     // MARK: - Header
     private var header: some View {
         HStack {
-            Text("AirLens")
-                .font(.title2)
-                .fontWeight(.bold)
-                .foregroundColor(.white)
+            VStack(alignment: .leading, spacing: 4) {
+                Text("AirLens")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .foregroundColor(.white)
+                
+                // Native ML Indicator
+                HStack(spacing: 4) {
+                    Image(systemName: "cpu")
+                        .font(.caption2)
+                    Text("Native ML")
+                        .font(.caption2)
+                }
+                .foregroundColor(.green)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 2)
+                .background(Color.green.opacity(0.2))
+                .cornerRadius(8)
+            }
             
             Spacer()
             
@@ -115,17 +130,7 @@ struct CameraView: View {
     // MARK: - Globe Area
     private var globeArea: some View {
         ZStack {
-            // Placeholder for animated globe
-            Circle()
-                .fill(
-                    RadialGradient(
-                        colors: [Color.blue.opacity(0.3), Color.purple.opacity(0.2), Color.clear],
-                        center: .center,
-                        startRadius: 20,
-                        endRadius: 150
-                    )
-                )
-                .frame(width: 300, height: 300)
+            AnimatedGlobeView()
         }
         .frame(maxWidth: .infinity)
         .frame(height: 300)

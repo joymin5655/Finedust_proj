@@ -63,15 +63,7 @@ struct GlobeView: View {
     }
     
     private func colorForPM25(_ pm25: Double) -> Color {
-        let level = AQILevel.from(pm25: pm25)
-        switch level {
-        case .good: return Color(hex: "#30d158")
-        case .moderate: return Color(hex: "#ffd60a")
-        case .unhealthyForSensitive: return Color(hex: "#ff9f0a")
-        case .unhealthy: return Color(hex: "#ff453a")
-        case .veryUnhealthy: return Color(hex: "#bf5af2")
-        case .hazardous: return Color(hex: "#8b0000")
-        }
+        AQILevel.from(pm25: pm25).swiftUIColor
     }
     
     private var mockStations: [MonitoringStation] {

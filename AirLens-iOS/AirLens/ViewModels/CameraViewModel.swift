@@ -3,6 +3,7 @@
 //  AirLens
 //
 //  ViewModel for camera capture and analysis
+//  Now using native PM2.5 prediction service
 //
 
 import Foundation
@@ -18,7 +19,7 @@ class CameraViewModel: ObservableObject {
     @Published var error: String?
     @Published var isCameraActive = false
     
-    private let geminiService = GeminiAPIService.shared
+    private let predictionService = PM25PredictionService.shared
     private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Analyze Image
@@ -27,17 +28,18 @@ class CameraViewModel: ObservableObject {
         error = nil
         
         do {
-            let response = try await geminiService.analyzeImage(image)
+            // Use native prediction service
+            let result = try await predictionService.predictPM25(from: image)
             
-            // Calculate combined prediction from multiple sources
-            let cameraValue = response.pm25
+            // Create combined prediction from multiple simulated sources
+            let cameraValue = result.pm25
             let stationValue = cameraValue - 5 + Double.random(in: 0...10)
             let satelliteValue = cameraValue - 5 + Double.random(in: 0...10)
             let finalPM25 = (cameraValue + stationValue + satelliteValue) / 3.0
             
             let newPrediction = PM25Prediction(
                 pm25: finalPM25,
-                confidence: response.confidence,
+                confidence: result.confidence,
                 uncertainty: 1.5 + Double.random(in: 0...2),
                 breakdown: PredictionBreakdown(
                     station: max(0, stationValue),
@@ -51,9 +53,13 @@ class CameraViewModel: ObservableObject {
             showResults = true
             isLoading = false
             
+            print("✅ PM2.5 Prediction: \(finalPM25.rounded()) μg/m³")
+            print("📊 Features: brightness=\(result.features.brightness), haze=\(result.features.hazeScore)")
+            
         } catch {
-            self.error = "Analysis failed. Please try again."
+            self.error = "Analysis failed. Please try again with a different image."
             isLoading = false
+            print("❌ Prediction error: \(error)")
         }
     }
     
@@ -81,6 +87,8 @@ class CameraViewModel: ObservableObject {
         prediction = newPrediction
         showResults = true
         isLoading = false
+        
+        print("📡 Station data: PM2.5 = \(stationValue.rounded()) μg/m³")
     }
     
     // MARK: - Close Results

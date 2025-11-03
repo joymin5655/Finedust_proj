@@ -2,7 +2,7 @@
 //  FinedustApp.swift
 //  Finedust
 //
-//  Created by JOYMIN on 11/3/25.
+//  Main app entry point
 //
 
 import SwiftUI

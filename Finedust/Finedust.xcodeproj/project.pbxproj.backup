@@ -397,8 +397,11 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
-				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = Finedust/Info.plist;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Finedust;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Finedust needs access to your camera to capture sky images for air quality analysis using on-device machine learning.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Finedust uses your location to provide accurate air quality data and identify your city.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Finedust needs access to your photo library to analyze sky images for air quality estimation using computer vision.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -439,8 +442,11 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
-				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = Finedust/Info.plist;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Finedust;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Finedust needs access to your camera to capture sky images for air quality analysis using on-device machine learning.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Finedust uses your location to provide accurate air quality data and identify your city.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Finedust needs access to your photo library to analyze sky images for air quality estimation using computer vision.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;

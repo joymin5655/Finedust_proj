@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AVFoundation
+import Combine
 
 struct EnhancedCameraView: View {
     @StateObject private var measurementManager = EnhancedMeasurementManager()
@@ -54,7 +55,7 @@ struct EnhancedCameraView: View {
                     onImageCaptured: { image in
                         selectedImage = image
                         Task {
-                            await measurementManager.startMeasurement(with: image)
+                            await measurementManager.startMeasurement()
                         }
                     }
                 )
@@ -65,7 +66,7 @@ struct EnhancedCameraView: View {
                 .onDisappear {
                     if let image = selectedImage {
                         Task {
-                            await measurementManager.startMeasurement(with: image)
+                            await measurementManager.startMeasurement()
                         }
                     }
                 }

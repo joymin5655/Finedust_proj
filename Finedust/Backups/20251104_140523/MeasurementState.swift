@@ -1,6 +1,12 @@
+//
+//  MeasurementState.swift
+//  Finedust
+//
+//  Measurement process state management
+//
+
 import Foundation
 import SwiftUI
-import Combine
 
 // MARK: - Measurement Process States
 
@@ -20,8 +26,8 @@ enum MeasurementStep: Int, CaseIterable {
         switch self {
         case .idle: return "Ready"
         case .locating: return "Getting Location"
-        case .capturing: return "Capturing Frames"
-        case .processing: return "Processing Images"
+        case .capturing: return "Capturing Image"
+        case .processing: return "Processing Image"
         case .tier1Station: return "Station Data"
         case .tier2Camera: return "Camera Analysis"
         case .tier3Satellite: return "Satellite Data"
@@ -38,13 +44,13 @@ enum MeasurementStep: Int, CaseIterable {
         case .locating:
             return "Finding nearby air quality stations..."
         case .capturing:
-            return "Capturing 30 frames from camera..."
+            return "Capturing image from camera..."
         case .processing:
-            return "Selecting best 15 frames and extracting features..."
+            return "Extracting features and preparing data..."
         case .tier1Station:
             return "Fetching data from nearby monitoring stations..."
         case .tier2Camera:
-            return "Running AI model inference on captured images..."
+            return "Running AI model inference on captured image..."
         case .tier3Satellite:
             return "Getting satellite AOD data from Sentinel-5P..."
         case .fusion:
@@ -136,8 +142,6 @@ class MeasurementStateManager: ObservableObject {
     @Published var currentStep: MeasurementStep = .idle
     @Published var overallProgress: Double = 0.0
     @Published var captureProgress: Float = 0.0
-    @Published var frameCount: Int = 0
-    @Published var selectedFrameCount: Int = 0
     
     @Published var tier1Result: TierResult?
     @Published var tier2Result: TierResult?
@@ -160,10 +164,9 @@ class MeasurementStateManager: ObservableObject {
         addLog("Step: \(step.title)")
     }
     
-    func updateCaptureProgress(_ progress: Float, frames: Int) {
+    func updateCaptureProgress(_ progress: Float) {
         withAnimation {
             captureProgress = progress
-            frameCount = frames
         }
     }
     
@@ -179,7 +182,7 @@ class MeasurementStateManager: ObservableObject {
                 details: "Based on \(stationCount) stations within 10km"
             )
         }
-        addLog("Tier 1: PM2.5 = \(String(format: "%.1f", pm25)) µg/m³ (Conf: \(String(format: "%.0f", confidence * 100))%)")
+        addLog("Tier 1: PM2.5 = \(String(format: "%.1f", pm25)) μg/m³ (Conf: \(String(format: "%.0f", confidence * 100))%)")
     }
     
     func updateTier2(pm25: Float, confidence: Float, inferenceTime: Double) {
@@ -194,7 +197,7 @@ class MeasurementStateManager: ObservableObject {
                 details: "CNN-LSTM inference in \(String(format: "%.2f", inferenceTime))s"
             )
         }
-        addLog("Tier 2: PM2.5 = \(String(format: "%.1f", pm25)) µg/m³ (Conf: \(String(format: "%.0f", confidence * 100))%)")
+        addLog("Tier 2: PM2.5 = \(String(format: "%.1f", pm25)) μg/m³ (Conf: \(String(format: "%.0f", confidence * 100))%)")
     }
     
     func updateTier3(pm25: Float, confidence: Float, aodValue: Float) {
@@ -209,7 +212,7 @@ class MeasurementStateManager: ObservableObject {
                 details: "Sentinel-5P AOD: \(String(format: "%.3f", aodValue))"
             )
         }
-        addLog("Tier 3: PM2.5 = \(String(format: "%.1f", pm25)) µg/m³ (Conf: \(String(format: "%.0f", confidence * 100))%)")
+        addLog("Tier 3: PM2.5 = \(String(format: "%.1f", pm25)) μg/m³ (Conf: \(String(format: "%.0f", confidence * 100))%)")
     }
     
     func updateFinalResult(pm25: Float, confidence: Float, uncertainty: Float) {
@@ -218,7 +221,7 @@ class MeasurementStateManager: ObservableObject {
             finalConfidence = confidence
             finalUncertainty = uncertainty
         }
-        addLog("Final: PM2.5 = \(String(format: "%.1f", pm25)) ± \(String(format: "%.1f", uncertainty)) µg/m³")
+        addLog("Final: PM2.5 = \(String(format: "%.1f", pm25)) ± \(String(format: "%.1f", uncertainty)) μg/m³")
         addLog("Confidence: \(String(format: "%.0f", confidence * 100))%")
     }
     
@@ -232,8 +235,6 @@ class MeasurementStateManager: ObservableObject {
             currentStep = .idle
             overallProgress = 0
             captureProgress = 0
-            frameCount = 0
-            selectedFrameCount = 0
             
             tier1Result = nil
             tier2Result = nil

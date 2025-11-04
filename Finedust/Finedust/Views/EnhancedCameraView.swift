@@ -64,7 +64,7 @@ struct EnhancedCameraView: View {
         .sheet(isPresented: $showImagePicker) {
             ImagePicker(selectedImage: $selectedImage)
                 .onDisappear {
-                    if let image = selectedImage {
+                    if selectedImage != nil {
                         Task {
                             await measurementManager.startMeasurement()
                         }

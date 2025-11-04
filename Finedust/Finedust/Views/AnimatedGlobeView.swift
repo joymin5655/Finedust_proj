@@ -59,7 +59,7 @@ struct AnimatedGlobeView: View {
                         colors: [
                             Color(hex: "#1a1a2e"),
                             Color(hex: "#0f0f1e")
-                        ],
+                        ] as [Color],
                         center: .center,
                         startRadius: 0,
                         endRadius: 120

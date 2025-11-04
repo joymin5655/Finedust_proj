@@ -19,7 +19,7 @@ struct ContentView: View {
             Group {
                 switch currentView {
                 case .camera:
-                    CameraView(
+                    EnhancedCameraView(
                         onNavigateToGlobe: { currentView = .globe },
                         onNavigateToSettings: { currentView = .settings }
                     )

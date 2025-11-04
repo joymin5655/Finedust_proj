@@ -97,6 +97,14 @@ struct LocationDetails {
     let country: String
     let flag: String
     let coordinate: CLLocationCoordinate2D
+    
+    var latitude: Double {
+        coordinate.latitude
+    }
+    
+    var longitude: Double {
+        coordinate.longitude
+    }
 }
 
 // MARK: - Policy Category

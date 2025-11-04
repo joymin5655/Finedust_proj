@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var currentView: ViewType = .camera
     @State private var isDarkMode = true
     
     var body: some View {
@@ -16,24 +15,8 @@ struct ContentView: View {
             Color.black
                 .ignoresSafeArea()
             
-            Group {
-                switch currentView {
-                case .camera:
-                    EnhancedCameraView(
-                        onNavigateToGlobe: { currentView = .globe },
-                        onNavigateToSettings: { currentView = .settings }
-                    )
-                
-                case .globe:
-                    GlobeView(onBack: { currentView = .camera })
-                
-                case .settings:
-                    SettingsView(
-                        onBack: { currentView = .camera },
-                        isDarkMode: $isDarkMode
-                    )
-                }
-            }
+            // AirLens 초기 화면을 메인으로 표시
+            HomeScreenView()
         }
         .preferredColorScheme(isDarkMode ? .dark : .light)
     }

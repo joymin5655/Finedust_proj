@@ -50,28 +50,23 @@ class EnhancedMeasurementManager: ObservableObject {
         isComplete = false
         error = nil
         
-        do {
-            // Step 1: Get Location
-            await performLocationStep()
-            
-            // Step 2: Capture Frames
-            await performCaptureStep()
-            
-            // Step 3: Process Frames
-            await performProcessingStep()
-            
-            // Step 4-6: Triple Verification (Parallel)
-            await performTripleVerification()
-            
-            // Step 7: Fusion
-            await performFusionStep()
-            
-            // Step 8: Complete
-            await completeMeasurement()
-            
-        } catch {
-            await handleError(error)
-        }
+        // Step 1: Get Location
+        await performLocationStep()
+        
+        // Step 2: Capture Frames
+        await performCaptureStep()
+        
+        // Step 3: Process Frames
+        await performProcessingStep()
+        
+        // Step 4-6: Triple Verification (Parallel)
+        await performTripleVerification()
+        
+        // Step 7: Fusion
+        await performFusionStep()
+        
+        // Step 8: Complete
+        await completeMeasurement()
     }
     
     // MARK: - Individual Steps
@@ -127,12 +122,18 @@ class EnhancedMeasurementManager: ObservableObject {
     }
     
     private func performTripleVerification() async {
-        // Run all three tiers in parallel for efficiency
-        async let tier1Task = performTier1Station()
-        async let tier2Task = performTier2Camera()
-        async let tier3Task = performTier3Satellite()
-        
-        let _ = await (tier1Task, tier2Task, tier3Task)
+        // Run all three tiers in parallel for efficiency using TaskGroup
+        await withTaskGroup(of: Void.self) { group in
+            group.addTask {
+                await self.performTier1Station()
+            }
+            group.addTask {
+                await self.performTier2Camera()
+            }
+            group.addTask {
+                await self.performTier3Satellite()
+            }
+        }
     }
     
     private func performTier1Station() async {

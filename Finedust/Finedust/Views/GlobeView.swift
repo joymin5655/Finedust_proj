@@ -45,12 +45,13 @@ struct GlobeView: View {
     private var nightSkyBackground: some View {
         ZStack {
             // Deep space gradient
+            let gradientColors: [Color] = [
+                Color(hex: "#0a0e27"),
+                Color(hex: "#1a1a2e"),
+                Color.black
+            ]
             LinearGradient(
-                colors: [
-                    Color(hex: "#0a0e27"),
-                    Color(hex: "#1a1a2e"),
-                    Color.black
-                ],
+                colors: gradientColors,
                 startPoint: .top,
                 endPoint: .bottom
             )
@@ -170,7 +171,7 @@ struct GlobeView: View {
                             colors: [
                                 Color.white.opacity(0.3),
                                 Color.clear
-                            ],
+                            ] as [Color],
                             center: UnitPoint(x: 0.35, y: 0.35),
                             startRadius: 0,
                             endRadius: 100

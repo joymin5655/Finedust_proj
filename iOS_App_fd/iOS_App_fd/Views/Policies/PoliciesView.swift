@@ -142,7 +142,7 @@ struct FilterChipsView: View {
                         }
                     }
                 } label: {
-                    FilterChip(
+                    PoliciesFilterChip(
                         title: selectedCategory?.rawValue ?? "All Categories",
                         isSelected: selectedCategory != nil
                     )
@@ -160,7 +160,7 @@ struct FilterChipsView: View {
                         }
                     }
                 } label: {
-                    FilterChip(
+                    PoliciesFilterChip(
                         title: selectedCountry ?? "All Countries",
                         isSelected: selectedCountry != nil
                     )
@@ -172,7 +172,7 @@ struct FilterChipsView: View {
                         selectedCategory = nil
                         selectedCountry = nil
                     }) {
-                        FilterChip(title: "Clear", isSelected: false, isDestructive: true)
+                        PoliciesFilterChip(title: "Clear", isSelected: false, isDestructive: true)
                     }
                 }
             }
@@ -180,7 +180,7 @@ struct FilterChipsView: View {
     }
 }
 
-struct FilterChip: View {
+struct PoliciesFilterChip: View {
     let title: String
     let isSelected: Bool
     var isDestructive: Bool = false

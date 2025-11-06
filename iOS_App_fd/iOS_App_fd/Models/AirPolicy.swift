@@ -50,7 +50,7 @@ enum PolicyCategory: String, Codable, CaseIterable {
     case industrial = "Industrial Regulation"
     case residential = "Residential"
     case research = "Research & Development"
-    case public = "Public Health"
+    case publicHealth = "Public Health"
     case international = "International Agreement"
 
     var icon: String {
@@ -61,7 +61,7 @@ enum PolicyCategory: String, Codable, CaseIterable {
         case .industrial: return "building.2.fill"
         case .residential: return "house.fill"
         case .research: return "flask.fill"
-        case .public: return "heart.fill"
+        case .publicHealth: return "heart.fill"
         case .international: return "globe"
         }
     }
@@ -74,7 +74,7 @@ enum PolicyCategory: String, Codable, CaseIterable {
         case .industrial: return "FFA07A"
         case .residential: return "98D8C8"
         case .research: return "6C5CE7"
-        case .public: return "FF7675"
+        case .publicHealth: return "FF7675"
         case .international: return "74B9FF"
         }
     }

@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import type { PM25Prediction } from '../types';
 import { SettingsIcon, HistoryIcon, CameraIcon, UploadIcon, SignalTowerIcon } from './Icons';
-import { GoogleGenAI, Type } from "@google/genai";
 import ResultsDisplay from './ResultsDisplay';
-import { getAQILevel, fileToGenerativePart } from '../utils/helpers';
+import { getAQILevel } from '../utils/helpers';
 import { storageManager } from '../services/storageManager';
+import { analyzeImageForAirQuality, getLocationInfo, getStationData } from '../services/airQualityService';
 
 interface CameraViewProps {
   onNavigateToHistory: () => void;
@@ -58,35 +58,24 @@ const CameraView: React.FC<CameraViewProps> = ({ onNavigateToHistory, onNavigate
   useEffect(() => {
     const fetchLocationName = async (latitude: number, longitude: number) => {
         try {
-            const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-            if (!apiKey) {
-                throw new Error('Gemini API key not found');
+            const locationInfo = await getLocationInfo(latitude, longitude);
+
+            const countryCode = locationInfo.countryCode.toUpperCase();
+            let flag = '🌍';
+
+            // Generate country flag emoji from country code
+            if (countryCode.length === 2 && countryCode !== 'UN') {
+                try {
+                    flag = String.fromCodePoint(0x1F1E6 + countryCode.charCodeAt(0) - 'A'.charCodeAt(0)) +
+                           String.fromCodePoint(0x1F1E6 + countryCode.charCodeAt(1) - 'A'.charCodeAt(0));
+                } catch (e) {
+                    flag = '🌍';
+                }
             }
 
-            const ai = new GoogleGenAI({ apiKey });
-            const responseSchema = {
-                type: Type.OBJECT,
-                properties: {
-                    city: { type: Type.STRING },
-                    country: { type: Type.STRING },
-                    countryCode: { type: Type.STRING, description: 'ISO 3166-1 alpha-2 two-letter country code.' }
-                },
-                required: ['city', 'country', 'countryCode']
-            };
-
-            const response = await ai.models.generateContent({
-                model: 'gemini-2.5-flash',
-                contents: { parts: [{ text: `Provide the city, country, and two-letter ISO 3166-1 alpha-2 country code for latitude: ${latitude}, longitude: ${longitude}.` }] },
-                config: { responseMimeType: "application/json", responseSchema },
-            });
-            const result = JSON.parse(response.text);
-            const countryCode = result.countryCode.toUpperCase();
-            const flag = String.fromCodePoint(0x1F1E6 + countryCode.charCodeAt(0) - 'A'.charCodeAt(0)) +
-                         String.fromCodePoint(0x1F1E6 + countryCode.charCodeAt(1) - 'A'.charCodeAt(0));
-
             setLocationDetails({
-                city: result.city,
-                country: result.country,
+                city: locationInfo.city,
+                country: locationInfo.country,
                 flag,
                 latitude,
                 longitude
@@ -111,7 +100,13 @@ const CameraView: React.FC<CameraViewProps> = ({ onNavigateToHistory, onNavigate
       },
       (err) => {
         setError('Location access denied. Please enable it in your browser settings.');
-        setLocationDetails({ city: 'Permission Denied', country: '', flag: '🚫', latitude: 0, longitude: 0 });
+        setLocationDetails({
+          city: 'Permission Denied',
+          country: '',
+          flag: '🚫',
+          latitude: 0,
+          longitude: 0
+        });
       }
     );
   }, []);
@@ -146,33 +141,10 @@ const CameraView: React.FC<CameraViewProps> = ({ onNavigateToHistory, onNavigate
     setError(null);
 
     try {
-        const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-        if (!apiKey) {
-            throw new Error('Gemini API key not found. Please check your .env file.');
-        }
+        // Use local image analysis service
+        const result = await analyzeImageForAirQuality(imageFile);
 
-        const ai = new GoogleGenAI({ apiKey });
-        const imagePart = await fileToGenerativePart(imageFile);
-
-        const responseSchema = {
-            type: Type.OBJECT,
-            properties: {
-                pm25: { type: Type.NUMBER, description: 'Estimated PM2.5 value in μg/m³.' },
-                confidence: { type: Type.NUMBER, description: 'Confidence score from 0.0 to 1.0.' },
-                analysis: { type: Type.STRING, description: 'A brief analysis of the sky.' }
-            },
-            required: ['pm25', 'confidence', 'analysis']
-        };
-
-        const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
-            contents: { parts: [ imagePart, { text: 'Analyze the sky in this image to estimate the air quality. Provide a PM2.5 value, a confidence score between 0 and 1, and a brief one-sentence analysis of the sky conditions (e.g., "Clear skies with some haze").' }] },
-            config: { responseMimeType: "application/json", responseSchema },
-        });
-
-        const resultJson = JSON.parse(response.text);
-
-        const cameraValue = resultJson.pm25;
+        const cameraValue = result.pm25;
         const stationValue = cameraValue - 5 + Math.random() * 10;
         const satelliteValue = cameraValue - 5 + Math.random() * 10;
         const allValues = [cameraValue, stationValue, satelliteValue];
@@ -180,7 +152,7 @@ const CameraView: React.FC<CameraViewProps> = ({ onNavigateToHistory, onNavigate
 
         await processPrediction({
             pm25: finalPM25,
-            confidence: resultJson.confidence,
+            confidence: result.confidence,
             uncertainty: 1.5 + Math.random() * 2,
             breakdown: {
                 station: Math.max(0, stationValue),
@@ -205,7 +177,7 @@ const CameraView: React.FC<CameraViewProps> = ({ onNavigateToHistory, onNavigate
     await new Promise(resolve => setTimeout(resolve, 1500));
 
     try {
-        const stationValue = 10 + Math.random() * 45;
+        const stationValue = getStationData();
         await processPrediction({
             pm25: stationValue,
             confidence: 0.85 + Math.random() * 0.1,

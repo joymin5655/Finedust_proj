@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import CoreLocation
 
 struct ContentView: View {
     // MARK: - Environment Objects

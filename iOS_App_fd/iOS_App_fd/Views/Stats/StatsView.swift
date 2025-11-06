@@ -60,8 +60,8 @@ struct StatsView: View {
     
     private func refreshData() {
         Task {
-            await stationViewModel.refresh()
-            await policyViewModel.refresh()
+            await stationViewModel.fetchStations()
+            await policyViewModel.fetchPolicies()
         }
     }
 }
@@ -385,7 +385,7 @@ struct PolicyRankRow: View {
             
             Spacer()
             
-            Text("\(Int(policy.credibilityScore * 100))%")
+            Text("\(Int(policy.credibility * 100))%")
                 .font(.headline)
                 .foregroundColor(.green)
         }
@@ -542,7 +542,7 @@ struct PredictionStats: View {
                 HStack {
                     Image(systemName: predictionTrend.icon)
                         .foregroundColor(Color(hex: predictionTrend.color))
-                    Text(predictionTrend.description)
+                    Text(predictionTrend.rawValue)
                         .font(.subheadline)
                 }
                 .padding(.top, 8)

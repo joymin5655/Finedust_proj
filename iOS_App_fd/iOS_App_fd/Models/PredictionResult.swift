@@ -147,7 +147,7 @@ struct LocationMetadata: Codable {
 // MARK: - Prediction History
 struct PredictionHistory: Codable {
     var predictions: [PredictionResult]
-    let maxCount: Int = 50 // PRD specifies up to 50
+    var maxCount: Int = 50 // PRD specifies up to 50
 
     mutating func add(_ prediction: PredictionResult) {
         predictions.insert(prediction, at: 0)

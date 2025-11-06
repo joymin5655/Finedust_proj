@@ -26,7 +26,7 @@ class StationViewModel: ObservableObject {
 
     // MARK: - Initialization
     init() {
-        loadCachedStations()
+        _ = loadCachedStations()
     }
 
     // MARK: - Public Methods
@@ -34,7 +34,7 @@ class StationViewModel: ObservableObject {
     /// Fetch stations from API with caching (PRD: 10-min TTL)
     func fetchStations() async {
         // Check cache first
-        if let cached = loadCachedStations(), isCacheValid() {
+        if loadCachedStations() != nil && isCacheValid() {
             print("✅ Using cached stations")
             return
         }
@@ -89,6 +89,16 @@ class StationViewModel: ObservableObject {
     func loadSatelliteData() async {
         // Placeholder for satellite data loading
         print("🛰️ Loading satellite data...")
+    }
+
+    /// Get stations with highest PM2.5 levels
+    func getHighestPM25(limit: Int = 10) -> [Station] {
+        return stations.sorted { $0.pm25 > $1.pm25 }.prefix(limit).map { $0 }
+    }
+
+    /// Get stations with lowest PM2.5 levels
+    func getLowestPM25(limit: Int = 10) -> [Station] {
+        return stations.sorted { $0.pm25 < $1.pm25 }.prefix(limit).map { $0 }
     }
 
     // MARK: - Caching

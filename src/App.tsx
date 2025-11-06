@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import type { View } from './types';
+import LandingPage from './components/LandingPage';
 import CameraView from './components/CameraView';
 import HistoryView from './components/HistoryView';
 import SettingsView from './components/SettingsView';
 import { localStorageService } from './services/localStorage';
 
 const App: React.FC = () => {
+  const [showLanding, setShowLanding] = useState<boolean>(true);
   const [view, setView] = useState<View>('camera');
   const [darkMode, setDarkMode] = useState<boolean>(true);
 
@@ -23,6 +25,11 @@ const App: React.FC = () => {
     }
   }, [darkMode]);
 
+  const handleLaunchApp = () => {
+    setShowLanding(false);
+    setView('camera');
+  };
+
   const renderView = () => {
     switch (view) {
       case 'history':
@@ -35,6 +42,12 @@ const App: React.FC = () => {
     }
   };
 
+  // Show landing page
+  if (showLanding) {
+    return <LandingPage onLaunchApp={handleLaunchApp} />;
+  }
+
+  // Show main app
   const containerClasses = `mx-auto h-screen flex flex-col shadow-2xl bg-white dark:bg-gray-900/50 backdrop-blur-3xl ${
     view === 'camera' ? 'max-w-md lg:max-w-4xl' : 'w-full'
   }`;

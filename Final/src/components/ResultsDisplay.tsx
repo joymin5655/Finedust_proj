@@ -33,26 +33,29 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ prediction, onClose }) 
 
   return (
     <div
-      className="relative w-[340px] animate-fade-in"
-      onClick={(e) => e.stopPropagation()} // Prevent closing when clicking on the card
+      className="relative w-[380px] mx-4 animate-fade-in"
+      onClick={(e) => e.stopPropagation()}
     >
       {showConfetti && <Confetti />}
-      <div className={`relative z-10 w-full flex flex-col items-center justify-center p-6 text-white`}>
-        <h3 className={`text-lg font-bold text-gray-300 uppercase tracking-wider ${textShadow}`}>Your Result</h3>
+      <div className="relative z-10 w-full flex flex-col items-center justify-center p-8 bg-white/5 backdrop-blur-3xl rounded-3xl border border-white/10 shadow-2xl">
+        <p className="text-sm font-semibold text-gray-400 uppercase tracking-[0.2em] mb-6">Air Quality Index</p>
 
-        <div className={`w-40 h-40 my-4 rounded-full bg-gradient-to-br ${ringGradient} flex flex-col items-center justify-center shadow-lg animate-gradient bg-size-200`}>
-          <div className={`text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-br from-white to-gray-300 ${dropShadow}`}>
+        <div className={`w-48 h-48 mb-6 rounded-full bg-gradient-to-br ${ringGradient} flex flex-col items-center justify-center shadow-2xl animate-gradient bg-size-200 border-4 border-white/10`}>
+          <div className="text-7xl font-bold text-white drop-shadow-2xl">
             {prediction.pm25.toFixed(0)}
           </div>
-          <p className={`text-sm font-medium text-gray-300 ${textShadow}`}>μg/m³</p>
+          <p className="text-base font-semibold text-white/80 mt-2">μg/m³</p>
         </div>
 
-        <div className="text-center">
-          <h2 className={`text-2xl font-bold capitalize ${textColor} ${textShadow}`}>{level}</h2>
-          <p className={`mt-2 text-base text-gray-300 max-w-xs ${textShadow}`}>{message}</p>
+        <div className="text-center mb-8">
+          <h2 className={`text-3xl font-bold ${textColor} mb-3 tracking-tight`}>{level}</h2>
+          <p className="text-base text-gray-300 max-w-sm leading-relaxed px-4">{message}</p>
         </div>
 
-        <button onClick={onClose} className={`w-full mt-6 py-3 rounded-full text-white font-bold uppercase tracking-widest bg-gradient-to-r ${buttonGradient} transition-transform duration-200 transform hover:scale-105 active:scale-95 shadow-lg`}>
+        <button
+          onClick={onClose}
+          className={`w-full py-4 rounded-2xl text-white font-semibold text-base tracking-wide bg-gradient-to-r ${buttonGradient} transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] shadow-xl`}
+        >
           Continue
         </button>
       </div>

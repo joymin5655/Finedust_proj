@@ -333,7 +333,7 @@ struct CountryBreakdownChart: View {
 
                     Text("Avg: \(String(format: "%.1f", item.avgPM25))")
                         .font(.caption)
-                        .foregroundColor(Color(hex: PM25Category(pm25: item.avgPM25).color))
+                        .foregroundColor(Color(hex: PM25Category.from(pm25: item.avgPM25).color))
                 }
                 .padding(.vertical, 2)
             }
@@ -453,27 +453,33 @@ struct CategoryDistributionChart: View {
 // MARK: - Country Coverage Chart
 struct CountryCoverageChart: View {
     @EnvironmentObject var policyViewModel: PolicyViewModel
-    
-    var topCountries: [(country: String, count: Int)] {
+
+    struct CountryCoverage: Identifiable {
+        let id = UUID()
+        let country: String
+        let count: Int
+    }
+
+    var topCountries: [CountryCoverage] {
         let countries = Dictionary(grouping: policyViewModel.policies, by: { $0.country })
-        return countries.map { ($0.key, $0.value.count) }
-            .sorted { $0.1 > $1.1 }
+        return countries.map { CountryCoverage(country: $0.key, count: $0.value.count) }
+            .sorted { $0.count > $1.count }
             .prefix(10)
             .map { $0 }
     }
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Policy Coverage by Country")
                 .font(.headline)
-            
-            ForEach(topCountries, id: \.country) { item in
+
+            ForEach(topCountries) { item in
                 HStack {
                     Text(item.country)
                         .font(.subheadline)
-                    
+
                     Spacer()
-                    
+
                     Text("\(item.count) policies")
                         .font(.caption)
                         .foregroundColor(.secondary)

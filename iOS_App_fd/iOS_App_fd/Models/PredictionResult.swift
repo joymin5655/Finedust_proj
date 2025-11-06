@@ -166,6 +166,47 @@ struct PredictionHistory: Codable {
         guard !filtered.isEmpty else { return 0 }
         return filtered.map { $0.pm25 }.reduce(0, +) / Double(filtered.count)
     }
+
+    var trend: PredictionTrend {
+        guard predictions.count >= 2 else { return .stable }
+        
+        let recent = predictions.prefix(5).map { $0.pm25 }
+        let older = predictions.dropFirst(5).prefix(5).map { $0.pm25 }
+        
+        guard !recent.isEmpty, !older.isEmpty else { return .stable }
+        
+        let recentAvg = recent.reduce(0, +) / Double(recent.count)
+        let olderAvg = older.reduce(0, +) / Double(older.count)
+        
+        let change = recentAvg - olderAvg
+        
+        if change > 5 { return .increasing }
+        else if change < -5 { return .decreasing }
+        else { return .stable }
+    }
+}
+
+// MARK: - Prediction Trend
+enum PredictionTrend: String {
+    case increasing = "Increasing"
+    case decreasing = "Decreasing"
+    case stable = "Stable"
+    
+    var icon: String {
+        switch self {
+        case .increasing: return "arrow.up.right"
+        case .decreasing: return "arrow.down.right"
+        case .stable: return "arrow.right"
+        }
+    }
+    
+    var color: String {
+        switch self {
+        case .increasing: return "FF6B6B"
+        case .decreasing: return "4ECDC4"
+        case .stable: return "FFA07A"
+        }
+    }
 }
 
 // MARK: - Quality Assessment Result

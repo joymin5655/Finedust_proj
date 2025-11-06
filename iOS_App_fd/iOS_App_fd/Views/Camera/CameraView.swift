@@ -15,7 +15,6 @@ struct CameraView: View {
     
     @State private var showImagePicker = false
     @State private var showCamera = false
-    @State private var selectedItem: PhotosPickerItem?
     @State private var showHistory = false
     
     var body: some View {
@@ -212,6 +211,7 @@ struct ProcessingView: View {
 // MARK: - Prediction Result Card
 struct PredictionResultCard: View {
     let prediction: PredictionResult
+    @EnvironmentObject var cameraViewModel: CameraViewModel
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -230,7 +230,7 @@ struct PredictionResultCard: View {
                         .font(.caption)
                         .foregroundColor(.secondary)
                     
-                    HStack(baseline: .lastTextBaseline, spacing: 4) {
+                    HStack(alignment: .lastTextBaseline, spacing: 4) {
                         Text(prediction.formattedPM25)
                             .font(.system(size: 48, weight: .bold))
                             .foregroundColor(Color(hex: prediction.pm25Category.color))
@@ -318,8 +318,20 @@ struct PredictionResultCard: View {
                 .background(Color(hex: prediction.pm25Category.color).opacity(0.1))
                 .cornerRadius(8)
             
-            // Share Button
-            ShareLink(item: cameraViewModel.sharePrediction()) {
+            // Share Button (iOS 15 compatible)
+            Button(action: {
+                let shareText = cameraViewModel.sharePrediction()
+                let activityVC = UIActivityViewController(
+                    activityItems: [shareText],
+                    applicationActivities: nil
+                )
+                
+                if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                   let rootVC = windowScene.windows.first?.rootViewController {
+                    activityVC.popoverPresentationController?.sourceView = rootVC.view
+                    rootVC.present(activityVC, animated: true)
+                }
+            }) {
                 Label("Share Result", systemImage: "square.and.arrow.up")
                     .frame(maxWidth: .infinity)
                     .padding()

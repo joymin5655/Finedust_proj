@@ -9,6 +9,7 @@ import Foundation
 import CoreML
 import Vision
 import UIKit
+import Combine
 
 // MARK: - ML Service
 class MLService: ObservableObject {

@@ -131,6 +131,7 @@ struct HeaderView: View {
     let selectedTab: Int
     @Binding var showSettings: Bool
     @EnvironmentObject var stationViewModel: StationViewModel
+    @EnvironmentObject var policyViewModel: PolicyViewModel
     @EnvironmentObject var locationService: LocationService
 
     var headerTitle: String {

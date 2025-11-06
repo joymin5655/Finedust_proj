@@ -31,10 +31,11 @@
 - **위치 기반 서비스**: GPS를 통한 정확한 위치 정보
 - **측정 이력**: 모든 측정 기록을 로컬에 저장
 
-### 💾 스마트 데이터 저장
-- **로컬 저장소**: 모든 데이터를 휴대폰에 저장
-- **GitHub 동기화** (선택사항): 온라인 시 자동으로 GitHub에 백업
-- **오프라인 우선**: 인터넷 없이도 완전히 동작
+### 💾 스마트 데이터 저장 (GitHub 우선)
+- **GitHub 주 저장소**: 온라인 시 모든 데이터를 GitHub에 직접 저장
+- **로컬 캐시**: 빠른 접근을 위한 로컬 캐시
+- **오프라인 지원**: 인터넷 없을 때는 로컬에 저장 후 자동 동기화
+- **자동 백업**: 측정 기록이 GitHub 저장소에 안전하게 보관
 
 ### 📱 PWA 지원
 - **홈 화면 추가**: 네이티브 앱처럼 사용
@@ -49,8 +50,8 @@
 - **Image Analysis**: Canvas API + 커스텀 알고리즘
 - **Geolocation**: OpenStreetMap Nominatim API (무료)
 - **Storage**:
-  - Local: localStorage API
-  - Remote (선택): GitHub API
+  - Primary: GitHub API (주 저장소)
+  - Cache: localStorage API (로컬 캐시)
 - **PWA**: Service Worker + Web App Manifest
 
 ## 📁 프로젝트 구조
@@ -104,17 +105,23 @@ cd Finedust_proj/Final
 npm install
 ```
 
-3. 환경 변수 설정 (선택사항)
+3. 환경 변수 설정 (필수 - 데이터 저장용)
 
-GitHub 동기화를 원하면 `.env` 파일을 생성하고 다음 변수를 설정하세요:
+`.env` 파일을 생성하고 GitHub 설정을 추가하세요:
 
 ```env
-VITE_GITHUB_TOKEN=your_github_token_here
+VITE_GITHUB_TOKEN=your_github_personal_access_token
 VITE_GITHUB_OWNER=your_github_username
-VITE_GITHUB_REPO=your_repository_name
+VITE_GITHUB_REPO=Finedust_proj
 ```
 
-**참고**: GitHub 설정이 없어도 모든 기능이 정상 작동합니다!
+**GitHub Token 생성 방법**:
+1. https://github.com/settings/tokens 접속
+2. "Generate new token (classic)" 클릭
+3. `repo` 권한 선택 (Full control of private repositories)
+4. 생성된 토큰을 `.env` 파일에 추가
+
+**참고**: 오프라인에서도 사용 가능하지만, 데이터 저장을 위해서는 GitHub 설정이 권장됩니다.
 
 ### 개발 서버 실행
 
@@ -137,6 +144,53 @@ npm run build
 ```bash
 npm run preview
 ```
+
+## 🌐 GitHub Pages 배포
+
+이 프로젝트는 GitHub Pages를 통해 자동으로 배포되도록 설정되어 있습니다.
+
+### 배포 설정하기
+
+1. **GitHub Repository 설정**
+   - GitHub에서 본 저장소의 Settings로 이동
+   - 왼쪽 메뉴에서 "Pages" 선택
+   - Source를 "GitHub Actions"로 설정
+
+2. **환경 변수 설정**
+   - `.env` 파일 생성 (`.env.example` 참고)
+   - GitHub Personal Access Token 생성: https://github.com/settings/tokens
+   - 필요한 권한: `repo` (Full control of private repositories)
+
+   ```env
+   VITE_GITHUB_TOKEN=your_github_personal_access_token
+   VITE_GITHUB_OWNER=your_github_username
+   VITE_GITHUB_REPO=Finedust_proj
+   ```
+
+3. **main 브랜치에 푸시**
+   ```bash
+   git add .
+   git commit -m "Deploy to GitHub Pages"
+   git push origin main
+   ```
+
+4. **자동 배포**
+   - GitHub Actions가 자동으로 빌드 및 배포를 수행합니다
+   - Actions 탭에서 배포 진행 상황을 확인할 수 있습니다
+   - 완료 후 `https://your-username.github.io/Finedust_proj/` 에서 앱에 접속할 수 있습니다
+
+### GitHub를 주 저장소로 사용
+
+이 앱은 GitHub를 주 데이터 저장소로 사용하도록 설정되어 있습니다:
+
+- **온라인 모드**: 모든 데이터가 GitHub에 직접 저장됩니다
+- **오프라인 모드**: 로컬에 저장 후 온라인 시 자동 동기화
+- **데이터 관리**: `data/history.json` 파일에 측정 기록 저장
+
+**주의사항**:
+- GitHub Personal Access Token은 절대 공개 저장소에 커밋하지 마세요
+- `.env` 파일은 `.gitignore`에 포함되어 있습니다
+- 프로덕션 환경에서는 환경 변수를 안전하게 관리하세요
 
 ## 📖 사용 방법
 

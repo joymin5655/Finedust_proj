@@ -277,12 +277,12 @@ const CameraView: React.FC<CameraViewProps> = ({ onNavigateToHistory, onNavigate
   const CameraOverlay = () => (
     <div className="absolute inset-0 bg-black z-50 flex flex-col animate-fade-in">
         <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover"></video>
-        <div className="absolute bottom-0 left-0 right-0 p-4 bg-black/50 flex justify-around items-center">
-            <button onClick={stopCamera} className="px-4 py-2 text-white font-semibold rounded-lg bg-white/10 hover:bg-white/20">Cancel</button>
-            <button onClick={handleCapture} className="w-20 h-20 rounded-full bg-white flex items-center justify-center transform active:scale-90 transition-transform">
-                <div className="w-16 h-16 rounded-full border-4 border-black"></div>
+        <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black via-black/80 to-transparent flex justify-around items-center">
+            <button onClick={stopCamera} className="px-6 py-3 text-white font-semibold rounded-2xl bg-white/10 backdrop-blur-md hover:bg-white/20 active:scale-95 transition-all duration-200 border border-white/20">Cancel</button>
+            <button onClick={handleCapture} className="w-24 h-24 rounded-full bg-white flex items-center justify-center transform active:scale-90 transition-all duration-200 shadow-2xl">
+                <div className="w-20 h-20 rounded-full border-[6px] border-gray-900"></div>
             </button>
-             <div className="w-24"></div>
+            <div className="w-24"></div>
         </div>
     </div>
   );
@@ -294,25 +294,23 @@ const CameraView: React.FC<CameraViewProps> = ({ onNavigateToHistory, onNavigate
 
       {isCameraActive && <CameraOverlay />}
       {loading && (
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in">
-          <div className="loader-frame">
-            <div className="loader-center">
-              <div className="dot-1"></div>
-              <div className="dot-2"></div>
-              <div className="dot-3"></div>
-            </div>
+        <div className="absolute inset-0 bg-black/80 backdrop-blur-xl flex flex-col items-center justify-center z-50 animate-fade-in">
+          <div className="relative">
+            <div className="w-20 h-20 border-4 border-white/20 border-t-white rounded-full animate-spin"></div>
           </div>
+          <p className="mt-8 text-white text-lg font-semibold tracking-wide">Analyzing Air Quality...</p>
+          <p className="mt-2 text-gray-400 text-sm">This takes just a moment</p>
         </div>
       )}
 
-      <header className="absolute top-0 left-0 right-0 p-4 flex justify-between items-center z-20 text-white">
-        <h1 className="text-xl font-bold text-shadow">AirLens</h1>
-        <div className="flex items-center space-x-2">
-            <button onClick={onNavigateToHistory} className="p-2 rounded-full bg-black/20 backdrop-blur-sm hover:bg-black/40 transition-colors">
+      <header className="absolute top-0 left-0 right-0 p-6 flex justify-between items-center z-20 text-white">
+        <h1 className="text-3xl font-bold tracking-tight text-shadow">AirLens</h1>
+        <div className="flex items-center gap-3">
+            <button onClick={onNavigateToHistory} className="p-3 rounded-2xl bg-white/10 backdrop-blur-md hover:bg-white/20 active:scale-95 transition-all duration-200 shadow-lg">
                 <HistoryIcon className="w-6 h-6" />
             </button>
-            <button onClick={onNavigateToSettings} className="group relative p-2 rounded-full bg-black/20 backdrop-blur-sm hover:bg-black/40 transition-colors">
-                <SettingsIcon className="w-6 h-6 transition-transform duration-400 ease-in-out group-hover:rotate-60 group-active:animate-rot" />
+            <button onClick={onNavigateToSettings} className="group relative p-3 rounded-2xl bg-white/10 backdrop-blur-md hover:bg-white/20 active:scale-95 transition-all duration-200 shadow-lg">
+                <SettingsIcon className="w-6 h-6 transition-transform duration-300 ease-out group-hover:rotate-90" />
             </button>
         </div>
       </header>
@@ -333,30 +331,31 @@ const CameraView: React.FC<CameraViewProps> = ({ onNavigateToHistory, onNavigate
         </div>
       </div>
 
-      <div className="p-4 z-10">
-        <div className="p-4 rounded-3xl bg-black/30 backdrop-blur-xl shadow-lg border border-white/10">
-            <div className="text-center mb-4">
-                 <div className="flex items-baseline justify-center gap-2">
-                    <span className="text-2xl">{locationDetails.flag}</span>
-                    <p className="text-lg font-bold text-white">{locationDetails.country}</p>
-                    <p className="text-base text-gray-300">{locationDetails.city}</p>
+      <div className="p-6 z-10">
+        <div className="p-6 rounded-3xl bg-white/5 backdrop-blur-2xl shadow-2xl border border-white/10">
+            <div className="text-center mb-6">
+                 <div className="flex items-center justify-center gap-3 mb-2">
+                    <span className="text-4xl">{locationDetails.flag}</span>
+                    <div className="text-left">
+                      <p className="text-xl font-bold text-white leading-tight">{locationDetails.country}</p>
+                      <p className="text-sm text-gray-300 font-medium">{locationDetails.city}</p>
+                    </div>
                 </div>
-                {error && <p className="text-xs text-center text-red-400 mt-1">{error}</p>}
+                {error && <p className="text-xs text-center text-red-400 mt-2 font-medium">{error}</p>}
             </div>
             <div className="flex flex-col gap-3">
                 <div className="flex gap-3">
-                    <button onClick={startCamera} disabled={loading} className="w-[70%] h-12 bg-gray-700/80 text-white rounded-xl flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-wait transition-all duration-300 hover:bg-gray-600 active:scale-95 transform">
+                    <button onClick={startCamera} disabled={loading} className="flex-1 h-14 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-2xl flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-wait transition-all duration-200 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] font-semibold text-base shadow-lg">
                         <CameraIcon className="w-5 h-5" />
-                        <span className="text-sm font-semibold">Capture</span>
+                        <span>Capture</span>
                     </button>
-                    <button onClick={handleUploadClick} disabled={loading} className="w-[30%] h-12 bg-brand-blue text-white rounded-xl flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-wait transition-all duration-300 hover:bg-blue-600 active:scale-95 transform">
-                        <UploadIcon className="w-5 h-5" />
-                        <span className="text-sm font-semibold">Upload</span>
+                    <button onClick={handleUploadClick} disabled={loading} className="h-14 px-6 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-2xl flex items-center justify-center disabled:opacity-40 disabled:cursor-wait transition-all duration-200 hover:bg-white/20 hover:scale-[1.02] active:scale-[0.98] shadow-lg">
+                        <UploadIcon className="w-6 h-6" />
                     </button>
                 </div>
-                <button onClick={handleCheckStations} disabled={loading} className="w-full h-12 bg-purple-600/80 text-white rounded-xl flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-wait transition-all duration-300 hover:bg-purple-700 active:scale-95 transform">
+                <button onClick={handleCheckStations} disabled={loading} className="w-full h-14 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-2xl flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-wait transition-all duration-200 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] font-semibold text-base shadow-lg">
                     <SignalTowerIcon className="w-5 h-5" />
-                    <span className="text-sm font-semibold">Stations</span>
+                    <span>Check Stations</span>
                 </button>
             </div>
         </div>

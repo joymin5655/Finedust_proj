@@ -11,8 +11,8 @@ interface SettingsViewProps {
 }
 
 const SettingsCard: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
-    <div className="p-4 rounded-lg bg-white dark:bg-gray-800 shadow-md">
-        <h3 className="font-bold text-lg mb-4">{title}</h3>
+    <div className="p-6 rounded-2xl bg-white dark:bg-gray-800 shadow-lg border border-gray-100 dark:border-gray-700">
+        <h3 className="font-bold text-xl mb-6 tracking-tight">{title}</h3>
         {children}
     </div>
 );
@@ -66,14 +66,14 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onBack, darkMode, setDarkMo
 
   return (
     <div className="flex flex-col h-full bg-gray-50 dark:bg-gray-900">
-      <header className="p-4 flex items-center bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg border-b border-gray-200 dark:border-gray-800 sticky top-0 z-10">
-        <button onClick={onBack} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
+      <header className="p-6 flex items-center gap-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-800/50 sticky top-0 z-10 shadow-lg">
+        <button onClick={onBack} className="p-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 active:scale-95 transition-all duration-200">
           <ArrowLeftIcon className="w-6 h-6" />
         </button>
-        <h2 className="text-xl font-bold ml-4">Settings</h2>
+        <h2 className="text-2xl font-bold tracking-tight">Settings</h2>
       </header>
 
-      <div className="flex-grow overflow-y-auto p-4 space-y-4">
+      <div className="flex-grow overflow-y-auto p-6 space-y-5">
         <SettingsCard title="Appearance">
           <div className="flex justify-between items-center">
             <span className="text-gray-700 dark:text-gray-300">Language</span>

@@ -62,24 +62,24 @@ const HistoryView: React.FC<HistoryViewProps> = ({ onBack }) => {
 
   return (
     <div className="flex flex-col h-full bg-gray-50 dark:bg-gray-900">
-      <header className="p-4 flex items-center justify-between bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg border-b border-gray-200 dark:border-gray-800 sticky top-0 z-10">
-        <div className="flex items-center">
-          <button onClick={onBack} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
+      <header className="p-6 flex items-center justify-between bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-800/50 sticky top-0 z-10 shadow-lg">
+        <div className="flex items-center gap-4">
+          <button onClick={onBack} className="p-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 active:scale-95 transition-all duration-200">
             <ArrowLeftIcon className="w-6 h-6" />
           </button>
-          <h2 className="text-xl font-bold ml-4">History</h2>
+          <h2 className="text-2xl font-bold tracking-tight">History</h2>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           {unsyncedCount > 0 && (
-            <span className="px-2 py-1 text-xs bg-orange-500 text-white rounded-full">
+            <span className="px-3 py-1.5 text-xs font-semibold bg-orange-500 text-white rounded-full shadow-lg">
               {unsyncedCount} unsynced
             </span>
           )}
           <button
             onClick={handleSync}
             disabled={syncing || !isOnline}
-            className="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="p-3 rounded-2xl bg-blue-500 text-white hover:bg-blue-600 disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 transition-all duration-200 shadow-lg"
           >
             <CloudSyncIcon className={`w-5 h-5 ${syncing ? 'animate-spin' : ''}`} />
           </button>
@@ -87,68 +87,68 @@ const HistoryView: React.FC<HistoryViewProps> = ({ onBack }) => {
       </header>
 
       {syncMessage && (
-        <div className={`mx-4 mt-4 p-3 rounded-lg ${syncMessage.includes('success') ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200' : 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200'}`}>
+        <div className={`mx-6 mt-4 p-4 rounded-2xl font-medium shadow-lg ${syncMessage.includes('success') ? 'bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-200 border border-green-200 dark:border-green-800' : 'bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-200 border border-red-200 dark:border-red-800'}`}>
           {syncMessage}
         </div>
       )}
 
-      <div className="flex-grow overflow-y-auto p-4">
+      <div className="flex-grow overflow-y-auto p-6">
         {history.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-gray-500 dark:text-gray-400">
-            <p className="text-lg font-semibold">No history yet</p>
-            <p className="text-sm mt-2">Your measurements will appear here</p>
+            <p className="text-xl font-bold">No history yet</p>
+            <p className="text-base mt-3 text-gray-400">Your measurements will appear here</p>
           </div>
         ) : (
           <>
-            <div className="flex justify-between items-center mb-4">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+            <div className="flex justify-between items-center mb-6">
+              <p className="text-base font-semibold text-gray-600 dark:text-gray-400">
                 {history.length} record{history.length !== 1 ? 's' : ''}
               </p>
               {history.length > 0 && (
                 <button
                   onClick={handleClearAll}
-                  className="text-sm text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300"
+                  className="text-sm font-semibold text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 transition-colors"
                 >
                   Clear All
                 </button>
               )}
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-4">
               {history.map((record) => {
                 const aqiLevel = getAQILevel(record.prediction.pm25);
                 return (
                   <div
                     key={record.id}
                     onClick={() => setSelectedRecord(record)}
-                    className="p-4 rounded-lg bg-white dark:bg-gray-800 shadow-md cursor-pointer hover:shadow-lg transition-shadow"
+                    className="p-5 rounded-2xl bg-white dark:bg-gray-800 shadow-lg cursor-pointer hover:shadow-2xl hover:scale-[1.01] active:scale-[0.99] transition-all duration-200 border border-gray-100 dark:border-gray-700"
                   >
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
-                        <div className="flex items-baseline gap-2 mb-1">
-                          <span className={`text-3xl font-bold ${aqiLevel.color}`}>
+                        <div className="flex items-baseline gap-3 mb-2">
+                          <span className={`text-4xl font-bold ${aqiLevel.color}`}>
                             {record.prediction.pm25.toFixed(0)}
                           </span>
-                          <span className="text-sm text-gray-500 dark:text-gray-400">μg/m³</span>
-                          <span className={`text-sm font-semibold ${aqiLevel.color}`}>
+                          <span className="text-sm font-medium text-gray-500 dark:text-gray-400">μg/m³</span>
+                          <span className={`text-sm font-bold ${aqiLevel.color}`}>
                             {aqiLevel.name}
                           </span>
                         </div>
 
                         {record.prediction.location && (
-                          <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+                          <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
                             📍 {record.prediction.location.city}, {record.prediction.location.country}
                           </p>
                         )}
 
-                        <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                        <div className="flex items-center gap-2 text-xs font-medium text-gray-500 dark:text-gray-400">
                           <span>{formatRelativeTime(record.timestamp)}</span>
                           <span>•</span>
                           <span>{formatDate(record.timestamp)}</span>
                           {!record.synced && (
                             <>
                               <span>•</span>
-                              <span className="text-orange-500">Not synced</span>
+                              <span className="text-orange-500 font-semibold">Not synced</span>
                             </>
                           )}
                         </div>
@@ -159,9 +159,9 @@ const HistoryView: React.FC<HistoryViewProps> = ({ onBack }) => {
                           e.stopPropagation();
                           handleDelete(record.id);
                         }}
-                        className="p-2 rounded-full hover:bg-red-100 dark:hover:bg-red-900 text-red-500"
+                        className="p-2.5 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/30 text-red-500 active:scale-90 transition-all duration-200"
                       >
-                        <TrashIcon className="w-4 h-4" />
+                        <TrashIcon className="w-5 h-5" />
                       </button>
                     </div>
                   </div>

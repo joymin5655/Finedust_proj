@@ -273,24 +273,26 @@ struct PolicyCard: View {
             if isExpanded {
                 HStack(spacing: 12) {
                     // View Source Button
-                    Link(destination: URL(string: policy.url)!) {
-                        Label("View Source", systemImage: "link")
-                            .font(.caption)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 8)
-                            .background(Color.blue.opacity(0.1))
-                            .foregroundColor(.blue)
-                            .cornerRadius(8)
-                    }
-                    
-                    // Share Button
-                    ShareLink(item: policy.url) {
-                        Label("Share", systemImage: "square.and.arrow.up")
-                            .font(.caption)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 8)
-                            .background(Color(UIColor.tertiarySystemBackground))
-                            .cornerRadius(8)
+                    if let url = policy.url {
+                        Link(destination: url) {
+                            Label("View Source", systemImage: "link")
+                                .font(.caption)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 8)
+                                .background(Color.blue.opacity(0.1))
+                                .foregroundColor(.blue)
+                                .cornerRadius(8)
+                        }
+
+                        // Share Button
+                        ShareLink(item: url) {
+                            Label("Share", systemImage: "square.and.arrow.up")
+                                .font(.caption)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 8)
+                                .background(Color(UIColor.tertiarySystemBackground))
+                                .cornerRadius(8)
+                        }
                     }
                 }
             }

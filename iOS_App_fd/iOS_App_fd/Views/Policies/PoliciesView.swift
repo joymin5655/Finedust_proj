@@ -226,8 +226,8 @@ struct PolicyCard: View {
                         Label(policy.country, systemImage: "mappin.circle")
                             .font(.caption)
                             .foregroundColor(.secondary)
-                        
-                        Label(policy.source, systemImage: "building.2")
+
+                        Label(policy.authority, systemImage: "building.2")
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
@@ -237,10 +237,10 @@ struct PolicyCard: View {
                 
                 // Credibility Score
                 VStack {
-                    Text("\(Int(policy.credibilityScore * 100))")
+                    Text("\(Int(policy.credibility * 100))")
                         .font(.title2)
                         .fontWeight(.bold)
-                        .foregroundColor(colorForCredibility(policy.credibilityScore))
+                        .foregroundColor(colorForCredibility(policy.credibility))
                     Text("Score")
                         .font(.caption2)
                         .foregroundColor(.secondary)

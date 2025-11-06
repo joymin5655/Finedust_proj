@@ -295,35 +295,42 @@ struct AirQualityDistributionChart: View {
 // MARK: - Country Breakdown Chart
 struct CountryBreakdownChart: View {
     @EnvironmentObject var stationViewModel: StationViewModel
-    
-    var topCountries: [(country: String, avgPM25: Double, count: Int)] {
+
+    struct CountryData: Identifiable {
+        let id = UUID()
+        let country: String
+        let avgPM25: Double
+        let count: Int
+    }
+
+    var topCountries: [CountryData] {
         let countries = Dictionary(grouping: stationViewModel.stations, by: { $0.country })
-        
+
         return countries.map { country, stations in
             let avgPM25 = stations.map { $0.pm25 }.reduce(0, +) / Double(stations.count)
-            return (country, avgPM25, stations.count)
+            return CountryData(country: country, avgPM25: avgPM25, count: stations.count)
         }
         .sorted { $0.count > $1.count }
         .prefix(10)
         .map { $0 }
     }
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Top Countries by Station Count")
                 .font(.headline)
-            
-            ForEach(topCountries, id: \.country) { item in
+
+            ForEach(topCountries) { item in
                 HStack {
                     Text(item.country)
                         .font(.subheadline)
-                    
+
                     Spacer()
-                    
+
                     Text("\(item.count) stations")
                         .font(.caption)
                         .foregroundColor(.secondary)
-                    
+
                     Text("Avg: \(String(format: "%.1f", item.avgPM25))")
                         .font(.caption)
                         .foregroundColor(Color(hex: PM25Category(pm25: item.avgPM25).color))

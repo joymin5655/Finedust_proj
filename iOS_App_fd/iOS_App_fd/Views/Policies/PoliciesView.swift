@@ -142,7 +142,7 @@ struct FilterChipsView: View {
                         }
                     }
                 } label: {
-                    FilterChip(
+                    PoliciesFilterChip(
                         title: selectedCategory?.rawValue ?? "All Categories",
                         isSelected: selectedCategory != nil
                     )
@@ -160,7 +160,7 @@ struct FilterChipsView: View {
                         }
                     }
                 } label: {
-                    FilterChip(
+                    PoliciesFilterChip(
                         title: selectedCountry ?? "All Countries",
                         isSelected: selectedCountry != nil
                     )
@@ -172,7 +172,7 @@ struct FilterChipsView: View {
                         selectedCategory = nil
                         selectedCountry = nil
                     }) {
-                        FilterChip(title: "Clear", isSelected: false, isDestructive: true)
+                        PoliciesFilterChip(title: "Clear", isSelected: false, isDestructive: true)
                     }
                 }
             }
@@ -180,7 +180,7 @@ struct FilterChipsView: View {
     }
 }
 
-struct FilterChip: View {
+struct PoliciesFilterChip: View {
     let title: String
     let isSelected: Bool
     var isDestructive: Bool = false
@@ -226,8 +226,8 @@ struct PolicyCard: View {
                         Label(policy.country, systemImage: "mappin.circle")
                             .font(.caption)
                             .foregroundColor(.secondary)
-                        
-                        Label(policy.source, systemImage: "building.2")
+
+                        Label(policy.authority, systemImage: "building.2")
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
@@ -237,10 +237,10 @@ struct PolicyCard: View {
                 
                 // Credibility Score
                 VStack {
-                    Text("\(Int(policy.credibilityScore * 100))")
+                    Text("\(Int(policy.credibility * 100))")
                         .font(.title2)
                         .fontWeight(.bold)
-                        .foregroundColor(colorForCredibility(policy.credibilityScore))
+                        .foregroundColor(colorForCredibility(policy.credibility))
                     Text("Score")
                         .font(.caption2)
                         .foregroundColor(.secondary)

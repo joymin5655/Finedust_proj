@@ -75,9 +75,9 @@ struct AirLensApp: App {
     }
 
     private func configureAccessibility() {
-        // Enable larger dynamic type
-        UIApplication.shared.preferredContentSizeCategory = .large
-
+        // Note: Dynamic Type is automatically supported by SwiftUI
+        // Users can adjust text size in Settings > Accessibility > Display & Text Size
+        
         // Reduce motion if needed
         if UIAccessibility.isReduceMotionEnabled {
             globeViewModel.disableAnimations()

@@ -111,9 +111,10 @@ class MLService: ObservableObject {
 
     private func prepareInput(from frames: [FrameFeature]) throws -> MLMultiArray {
         // Create MLMultiArray: [1, 15, 576] (batch, frames, features)
+        // Using float32 for iOS 15+ compatibility (float16 requires iOS 16+)
         guard let multiArray = try? MLMultiArray(
             shape: [1, 15, 576],
-            dataType: .float16
+            dataType: .float32
         ) else {
             throw MLServiceError.inputPreparationFailed
         }

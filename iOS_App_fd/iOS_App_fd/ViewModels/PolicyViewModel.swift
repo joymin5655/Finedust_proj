@@ -50,6 +50,16 @@ class PolicyViewModel: ObservableObject {
         }
     }
 
+    /// Get top credible policies
+    func getTopCrediblePolicies(limit: Int = 10) -> [AirPolicy] {
+        return policies.sorted { $0.credibility > $1.credibility }.prefix(limit).map { $0 }
+    }
+
+    /// Get available countries
+    var availableCountries: [String] {
+        return Array(Set(policies.map { $0.country })).sorted()
+    }
+
     private func loadCachedPolicies() {
         if let data = UserDefaults.standard.data(forKey: "cached_policies"),
            let cached = try? JSONDecoder().decode([AirPolicy].self, from: data) {

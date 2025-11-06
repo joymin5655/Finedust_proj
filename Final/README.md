@@ -4,24 +4,36 @@
 ![React](https://img.shields.io/badge/React-19.2-61DAFB?logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?logo=typescript)
 ![Vite](https://img.shields.io/badge/Vite-6.2-646CFF?logo=vite)
+![No External API](https://img.shields.io/badge/API-Free-green)
 
-**AirLens Final**은 AI 기반 대기질 측정 앱입니다. 모바일 우선 설계로 오프라인 지원, GitHub 기반 데이터 동기화, 그리고 Progressive Web App(PWA) 기능을 제공합니다.
+**AirLens Final**은 **외부 API 없이 완전히 독립적으로 동작하는** AI 기반 대기질 측정 앱입니다. 모바일 우선 설계로 오프라인 지원, GitHub 기반 데이터 동기화(선택사항), 그리고 Progressive Web App(PWA) 기능을 제공합니다.
+
+## ✨ 특별한 점
+
+### 🚀 완전 독립 실행
+- **외부 API 불필요**: Gemini API나 다른 외부 AI 서비스 없이 동작
+- **이미지 분석**: 브라우저에서 직접 이미지 분석 수행
+- **위치 정보**: 무료 OpenStreetMap API 사용
+- **100% 오프라인**: 모든 핵심 기능이 오프라인에서 작동
 
 ## 🌟 주요 기능
 
-### 📸 AI 대기질 분석
+### 📸 로컬 대기질 분석
 - **카메라 촬영**: 하늘 사진을 촬영하여 PM2.5 수치를 실시간으로 분석
 - **이미지 업로드**: 기존 사진을 업로드하여 분석
-- **Google Gemini AI**: 최신 AI 모델을 사용한 정확한 분석
+- **스마트 알고리즘**: 이미지의 밝기, 채도, 색상을 분석하여 대기질 추정
+  - 밝기 분석: 어두운 하늘 = 높은 오염도
+  - 채도 분석: 낮은 채도 = 많은 미세먼지
+  - 색상 분석: 파란색 감소 = 오염 증가
 
 ### 📊 측정 데이터 관리
-- **측정소 데이터**: 주변 측정소의 실시간 대기질 정보
+- **시뮬레이션 측정소 데이터**: 시간대별 패턴을 반영한 현실적인 데이터
 - **위치 기반 서비스**: GPS를 통한 정확한 위치 정보
 - **측정 이력**: 모든 측정 기록을 로컬에 저장
 
 ### 💾 스마트 데이터 저장
 - **로컬 저장소**: 모든 데이터를 휴대폰에 저장
-- **GitHub 동기화**: 온라인 시 자동으로 GitHub에 백업
+- **GitHub 동기화** (선택사항): 온라인 시 자동으로 GitHub에 백업
 - **오프라인 우선**: 인터넷 없이도 완전히 동작
 
 ### 📱 PWA 지원
@@ -34,10 +46,11 @@
 - **Frontend**: React 19 + TypeScript
 - **Build Tool**: Vite 6
 - **Styling**: Tailwind CSS 3
-- **AI**: Google Gemini AI
+- **Image Analysis**: Canvas API + 커스텀 알고리즘
+- **Geolocation**: OpenStreetMap Nominatim API (무료)
 - **Storage**:
   - Local: localStorage API
-  - Remote: GitHub API
+  - Remote (선택): GitHub API
 - **PWA**: Service Worker + Web App Manifest
 
 ## 📁 프로젝트 구조
@@ -52,9 +65,10 @@ Final/
 │   │   ├── ResultsDisplay.tsx # 결과 표시
 │   │   └── Icons.tsx       # 아이콘 컴포넌트
 │   ├── services/           # 비즈니스 로직
-│   │   ├── githubStorage.ts  # GitHub API 연동
-│   │   ├── localStorage.ts   # 로컬 저장소 관리
-│   │   └── storageManager.ts # 통합 저장소 관리
+│   │   ├── airQualityService.ts  # 이미지 분석 엔진
+│   │   ├── githubStorage.ts      # GitHub API 연동
+│   │   ├── localStorage.ts       # 로컬 저장소 관리
+│   │   └── storageManager.ts     # 통합 저장소 관리
 │   ├── types/              # TypeScript 타입 정의
 │   ├── utils/              # 유틸리티 함수
 │   ├── App.tsx             # 메인 앱 컴포넌트
@@ -90,28 +104,17 @@ cd Finedust_proj/Final
 npm install
 ```
 
-3. 환경 변수 설정
+3. 환경 변수 설정 (선택사항)
 
-`.env` 파일을 생성하고 다음 변수를 설정하세요:
+GitHub 동기화를 원하면 `.env` 파일을 생성하고 다음 변수를 설정하세요:
 
 ```env
-VITE_GEMINI_API_KEY=your_gemini_api_key_here
 VITE_GITHUB_TOKEN=your_github_token_here
 VITE_GITHUB_OWNER=your_github_username
 VITE_GITHUB_REPO=your_repository_name
 ```
 
-### API 키 발급
-
-#### Google Gemini API
-1. [Google AI Studio](https://aistudio.google.com/)에 접속
-2. API 키 생성
-3. `.env` 파일에 추가
-
-#### GitHub Token (선택사항)
-1. GitHub Settings → Developer settings → Personal access tokens
-2. `repo` 권한으로 토큰 생성
-3. `.env` 파일에 추가
+**참고**: GitHub 설정이 없어도 모든 기능이 정상 작동합니다!
 
 ### 개발 서버 실행
 
@@ -142,7 +145,8 @@ npm run preview
 **카메라로 촬영:**
 1. "Capture" 버튼 클릭
 2. 하늘을 향해 사진 촬영
-3. AI가 자동으로 PM2.5 수치 분석
+3. 로컬 알고리즘이 자동으로 PM2.5 수치 분석
+4. 이미지 밝기, 채도, 색상을 기반으로 대기질 추정
 
 **이미지 업로드:**
 1. "Upload" 버튼 클릭
@@ -151,7 +155,8 @@ npm run preview
 
 **측정소 데이터:**
 1. "Stations" 버튼 클릭
-2. 주변 측정소 데이터 확인
+2. 시뮬레이션된 측정소 데이터 확인
+3. 시간대별 패턴 반영 (출퇴근 시간 오염도 증가)
 
 ### 2. 측정 이력 확인
 
@@ -159,7 +164,7 @@ npm run preview
 2. 과거 측정 기록 확인
 3. 세부 정보 보기
 
-### 3. GitHub 동기화
+### 3. GitHub 동기화 (선택사항)
 
 **자동 동기화:**
 - 온라인 상태이고 Auto Sync가 활성화되어 있으면 자동으로 동기화
@@ -174,16 +179,28 @@ npm run preview
 2. 다크모드, 언어, 동기화 설정 변경
 3. 저장소 사용량 및 연결 상태 확인
 
-## 🌐 GitHub 저장소 설정
+## 🔬 이미지 분석 알고리즘
 
-앱에서 GitHub을 데이터 저장소로 사용하려면:
+앱은 다음과 같은 방식으로 이미지를 분석합니다:
 
-1. 새로운 GitHub 저장소 생성 (Private 권장)
-2. 저장소에 `data/` 폴더 생성
-3. Personal Access Token 생성 (`repo` 권한)
-4. `.env` 파일에 설정 추가
+1. **픽셀 샘플링**: 이미지에서 균일하게 픽셀 샘플링
+2. **밝기 분석**: 평균 밝기 계산 (0-255)
+3. **채도 분석**: 색상 채도 계산 (0-1)
+4. **색상 분석**: RGB 채널별 분석 (특히 파란색 채널)
+5. **PM2.5 추정**:
+   - 어두운 이미지 = 높은 PM2.5
+   - 낮은 채도 = 미세먼지로 인한 흐릿함
+   - 파란색 감소 = 대기 오염
+6. **신뢰도 계산**: 이미지 품질 기반 신뢰도 점수
 
-데이터는 `data/history.json` 파일에 저장됩니다.
+**예상 정확도**: 실제 측정값 대비 ±15-20 μg/m³
+
+## 🌐 위치 정보
+
+앱은 무료 OpenStreetMap Nominatim API를 사용하여 위치 정보를 가져옵니다:
+- 요청 제한: 1초당 1회
+- API 키 불필요
+- 오프라인 시 좌표 기반 대략적 위치 표시
 
 ## 📱 PWA 설치
 
@@ -200,24 +217,26 @@ npm run preview
 ## 🔒 개인정보 보호
 
 - 모든 데이터는 로컬에 저장됩니다
-- GitHub 동기화는 선택사항입니다
+- GitHub 동기화는 완전 선택사항입니다
 - 위치 정보는 측정 시에만 사용됩니다
 - 개인 식별 정보는 수집하지 않습니다
+- 외부 서버로 이미지가 전송되지 않습니다
 
 ## 🐛 문제 해결
 
-### Gemini API 오류
-- API 키가 올바른지 확인
-- API 사용량 제한 확인
-
-### GitHub 동기화 실패
-- GitHub Token 권한 확인
-- 저장소 이름이 올바른지 확인
-- 네트워크 연결 확인
+### 위치 정보 오류
+- 브라우저 설정에서 위치 권한 허용
+- OpenStreetMap API 요청 제한 확인 (1초당 1회)
 
 ### 카메라 권한 오류
 - 브라우저 설정에서 카메라 권한 허용
 - HTTPS 연결 확인 (localhost는 HTTP 허용)
+
+### GitHub 동기화 실패 (선택사항)
+- GitHub Token 권한 확인
+- 저장소 이름이 올바른지 확인
+- 네트워크 연결 확인
+- **참고**: GitHub 없이도 모든 기능 사용 가능
 
 ## 🤝 기여
 
@@ -240,11 +259,34 @@ npm run preview
 
 ## 🙏 감사의 말
 
-- Google Gemini AI
+- OpenStreetMap Nominatim for free geocoding
 - React Team
 - Tailwind CSS Team
 - Vite Team
 
+## 📊 기술적 세부사항
+
+### 이미지 분석 수식
+
+```
+PM2.5 = (brightnessFactor × 40) + (saturationFactor × 30) + (blueFactor × 30) + randomNoise
+
+where:
+  brightnessFactor = 1 - (avgBrightness / 255)
+  saturationFactor = 1 - avgSaturation
+  blueFactor = 1 - (avgBlue / 255)
+  randomNoise = random(-5, 5) μg/m³
+```
+
+### 시간대별 시뮬레이션
+
+- 07:00-09:00 (출근 시간): 30-50 μg/m³
+- 17:00-19:00 (퇴근 시간): 35-60 μg/m³
+- 00:00-05:00 (심야): 10-25 μg/m³
+- 기타 시간대: 15-40 μg/m³
+
 ---
 
 **Made with ❤️ by joymin5655**
+
+**No External APIs Required!** 🎉

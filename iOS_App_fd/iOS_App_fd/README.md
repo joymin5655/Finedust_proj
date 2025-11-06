@@ -78,20 +78,48 @@ iOS_App_fd/
 - Xcode 14.0+
 - Swift 5.7+
 
-### Installation
+### Quick Start (5분 완료!)
 
-1. Clone the repository:
+#### 1️⃣ 프로젝트 생성
+
 ```bash
+# 1. 저장소 클론
 git clone https://github.com/joymin5655/Finedust_proj.git
 cd Finedust_proj/iOS_App_fd
 ```
 
-2. Open in Xcode:
-```bash
-open AirLens.xcodeproj
+#### 2️⃣ Xcode 프로젝트 생성
+
+**Xcode에서:**
+1. File → New → Project
+2. iOS → App 선택
+3. Product Name: `AirLens`, Interface: `SwiftUI`
+4. 저장 위치: 현재 폴더 선택
+5. 소스 파일 추가 (App/, Models/, Views/, ViewModels/, Services/, Utilities/)
+
+**자세한 단계는 `PROJECT_SETUP.md` 참조!**
+
+#### 3️⃣ Info.plist 설정 (중요!)
+
+**Build Settings에서:**
+```
+Info.plist File: iOS_App_fd/Info.plist
 ```
 
-3. Build and run (⌘R)
+**또는 자동 생성:**
+```
+Generate Info.plist File: YES
+```
+
+**🚨 Info.plist 오류가 나면 `QUICK_FIX.md` 참조!**
+
+#### 4️⃣ 빌드 및 실행
+
+```bash
+⌘⇧K  # Clean Build
+⌘B   # Build
+⌘R   # Run
+```
 
 ### Permissions Required
 

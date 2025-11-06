@@ -4,12 +4,13 @@ import { localStorageService } from './localStorage';
 
 /**
  * Storage Manager
- * GitHub와 로컬 저장소를 통합 관리
- * 오프라인 우선 전략 사용
+ * GitHub를 주 저장소로 사용하고 로컬은 캐시로 활용
+ * GitHub 우선 전략: 온라인일 때는 GitHub에 저장, 오프라인일 때는 로컬 캐시 사용
  */
 class StorageManager {
   private isOnline: boolean = navigator.onLine;
   private syncInProgress: boolean = false;
+  private historyCache: HistoryRecord[] | null = null;
 
   constructor() {
     // 온라인/오프라인 상태 모니터링
@@ -22,39 +23,80 @@ class StorageManager {
       this.isOnline = false;
     });
 
-    // 페이지 로드 시 자동 동기화
+    // 페이지 로드 시 GitHub에서 데이터 가져오기
     if (this.isOnline) {
-      this.autoSync();
+      this.loadFromGitHub();
+    }
+  }
+
+  /**
+   * GitHub에서 데이터 로드 (초기화)
+   */
+  private async loadFromGitHub(): Promise<void> {
+    try {
+      const githubRecords = await githubStorage.fetchData();
+      this.historyCache = githubRecords;
+      // 로컬 캐시 업데이트
+      localStorageService.saveHistory(githubRecords);
+    } catch (error) {
+      console.warn('Failed to load from GitHub, using local cache:', error);
+      this.historyCache = localStorageService.getHistory();
     }
   }
 
   /**
    * 새로운 측정 기록 저장
-   * 로컬에 먼저 저장하고, 온라인이면 GitHub에도 저장
+   * GitHub 우선: 온라인이면 GitHub에 먼저 저장, 오프라인이면 로컬에 저장 후 나중에 동기화
    */
   async saveRecord(prediction: PM25Prediction): Promise<HistoryRecord> {
-    // 1. 로컬에 저장 (오프라인 우선)
-    const record = localStorageService.addRecord(prediction);
+    const newRecord: HistoryRecord = {
+      id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      timestamp: Date.now(),
+      prediction,
+      synced: false,
+    };
 
-    // 2. 온라인이면 GitHub에도 저장 시도
     if (this.isOnline) {
+      // 온라인: GitHub에 직접 저장
       try {
         await githubStorage.addRecord(prediction);
-        localStorageService.markAsSynced(record.id);
-        record.synced = true;
+        newRecord.synced = true;
+
+        // 로컬 캐시 업데이트
+        localStorageService.addRecord(prediction);
+        localStorageService.markAsSynced(newRecord.id);
+
+        // 메모리 캐시 업데이트
+        if (this.historyCache) {
+          this.historyCache.unshift(newRecord);
+          if (this.historyCache.length > 100) {
+            this.historyCache.length = 100;
+          }
+        }
       } catch (error) {
-        console.warn('Failed to sync to GitHub, will retry later:', error);
+        console.warn('Failed to save to GitHub, saving locally:', error);
+        // GitHub 저장 실패 시 로컬에만 저장
+        const record = localStorageService.addRecord(prediction);
+        return record;
       }
+    } else {
+      // 오프라인: 로컬에 저장 (나중에 동기화)
+      const record = localStorageService.addRecord(prediction);
+      return record;
     }
 
-    return record;
+    return newRecord;
   }
 
   /**
    * 기록 가져오기
-   * 로컬 저장소에서 가져옴
+   * GitHub에서 가져오고, 실패하면 로컬 캐시 사용
    */
   getHistory(): HistoryRecord[] {
+    if (this.historyCache) {
+      return this.historyCache;
+    }
+    // 캐시가 없으면 로컬에서 가져오기
     return localStorageService.getHistory();
   }
 

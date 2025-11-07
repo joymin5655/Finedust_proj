@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Globe - AirLens</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/globe.css">
+    
+    <!-- Three.js from CDN -->
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+    </script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-logo">AirLens</a>
+            <ul class="navbar-menu">
+                <li><a href="globe.html" class="navbar-link" style="color: var(--color-primary);">Globe</a></li>
+                <li><a href="camera.html" class="navbar-link">Camera AI</a></li>
+                <li><a href="research.html" class="navbar-link">Research</a></li>
+                <li><a href="about.html" class="navbar-link">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Globe Container -->
+    <div id="globe-container">
+        <!-- Loading Screen -->
+        <div id="loading-screen">
+            <div class="loading-content">
+                <div class="loading-spinner"></div>
+                <p class="loading-text">Loading Earth...</p>
+                <p class="loading-subtext">Fetching 30,000+ stations</p>
+            </div>
+        </div>
+        
+        <!-- 3D Canvas -->
+        <canvas id="globe-canvas"></canvas>
+        
+        <!-- Controls Panel -->
+        <div id="controls-panel" class="panel-glass">
+            <h3>Controls</h3>
+            <div class="control-group">
+                <label for="country-filter">Country</label>
+                <select id="country-filter">
+                    <option value="">All Countries</option>
+                    <option value="South Korea">South Korea</option>
+                    <option value="China">China</option>
+                    <option value="Japan">Japan</option>
+                    <option value="USA">United States</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label for="pm25-range">PM2.5 Range</label>
+                <input type="range" id="pm25-range" min="0" max="200" value="200">
+                <span id="pm25-value">0 - 200 μg/m³</span>
+            </div>
+            
+            <button id="reset-view" class="btn btn-secondary">Reset View</button>
+        </div>
+        
+        <!-- Info Panel -->
+        <div id="info-panel" class="panel-glass" style="display: none;">
+            <button id="close-info" class="close-btn">×</button>
+            <h3 id="station-name">Station Name</h3>
+            <div class="info-row">
+                <span class="info-label">Country:</span>
+                <span id="station-country">-</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">PM2.5:</span>
+                <span id="station-pm25" class="pm25-value">-</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">PM10:</span>
+                <span id="station-pm10">-</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">AQI:</span>
+                <span id="station-aqi">-</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Updated:</span>
+                <span id="station-updated">-</span>
+            </div>
+        </div>
+        
+        <!-- Stats Panel -->
+        <div id="stats-panel" class="panel-glass">
+            <div class="stat-item">
+                <div class="stat-value" id="total-stations">0</div>
+                <div class="stat-label">Stations</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="visible-stations">0</div>
+                <div class="stat-label">Visible</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="fps-counter">60</div>
+                <div class="stat-label">FPS</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="js/globe.js"></script>
+</body>
+</html>

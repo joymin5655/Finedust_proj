@@ -9,8 +9,8 @@
    ======================================== */
 :root {
   /* Colors - Minimal Palette */
-  --color-primary: #007AFF;        /* iOS Blue */
-  --color-primary-light: #5AC8FA;  /* Light Blue */
+  --color-primary: #25e2f4;        /* AirLens Primary */
+  --color-primary-light: #5ff0ff;  /* Light Blue */
   --color-secondary: #34C759;      /* Green for positive data */
   --color-danger: #FF3B30;         /* Red for alerts */
   --color-warning: #FF9500;        /* Orange */

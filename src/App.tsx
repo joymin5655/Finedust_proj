@@ -27,14 +27,9 @@ const App: React.FC = () => {
     }
   }, [darkMode]);
 
-  const handleLaunchApp = () => {
+  const handleNavigateTo = (targetView: View) => {
     setShowLanding(false);
-    setView('camera');
-  };
-
-  const handleNavigateToGlobe = () => {
-    setShowLanding(false);
-    setView('globe');
+    setView(targetView);
   };
 
   const renderView = () => {
@@ -63,8 +58,7 @@ const App: React.FC = () => {
   if (showLanding) {
     return (
       <LandingPage
-        onLaunchApp={handleLaunchApp}
-        onNavigateToGlobe={handleNavigateToGlobe}
+        onNavigateTo={handleNavigateTo}
       />
     );
   }

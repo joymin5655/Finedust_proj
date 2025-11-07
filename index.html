@@ -7,9 +7,9 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght=300..700&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
-<script id="tailwind-config">
+<script>
       tailwind.config = {
         darkMode: "class",
         theme: {
@@ -27,133 +27,137 @@
         },
       }
     </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
 </head>
-<body class="font-display bg-background-light dark:bg-background-dark">
+<body class="bg-background-light dark:bg-background-dark font-display">
 <div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
-<!-- Main Content Wrapper -->
-<div class="flex h-full grow flex-col items-center">
-<!-- TopNavBar -->
-<header class="sticky top-0 z-50 flex w-full max-w-5xl items-center justify-between whitespace-nowrap border-b border-solid border-white/10 bg-background-dark/80 px-4 py-3 backdrop-blur-sm sm:px-10">
-<div class="flex items-center gap-4 text-white">
+<div class="layout-container flex h-full grow flex-col">
+<div class="px-4 md:px-10 lg:px-40 flex flex-1 justify-center py-5">
+<div class="layout-content-container flex flex-col w-full max-w-[960px] flex-1">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200/20 dark:border-white/10 px-4 md:px-10 py-3">
+<div class="flex items-center gap-4 text-black dark:text-white">
 <div class="size-5 text-primary">
 <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
 <path d="M24 4C25.7818 14.2173 33.7827 22.2182 44 24C33.7827 25.7818 25.7818 33.7827 24 44C22.2182 33.7827 14.2173 25.7818 4 24C14.2173 22.2182 22.2182 14.2173 24 4Z" fill="currentColor"></path>
 </svg>
 </div>
-<h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em]">AirLens</h2>
+<h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">AirLens</h2>
 </div>
-<div class="hidden items-center gap-8 sm:flex">
-<a class="text-white text-sm font-medium leading-normal transition-colors hover:text-primary" href="globe.html">Live Globe</a>
-<a class="text-white text-sm font-medium leading-normal transition-colors hover:text-primary" href="camera.html">Camera AI</a>
-<a class="text-white text-sm font-medium leading-normal transition-colors hover:text-primary" href="research.html">Research</a>
-<a class="text-white text-sm font-medium leading-normal transition-colors hover:text-primary" href="about.html">About</a>
+<div class="hidden md:flex flex-1 justify-end gap-8">
+<div class="flex items-center gap-9 text-sm font-medium text-gray-800 dark:text-gray-300">
+<a class="text-primary" href="index.html">Home</a>
+<a class="hover:text-primary transition-colors" href="camera.html">Camera AI</a>
+<a class="hover:text-primary transition-colors" href="globe.html">Globe</a>
+<a class="hover:text-primary transition-colors" href="research.html">Research</a>
+<a class="hover:text-primary transition-colors" href="about.html">About</a>
 </div>
-<a class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-background-dark text-sm font-bold leading-normal tracking-[0.015em] transition-transform hover:scale-105" href="https://github.com/joymin5655/Finedust_proj" target="_blank">
+<a class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-[#111718] text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity" href="https://github.com/joymin5655/Finedust_proj" target="_blank">
 <span class="truncate">GitHub</span>
 </a>
+</div>
 </header>
-<main class="w-full max-w-5xl px-4 sm:px-10">
-<!-- HeroSection -->
-<div class="@container py-16 sm:py-24">
-<div class="flex flex-col-reverse gap-8 @[864px]:flex-row @[864px]:gap-12">
-<div class="flex flex-col gap-6 text-center @[864px]:text-left @[864px]:justify-center">
-<div class="flex flex-col gap-3">
-<h1 class="text-white text-4xl font-black leading-tight tracking-[-0.033em] @[480px]:text-5xl">Visualize Global Air Quality in Real-Time</h1>
-<h2 class="text-white/80 text-base font-normal leading-normal @[480px]:text-lg">Leveraging real-time data, machine learning, and policy insights to make air quality transparent and actionable.</h2>
-</div>
-<button onclick="window.location.href='globe.html'" class="flex w-full min-w-[84px] cursor-pointer items-center justify-center self-center overflow-hidden rounded-lg h-12 px-5 bg-primary text-background-dark text-base font-bold leading-normal tracking-[0.015em] transition-transform hover:scale-105 @[864px]:w-fit @[864px]:self-start">
-<span class="truncate">Launch Live Globe</span>
-</button>
-</div>
-<div class="w-full shrink-0 bg-center bg-no-repeat aspect-square bg-cover rounded-xl @[864px]:w-1/2" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBL3dgTmns8NG-dc-icT9cemrztDenACCd9SylABQqKiifaUSc89IxjJEMc4aYxlr6OgK2YijlHepSlm5XF3VYu2k9qd5JNki1VScxNenlJjMLJsB52vHbwFvXghpjedSzbDPbmESo74xX4JsiIM7GXPWZYzUgoowYm3r3HkP4ypkCL1k_Cr9ar8FFO2fECw_-TksaznBOaZoHaOQNhbbuS63L7MvIN-5bmky818QfH3iqOvd1ZvUpTr0RL0QloUbs4BaEUqfmmfv0");'></div>
+<main class="flex-grow">
+<div class="flex flex-wrap justify-between gap-3 p-4 pt-8 md:pt-12">
+<div class="flex min-w-72 flex-col gap-3">
+<h1 class="text-gray-900 dark:text-white text-4xl font-black leading-tight tracking-[-0.033em]">Visualize Global Air Quality in Real-Time</h1>
+<p class="text-gray-600 dark:text-gray-400 text-base font-normal leading-normal">
+                                    Leveraging real-time data, machine learning, and policy insights to make air quality transparent and actionable.
+                                </p>
 </div>
 </div>
+
 <!-- Stats -->
-<div class="flex flex-wrap gap-4 py-8">
-<div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-lg border border-white/10 bg-white/5 p-6 text-center">
-<p class="text-white/80 text-base font-medium leading-normal">Monitoring Stations</p>
-<p class="text-white tracking-light text-3xl font-bold leading-tight">30,241</p>
+<div class="p-4 flex flex-wrap gap-4">
+<div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-lg border border-gray-200 dark:border-white/10 bg-background-light dark:bg-black/20 p-6 text-center">
+<p class="text-gray-600 dark:text-gray-400 text-base font-medium leading-normal">Monitoring Stations</p>
+<p class="text-gray-900 dark:text-white tracking-light text-3xl font-black leading-tight">30,241</p>
 </div>
-<div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-lg border border-white/10 bg-white/5 p-6 text-center">
-<p class="text-white/80 text-base font-medium leading-normal">Countries Covered</p>
-<p class="text-white tracking-light text-3xl font-bold leading-tight">195</p>
+<div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-lg border border-gray-200 dark:border-white/10 bg-background-light dark:bg-black/20 p-6 text-center">
+<p class="text-gray-600 dark:text-gray-400 text-base font-medium leading-normal">Countries Covered</p>
+<p class="text-gray-900 dark:text-white tracking-light text-3xl font-black leading-tight">195</p>
 </div>
-<div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-lg border border-white/10 bg-white/5 p-6 text-center">
-<p class="text-white/80 text-base font-medium leading-normal">Model Accuracy</p>
-<p class="text-white tracking-light text-3xl font-bold leading-tight">&lt; 8.5 μg/m³</p>
+<div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-lg border border-gray-200 dark:border-white/10 bg-background-light dark:bg-black/20 p-6 text-center">
+<p class="text-gray-600 dark:text-gray-400 text-base font-medium leading-normal">Model Accuracy</p>
+<p class="text-gray-900 dark:text-white tracking-light text-3xl font-black leading-tight">&lt; 8.5 μg/m³</p>
 </div>
 </div>
-<!-- FeatureSection -->
-<div class="flex flex-col gap-10 py-16 @container sm:py-24">
-<div class="flex flex-col items-center gap-6 text-center">
-<div class="flex flex-col gap-4">
-<h2 class="text-white tracking-light text-3xl font-bold leading-tight @[480px]:text-4xl @[480px]:font-black max-w-2xl">An Innovative Approach to Air Quality</h2>
-<p class="text-white/80 text-base font-normal leading-normal max-w-2xl mx-auto">AirLens combines cutting-edge technologies to provide a comprehensive platform for understanding and combating air pollution.</p>
-</div>
-<button onclick="window.location.href='research.html'" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary/20 text-primary text-base font-bold leading-normal tracking-[0.015em] transition-colors hover:bg-primary/30 w-fit">
-<span class="truncate">View Documentation</span>
-</button>
-</div>
-<div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-<div onclick="window.location.href='globe.html'" class="flex flex-1 flex-col gap-4 rounded-xl border border-white/10 bg-white/5 p-6 transition-all hover:border-primary/50 hover:bg-primary/10 cursor-pointer">
-<span class="material-symbols-outlined text-primary" style="font-size: 32px;">public</span>
+
+<!-- Features -->
+<div class="p-4">
+<h2 class="text-gray-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] mb-6">Three Ways to See Air Quality</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<a href="globe.html" class="flex flex-col gap-4 rounded-xl border border-gray-200 dark:border-white/10 bg-background-light dark:bg-black/20 p-6 transition-all hover:border-primary cursor-pointer">
+<span class="material-symbols-outlined text-primary" style="font-size: 40px;">public</span>
 <div class="flex flex-col gap-1">
-<h3 class="text-white text-lg font-bold leading-tight">Real-time 3D Visualization</h3>
-<p class="text-white/60 text-sm font-normal leading-normal">Explore a dynamic 3D globe with live data from thousands of monitoring stations worldwide.</p>
+<h3 class="text-gray-900 dark:text-white text-lg font-bold leading-tight">Interactive Globe</h3>
+<p class="text-gray-600 dark:text-gray-400 text-sm font-normal leading-normal">Explore 30,000+ monitoring stations on a stunning 3D Earth. Rotate, zoom, and discover air quality data from every corner of the planet.</p>
 </div>
-</div>
-<div onclick="window.location.href='camera.html'" class="flex flex-1 flex-col gap-4 rounded-xl border border-white/10 bg-white/5 p-6 transition-all hover:border-primary/50 hover:bg-primary/10 cursor-pointer">
-<span class="material-symbols-outlined text-primary" style="font-size: 32px;">memory</span>
+</a>
+
+<a href="camera.html" class="flex flex-col gap-4 rounded-xl border border-gray-200 dark:border-white/10 bg-background-light dark:bg-black/20 p-6 transition-all hover:border-primary cursor-pointer">
+<span class="material-symbols-outlined text-primary" style="font-size: 40px;">camera_alt</span>
 <div class="flex flex-col gap-1">
-<h3 class="text-white text-lg font-bold leading-tight">Browser-Based AI Prediction</h3>
-<p class="text-white/60 text-sm font-normal leading-normal">Use your device's camera to get instant PM2.5 predictions powered by TensorFlow.js.</p>
+<h3 class="text-gray-900 dark:text-white text-lg font-bold leading-tight">Camera AI</h3>
+<p class="text-gray-600 dark:text-gray-400 text-sm font-normal leading-normal">Upload a photo of the sky and our AI instantly predicts PM2.5 levels. Advanced computer vision meets environmental science.</p>
 </div>
-</div>
-<div onclick="window.location.href='research.html'" class="flex flex-1 flex-col gap-4 rounded-xl border border-white/10 bg-white/5 p-6 transition-all hover:border-primary/50 hover:bg-primary/10 cursor-pointer">
-<span class="material-symbols-outlined text-primary" style="font-size: 32px;">policy</span>
+</a>
+
+<a href="research.html" class="flex flex-col gap-4 rounded-xl border border-gray-200 dark:border-white/10 bg-background-light dark:bg-black/20 p-6 transition-all hover:border-primary cursor-pointer">
+<span class="material-symbols-outlined text-primary" style="font-size: 40px;">science</span>
 <div class="flex flex-col gap-1">
-<h3 class="text-white text-lg font-bold leading-tight">Accessible Policy Data</h3>
-<p class="text-white/60 text-sm font-normal leading-normal">Access and analyze a curated database of environmental policies and their impact on air quality.</p>
+<h3 class="text-gray-900 dark:text-white text-lg font-bold leading-tight">Policy Research</h3>
+<p class="text-gray-600 dark:text-gray-400 text-sm font-normal leading-normal">Comprehensive analysis of global air quality policies and their effectiveness. Data-driven insights for a cleaner future.</p>
+</div>
+</a>
 </div>
 </div>
-</div>
-</div>
+
 <!-- Technology Stack -->
-<div class="py-16 sm:py-24">
-<div class="flex flex-col items-center gap-8 text-center">
-<h2 class="text-white text-2xl font-bold leading-tight tracking-[-0.015em]">Built With Modern Technology</h2>
-<div class="flex w-full flex-wrap items-center justify-center gap-x-12 gap-y-8 text-white/60">
-<div class="flex items-center gap-2">
+<div class="p-4 py-16">
+<h2 class="text-gray-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] text-center mb-8">Built With Modern Technology</h2>
+<div class="flex w-full flex-wrap items-center justify-center gap-x-12 gap-y-6">
+<div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
 <span class="material-symbols-outlined text-xl">language</span>
-<span class="text-lg font-medium">Three.js</span>
+<span class="text-base font-medium">Three.js</span>
 </div>
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-xl">neurology</span>
-<span class="text-lg font-medium">TensorFlow.js</span>
+<div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+<span class="material-symbols-outlined text-xl">psychology</span>
+<span class="text-base font-medium">TensorFlow.js</span>
 </div>
-<div class="flex items-center gap-2">
+<div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
 <span class="material-symbols-outlined text-xl">code</span>
-<span class="text-lg font-medium">JavaScript ES6+</span>
+<span class="text-base font-medium">JavaScript ES6+</span>
 </div>
-<div class="flex items-center gap-2">
-<svg class="h-5 w-5 fill-current" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"></path></svg>
-<span class="text-lg font-medium">GitHub Pages</span>
+<div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+<span class="material-symbols-outlined text-xl">view_in_ar</span>
+<span class="text-base font-medium">Chart.js</span>
 </div>
 </div>
 </div>
+
+<!-- CTA Section -->
+<div class="p-4 text-center py-12">
+<h2 class="text-gray-900 dark:text-white text-3xl font-black leading-tight tracking-[-0.033em] mb-4">Ready to See the Air?</h2>
+<p class="text-gray-600 dark:text-gray-400 text-base font-normal leading-normal mb-8">Start exploring global air quality data in seconds.</p>
+<a href="globe.html" class="inline-flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-8 bg-primary text-[#111718] text-base font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity">
+<span class="truncate">Explore Now →</span>
+</a>
 </div>
 </main>
-<!-- Footer -->
-<footer class="w-full max-w-5xl border-t border-solid border-white/10 text-white/60">
-<div class="flex flex-col items-center justify-between gap-4 px-4 py-8 text-sm sm:flex-row sm:px-10">
-<p>© 2025 AirLens Project. All rights reserved.</p>
-<div class="flex items-center gap-4">
-<a class="hover:text-primary" href="about.html">About</a>
-<a class="hover:text-primary" href="research.html">Research</a>
-<a class="hover:text-primary" href="https://github.com/joymin5655/Finedust_proj" target="_blank">GitHub</a>
-</div>
+<footer class="text-center py-8 mt-8 border-t border-gray-200/20 dark:border-white/10">
+<p class="text-gray-600 dark:text-gray-400 text-sm">© 2025 AirLens Project. All rights reserved.</p>
+<div class="flex items-center justify-center gap-4 mt-2">
+<a class="text-sm text-primary hover:underline" href="about.html">About</a>
+<a class="text-sm text-primary hover:underline" href="research.html">Research</a>
+<a class="text-sm text-primary hover:underline" href="https://github.com/joymin5655/Finedust_proj" target="_blank">GitHub</a>
 </div>
 </footer>
+</div>
+</div>
 </div>
 </div>
 </body>

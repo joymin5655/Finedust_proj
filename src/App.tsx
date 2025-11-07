@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import type { View } from './types';
 import LandingPage from './components/LandingPage';
 import CameraView from './components/CameraView';
+import GlobeView from './components/GlobeView';
 import HistoryView from './components/HistoryView';
 import PolicyView from './components/PolicyView';
 import SettingsView from './components/SettingsView';
@@ -31,8 +32,15 @@ const App: React.FC = () => {
     setView('camera');
   };
 
+  const handleNavigateToGlobe = () => {
+    setShowLanding(false);
+    setView('globe');
+  };
+
   const renderView = () => {
     switch (view) {
+      case 'globe':
+        return <GlobeView onBack={() => setView('camera')} />;
       case 'history':
         return <HistoryView onBack={() => setView('camera')} />;
       case 'policy':
@@ -53,7 +61,12 @@ const App: React.FC = () => {
 
   // Show landing page
   if (showLanding) {
-    return <LandingPage onLaunchApp={handleLaunchApp} />;
+    return (
+      <LandingPage
+        onLaunchApp={handleLaunchApp}
+        onNavigateToGlobe={handleNavigateToGlobe}
+      />
+    );
   }
 
   // Show main app

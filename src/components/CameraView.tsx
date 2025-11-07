@@ -307,14 +307,26 @@ const CameraView: React.FC<CameraViewProps> = ({ onNavigateToHistory, onNavigate
       <header className="absolute top-0 left-0 right-0 p-6 flex justify-between items-center z-20 text-white">
         <h1 className="text-3xl font-bold tracking-tight text-shadow">AirLens</h1>
         <div className="flex items-center gap-3">
-            <button onClick={onNavigateToHistory} className="p-3 rounded-2xl bg-white/10 backdrop-blur-md hover:bg-white/20 active:scale-95 transition-all duration-200 shadow-lg" aria-label="View History">
-                <HistoryIcon className="w-6 h-6" />
+            <button
+                onClick={onNavigateToHistory}
+                className="p-3.5 rounded-2xl bg-white/15 backdrop-blur-md hover:bg-white/30 active:scale-95 transition-all duration-200 shadow-xl border border-white/20 hover:border-white/40"
+                aria-label="View History"
+            >
+                <HistoryIcon className="w-6 h-6 drop-shadow-lg" />
             </button>
-            <button onClick={onNavigateToPolicy} className="p-3 rounded-2xl bg-white/10 backdrop-blur-md hover:bg-white/20 active:scale-95 transition-all duration-200 shadow-lg" aria-label="View Policies">
-                <PolicyIcon className="w-6 h-6" />
+            <button
+                onClick={onNavigateToPolicy}
+                className="p-3.5 rounded-2xl bg-gradient-to-br from-blue-500/30 to-purple-500/30 backdrop-blur-md hover:from-blue-500/50 hover:to-purple-500/50 active:scale-95 transition-all duration-200 shadow-xl border border-white/30 hover:border-white/50"
+                aria-label="View Global Air Policies"
+            >
+                <PolicyIcon className="w-6 h-6 drop-shadow-lg" />
             </button>
-            <button onClick={onNavigateToSettings} className="group relative p-3 rounded-2xl bg-white/10 backdrop-blur-md hover:bg-white/20 active:scale-95 transition-all duration-200 shadow-lg" aria-label="Settings">
-                <SettingsIcon className="w-6 h-6 transition-transform duration-300 ease-out group-hover:rotate-90" />
+            <button
+                onClick={onNavigateToSettings}
+                className="group relative p-3.5 rounded-2xl bg-white/15 backdrop-blur-md hover:bg-white/30 active:scale-95 transition-all duration-200 shadow-xl border border-white/20 hover:border-white/40"
+                aria-label="Settings"
+            >
+                <SettingsIcon className="w-6 h-6 transition-transform duration-300 ease-out group-hover:rotate-90 drop-shadow-lg" />
             </button>
         </div>
       </header>

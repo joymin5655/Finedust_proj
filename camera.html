@@ -37,6 +37,10 @@
             'GRAD' 0,
             'opsz' 24
         }
+        .drag-over {
+            border-color: #25e2f4 !important;
+            background-color: rgba(37, 226, 244, 0.1) !important;
+        }
     </style>
 </head>
 <body class="bg-background-light dark:bg-background-dark font-display">
@@ -87,43 +91,71 @@
                                         </p>
 </div>
 <input type="file" id="file-input" accept="image/*" hidden>
-<button id="upload-button" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-gray-700/50 dark:bg-white/10 text-gray-900 dark:text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-gray-700/40 dark:hover:bg-white/20 transition-colors">
-<span class="truncate">Upload Image</span>
-</button>
 </div>
 </div>
 <div class="flex flex-col gap-4 md:col-span-2">
-<h2 class="text-gray-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em]">2. Run Prediction</h2>
-<div id="preview-container" class="rounded-xl border border-gray-200 dark:border-white/10 p-4 bg-background-light dark:bg-black/20 flex flex-col items-center justify-center min-h-[300px] gap-6">
-<div id="image-preview" class="w-full max-w-sm aspect-video bg-gray-200 dark:bg-gray-800 rounded-lg flex items-center justify-center">
-<span class="material-symbols-outlined text-5xl text-gray-400 dark:text-gray-600">image</span>
+<h2 class="text-gray-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em]">2. Image Preview</h2>
+<div id="preview-container" class="rounded-xl border border-gray-200 dark:border-white/10 p-4 bg-background-light dark:bg-black/20 flex-col items-center justify-center min-h-[300px] gap-6" style="display: none;">
+<div class="w-full max-w-sm aspect-video rounded-lg overflow-hidden flex items-center justify-center bg-gray-200 dark:bg-gray-800">
+<img id="preview-image" alt="Preview" class="w-full h-full object-cover"/>
 </div>
-<button id="predict-button" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 text-sm font-bold leading-normal tracking-[0.015em] bg-primary text-[#111718] opacity-50 cursor-not-allowed" disabled>
-<span class="truncate">Predict PM2.5</span>
+<button id="clear-btn" class="mt-4 flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 text-sm font-bold leading-normal tracking-[0.015em] bg-gray-700/50 dark:bg-white/10 text-gray-900 dark:text-white hover:bg-gray-700/40 dark:hover:bg-white/20 transition-colors">
+<span class="truncate">Clear & Upload New</span>
 </button>
 </div>
 </div>
 </div>
 <div class="p-4">
-<h2 class="text-gray-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] mb-4">3. Analysis</h2>
+<h2 class="text-gray-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] mb-4">3. Analysis Results</h2>
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-<div class="rounded-xl border border-gray-200 dark:border-white/10 p-6 bg-background-light dark:bg-black/20 flex flex-col justify-center items-center text-center">
+<div class="rounded-xl border border-gray-200 dark:border-white/10 p-6 bg-background-light dark:bg-black/20">
+<!-- Empty State -->
+<div id="empty-state" class="flex flex-col justify-center items-center text-center h-full min-h-[200px]">
+<div class="text-6xl mb-4">🤖</div>
+<p class="text-gray-900 dark:text-white font-medium">Upload an image to get started</p>
+<p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                        Our AI will analyze sky conditions and predict PM2.5 levels
+                                    </p>
+</div>
+
+<!-- Loading State -->
+<div id="loading-state" class="flex flex-col justify-center items-center text-center h-full min-h-[200px]" style="display: none;">
+<div class="loading-spinner mb-4" style="width: 50px; height: 50px; border: 4px solid rgba(37, 226, 244, 0.3); border-top: 4px solid #25e2f4; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+<p class="text-gray-900 dark:text-white font-medium">Analyzing image with AI...</p>
+</div>
+
+<!-- Results State -->
+<div id="results-state" class="flex flex-col justify-center items-center text-center" style="display: none;">
 <p class="text-sm text-gray-600 dark:text-gray-400 mb-2 font-medium">ESTIMATED PM2.5</p>
 <div class="flex items-center gap-3">
-<p id="pm25-value" class="text-6xl font-black text-gray-400 dark:text-gray-600 tracking-tighter">--.-</p>
-<p class="text-gray-400 dark:text-gray-600 text-lg self-end pb-1">µg/m³</p>
+<p id="pm25-result" class="text-6xl font-black text-primary tracking-tighter">--.-</p>
+<p class="text-gray-600 dark:text-gray-400 text-lg self-end pb-1">µg/m³</p>
 </div>
-<div id="air-quality-badge" class="mt-4 px-3 py-1 text-sm font-bold rounded-full bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400">
-                                        Waiting for prediction...
-                                    </div>
-<p id="confidence-text" class="text-sm mt-4 text-gray-500 dark:text-gray-500">Confidence: --%</p>
+<div id="air-quality" class="mt-4">
+<div class="quality-badge px-4 py-2 text-sm font-bold rounded-full bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400">--</div>
 </div>
+<p id="timestamp" class="text-sm mt-4 text-gray-500 dark:text-gray-500">--</p>
+<button id="analyze-again" class="mt-6 flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 text-sm font-bold leading-normal tracking-[0.015em] bg-primary text-[#111718] hover:opacity-90 transition-opacity">
+<span class="truncate">Analyze Another Image</span>
+</button>
+</div>
+</div>
+
 <div class="rounded-xl border border-gray-200 dark:border-white/10 p-6 bg-background-light dark:bg-black/20">
 <div class="flex items-center gap-2 mb-4">
-<h3 class="text-lg font-bold text-gray-900 dark:text-white">Model Information</h3>
+<h3 class="text-lg font-bold text-gray-900 dark:text-white">Confidence & Model Info</h3>
 </div>
 <div class="space-y-4">
 <div class="flex flex-col gap-2">
+<div class="flex justify-between items-center text-sm">
+<span class="font-medium text-gray-600 dark:text-gray-400">Camera Analysis</span>
+<span id="camera-percent" class="font-bold text-primary">--%</span>
+</div>
+<div class="h-3 w-full bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
+<div id="camera-confidence" class="h-3 rounded-full bg-primary transition-all duration-500" style="width: 0%;"></div>
+</div>
+</div>
+<div class="flex flex-col gap-2 pt-4 border-t border-gray-200 dark:border-white/10">
 <div class="flex justify-between items-center text-sm">
 <span class="font-medium text-gray-600 dark:text-gray-400">CNN-LSTM Architecture</span>
 </div>
@@ -153,6 +185,29 @@
 </div>
 </div>
 </div>
+
+<style>
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.quality-good {
+  background-color: #10b981 !important;
+  color: white !important;
+}
+
+.quality-moderate {
+  background-color: #f59e0b !important;
+  color: white !important;
+}
+
+.quality-unhealthy {
+  background-color: #ef4444 !important;
+  color: white !important;
+}
+</style>
+
 <script src="js/camera.js"></script>
 </body>
 </html>

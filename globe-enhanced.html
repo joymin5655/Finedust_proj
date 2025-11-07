@@ -15,6 +15,7 @@
     <!-- Stylesheets -->
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/globe-enhanced.css">
+    <link rel="stylesheet" href="css/settings.css">
     
     <!-- Three.js Import Map -->
     <script type="importmap">
@@ -41,10 +42,23 @@
             left: 0;
             width: 100%;
             height: 48px;
-            background: rgba(10, 25, 41, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(93, 188, 210, 0.2);
+            background: rgba(10, 25, 41, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(93, 188, 210, 0.3);
             z-index: 1000;
+        }
+
+        .navbar-logo {
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        .navbar-link {
+            color: rgba(255, 255, 255, 0.75);
+        }
+
+        .navbar-link:hover,
+        .navbar-link.active {
+            color: #5dbcd2;
         }
     </style>
 </head>
@@ -58,6 +72,13 @@
                 <li><a href="camera.html" class="navbar-link">Camera AI</a></li>
                 <li><a href="research.html" class="navbar-link">Research</a></li>
                 <li><a href="about.html" class="navbar-link">About</a></li>
+                <li><a href="settings.html" class="navbar-link">
+                    <div class="settings-icon-globe">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="droplet-icon">
+                            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+                        </svg>
+                    </div>
+                </a></li>
             </ul>
         </div>
     </nav>

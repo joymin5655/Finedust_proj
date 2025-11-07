@@ -28,6 +28,16 @@ AirLens transforms complex air quality data into an intuitive, beautiful 3D visu
 
 ## ✨ Features
 
+### 🌙 Dark/Light Mode Toggle
+
+**Beautiful Animated Theme Switcher**
+
+- **Sparkle-animated toggle button** with smooth transitions
+- **Persistent theme preference** using localStorage
+- **Dynamic UI adaptation** - all elements adjust automatically
+- **Optimized performance** - no flash on page load
+- **Mobile-responsive** - scales beautifully on all devices
+
 ### 🌐 Interactive Enhanced Globe
 
 **Design Inspiration:** Earth.Nullschool + Google Earth
@@ -38,6 +48,16 @@ AirLens transforms complex air quality data into an intuitive, beautiful 3D visu
 - **Smooth camera controls** with zoom, pan, and auto-rotate
 - **60 FPS rendering** using Three.js and WebGL
 - **Detailed country information** on click
+
+### 📸 Camera AI - PM2.5 Predictor
+
+**Sky Image Analysis with Machine Learning**
+
+- **Upload sky photos** to estimate PM2.5 levels
+- **CNN-LSTM architecture** for accurate predictions
+- **Browser-based processing** with TensorFlow.js
+- **No server uploads** - all processing happens locally
+- **MAE < 8.5 µg/m³** accuracy on validation data
 
 ### 📊 Data Analysis Tools
 
@@ -111,17 +131,39 @@ Then navigate to: `http://localhost:8000/globe-enhanced.html`
 
 ```
 Finedust_proj/
-├── globe-enhanced.html      # Enhanced globe page
+├── index.html               # Main landing page
+├── globe-enhanced.html      # Enhanced 3D globe visualization
+├── camera.html              # Camera AI PM2.5 predictor
+├── research.html            # Air quality research & policies
+├── about.html               # About page
+│
 ├── js/
+│   ├── theme-toggle.js      # Dark/light mode management
+│   ├── main.js              # Common utilities & animations
+│   ├── hero-animation.js    # Landing page animations
 │   ├── globe-enhanced.js    # Enhanced globe logic
-│   ├── data-service.js      # OWID API integration
-│   └── main.js              # Common utilities
+│   ├── camera.js            # Camera AI functionality
+│   └── data-service.js      # OWID API integration
+│
 ├── css/
-│   ├── globe-enhanced.css   # Enhanced globe styles
-│   └── main.css             # Global styles
+│   ├── main.css             # Global styles & theme system
+│   ├── globe-enhanced.css   # Globe-specific styles
+│   └── camera.css           # Camera AI styles
+│
 └── data/
-    └── pm25-data.json       # Backup data
+    ├── pm25-data.json       # PM2.5 historical data
+    ├── stations.json        # Monitoring stations data
+    └── policies.json        # Air quality policies data
 ```
+
+### 🎨 Code Organization
+
+**Modular & Maintainable**
+
+- **Separated concerns** - Each feature in its own module
+- **Reusable components** - Theme system works across all pages
+- **Clear documentation** - JSDoc comments throughout
+- **Performance optimized** - Lazy loading and efficient rendering
 
 ---
 

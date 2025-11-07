@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AirLens Globe - Interactive 3D visualization of global air quality data with real PM2.5 monitoring from Our World In Data">
+    <meta name="keywords" content="air quality, PM2.5, pollution, visualization, earth, globe, real-time">
+    <meta name="author" content="AirLens">
+    
+    <title>AirLens Globe - Real-time Global Air Quality Visualization</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌍</text></svg>">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/globe-enhanced.css">
+    
+    <!-- Three.js Import Map -->
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+    </script>
+    
+    <style>
+        /* Critical CSS for instant loading */
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+        
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 48px;
+            background: rgba(10, 25, 41, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(93, 188, 210, 0.2);
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body class="globe-body">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-logo">🌍 AirLens</a>
+            <ul class="navbar-menu">
+                <li><a href="globe.html" class="navbar-link active">Globe</a></li>
+                <li><a href="camera.html" class="navbar-link">Camera AI</a></li>
+                <li><a href="research.html" class="navbar-link">Research</a></li>
+                <li><a href="about.html" class="navbar-link">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Globe Container -->
+    <div id="globe-container">
+        <!-- 3D Canvas -->
+        <canvas id="globe-canvas"></canvas>
+        
+        <!-- Loading Screen -->
+        <div id="loading-screen">
+            <div class="loading-content">
+                <div class="loading-spinner"></div>
+                <p class="loading-text">Initializing Earth Visualization...</p>
+                <p style="font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 8px;">
+                    Loading data from Our World In Data
+                </p>
+            </div>
+        </div>
+        
+        <!-- Left Sidebar Menu (Earth.Nullschool Style) -->
+        <div id="sidebar-menu" class="sidebar">
+            <div class="sidebar-header">
+                <h2>🌍 Earth</h2>
+                <button id="sidebar-toggle" class="sidebar-toggle" title="Toggle Menu">☰</button>
+            </div>
+            
+            <div class="sidebar-content">
+                <!-- Data Layer Selection -->
+                <div class="control-section">
+                    <h3>Data Layer</h3>
+                    <select id="data-layer" class="control-select" aria-label="Data Layer">
+                        <option value="pm25">PM2.5 Concentration</option>
+                        <option value="pm10">PM10 Concentration</option>
+                        <option value="none">None</option>
+                    </select>
+                </div>
+                
+                <!-- Overlay Selection -->
+                <div class="control-section">
+                    <h3>Overlay</h3>
+                    <select id="overlay-type" class="control-select" aria-label="Overlay Type">
+                        <option value="particles">Atmospheric Particles</option>
+                        <option value="stations">Monitoring Stations</option>
+                        <option value="heatmap">Heatmap</option>
+                        <option value="none">None</option>
+                    </select>
+                </div>
+                
+                <!-- Projection -->
+                <div class="control-section">
+                    <h3>Projection</h3>
+                    <select id="projection" class="control-select" aria-label="Projection">
+                        <option value="orthographic">Orthographic (3D)</option>
+                        <option value="equirectangular">Equirectangular (Flat)</option>
+                    </select>
+                </div>
+                
+                <!-- Time Control -->
+                <div class="control-section">
+                    <h3>Time Period</h3>
+                    <div class="time-display">
+                        <div class="time-label">Current Year</div>
+                        <div class="time-value" id="current-year">2021</div>
+                    </div>
+                </div>
+                
+                <!-- Year Slider -->
+                <div class="control-section">
+                    <h3>Historical Data</h3>
+                    <input 
+                        type="range" 
+                        id="year-slider" 
+                        class="time-slider" 
+                        min="0" 
+                        max="4" 
+                        value="4" 
+                        step="1"
+                        aria-label="Year Slider"
+                    >
+                    <div style="display: flex; justify-content: space-between; font-size: 10px; color: rgba(255,255,255,0.5); margin-top: 8px;">
+                        <span>1990</span>
+                        <span>2000</span>
+                        <span>2010</span>
+                        <span>2019</span>
+                        <span>2021</span>
+                    </div>
+                </div>
+                
+                <!-- Data Source Info -->
+                <div class="control-section">
+                    <div style="background: rgba(93, 188, 210, 0.05); border: 1px solid rgba(93, 188, 210, 0.2); border-radius: 8px; padding: 12px; margin-top: 20px;">
+                        <div style="font-size: 11px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">
+                            Data Source
+                        </div>
+                        <div style="font-size: 13px; color: rgba(255,255,255,0.8);">
+                            📊 Our World In Data<br>
+                            <a href="https://ourworldindata.org" target="_blank" rel="noopener" style="color: #5dbcd2; font-size: 11px; text-decoration: none;">ourworldindata.org</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Data Panel (Analysis Tools) -->
+        <div id="data-panel" class="data-panel">
+            <div class="panel-header">
+                <h3>📊 Data Analysis</h3>
+                <button id="panel-toggle" class="panel-close" title="Close Panel">×</button>
+            </div>
+            
+            <div class="panel-content">
+                <!-- Global Statistics -->
+                <div class="stat-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">🌍</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="global-pm25">--</div>
+                            <div class="stat-label">Global Avg PM2.5</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📍</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="total-stations">--</div>
+                            <div class="stat-label">Countries</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Most Polluted Regions -->
+                <div class="data-list">
+                    <h4>🔴 Most Polluted Regions</h4>
+                    <div id="polluted-list" class="city-list">
+                        <div style="padding: 20px; text-align: center; color: rgba(255,255,255,0.5); font-size: 13px;">
+                            Loading data...
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Cleanest Regions -->
+                <div class="data-list">
+                    <h4>🟢 Cleanest Regions</h4>
+                    <div id="cleanest-list" class="city-list">
+                        <div style="padding: 20px; text-align: center; color: rgba(255,255,255,0.5); font-size: 13px;">
+                            Loading data...
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- AQI Scale Reference -->
+                <div class="data-list">
+                    <h4>📏 WHO Air Quality Guidelines</h4>
+                    <div style="background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(93, 188, 210, 0.1); border-radius: 10px; padding: 12px;">
+                        <div style="display: flex; align-items: center; margin-bottom: 8px; padding: 6px; border-radius: 4px; transition: background 0.2s;" onmouseover="this.style.background='rgba(93,188,210,0.05)'" onmouseout="this.style.background=''">
+                            <div style="width: 16px; height: 16px; background: #00e400; border-radius: 3px; margin-right: 10px; box-shadow: 0 0 8px rgba(0,228,0,0.5);"></div>
+                            <span style="font-size: 12px; color: rgba(255,255,255,0.9);">Good (0-12)</span>
+                        </div>
+                        <div style="display: flex; align-items: center; margin-bottom: 8px; padding: 6px; border-radius: 4px; transition: background 0.2s;" onmouseover="this.style.background='rgba(93,188,210,0.05)'" onmouseout="this.style.background=''">
+                            <div style="width: 16px; height: 16px; background: #ffff00; border-radius: 3px; margin-right: 10px; box-shadow: 0 0 8px rgba(255,255,0,0.5);"></div>
+                            <span style="font-size: 12px; color: rgba(255,255,255,0.9);">Moderate (12-35)</span>
+                        </div>
+                        <div style="display: flex; align-items: center; margin-bottom: 8px; padding: 6px; border-radius: 4px; transition: background 0.2s;" onmouseover="this.style.background='rgba(93,188,210,0.05)'" onmouseout="this.style.background=''">
+                            <div style="width: 16px; height: 16px; background: #ff7e00; border-radius: 3px; margin-right: 10px; box-shadow: 0 0 8px rgba(255,126,0,0.5);"></div>
+                            <span style="font-size: 12px; color: rgba(255,255,255,0.9);">Unhealthy (Sensitive) (35-55)</span>
+                        </div>
+                        <div style="display: flex; align-items: center; margin-bottom: 8px; padding: 6px; border-radius: 4px; transition: background 0.2s;" onmouseover="this.style.background='rgba(93,188,210,0.05)'" onmouseout="this.style.background=''">
+                            <div style="width: 16px; height: 16px; background: #ff0000; border-radius: 3px; margin-right: 10px; box-shadow: 0 0 8px rgba(255,0,0,0.5);"></div>
+                            <span style="font-size: 12px; color: rgba(255,255,255,0.9);">Unhealthy (55-150)</span>
+                        </div>
+                        <div style="display: flex; align-items: center; margin-bottom: 8px; padding: 6px; border-radius: 4px; transition: background 0.2s;" onmouseover="this.style.background='rgba(93,188,210,0.05)'" onmouseout="this.style.background=''">
+                            <div style="width: 16px; height: 16px; background: #8f3f97; border-radius: 3px; margin-right: 10px; box-shadow: 0 0 8px rgba(143,63,151,0.5);"></div>
+                            <span style="font-size: 12px; color: rgba(255,255,255,0.9);">Very Unhealthy (150-250)</span>
+                        </div>
+                        <div style="display: flex; align-items: center; padding: 6px; border-radius: 4px; transition: background 0.2s;" onmouseover="this.style.background='rgba(93,188,210,0.05)'" onmouseout="this.style.background=''">
+                            <div style="width: 16px; height: 16px; background: #7e0023; border-radius: 3px; margin-right: 10px; box-shadow: 0 0 8px rgba(126,0,35,0.5);"></div>
+                            <span style="font-size: 12px; color: rgba(255,255,255,0.9);">Hazardous (250+)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Info Panel (Click Details) -->
+        <div id="info-panel" class="info-panel">
+            <button id="close-info" class="close-btn" aria-label="Close">×</button>
+            <div id="info-content">
+                <!-- Populated by JavaScript on marker click -->
+            </div>
+        </div>
+        
+        <!-- Bottom Controls -->
+        <div id="bottom-controls" class="bottom-bar">
+            <button id="play-pause" class="control-btn" title="Play Timeline">▶ Play Timeline</button>
+            <div style="flex: 1; max-width: 600px; text-align: center;">
+                <div style="font-size: 11px; color: rgba(255,255,255,0.6); margin-bottom: 4px; letter-spacing: 1px;">
+                    HISTORICAL PM2.5 DATA TIMELINE
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px; font-size: 12px; color: rgba(255,255,255,0.6);">
+                <span id="fps-counter" title="Frames Per Second">60 FPS</span>
+                <span style="opacity: 0.4;">|</span>
+                <span id="marker-count" title="Active Markers">0 Markers</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="js/globe-enhanced.js"></script>
+    
+    <!-- Analytics & Console Info -->
+    <script>
+        console.log('%c🌍 AirLens Enhanced Globe', 'font-size: 20px; font-weight: bold; color: #5dbcd2;');
+        console.log('%cDesign Inspiration: Earth.Nullschool + Google Earth', 'color: #888;');
+        console.log('%cData Source: Our World In Data', 'color: #5dbcd2;');
+        console.log('%cPowered by Three.js', 'color: #888;');
+        console.log('');
+        console.log('🎨 Features:');
+        console.log('  - Real-time PM2.5 visualization');
+        console.log('  - Interactive 3D globe with smooth controls');
+        console.log('  - Atmospheric particle effects');
+        console.log('  - Historical data timeline (1990-2021)');
+        console.log('  - Click markers for detailed information');
+        console.log('');
+        console.log('📊 Data: https://ourworldindata.org');
+        console.log('🌐 Code: https://github.com/joymin5655/Finedust_proj');
+    </script>
+</body>
+</html>

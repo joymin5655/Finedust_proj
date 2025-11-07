@@ -5,15 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="AirLens - Visualizing Global Air Quality with AI and 3D Technology">
     <title>AirLens - See the Air</title>
-    
+
     <!-- Styles -->
     <link rel="stylesheet" href="css/main.css">
-    
+
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="assets/images/favicon.png">
 </head>
 <body>
-    <!-- Dark Mode Toggle -->
+    <!--
+      ==========================================
+      DARK MODE TOGGLE BUTTON
+      ==========================================
+      Beautiful animated toggle switch with sparkle effects
+      - Position: Fixed top-right corner
+      - Persists preference to localStorage
+      - Managed by: js/theme-toggle.js
+
+      To modify size/position: See css/main.css lines 562-752
+    -->
     <div class="theme-toggle-container">
         <div class="toggle-cont">
             <input class="toggle-input" id="theme-toggle" name="toggle" type="checkbox" />
@@ -51,7 +61,17 @@
         </div>
     </div>
 
-    <!-- Navigation -->
+    <!--
+      ==========================================
+      NAVIGATION BAR
+      ==========================================
+      Fixed top navigation with glassmorphism effect
+      - Adapts to dark/light mode automatically
+      - Backdrop blur for modern look
+
+      To add/remove items: Edit navbar-menu list below
+      To modify styles: See css/main.css lines 165-209
+    -->
     <nav class="navbar">
         <div class="navbar-container">
             <a href="index.html" class="navbar-logo">AirLens</a>
@@ -64,7 +84,17 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
+    <!--
+      ==========================================
+      HERO SECTION
+      ==========================================
+      Main landing area with animated canvas background
+      - Particle animations: js/hero-animation.js
+      - Gradient background adapts to theme
+
+      To modify content: Edit text and buttons below
+      To change styles: See css/main.css lines 304-344
+    -->
     <section class="hero">
         <div class="hero-content fade-in">
             <h1 class="hero-title">See the air.<br>Understand the world.</h1>
@@ -82,7 +112,17 @@
         <canvas id="hero-canvas"></canvas>
     </section>
 
-    <!-- Features Section -->
+    <!--
+      ==========================================
+      FEATURES SECTION
+      ==========================================
+      Three-column grid showcasing main features
+      - Cards have hover animations
+      - Responsive: Stacks on mobile
+
+      To add features: Copy a card div and modify content
+      To change grid: See css/main.css lines 430-448
+    -->
     <section class="section">
         <div class="container">
             <h2 class="section-title">Three ways to see air quality</h2>
@@ -117,7 +157,16 @@
         </div>
     </section>
 
-    <!-- Statistics Section -->
+    <!--
+      ==========================================
+      STATISTICS SECTION
+      ==========================================
+      Data highlights in three columns
+      - Numbers styled with primary color
+      - Background changes with theme
+
+      To update numbers: Edit stat-number divs below
+    -->
     <section class="section" style="background: var(--color-bg-secondary);">
         <div class="container">
             <h2 class="section-title">The numbers speak</h2>
@@ -141,7 +190,12 @@
         </div>
     </section>
 
-    <!-- CTA Section -->
+    <!--
+      ==========================================
+      CALL-TO-ACTION SECTION
+      ==========================================
+      Final conversion section with prominent button
+    -->
     <section class="section">
         <div class="container text-center">
             <h2 class="hero-title" style="font-size: var(--text-5xl);">Ready to see the air?</h2>
@@ -152,7 +206,13 @@
         </div>
     </section>
 
-    <!-- Footer -->
+    <!--
+      ==========================================
+      FOOTER
+      ==========================================
+      Site footer with credits and links
+      - Dark background in both themes
+    -->
     <footer style="background: var(--color-bg-dark); color: var(--color-text-dark); padding: var(--space-10) 0;">
         <div class="container text-center">
             <p style="color: var(--color-text-dark-secondary);">
@@ -166,31 +226,17 @@
         </div>
     </footer>
 
-    <!-- Scripts -->
+    <!--
+      ==========================================
+      JAVASCRIPT MODULES
+      ==========================================
+      Order matters! Load in this sequence:
+      1. theme-toggle.js - Dark/light mode (loads first for no flash)
+      2. hero-animation.js - Canvas particle animations
+      3. main.js - Fade-in animations and utilities
+    -->
+    <script src="js/theme-toggle.js"></script>
     <script src="js/hero-animation.js"></script>
     <script src="js/main.js"></script>
-    <script>
-        // Dark Mode Toggle Functionality
-        const themeToggle = document.getElementById('theme-toggle');
-        const body = document.body;
-
-        // Load saved theme from localStorage
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'dark') {
-            body.classList.add('dark-mode');
-            themeToggle.checked = true;
-        }
-
-        // Toggle dark mode on checkbox change
-        themeToggle.addEventListener('change', function() {
-            if (this.checked) {
-                body.classList.add('dark-mode');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                body.classList.remove('dark-mode');
-                localStorage.setItem('theme', 'light');
-            }
-        });
-    </script>
 </body>
 </html>

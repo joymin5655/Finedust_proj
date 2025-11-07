@@ -371,6 +371,39 @@ class AirLensGlobe {
         this.controls.reset();
       });
     }
+
+    // Panel toggle for Data Analysis
+    const panelToggle = document.getElementById('panel-toggle');
+    if (panelToggle) {
+      panelToggle.addEventListener('click', () => {
+        const panel = document.getElementById('data-panel');
+        if (panel) {
+          panel.classList.toggle('hidden');
+        }
+      });
+    }
+
+    // Sidebar toggle
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    if (sidebarToggle) {
+      sidebarToggle.addEventListener('click', () => {
+        const sidebar = document.getElementById('sidebar-menu');
+        if (sidebar) {
+          sidebar.classList.toggle('collapsed');
+        }
+      });
+    }
+
+    // Close info panel
+    const closeInfo = document.getElementById('close-info');
+    if (closeInfo) {
+      closeInfo.addEventListener('click', () => {
+        const panel = document.getElementById('info-panel');
+        if (panel) {
+          panel.style.display = 'none';
+        }
+      });
+    }
   }
 
   onResize() {

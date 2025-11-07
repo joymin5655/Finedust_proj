@@ -2,7 +2,7 @@
  * Settings Page Styles
  */
 
-/* Settings Icon in Navbar - Water Droplet */
+/* Settings Icon in Navbar - Rotating Square Loader */
 .settings-icon,
 .settings-icon-globe {
   display: flex;
@@ -10,64 +10,93 @@
   justify-content: center;
   width: 24px;
   height: 24px;
+  padding: 2px;
 }
 
-.droplet-icon {
-  width: 20px;
-  height: 20px;
-  fill: rgba(37, 226, 244, 0.4);
-  stroke: rgba(37, 226, 244, 0.6);
-  stroke-width: 1.5px;
-  filter: drop-shadow(0 0 8px rgba(37, 226, 244, 0.3));
+.loader-icon {
+  width: 18px;
+  height: 18px;
+  background: rgba(37, 226, 244, 0.5);
+  display: block;
+  position: relative;
+  box-sizing: border-box;
+  animation: rotationBack 2s ease-in-out infinite reverse;
   transition: all 0.3s ease;
 }
 
-body.dark-mode .droplet-icon {
-  fill: rgba(84, 168, 252, 0.4);
-  stroke: rgba(84, 168, 252, 0.6);
-  filter: drop-shadow(0 0 8px rgba(84, 168, 252, 0.3));
+.loader-icon::before {
+  content: '';
+  box-sizing: border-box;
+  left: 0;
+  top: 0;
+  transform: rotate(45deg);
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background: rgba(37, 226, 244, 0.3);
+  box-shadow: 0 0 5px rgba(37, 226, 244, 0.3);
+}
+
+.loader-icon::after {
+  content: '';
+  box-sizing: border-box;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  background: rgba(37, 226, 244, 0.8);
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 5px rgba(37, 226, 244, 0.4);
+}
+
+body.dark-mode .loader-icon {
+  background: rgba(84, 168, 252, 0.5);
+}
+
+body.dark-mode .loader-icon::before {
+  background: rgba(84, 168, 252, 0.3);
+  box-shadow: 0 0 5px rgba(84, 168, 252, 0.3);
+}
+
+body.dark-mode .loader-icon::after {
+  background: rgba(84, 168, 252, 0.8);
+  box-shadow: 0 0 5px rgba(84, 168, 252, 0.4);
 }
 
 /* Globe page specific styling */
-.settings-icon-globe .droplet-icon {
-  fill: rgba(93, 188, 210, 0.4);
-  stroke: rgba(93, 188, 210, 0.6);
-  filter: drop-shadow(0 0 8px rgba(93, 188, 210, 0.3));
+.settings-icon-globe .loader-icon {
+  background: rgba(93, 188, 210, 0.5);
 }
 
-.navbar-link:hover .droplet-icon {
-  fill: rgba(37, 226, 244, 0.7);
-  stroke: rgba(37, 226, 244, 1);
-  transform: scale(1.1);
-  filter: drop-shadow(0 0 12px rgba(37, 226, 244, 0.5));
+.settings-icon-globe .loader-icon::before {
+  background: rgba(93, 188, 210, 0.3);
+  box-shadow: 0 0 5px rgba(93, 188, 210, 0.3);
 }
 
-.settings-icon-globe .droplet-icon:hover {
-  fill: rgba(93, 188, 210, 0.7);
-  stroke: rgba(93, 188, 210, 1);
-  filter: drop-shadow(0 0 12px rgba(93, 188, 210, 0.5));
+.settings-icon-globe .loader-icon::after {
+  background: rgba(93, 188, 210, 0.8);
+  box-shadow: 0 0 5px rgba(93, 188, 210, 0.4);
 }
 
-body.dark-mode .navbar-link:hover .droplet-icon {
-  fill: rgba(84, 168, 252, 0.7);
-  stroke: rgba(84, 168, 252, 1);
-  filter: drop-shadow(0 0 12px rgba(84, 168, 252, 0.5));
+.settings-icon:hover .loader-icon,
+.settings-icon-globe:hover .loader-icon {
+  transform: scale(1.15);
+  filter: brightness(1.2);
 }
 
-.navbar-link-active .droplet-icon {
-  fill: rgba(37, 226, 244, 0.8);
-  stroke: rgba(37, 226, 244, 1);
-  animation: droplet-pulse 2s ease-in-out infinite;
+.settings-icon:hover .loader-icon::after,
+.settings-icon-globe:hover .loader-icon::after {
+  box-shadow: 0 0 10px rgba(37, 226, 244, 0.6);
 }
 
-@keyframes droplet-pulse {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 1;
+@keyframes rotationBack {
+  0% {
+    transform: rotate(0deg);
   }
-  50% {
-    transform: scale(1.05);
-    opacity: 0.9;
+  100% {
+    transform: rotate(-360deg);
   }
 }
 

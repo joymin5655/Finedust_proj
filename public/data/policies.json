@@ -1,0 +1,362 @@
+{
+  "updated": "2025-11-07T00:00:00Z",
+  "count": 12,
+  "policies": [
+    {
+      "id": "cn_air_2013",
+      "country": "China",
+      "countryCode": "CN",
+      "authority": "State Council",
+      "title": "Air Pollution Prevention and Control Action Plan",
+      "description": "10조 위안 규모의 대기오염 방지 계획. 석탄 사용 감축, 차량 배출 기준 강화, 산업 구조조정 포함.",
+      "effectiveDate": "2013-09-10",
+      "targetReduction": 25,
+      "targetYear": 2017,
+      "targetPM25": 35,
+      "credibility": 0.95,
+      "officialURL": "http://www.gov.cn/zhengce/content/2013-09/10/content_4561.htm",
+      "beforeData": [
+        { "year": 2010, "pm25": 89.5 },
+        { "year": 2011, "pm25": 91.2 },
+        { "year": 2012, "pm25": 88.7 },
+        { "year": 2013, "pm25": 87.1 }
+      ],
+      "afterData": [
+        { "year": 2013, "pm25": 87.1 },
+        { "year": 2014, "pm25": 78.3 },
+        { "year": 2015, "pm25": 71.5 },
+        { "year": 2016, "pm25": 65.8 },
+        { "year": 2017, "pm25": 58.2 },
+        { "year": 2018, "pm25": 51.9 }
+      ],
+      "improvement": 33.2,
+      "status": "effective"
+    },
+    {
+      "id": "kr_act_2016",
+      "country": "South Korea",
+      "countryCode": "KR",
+      "authority": "Ministry of Environment",
+      "title": "Special Act on Fine Dust",
+      "description": "초미세먼지 특별법. 고농도 미세먼지 비상저감조치, 경유차 감축, 배출시설 관리 강화.",
+      "effectiveDate": "2016-02-15",
+      "targetReduction": 30,
+      "targetYear": 2024,
+      "targetPM25": 15,
+      "credibility": 0.92,
+      "officialURL": "https://www.law.go.kr/",
+      "beforeData": [
+        { "year": 2013, "pm25": 26.8 },
+        { "year": 2014, "pm25": 25.9 },
+        { "year": 2015, "pm25": 26.5 },
+        { "year": 2016, "pm25": 26.0 }
+      ],
+      "afterData": [
+        { "year": 2016, "pm25": 26.0 },
+        { "year": 2017, "pm25": 25.1 },
+        { "year": 2018, "pm25": 23.5 },
+        { "year": 2019, "pm25": 23.8 },
+        { "year": 2020, "pm25": 20.5 },
+        { "year": 2021, "pm25": 19.2 }
+      ],
+      "improvement": 26.2,
+      "status": "effective"
+    },
+    {
+      "id": "in_ncap_2019",
+      "country": "India",
+      "countryCode": "IN",
+      "authority": "Ministry of Environment",
+      "title": "National Clean Air Programme",
+      "description": "국가 청정 대기 프로그램. 102개 도시 대상, PM2.5/PM10 20-30% 감축 목표.",
+      "effectiveDate": "2019-01-10",
+      "targetReduction": 30,
+      "targetYear": 2024,
+      "targetPM25": 40,
+      "credibility": 0.78,
+      "officialURL": "https://moef.gov.in/",
+      "beforeData": [
+        { "year": 2016, "pm25": 91.7 },
+        { "year": 2017, "pm25": 89.9 },
+        { "year": 2018, "pm25": 91.0 },
+        { "year": 2019, "pm25": 88.4 }
+      ],
+      "afterData": [
+        { "year": 2019, "pm25": 88.4 },
+        { "year": 2020, "pm25": 83.2 },
+        { "year": 2021, "pm25": 84.1 },
+        { "year": 2022, "pm25": 82.5 },
+        { "year": 2023, "pm25": 79.8 }
+      ],
+      "improvement": 9.7,
+      "status": "moderate"
+    },
+    {
+      "id": "us_caaa_1990",
+      "country": "United States",
+      "countryCode": "US",
+      "authority": "EPA",
+      "title": "Clean Air Act Amendments",
+      "description": "대기정화법 개정. 산성비, 지상 오존, 대기 독성 물질 규제 강화.",
+      "effectiveDate": "1990-11-15",
+      "targetReduction": 50,
+      "targetYear": 2000,
+      "targetPM25": 12,
+      "credibility": 0.98,
+      "officialURL": "https://www.epa.gov/clean-air-act-overview",
+      "beforeData": [
+        { "year": 1987, "pm25": 18.5 },
+        { "year": 1988, "pm25": 17.9 },
+        { "year": 1989, "pm25": 17.2 },
+        { "year": 1990, "pm25": 16.8 }
+      ],
+      "afterData": [
+        { "year": 1990, "pm25": 16.8 },
+        { "year": 1995, "pm25": 14.2 },
+        { "year": 2000, "pm25": 11.5 },
+        { "year": 2005, "pm25": 10.8 },
+        { "year": 2010, "pm25": 9.2 },
+        { "year": 2015, "pm25": 8.1 }
+      ],
+      "improvement": 51.8,
+      "status": "effective"
+    },
+    {
+      "id": "eu_aaqd_2008",
+      "country": "European Union",
+      "countryCode": "EU",
+      "authority": "European Commission",
+      "title": "Air Quality Directive",
+      "description": "대기질 지침. PM2.5 연간 한계값 25μg/m³, 회원국별 감축 목표 설정.",
+      "effectiveDate": "2008-05-21",
+      "targetReduction": 20,
+      "targetYear": 2020,
+      "targetPM25": 10,
+      "credibility": 0.94,
+      "officialURL": "https://ec.europa.eu/environment/air/quality/",
+      "beforeData": [
+        { "year": 2005, "pm25": 18.3 },
+        { "year": 2006, "pm25": 17.5 },
+        { "year": 2007, "pm25": 17.1 },
+        { "year": 2008, "pm25": 16.5 }
+      ],
+      "afterData": [
+        { "year": 2008, "pm25": 16.5 },
+        { "year": 2010, "pm25": 15.1 },
+        { "year": 2012, "pm25": 14.2 },
+        { "year": 2015, "pm25": 13.1 },
+        { "year": 2018, "pm25": 11.8 },
+        { "year": 2020, "pm25": 10.5 }
+      ],
+      "improvement": 36.4,
+      "status": "effective"
+    },
+    {
+      "id": "jp_act_1968",
+      "country": "Japan",
+      "countryCode": "JP",
+      "authority": "Ministry of Environment",
+      "title": "Air Pollution Control Act",
+      "description": "대기오염방지법. 배출기준 설정, 감시 시스템 구축, 총량 규제 도입.",
+      "effectiveDate": "1968-06-10",
+      "targetReduction": 70,
+      "targetYear": 1990,
+      "targetPM25": 15,
+      "credibility": 0.96,
+      "officialURL": "https://www.env.go.jp/",
+      "beforeData": [
+        { "year": 1965, "pm25": 45.2 },
+        { "year": 1966, "pm25": 43.8 },
+        { "year": 1967, "pm25": 42.1 },
+        { "year": 1968, "pm25": 40.5 }
+      ],
+      "afterData": [
+        { "year": 1968, "pm25": 40.5 },
+        { "year": 1975, "pm25": 28.3 },
+        { "year": 1980, "pm25": 19.7 },
+        { "year": 1985, "pm25": 14.2 },
+        { "year": 1990, "pm25": 11.8 },
+        { "year": 1995, "pm25": 10.2 }
+      ],
+      "improvement": 74.8,
+      "status": "effective"
+    },
+    {
+      "id": "uk_caaz_2019",
+      "country": "United Kingdom",
+      "countryCode": "UK",
+      "authority": "DEFRA",
+      "title": "Clean Air Zones",
+      "description": "청정 대기 구역 지정. 런던, 버밍엄 등 주요 도시에 저공해 차량 의무화.",
+      "effectiveDate": "2019-04-08",
+      "targetReduction": 40,
+      "targetYear": 2025,
+      "targetPM25": 10,
+      "credibility": 0.89,
+      "officialURL": "https://www.gov.uk/clean-air-zones",
+      "beforeData": [
+        { "year": 2016, "pm25": 13.2 },
+        { "year": 2017, "pm25": 12.8 },
+        { "year": 2018, "pm25": 12.5 },
+        { "year": 2019, "pm25": 12.1 }
+      ],
+      "afterData": [
+        { "year": 2019, "pm25": 12.1 },
+        { "year": 2020, "pm25": 10.3 },
+        { "year": 2021, "pm25": 9.8 },
+        { "year": 2022, "pm25": 9.5 },
+        { "year": 2023, "pm25": 9.1 }
+      ],
+      "improvement": 24.8,
+      "status": "effective"
+    },
+    {
+      "id": "de_diesel_2018",
+      "country": "Germany",
+      "countryCode": "DE",
+      "authority": "Federal Environment Agency",
+      "title": "Diesel Driving Bans",
+      "description": "디젤 차량 운행 제한. 주요 도시 중심부 유로5 이하 디젤 차량 진입 금지.",
+      "effectiveDate": "2018-05-31",
+      "targetReduction": 30,
+      "targetYear": 2022,
+      "targetPM25": 10,
+      "credibility": 0.91,
+      "officialURL": "https://www.umweltbundesamt.de/",
+      "beforeData": [
+        { "year": 2015, "pm25": 14.8 },
+        { "year": 2016, "pm25": 14.2 },
+        { "year": 2017, "pm25": 13.9 },
+        { "year": 2018, "pm25": 13.5 }
+      ],
+      "afterData": [
+        { "year": 2018, "pm25": 13.5 },
+        { "year": 2019, "pm25": 12.3 },
+        { "year": 2020, "pm25": 10.8 },
+        { "year": 2021, "pm25": 10.2 },
+        { "year": 2022, "pm25": 9.5 }
+      ],
+      "improvement": 29.6,
+      "status": "effective"
+    },
+    {
+      "id": "fr_crit_2017",
+      "country": "France",
+      "countryCode": "FR",
+      "authority": "Ministry of Ecological Transition",
+      "title": "Crit'Air Sticker System",
+      "description": "크리테어 스티커 제도. 차량 환경 등급 분류 및 고오염 차량 운행 제한.",
+      "effectiveDate": "2017-01-16",
+      "targetReduction": 35,
+      "targetYear": 2024,
+      "targetPM25": 10,
+      "credibility": 0.87,
+      "officialURL": "https://www.ecologie.gouv.fr/",
+      "beforeData": [
+        { "year": 2014, "pm25": 15.2 },
+        { "year": 2015, "pm25": 14.8 },
+        { "year": 2016, "pm25": 14.5 },
+        { "year": 2017, "pm25": 14.1 }
+      ],
+      "afterData": [
+        { "year": 2017, "pm25": 14.1 },
+        { "year": 2018, "pm25": 13.2 },
+        { "year": 2019, "pm25": 12.5 },
+        { "year": 2020, "pm25": 11.3 },
+        { "year": 2021, "pm25": 10.8 },
+        { "year": 2022, "pm25": 10.2 }
+      ],
+      "improvement": 27.7,
+      "status": "effective"
+    },
+    {
+      "id": "it_green_2019",
+      "country": "Italy",
+      "countryCode": "IT",
+      "authority": "Ministry of Environment",
+      "title": "Green Pass System",
+      "description": "그린 패스 시스템. 밀라노, 토리노 등 포강 유역 도시들의 차량 통행 제한.",
+      "effectiveDate": "2019-10-01",
+      "targetReduction": 25,
+      "targetYear": 2025,
+      "targetPM25": 15,
+      "credibility": 0.82,
+      "officialURL": "https://www.minambiente.it/",
+      "beforeData": [
+        { "year": 2016, "pm25": 22.5 },
+        { "year": 2017, "pm25": 21.8 },
+        { "year": 2018, "pm25": 21.2 },
+        { "year": 2019, "pm25": 20.8 }
+      ],
+      "afterData": [
+        { "year": 2019, "pm25": 20.8 },
+        { "year": 2020, "pm25": 18.5 },
+        { "year": 2021, "pm25": 18.9 },
+        { "year": 2022, "pm25": 17.8 },
+        { "year": 2023, "pm25": 17.2 }
+      ],
+      "improvement": 17.3,
+      "status": "moderate"
+    },
+    {
+      "id": "pl_apc_2018",
+      "country": "Poland",
+      "countryCode": "PL",
+      "authority": "Ministry of Climate and Environment",
+      "title": "Anti-Smog Resolution",
+      "description": "스모그 방지 결의안. 저품질 석탄 사용 금지, 오래된 난방 보일러 교체 지원.",
+      "effectiveDate": "2018-09-01",
+      "targetReduction": 40,
+      "targetYear": 2023,
+      "targetPM25": 20,
+      "credibility": 0.75,
+      "officialURL": "https://www.gov.pl/",
+      "beforeData": [
+        { "year": 2015, "pm25": 33.5 },
+        { "year": 2016, "pm25": 32.8 },
+        { "year": 2017, "pm25": 31.9 },
+        { "year": 2018, "pm25": 31.2 }
+      ],
+      "afterData": [
+        { "year": 2018, "pm25": 31.2 },
+        { "year": 2019, "pm25": 29.5 },
+        { "year": 2020, "pm25": 27.8 },
+        { "year": 2021, "pm25": 28.2 },
+        { "year": 2022, "pm25": 26.5 },
+        { "year": 2023, "pm25": 25.1 }
+      ],
+      "improvement": 19.6,
+      "status": "moderate"
+    },
+    {
+      "id": "mx_proaire_2011",
+      "country": "Mexico",
+      "countryCode": "MX",
+      "authority": "SEMARNAT",
+      "title": "ProAire Program",
+      "description": "대기질 개선 프로그램. 멕시코시티 차량 운행 제한, 산업 배출 규제.",
+      "effectiveDate": "2011-03-01",
+      "targetReduction": 30,
+      "targetYear": 2020,
+      "targetPM25": 12,
+      "credibility": 0.79,
+      "officialURL": "https://www.gob.mx/semarnat",
+      "beforeData": [
+        { "year": 2008, "pm25": 28.7 },
+        { "year": 2009, "pm25": 27.5 },
+        { "year": 2010, "pm25": 26.8 },
+        { "year": 2011, "pm25": 26.2 }
+      ],
+      "afterData": [
+        { "year": 2011, "pm25": 26.2 },
+        { "year": 2013, "pm25": 24.1 },
+        { "year": 2015, "pm25": 22.5 },
+        { "year": 2017, "pm25": 21.8 },
+        { "year": 2019, "pm25": 20.3 },
+        { "year": 2020, "pm25": 19.5 }
+      ],
+      "improvement": 25.6,
+      "status": "effective"
+    }
+  ]
+}

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AirLens - Visualizing Global Air Quality with AI and 3D Technology">
+    <title>AirLens - See the Air</title>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/main.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-logo">AirLens</a>
+            <ul class="navbar-menu">
+                <li><a href="globe.html" class="navbar-link">Globe</a></li>
+                <li><a href="camera.html" class="navbar-link">Camera AI</a></li>
+                <li><a href="research.html" class="navbar-link">Research</a></li>
+                <li><a href="about.html" class="navbar-link">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content fade-in">
+            <h1 class="hero-title">See the air.<br>Understand the world.</h1>
+            <p class="hero-subtitle">
+                Real-time air quality visualization powered by AI.<br>
+                30,000+ stations. 195 countries. One beautiful interface.
+            </p>
+            <div class="hero-cta">
+                <a href="globe.html" class="btn btn-primary">Explore Globe</a>
+                <a href="camera.html" class="btn btn-secondary">Try Camera AI</a>
+            </div>
+        </div>
+        
+        <!-- Animated background particles -->
+        <canvas id="hero-canvas"></canvas>
+    </section>
+
+    <!-- Features Section -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Three ways to see air quality</h2>
+            
+            <div class="grid grid-3">
+                <!-- Globe Feature -->                <div class="card card-glass fade-in">
+                    <div class="feature-icon">🌍</div>
+                    <h3>Interactive Globe</h3>
+                    <p>Explore 30,000+ monitoring stations on a stunning 3D Earth. 
+                       Rotate, zoom, and discover air quality data from every corner of the planet.</p>
+                    <a href="globe.html" class="btn btn-secondary">Launch Globe →</a>
+                </div>
+
+                <!-- Camera Feature -->
+                <div class="card card-glass fade-in">
+                    <div class="feature-icon">📸</div>
+                    <h3>Camera AI</h3>
+                    <p>Upload a photo of the sky and our AI instantly predicts PM2.5 levels. 
+                       Advanced computer vision meets environmental science.</p>
+                    <a href="camera.html" class="btn btn-secondary">Try It Now →</a>
+                </div>
+
+                <!-- Research Feature -->
+                <div class="card card-glass fade-in">
+                    <div class="feature-icon">📊</div>
+                    <h3>Policy Research</h3>
+                    <p>Comprehensive analysis of global air quality policies and their effectiveness. 
+                       Data-driven insights for a cleaner future.</p>
+                    <a href="research.html" class="btn btn-secondary">Read More →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section class="section" style="background: var(--color-bg-secondary);">
+        <div class="container">
+            <h2 class="section-title">The numbers speak</h2>
+            
+            <div class="grid grid-3">
+                <div class="stat-card text-center fade-in">
+                    <div class="stat-number">30,241</div>
+                    <div class="stat-label">Monitoring Stations</div>
+                </div>
+                
+                <div class="stat-card text-center fade-in">
+                    <div class="stat-number">195</div>
+                    <div class="stat-label">Countries Covered</div>
+                </div>
+                
+                <div class="stat-card text-center fade-in">
+                    <div class="stat-number">< 8.5</div>
+                    <div class="stat-label">μg/m³ RMSE Accuracy</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section">
+        <div class="container text-center">
+            <h2 class="hero-title" style="font-size: var(--text-5xl);">Ready to see the air?</h2>
+            <p class="hero-subtitle">Start exploring global air quality data in seconds.</p>
+            <a href="globe.html" class="btn btn-primary" style="font-size: var(--text-lg); padding: var(--space-4) var(--space-8);">
+                Explore Now →
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="background: var(--color-bg-dark); color: var(--color-text-dark); padding: var(--space-10) 0;">
+        <div class="container text-center">
+            <p style="color: var(--color-text-dark-secondary);">
+                © 2025 AirLens. Built with ❤️ for a cleaner planet.
+            </p>
+            <p style="color: var(--color-text-dark-secondary); font-size: var(--text-sm); margin-top: var(--space-4);">
+                <a href="https://github.com/joymin5655/Finedust_proj" style="color: var(--color-primary);" target="_blank">
+                    View on GitHub
+                </a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/hero-animation.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

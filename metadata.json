@@ -1,0 +1,8 @@
+{
+  "name": "AirLens: Global AQI Monitor",
+  "description": "An interactive web app to visualize real-time PM2.5 air quality predictions, explore monitoring stations, and learn about environmental policies worldwide, inspired by the AirLens iOS app.",
+  "requestFramePermissions": [
+    "geolocation",
+    "camera"
+  ]
+}

@@ -1,4 +1,4 @@
-export type View = 'camera' | 'globe' | 'settings' | 'history';
+export type View = 'camera' | 'globe' | 'settings' | 'history' | 'policy';
 
 export interface PredictionBreakdown {
   station: number;
@@ -33,12 +33,28 @@ export enum PolicyCategory {
 export interface Policy {
   id: string;
   country: string;
+  countryCode: string;
   authority: string;
   category: PolicyCategory;
   title: string;
   description: string;
+  effectiveDate: string;
+  targetReduction: number; // % reduction target
   officialURL: string;
-  credibility: number;
+  credibility: number; // 0-100
+}
+
+export interface PolicyEffectData {
+  month: string;
+  pm25: number;
+}
+
+export interface PolicyEffect {
+  policyId: string;
+  beforeData: PolicyEffectData[]; // 6 months before
+  afterData: PolicyEffectData[]; // 12 months after
+  improvement: number; // % improvement
+  status: 'effective' | 'moderate' | 'limited';
 }
 
 export interface HistoryRecord {

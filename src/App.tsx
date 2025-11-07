@@ -3,6 +3,7 @@ import type { View } from './types';
 import LandingPage from './components/LandingPage';
 import CameraView from './components/CameraView';
 import HistoryView from './components/HistoryView';
+import PolicyView from './components/PolicyView';
 import SettingsView from './components/SettingsView';
 import { localStorageService } from './services/localStorage';
 
@@ -34,11 +35,19 @@ const App: React.FC = () => {
     switch (view) {
       case 'history':
         return <HistoryView onBack={() => setView('camera')} />;
+      case 'policy':
+        return <PolicyView onBack={() => setView('camera')} />;
       case 'settings':
         return <SettingsView onBack={() => setView('camera')} darkMode={darkMode} setDarkMode={setDarkMode} />;
       case 'camera':
       default:
-        return <CameraView onNavigateToHistory={() => setView('history')} onNavigateToSettings={() => setView('settings')} />;
+        return (
+          <CameraView
+            onNavigateToHistory={() => setView('history')}
+            onNavigateToPolicy={() => setView('policy')}
+            onNavigateToSettings={() => setView('settings')}
+          />
+        );
     }
   };
 

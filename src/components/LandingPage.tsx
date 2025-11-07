@@ -1,9 +1,9 @@
-import React from 'react';
-import { CameraIcon, HistoryIcon, CloudSyncIcon, SignalTowerIcon, MapPinIcon } from './Icons';
+import React, { useState } from 'react';
+import { CameraIcon, HistoryIcon, CloudSyncIcon, SignalTowerIcon, MapPinIcon, SettingsIcon, PolicyIcon, GlobeIcon } from './Icons';
+import type { View } from '../types';
 
 interface LandingPageProps {
-  onLaunchApp: () => void;
-  onNavigateToGlobe: () => void;
+  onNavigateTo: (view: View) => void;
 }
 
 const FeatureCard: React.FC<{
@@ -41,11 +41,120 @@ const TechBadge: React.FC<{ tech: string }> = ({ tech }) => (
   </div>
 );
 
-const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp, onNavigateToGlobe }) => {
+const LandingPage: React.FC<LandingPageProps> = ({ onNavigateTo }) => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
     <div className="w-full min-h-screen bg-gradient-to-b from-gray-900 via-purple-900/20 to-gray-900 text-white overflow-x-hidden">
+      {/* Navigation Header */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-gray-900/80 backdrop-blur-xl border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            {/* Logo */}
+            <div className="flex items-center">
+              <h1 className="text-xl font-bold">AirLens</h1>
+            </div>
+
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center gap-6">
+              <button
+                onClick={() => onNavigateTo('globe')}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-white/10 transition-colors"
+              >
+                <GlobeIcon className="w-5 h-5" />
+                <span>3D Globe</span>
+              </button>
+              <button
+                onClick={() => onNavigateTo('camera')}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-white/10 transition-colors"
+              >
+                <CameraIcon className="w-5 h-5" />
+                <span>Camera AI</span>
+              </button>
+              <button
+                onClick={() => onNavigateTo('history')}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-white/10 transition-colors"
+              >
+                <HistoryIcon className="w-5 h-5" />
+                <span>History</span>
+              </button>
+              <button
+                onClick={() => onNavigateTo('policy')}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-white/10 transition-colors"
+              >
+                <PolicyIcon className="w-5 h-5" />
+                <span>Policy</span>
+              </button>
+              <button
+                onClick={() => onNavigateTo('settings')}
+                className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+                aria-label="Settings"
+              >
+                <SettingsIcon className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2 rounded-lg hover:bg-white/10"
+              aria-label="Toggle menu"
+            >
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                {mobileMenuOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
+          </div>
+
+          {/* Mobile Menu */}
+          {mobileMenuOpen && (
+            <div className="md:hidden pb-4 space-y-2">
+              <button
+                onClick={() => { onNavigateTo('globe'); setMobileMenuOpen(false); }}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors"
+              >
+                <GlobeIcon className="w-5 h-5" />
+                <span>3D Globe</span>
+              </button>
+              <button
+                onClick={() => { onNavigateTo('camera'); setMobileMenuOpen(false); }}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors"
+              >
+                <CameraIcon className="w-5 h-5" />
+                <span>Camera AI</span>
+              </button>
+              <button
+                onClick={() => { onNavigateTo('history'); setMobileMenuOpen(false); }}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors"
+              >
+                <HistoryIcon className="w-5 h-5" />
+                <span>History</span>
+              </button>
+              <button
+                onClick={() => { onNavigateTo('policy'); setMobileMenuOpen(false); }}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors"
+              >
+                <PolicyIcon className="w-5 h-5" />
+                <span>Policy</span>
+              </button>
+              <button
+                onClick={() => { onNavigateTo('settings'); setMobileMenuOpen(false); }}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors"
+              >
+                <SettingsIcon className="w-5 h-5" />
+                <span>Settings</span>
+              </button>
+            </div>
+          )}
+        </div>
+      </nav>
+
       {/* Hero Section */}
-      <div className="relative min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+      <div className="relative min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-12 md:py-20 pt-24">
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute top-20 left-1/4 w-64 h-64 md:w-96 md:h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse"></div>
           <div className="absolute bottom-20 right-1/4 w-64 h-64 md:w-96 md:h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
@@ -72,17 +181,17 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp, onNavigateToGlob
 
           <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center animate-fade-in px-4" style={{ animationDelay: '0.4s' }}>
             <button
-              onClick={onLaunchApp}
+              onClick={() => onNavigateTo('camera')}
               className="w-full sm:w-auto px-8 md:px-10 py-4 md:py-5 rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold text-base md:text-lg shadow-2xl hover:shadow-blue-500/50 hover:scale-[1.05] active:scale-[0.98] transition-all duration-200"
             >
-              Launch App
+              Launch Camera AI
             </button>
-            <a
-              href="#features"
-              className="w-full sm:w-auto px-8 md:px-10 py-4 md:py-5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-white font-semibold text-base md:text-lg hover:bg-white/20 hover:scale-[1.05] active:scale-[0.98] transition-all duration-200"
+            <button
+              onClick={() => onNavigateTo('globe')}
+              className="w-full sm:w-auto px-8 md:px-10 py-4 md:py-5 rounded-2xl bg-gradient-to-r from-purple-500 to-purple-600 text-white font-semibold text-base md:text-lg shadow-2xl hover:shadow-purple-500/50 hover:scale-[1.05] active:scale-[0.98] transition-all duration-200"
             >
-              Learn More
-            </a>
+              View 3D Globe
+            </button>
           </div>
 
           {/* Stats Grid - Responsive */}
@@ -143,7 +252,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp, onNavigateToGlob
                 </li>
               </ul>
               <button
-                onClick={onNavigateToGlobe}
+                onClick={() => onNavigateTo('globe')}
                 className="w-full px-6 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold hover:from-blue-600 hover:to-blue-700 active:scale-95 transition-all duration-200 shadow-lg hover:shadow-blue-500/50"
               >
                 View 3D Globe →
@@ -161,7 +270,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp, onNavigateToGlob
                 Live Photo 3초 촬영으로 15프레임 특징을 추출하고, CNN-LSTM CoreML 모델로
                 온디바이스 추론하여 삼중 검증된 PM2.5 값을 제공합니다.
               </p>
-              <ul className="space-y-3 text-sm md:text-base text-gray-300">
+              <ul className="space-y-3 text-sm md:text-base text-gray-300 mb-6">
                 <li className="flex items-start gap-2">
                   <span className="text-purple-400 mt-1">✓</span>
                   <span><strong>Live Photo 캡처</strong> 3초 30프레임 품질 스코어링</span>
@@ -179,6 +288,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp, onNavigateToGlob
                   <span><strong>베이지안 가중</strong> 불확실도 및 신뢰도 산출</span>
                 </li>
               </ul>
+              <button
+                onClick={() => onNavigateTo('camera')}
+                className="w-full px-6 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-purple-600 text-white font-semibold hover:from-purple-600 hover:to-purple-700 active:scale-95 transition-all duration-200 shadow-lg hover:shadow-purple-500/50"
+              >
+                Launch Camera AI →
+              </button>
             </div>
           </div>
         </div>
@@ -476,21 +591,71 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp, onNavigateToGlob
         </div>
       </div>
 
-      {/* CTA Section */}
+      {/* CTA Section with Quick Access */}
       <div className="py-12 md:py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-5xl mx-auto text-center">
-          <div className="p-8 md:p-12 rounded-3xl bg-gradient-to-r from-blue-600 to-purple-600 shadow-2xl">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 md:mb-6">대기질 측정을 시작하세요</h2>
-            <p className="text-base md:text-xl text-white/90 mb-6 md:mb-8 max-w-2xl mx-auto px-4">
-              삼중 검증 시스템과 온디바이스 AI로 가장 정확한 대기질 정보를 제공합니다.
-              <br className="hidden sm:block" />
-              지금 바로 시작하세요. 가입이나 로그인이 필요하지 않습니다.
-            </p>
+        <div className="max-w-6xl mx-auto">
+          {/* Main CTA */}
+          <div className="text-center mb-12">
+            <div className="p-8 md:p-12 rounded-3xl bg-gradient-to-r from-blue-600 to-purple-600 shadow-2xl">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 md:mb-6">대기질 측정을 시작하세요</h2>
+              <p className="text-base md:text-xl text-white/90 mb-6 md:mb-8 max-w-2xl mx-auto px-4">
+                삼중 검증 시스템과 온디바이스 AI로 가장 정확한 대기질 정보를 제공합니다.
+                <br className="hidden sm:block" />
+                지금 바로 시작하세요. 가입이나 로그인이 필요하지 않습니다.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <button
+                  onClick={() => onNavigateTo('camera')}
+                  className="w-full sm:w-auto px-10 md:px-12 py-5 md:py-6 rounded-2xl bg-white text-blue-600 font-bold text-base md:text-lg shadow-xl hover:shadow-2xl hover:scale-[1.05] active:scale-[0.98] transition-all duration-200"
+                >
+                  Launch Camera AI
+                </button>
+                <button
+                  onClick={() => onNavigateTo('globe')}
+                  className="w-full sm:w-auto px-10 md:px-12 py-5 md:py-6 rounded-2xl bg-white/10 backdrop-blur-md border-2 border-white text-white font-bold text-base md:text-lg hover:bg-white/20 hover:scale-[1.05] active:scale-[0.98] transition-all duration-200"
+                >
+                  Explore Globe
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Access Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <button
-              onClick={onLaunchApp}
-              className="w-full sm:w-auto px-10 md:px-12 py-5 md:py-6 rounded-2xl bg-white text-blue-600 font-bold text-base md:text-lg shadow-xl hover:shadow-2xl hover:scale-[1.05] active:scale-[0.98] transition-all duration-200"
+              onClick={() => onNavigateTo('camera')}
+              className="p-6 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 hover:border-white/30 hover:bg-white/10 transition-all duration-200 group"
             >
-              Launch AirLens Now
+              <CameraIcon className="w-8 h-8 mx-auto mb-3 text-purple-400 group-hover:scale-110 transition-transform" />
+              <div className="text-sm font-semibold text-white">Camera AI</div>
+              <div className="text-xs text-gray-400 mt-1">PM2.5 Prediction</div>
+            </button>
+
+            <button
+              onClick={() => onNavigateTo('globe')}
+              className="p-6 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 hover:border-white/30 hover:bg-white/10 transition-all duration-200 group"
+            >
+              <GlobeIcon className="w-8 h-8 mx-auto mb-3 text-blue-400 group-hover:scale-110 transition-transform" />
+              <div className="text-sm font-semibold text-white">3D Globe</div>
+              <div className="text-xs text-gray-400 mt-1">30k+ Stations</div>
+            </button>
+
+            <button
+              onClick={() => onNavigateTo('history')}
+              className="p-6 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 hover:border-white/30 hover:bg-white/10 transition-all duration-200 group"
+            >
+              <HistoryIcon className="w-8 h-8 mx-auto mb-3 text-green-400 group-hover:scale-110 transition-transform" />
+              <div className="text-sm font-semibold text-white">History</div>
+              <div className="text-xs text-gray-400 mt-1">View Records</div>
+            </button>
+
+            <button
+              onClick={() => onNavigateTo('policy')}
+              className="p-6 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 hover:border-white/30 hover:bg-white/10 transition-all duration-200 group"
+            >
+              <PolicyIcon className="w-8 h-8 mx-auto mb-3 text-orange-400 group-hover:scale-110 transition-transform" />
+              <div className="text-sm font-semibold text-white">Policies</div>
+              <div className="text-xs text-gray-400 mt-1">156 Countries</div>
             </button>
           </div>
         </div>

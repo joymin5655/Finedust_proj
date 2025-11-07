@@ -3,6 +3,7 @@ import { CameraIcon, HistoryIcon, CloudSyncIcon, SignalTowerIcon, MapPinIcon } f
 
 interface LandingPageProps {
   onLaunchApp: () => void;
+  onNavigateToGlobe: () => void;
 }
 
 const FeatureCard: React.FC<{
@@ -40,7 +41,7 @@ const TechBadge: React.FC<{ tech: string }> = ({ tech }) => (
   </div>
 );
 
-const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
+const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp, onNavigateToGlobe }) => {
   return (
     <div className="w-full min-h-screen bg-gradient-to-b from-gray-900 via-purple-900/20 to-gray-900 text-white overflow-x-hidden">
       {/* Hero Section */}
@@ -123,7 +124,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                 SceneKit/Metal 기반 60 FPS 지구본에서 30,000개 이상의 측정소를 실시간으로 탐색하고,
                 대기흐름 파티클과 국가별 정책을 시각화합니다.
               </p>
-              <ul className="space-y-3 text-sm md:text-base text-gray-300">
+              <ul className="space-y-3 text-sm md:text-base text-gray-300 mb-6">
                 <li className="flex items-start gap-2">
                   <span className="text-blue-400 mt-1">✓</span>
                   <span><strong>30k+ 측정소</strong> 실시간 색상 마커 표시</span>
@@ -141,6 +142,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                   <span><strong>LOD 최적화</strong> 60 FPS 유지 보장</span>
                 </li>
               </ul>
+              <button
+                onClick={onNavigateToGlobe}
+                className="w-full px-6 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold hover:from-blue-600 hover:to-blue-700 active:scale-95 transition-all duration-200 shadow-lg hover:shadow-blue-500/50"
+              >
+                View 3D Globe →
+              </button>
             </div>
 
             {/* Camera Module */}

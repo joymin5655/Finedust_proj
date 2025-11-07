@@ -152,7 +152,7 @@ class AirLensGlobe {
   async loadOWIDData() {
     try {
       // Load Our World in Data PM2.5 concentration data
-      const pm25Response = await fetch('../data/pm25-concentration.json');
+      const pm25Response = await fetch('data/pm25-data.json');
       const pm25Data = await pm25Response.json();
 
       // Process and store PM2.5 data
@@ -163,8 +163,11 @@ class AirLensGlobe {
       this.createPM25Markers();
       this.updateVisualization();
       this.updateStats();
+
+      console.log('✅ Loaded PM2.5 data for', this.pm25Data.size, 'countries');
     } catch (error) {
       console.error('Failed to load Our World in Data:', error);
+      console.log('📦 Using fallback sample data');
       // Fallback to sample data
       this.createSampleData();
     }

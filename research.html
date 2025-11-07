@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research - AirLens</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-logo">AirLens</a>
+            <ul class="navbar-menu">
+                <li><a href="globe.html" class="navbar-link">Globe</a></li>
+                <li><a href="camera.html" class="navbar-link">Camera AI</a></li>
+                <li><a href="research.html" class="navbar-link" style="color: var(--color-primary);">Research</a></li>
+                <li><a href="about.html" class="navbar-link">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="section" style="padding-top: calc(48px + var(--space-12));">
+        <div class="container">
+            <div class="text-center fade-in" style="max-width: 800px; margin: 0 auto var(--space-12);">
+                <h1>Research & Methodology</h1>
+                <p class="hero-subtitle">Data-driven approach to global air quality monitoring</p>
+            </div>
+            
+            <div class="grid grid-2">
+                <div class="card fade-in">
+                    <h3>Problem Statement</h3>
+                    <p>Air pollution affects billions globally, yet real-time monitoring remains inaccessible to many. 
+                       Traditional stations are sparse, and satellite data requires expertise to interpret.</p>
+                    <p>AirLens bridges this gap by combining three data sources: ground stations, 
+                       camera-based AI prediction, and satellite imagery.</p>
+                </div>
+                
+                <div class="card fade-in">
+                    <h3>Triple Verification System</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: var(--space-3);">🌐 <strong>Tier 1:</strong> Ground Stations (30,000+ WAQI)</li>
+                        <li style="margin-bottom: var(--space-3);">📸 <strong>Tier 2:</strong> Camera AI (CNN-LSTM model)</li>
+                        <li style="margin-bottom: var(--space-3);">🛰️ <strong>Tier 3:</strong> Satellite AOD (Sentinel-5P)</li>
+                    </ul>
+                    <p style="margin-top: var(--space-4);">Bayesian fusion provides final prediction with confidence intervals.</p>
+                </div>
+                
+                <div class="card fade-in">
+                    <h3>Key Metrics</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: var(--space-3);">
+                            <strong>RMSE:</strong> < 8.5 μg/m³ (vs. ground truth)
+                        </li>
+                        <li style="margin-bottom: var(--space-3);">
+                            <strong>Inference Time:</strong> < 2 seconds (on-device)
+                        </li>
+                        <li style="margin-bottom: var(--space-3);">
+                            <strong>Coverage:</strong> 195 countries, 30,241 stations
+                        </li>
+                        <li style="margin-bottom: var(--space-3);">
+                            <strong>Update Frequency:</strong> Real-time (stations), Daily (satellite)
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="card fade-in">
+                    <h3>Data Sources</h3>
+                    <ul style="padding-left: var(--space-6);">
+                        <li><a href="https://aqicn.org" target="_blank">WAQI (World Air Quality Index)</a></li>
+                        <li><a href="https://sentinel.esa.int" target="_blank">Copernicus Sentinel-5P</a></li>
+                        <li><a href="https://www.epa.gov" target="_blank">US EPA AirNow</a></li>
+                        <li><a href="https://www.airkorea.or.kr" target="_blank">AirKorea (South Korea)</a></li>
+                        <li><a href="https://www.eea.europa.eu" target="_blank">European Environment Agency</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="card fade-in mt-8" style="background: var(--color-bg-secondary); max-width: 800px; margin: var(--space-10) auto 0;">
+                <h3 class="text-center">Technology Stack</h3>
+                <div class="grid grid-3 mt-6">
+                    <div class="text-center">
+                        <h4>Frontend</h4>
+                        <p style="font-size: var(--text-sm);">HTML5, CSS3, JavaScript ES6+</p>
+                    </div>
+                    <div class="text-center">
+                        <h4>3D Graphics</h4>
+                        <p style="font-size: var(--text-sm);">Three.js, WebGL</p>
+                    </div>
+                    <div class="text-center">
+                        <h4>AI/ML</h4>
+                        <p style="font-size: var(--text-sm);">TensorFlow.js, Python</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer style="background: var(--color-bg-dark); color: var(--color-text-dark); padding: var(--space-10) 0; margin-top: var(--space-12);">
+        <div class="container text-center">
+            <p style="color: var(--color-text-dark-secondary);">© 2025 AirLens. Built with ❤️ for a cleaner planet.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

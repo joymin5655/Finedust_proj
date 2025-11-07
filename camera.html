@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera AI - AirLens</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/camera.css">
+    
+    <!-- TensorFlow.js from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-logo">AirLens</a>
+            <ul class="navbar-menu">
+                <li><a href="globe.html" class="navbar-link">Globe</a></li>
+                <li><a href="camera.html" class="navbar-link" style="color: var(--color-primary);">Camera AI</a></li>
+                <li><a href="research.html" class="navbar-link">Research</a></li>
+                <li><a href="about.html" class="navbar-link">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Camera Section -->
+    <section class="camera-section">
+        <div class="container">
+            <div class="camera-header text-center fade-in">
+                <h1>Camera AI Prediction</h1>
+                <p class="hero-subtitle">Upload a photo of the sky. Our AI will predict PM2.5 levels instantly.</p>
+            </div>
+            
+            <div class="camera-grid">
+                <!-- Upload Area -->
+                <div class="camera-upload card card-glass fade-in">
+                    <div id="drop-zone" class="drop-zone">
+                        <div class="drop-zone-content">
+                            <div class="upload-icon">📤</div>
+                            <h3>Drop your sky photo here</h3>
+                            <p>or click to browse</p>
+                            <input type="file" id="file-input" accept="image/*" hidden>
+                        </div>
+                    </div>
+                    
+                    <!-- Image Preview -->
+                    <div id="preview-container" class="preview-container" style="display: none;">
+                        <img id="preview-image" alt="Preview">
+                        <button id="clear-btn" class="btn btn-secondary mt-4">Clear & Upload New</button>
+                    </div>
+                </div>
+                
+                <!-- Results Area -->
+                <div class="camera-results card card-glass fade-in">
+                    <h3>Prediction Results</h3>
+                    
+                    <!-- Loading State -->
+                    <div id="loading-state" style="display: none;" class="text-center">
+                        <div class="loading-spinner" style="margin: var(--space-8) auto;"></div>
+                        <p>Analyzing image with AI...</p>
+                    </div>
+                    
+                    <!-- Empty State -->
+                    <div id="empty-state" class="empty-state">
+                        <div class="empty-icon">🤖</div>
+                        <p>Upload an image to get started</p>
+                        <p style="font-size: var(--text-sm); color: var(--color-text-secondary);">
+                            Our AI will analyze sky conditions and predict PM2.5 levels
+                        </p>
+                    </div>
+                    
+                    <!-- Results State -->
+                    <div id="results-state" style="display: none;">
+                        <div class="result-main">
+                            <div class="result-value" id="pm25-result">--</div>
+                            <div class="result-unit">μg/m³ PM2.5</div>
+                        </div>
+                        
+                        <div class="result-quality" id="air-quality">
+                            <div class="quality-badge">--</div>
+                        </div>
+                        
+                        <div class="result-breakdown">
+                            <h4>Confidence Breakdown</h4>
+                            <div class="breakdown-item">
+                                <span>Camera Analysis</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="camera-confidence"></div>
+                                </div>
+                                <span id="camera-percent">--</span>
+                            </div>
+                            
+                            <div class="result-timestamp">
+                                <small>Analyzed: <span id="timestamp">--</span></small>
+                            </div>
+                        </div>
+                        
+                        <button id="analyze-again" class="btn btn-primary" style="width: 100%; margin-top: var(--space-6);">
+                            Analyze Another Image
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scripts -->
+    <script src="js/camera.js"></script>
+</body>
+</html>

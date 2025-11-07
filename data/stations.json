@@ -1,0 +1,61 @@
+{
+  "updated": "2025-11-07T00:00:00Z",
+  "count": 10,
+  "stations": [
+    {
+      "id": "waqi_seoul",
+      "name": "Seoul Station",
+      "lat": 37.5665,
+      "lon": 126.9780,
+      "country": "South Korea",
+      "pm25": 28.5,
+      "pm10": 45.2,
+      "aqi": 85,
+      "updated": "2025-11-07T09:00:00Z"
+    },
+    {
+      "id": "waqi_beijing",
+      "name": "Beijing Center",
+      "lat": 39.9042,
+      "lon": 116.4074,
+      "country": "China",
+      "pm25": 85.3,
+      "pm10": 120.1,
+      "aqi": 165,
+      "updated": "2025-11-07T09:00:00Z"
+    },
+    {
+      "id": "waqi_tokyo",
+      "name": "Tokyo Shibuya",
+      "lat": 35.6762,
+      "lon": 139.6503,
+      "country": "Japan",
+      "pm25": 18.7,
+      "pm10": 32.4,
+      "aqi": 68,
+      "updated": "2025-11-07T09:00:00Z"
+    },
+    {
+      "id": "waqi_london",
+      "name": "London Westminster",
+      "lat": 51.5074,
+      "lon": -0.1278,
+      "country": "United Kingdom",
+      "pm25": 22.1,
+      "pm10": 38.5,
+      "aqi": 74,
+      "updated": "2025-11-07T09:00:00Z"
+    },
+    {
+      "id": "waqi_newyork",
+      "name": "New York Manhattan",
+      "lat": 40.7128,
+      "lon": -74.0060,
+      "country": "USA",
+      "pm25": 15.3,
+      "pm10": 28.7,
+      "aqi": 58,
+      "updated": "2025-11-07T09:00:00Z"
+    }
+  ]
+}

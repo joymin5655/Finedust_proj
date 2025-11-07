@@ -90,13 +90,13 @@ class ThemeToggle {
       if (currentScroll <= 0) {
         this.navbar.style.background = 'rgba(16, 33, 34, 0.72)';
       } else {
-        this.navbar.style.background = 'rgba(16, 33, 34, 0.9)';
+        this.navbar.style.background = 'rgba(16, 33, 34, 0.85)';
       }
     } else {
       if (currentScroll <= 0) {
         this.navbar.style.background = 'rgba(255, 255, 255, 0.72)';
       } else {
-        this.navbar.style.background = 'rgba(255, 255, 255, 0.9)';
+        this.navbar.style.background = 'rgba(255, 255, 255, 0.82)';
       }
     }
   }

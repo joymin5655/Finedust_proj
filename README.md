@@ -1,46 +1,84 @@
 # 🌍 AirLens - See the Air
 
-> **Real-time air quality visualization powered by AI**  
-> 30,000+ stations • 195 countries • One beautiful interface
+> **Interactive global air quality visualization powered by real data**  
+> Real-time PM2.5 monitoring • Historical trends • Advanced 3D visualization
 
 [![Deploy](https://github.com/joymin5655/Finedust_proj/actions/workflows/deploy.yml/badge.svg)](https://github.com/joymin5655/Finedust_proj/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Data Source](https://img.shields.io/badge/Data-Our_World_In_Data-blue)](https://ourworldindata.org)
 
 **Live Demo:** [https://joymin5655.github.io/Finedust_proj](https://joymin5655.github.io/Finedust_proj)
 
 ---
 
+## 🎯 What is AirLens?
+
+AirLens transforms complex air quality data into an intuitive, beautiful 3D visualization. Explore global PM2.5 levels from 1990 to present day, understand pollution trends, and discover how air quality varies across different regions - all on an interactive Earth globe.
+
+### 🌟 Key Highlights
+
+- **🌍 Enhanced 3D Globe**: Earth.Nullschool-inspired design with smooth interactions
+- **📊 Real Data**: Powered by Our World In Data - trusted, verified sources
+- **📈 Historical Timeline**: Track PM2.5 trends from 1990 to 2021
+- **🎨 Beautiful Visualization**: Atmospheric particles, color-coded markers, real-time rendering
+- **🔍 Deep Analysis**: Click any country to see detailed air quality information
+- **📱 Fully Responsive**: Works seamlessly on desktop, tablet, and mobile
+
+---
+
 ## ✨ Features
 
-### 🌐 Interactive 3D Globe
-- Explore 30,000+ monitoring stations on a stunning 3D Earth
-- Real-time air quality data from around the world
-- Smooth 60 FPS rendering with Three.js
-- Click markers to view detailed station information
+### 🌐 Interactive Enhanced Globe
 
-### 📸 Camera AI Prediction
-- Upload a photo of the sky
-- AI instantly predicts PM2.5 levels
-- Browser-based inference with TensorFlow.js
-- No server required - complete privacy
+**Design Inspiration:** Earth.Nullschool + Google Earth
 
-### 📊 Policy Research
-- Comprehensive global air quality policies
-- 195 countries covered
-- Credibility-scored data sources
-- Actionable insights for cleaner air
+- **Realistic 3D Earth** with atmospheric glow and dynamic lighting
+- **Color-coded PM2.5 markers** for 100+ countries
+- **Atmospheric particle effects** simulating air currents
+- **Smooth camera controls** with zoom, pan, and auto-rotate
+- **60 FPS rendering** using Three.js and WebGL
+- **Detailed country information** on click
+
+### 📊 Data Analysis Tools
+
+- **Global Statistics Dashboard**
+  - Average PM2.5 levels worldwide
+  - Most/least polluted regions
+  - Historical trends visualization
+
+- **Historical Timeline**
+  - Explore data from 1990 to 2021
+  - Animated timeline playback
+  - Year-by-year comparison
+
+- **WHO Air Quality Guidelines**
+  - Color-coded AQI scale
+  - Health impact descriptions
+  - Interactive legend
+
+---
+
+## 📊 Data Sources
+
+### Our World In Data
+Primary data source for PM2.5 concentrations and historical trends.
+
+**APIs Used:**
+- **PM2.5 Concentrations:** `https://ourworldindata.org/grapher/pm25-air-pollution.csv`
+- **Long-run Air Pollution:** `https://ourworldindata.org/grapher/long-run-air-pollution.csv`
+
+**Coverage:**
+- 100+ countries
+- Historical data from 1990-2021
+- Regularly updated with latest research
 
 ---
 
 ## 🚀 Quick Start
 
 ### View Live
-Simply visit: **[https://joymin5655.github.io/Finedust_proj](https://joymin5655.github.io/Finedust_proj)**
 
-No installation required! Works on:
-- ✅ Desktop browsers (Chrome, Firefox, Safari, Edge)
-- ✅ Mobile browsers (iOS Safari, Chrome Android)
-- ✅ Tablets and any device with WebGL support
+Visit: **[https://joymin5655.github.io/Finedust_proj](https://joymin5655.github.io/Finedust_proj)**
 
 ### Run Locally
 
@@ -49,19 +87,23 @@ No installation required! Works on:
 git clone https://github.com/joymin5655/Finedust_proj.git
 cd Finedust_proj
 
-# Serve with any static server
-# Option 1: Python
+# Serve with any HTTP server
 python -m http.server 8000
 
-# Option 2: Node.js
-npx serve
-
-# Option 3: VS Code Live Server extension
-# Just open index.html and click "Go Live"
-
-# Open browser
-open http://localhost:8000
+# Or use Node.js
+npx http-server -p 8000
 ```
+
+Then navigate to: `http://localhost:8000/globe-enhanced.html`
+
+---
+
+## 🛠️ Technology Stack
+
+- **Three.js** - 3D graphics and WebGL rendering
+- **Vanilla JavaScript** - Fast and efficient
+- **CSS3** - Modern styling with glassmorphism
+- **Our World In Data API** - Verified global data
 
 ---
 
@@ -69,158 +111,42 @@ open http://localhost:8000
 
 ```
 Finedust_proj/
-├── index.html              # Landing page
-├── globe.html              # 3D globe viewer
-├── camera.html             # Camera AI prediction
-├── research.html           # Research documentation
-├── about.html              # About page
-│
-├── css/
-│   ├── main.css            # Core styles (Steve Jobs inspired)
-│   ├── globe.css           # Globe-specific styles
-│   └── camera.css          # Camera page styles
-│
+├── globe-enhanced.html      # Enhanced globe page
 ├── js/
-│   ├── main.js             # Main interactions
-│   ├── hero-animation.js   # Landing page animation
-│   ├── globe.js            # 3D globe logic (Three.js)
-│   └── camera.js           # Camera AI logic (TensorFlow.js)
-│
-├── data/
-│   ├── stations.json       # Air quality stations data
-│   └── policies.json       # Policy database
-│
-└── .github/workflows/
-    └── deploy.yml          # GitHub Pages deployment
+│   ├── globe-enhanced.js    # Enhanced globe logic
+│   ├── data-service.js      # OWID API integration
+│   └── main.js              # Common utilities
+├── css/
+│   ├── globe-enhanced.css   # Enhanced globe styles
+│   └── main.css             # Global styles
+└── data/
+    └── pm25-data.json       # Backup data
 ```
-
----
-
-## 🎨 Design Philosophy
-
-Inspired by Steve Jobs' principle: **"Simplicity is the ultimate sophistication"**
-
-- ✨ Minimal, elegant interface
-- 🎯 Clear hierarchy and purpose
-- 💧 Water droplet aesthetic with glassmorphism
-- 📱 Fully responsive design
-- ♿ Accessibility-first (WCAG 2.1 AA compliant)
-
----
-
-## 🛠️ Technology Stack
-
-| Layer | Technologies |
-|-------|-------------|
-| **Frontend** | HTML5, CSS3, Modern JavaScript (ES6+) |
-| **3D Graphics** | Three.js, WebGL |
-| **AI/ML** | TensorFlow.js (browser-based) |
-| **Data** | JSON, RESTful patterns |
-| **Deployment** | GitHub Pages (100% free) |
-| **CI/CD** | GitHub Actions |
-
-**Zero Backend** - Everything runs in your browser!
-
----
-
-## 📊 Data Sources
-
-- **WAQI (World Air Quality Index)** - 30,000+ stations
-- **Copernicus Sentinel-5P** - Satellite AOD data
-- **EPA AirNow** - US air quality
-- **AirKorea** - South Korea monitoring
-- **EEA** - European Environment Agency
-
----
-
-## 🔧 Development
-
-### Prerequisites
-- Modern browser with WebGL support
-- (Optional) Node.js for local development server
-
-### Making Changes
-
-1. **Fork** this repository
-2. **Clone** your fork
-3. **Create** a feature branch
-4. **Make** your changes
-5. **Test** locally
-6. **Commit** and **push**
-7. **Open** a Pull Request
-
-### Code Style
-- Use 2 spaces for indentation
-- Follow existing patterns
-- Comment complex logic
-- Keep functions small and focused
-
----
-
-## 🚀 Deployment
-
-This project automatically deploys to GitHub Pages on every push to `main` or `web-portfolio-redesign` branch.
-
-**To deploy your own:**
-
-1. Fork this repository
-2. Go to Settings → Pages
-3. Source: Deploy from branch
-4. Branch: Select `main` or `web-portfolio-redesign`
-5. Save
-
-Your site will be live at: `https://[your-username].github.io/Finedust_proj`
-
----
-
-## 📈 Performance
-
-- ⚡ **Load Time:** < 3 seconds
-- 🎮 **Globe FPS:** 60 FPS stable
-- 🧠 **AI Inference:** < 2 seconds
-- 📦 **Bundle Size:** < 2 MB total
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please:
-
-1. Check existing issues
-2. Open an issue for new features
-3. Follow code style guidelines
-4. Write clear commit messages
-5. Update documentation
+Contributions welcome! Fork the repo and submit a PR.
 
 ---
 
 ## 📄 License
 
-This project is licensed under the **MIT License** - see [LICENSE](LICENSE) file for details.
+MIT License - see [LICENSE](LICENSE) for details.
+
+### Data Attribution
+
+- **Our World In Data**: PM2.5 data (CC BY 4.0)
 
 ---
 
 ## 🙏 Acknowledgments
 
-- **WAQI** for providing free air quality data
-- **Three.js** community for amazing 3D library
-- **TensorFlow.js** team for browser-based ML
-- **GitHub** for free hosting
+- **Our World In Data** for air quality data
+- **Earth.Nullschool** for design inspiration
+- **Three.js** team for 3D library
 
 ---
 
-## 📞 Contact
-
-**Creator:** Joymin  
-**Email:** joymin5655@gmail.com  
-**GitHub:** [@joymin5655](https://github.com/joymin5655)
-
----
-
-<div align="center">
-
-**Built with ❤️ for a cleaner planet**
-
-[View Demo](https://joymin5655.github.io/Finedust_proj) • [Report Bug](https://github.com/joymin5655/Finedust_proj/issues) • [Request Feature](https://github.com/joymin5655/Finedust_proj/issues)
-
-</div>
+**Made with ❤️ for cleaner air**

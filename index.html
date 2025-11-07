@@ -1,164 +1,135 @@
 <!DOCTYPE html>
-<html class="dark" lang="en">
+<html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>AirLens - Visualize Global Air Quality</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght=300..700&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
-<script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              "primary": "#25e2f4",
-              "background-light": "#f5f8f8",
-              "background-dark": "#102122",
-            },
-            fontFamily: {
-              "display": ["Space Grotesk", "sans-serif"]
-            },
-            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
-          },
-        },
-      }
-    </script>
-<style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AirLens - Visualizing Global Air Quality with AI and 3D Technology">
+    <title>AirLens - See the Air</title>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/main.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
 </head>
-<body class="bg-background-light dark:bg-background-dark font-display">
-<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
-<div class="layout-container flex h-full grow flex-col">
-<div class="px-4 md:px-10 lg:px-40 flex flex-1 justify-center py-5">
-<div class="layout-content-container flex flex-col w-full max-w-[960px] flex-1">
-<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200/20 dark:border-white/10 px-4 md:px-10 py-3">
-<div class="flex items-center gap-4 text-black dark:text-white">
-<div class="size-5 text-primary">
-<svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-<path d="M24 4C25.7818 14.2173 33.7827 22.2182 44 24C33.7827 25.7818 25.7818 33.7827 24 44C22.2182 33.7827 14.2173 25.7818 4 24C14.2173 22.2182 22.2182 14.2173 24 4Z" fill="currentColor"></path>
-</svg>
-</div>
-<h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">AirLens</h2>
-</div>
-<div class="hidden md:flex flex-1 justify-end gap-8">
-<div class="flex items-center gap-9 text-sm font-medium text-gray-800 dark:text-gray-300">
-<a class="text-primary" href="index.html">Home</a>
-<a class="hover:text-primary transition-colors" href="camera.html">Camera AI</a>
-<a class="hover:text-primary transition-colors" href="globe.html">Globe</a>
-<a class="hover:text-primary transition-colors" href="research.html">Research</a>
-<a class="hover:text-primary transition-colors" href="about.html">About</a>
-</div>
-<a class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-[#111718] text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity" href="https://github.com/joymin5655/Finedust_proj" target="_blank">
-<span class="truncate">GitHub</span>
-</a>
-</div>
-</header>
-<main class="flex-grow">
-<div class="flex flex-wrap justify-between gap-3 p-4 pt-8 md:pt-12">
-<div class="flex min-w-72 flex-col gap-3">
-<h1 class="text-gray-900 dark:text-white text-4xl font-black leading-tight tracking-[-0.033em]">Visualize Global Air Quality in Real-Time</h1>
-<p class="text-gray-600 dark:text-gray-400 text-base font-normal leading-normal">
-                                    Leveraging real-time data, machine learning, and policy insights to make air quality transparent and actionable.
-                                </p>
-</div>
-</div>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-logo">AirLens</a>
+            <ul class="navbar-menu">
+                <li><a href="globe.html" class="navbar-link">Globe</a></li>
+                <li><a href="camera.html" class="navbar-link">Camera AI</a></li>
+                <li><a href="research.html" class="navbar-link">Research</a></li>
+                <li><a href="about.html" class="navbar-link">About</a></li>
+            </ul>
+        </div>
+    </nav>
 
-<!-- Stats -->
-<div class="p-4 flex flex-wrap gap-4">
-<div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-lg border border-gray-200 dark:border-white/10 bg-background-light dark:bg-black/20 p-6 text-center">
-<p class="text-gray-600 dark:text-gray-400 text-base font-medium leading-normal">Monitoring Stations</p>
-<p class="text-gray-900 dark:text-white tracking-light text-3xl font-black leading-tight">30,241</p>
-</div>
-<div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-lg border border-gray-200 dark:border-white/10 bg-background-light dark:bg-black/20 p-6 text-center">
-<p class="text-gray-600 dark:text-gray-400 text-base font-medium leading-normal">Countries Covered</p>
-<p class="text-gray-900 dark:text-white tracking-light text-3xl font-black leading-tight">195</p>
-</div>
-<div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-lg border border-gray-200 dark:border-white/10 bg-background-light dark:bg-black/20 p-6 text-center">
-<p class="text-gray-600 dark:text-gray-400 text-base font-medium leading-normal">Model Accuracy</p>
-<p class="text-gray-900 dark:text-white tracking-light text-3xl font-black leading-tight">&lt; 8.5 μg/m³</p>
-</div>
-</div>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content fade-in">
+            <h1 class="hero-title">See the air.<br>Understand the world.</h1>
+            <p class="hero-subtitle">
+                Real-time air quality visualization powered by AI.<br>
+                30,000+ stations. 195 countries. One beautiful interface.
+            </p>
+            <div class="hero-cta">
+                <a href="globe.html" class="btn btn-primary">Explore Globe</a>
+                <a href="camera.html" class="btn btn-secondary">Try Camera AI</a>
+            </div>
+        </div>
+        
+        <!-- Animated background particles -->
+        <canvas id="hero-canvas"></canvas>
+    </section>
 
-<!-- Features -->
-<div class="p-4">
-<h2 class="text-gray-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] mb-6">Three Ways to See Air Quality</h2>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-<a href="globe.html" class="flex flex-col gap-4 rounded-xl border border-gray-200 dark:border-white/10 bg-background-light dark:bg-black/20 p-6 transition-all hover:border-primary cursor-pointer">
-<span class="material-symbols-outlined text-primary" style="font-size: 40px;">public</span>
-<div class="flex flex-col gap-1">
-<h3 class="text-gray-900 dark:text-white text-lg font-bold leading-tight">Interactive Globe</h3>
-<p class="text-gray-600 dark:text-gray-400 text-sm font-normal leading-normal">Explore 30,000+ monitoring stations on a stunning 3D Earth. Rotate, zoom, and discover air quality data from every corner of the planet.</p>
-</div>
-</a>
+    <!-- Features Section -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Three ways to see air quality</h2>
+            
+            <div class="grid grid-3">
+                <!-- Globe Feature -->                <div class="card card-glass fade-in">
+                    <div class="feature-icon">🌍</div>
+                    <h3>Interactive Globe</h3>
+                    <p>Explore 30,000+ monitoring stations on a stunning 3D Earth. 
+                       Rotate, zoom, and discover air quality data from every corner of the planet.</p>
+                    <a href="globe.html" class="btn btn-secondary">Launch Globe →</a>
+                </div>
 
-<a href="camera.html" class="flex flex-col gap-4 rounded-xl border border-gray-200 dark:border-white/10 bg-background-light dark:bg-black/20 p-6 transition-all hover:border-primary cursor-pointer">
-<span class="material-symbols-outlined text-primary" style="font-size: 40px;">camera_alt</span>
-<div class="flex flex-col gap-1">
-<h3 class="text-gray-900 dark:text-white text-lg font-bold leading-tight">Camera AI</h3>
-<p class="text-gray-600 dark:text-gray-400 text-sm font-normal leading-normal">Upload a photo of the sky and our AI instantly predicts PM2.5 levels. Advanced computer vision meets environmental science.</p>
-</div>
-</a>
+                <!-- Camera Feature -->
+                <div class="card card-glass fade-in">
+                    <div class="feature-icon">📸</div>
+                    <h3>Camera AI</h3>
+                    <p>Upload a photo of the sky and our AI instantly predicts PM2.5 levels. 
+                       Advanced computer vision meets environmental science.</p>
+                    <a href="camera.html" class="btn btn-secondary">Try It Now →</a>
+                </div>
 
-<a href="research.html" class="flex flex-col gap-4 rounded-xl border border-gray-200 dark:border-white/10 bg-background-light dark:bg-black/20 p-6 transition-all hover:border-primary cursor-pointer">
-<span class="material-symbols-outlined text-primary" style="font-size: 40px;">science</span>
-<div class="flex flex-col gap-1">
-<h3 class="text-gray-900 dark:text-white text-lg font-bold leading-tight">Policy Research</h3>
-<p class="text-gray-600 dark:text-gray-400 text-sm font-normal leading-normal">Comprehensive analysis of global air quality policies and their effectiveness. Data-driven insights for a cleaner future.</p>
-</div>
-</a>
-</div>
-</div>
+                <!-- Research Feature -->
+                <div class="card card-glass fade-in">
+                    <div class="feature-icon">📊</div>
+                    <h3>Policy Research</h3>
+                    <p>Comprehensive analysis of global air quality policies and their effectiveness. 
+                       Data-driven insights for a cleaner future.</p>
+                    <a href="research.html" class="btn btn-secondary">Read More →</a>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<!-- Technology Stack -->
-<div class="p-4 py-16">
-<h2 class="text-gray-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] text-center mb-8">Built With Modern Technology</h2>
-<div class="flex w-full flex-wrap items-center justify-center gap-x-12 gap-y-6">
-<div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-<span class="material-symbols-outlined text-xl">language</span>
-<span class="text-base font-medium">Three.js</span>
-</div>
-<div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-<span class="material-symbols-outlined text-xl">psychology</span>
-<span class="text-base font-medium">TensorFlow.js</span>
-</div>
-<div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-<span class="material-symbols-outlined text-xl">code</span>
-<span class="text-base font-medium">JavaScript ES6+</span>
-</div>
-<div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-<span class="material-symbols-outlined text-xl">view_in_ar</span>
-<span class="text-base font-medium">Chart.js</span>
-</div>
-</div>
-</div>
+    <!-- Statistics Section -->
+    <section class="section" style="background: var(--color-bg-secondary);">
+        <div class="container">
+            <h2 class="section-title">The numbers speak</h2>
+            
+            <div class="grid grid-3">
+                <div class="stat-card text-center fade-in">
+                    <div class="stat-number">30,241</div>
+                    <div class="stat-label">Monitoring Stations</div>
+                </div>
+                
+                <div class="stat-card text-center fade-in">
+                    <div class="stat-number">195</div>
+                    <div class="stat-label">Countries Covered</div>
+                </div>
+                
+                <div class="stat-card text-center fade-in">
+                    <div class="stat-number">< 8.5</div>
+                    <div class="stat-label">μg/m³ RMSE Accuracy</div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<!-- CTA Section -->
-<div class="p-4 text-center py-12">
-<h2 class="text-gray-900 dark:text-white text-3xl font-black leading-tight tracking-[-0.033em] mb-4">Ready to See the Air?</h2>
-<p class="text-gray-600 dark:text-gray-400 text-base font-normal leading-normal mb-8">Start exploring global air quality data in seconds.</p>
-<a href="globe.html" class="inline-flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-8 bg-primary text-[#111718] text-base font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity">
-<span class="truncate">Explore Now →</span>
-</a>
-</div>
-</main>
-<footer class="text-center py-8 mt-8 border-t border-gray-200/20 dark:border-white/10">
-<p class="text-gray-600 dark:text-gray-400 text-sm">© 2025 AirLens Project. All rights reserved.</p>
-<div class="flex items-center justify-center gap-4 mt-2">
-<a class="text-sm text-primary hover:underline" href="about.html">About</a>
-<a class="text-sm text-primary hover:underline" href="research.html">Research</a>
-<a class="text-sm text-primary hover:underline" href="https://github.com/joymin5655/Finedust_proj" target="_blank">GitHub</a>
-</div>
-</footer>
-</div>
-</div>
-</div>
-</div>
+    <!-- CTA Section -->
+    <section class="section">
+        <div class="container text-center">
+            <h2 class="hero-title" style="font-size: var(--text-5xl);">Ready to see the air?</h2>
+            <p class="hero-subtitle">Start exploring global air quality data in seconds.</p>
+            <a href="globe.html" class="btn btn-primary" style="font-size: var(--text-lg); padding: var(--space-4) var(--space-8);">
+                Explore Now →
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="background: var(--color-bg-dark); color: var(--color-text-dark); padding: var(--space-10) 0;">
+        <div class="container text-center">
+            <p style="color: var(--color-text-dark-secondary);">
+                © 2025 AirLens. Built with ❤️ for a cleaner planet.
+            </p>
+            <p style="color: var(--color-text-dark-secondary); font-size: var(--text-sm); margin-top: var(--space-4);">
+                <a href="https://github.com/joymin5655/Finedust_proj" style="color: var(--color-primary);" target="_blank">
+                    View on GitHub
+                </a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/hero-animation.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>

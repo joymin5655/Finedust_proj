@@ -1,5 +1,5 @@
 /**
- * AirLens Interactive 3D Globe - Enhanced with Our World in Data visualization
+ * AirLens Interactive 3D Globe with Our World in Data Visualization
  * Using Three.js for WebGL rendering
  */
 
@@ -27,9 +27,9 @@ class AirLensGlobe {
     
     // Data
     this.stations = [];
-    this.markers = [];
     this.countryData = null;
-    this.selectedMarker = null;
+    this.markers = [];
+    this.countryMarkers = [];
     this.currentYear = 2021;
     this.isAnimating = false;
     
@@ -47,11 +47,10 @@ class AirLensGlobe {
     this.setupLights();
     await this.createEarth();
     this.setupControls();
-    await this.loadData();
+    await this.loadAllData();
     this.setupEventListeners();
-    this.setupDataPanel();
+    this.createOWIDPanel();
     this.animate();
-    
     this.hideLoadingScreen();
   }
   
@@ -66,11 +65,9 @@ class AirLensGlobe {
   }
   
   setupLights() {
-    // Ambient light
     const ambient = new THREE.AmbientLight(0xffffff, 0.6);
     this.scene.add(ambient);
     
-    // Directional light (sun)
     const sun = new THREE.DirectionalLight(0xffffff, 0.8);
     sun.position.set(5, 3, 5);
     this.scene.add(sun);
@@ -78,7 +75,6 @@ class AirLensGlobe {
   
   async createEarth() {
     const geometry = new THREE.SphereGeometry(1, 64, 64);
-    
     const material = new THREE.MeshPhongMaterial({
       color: 0x2233ff,
       emissive: 0x112244,
@@ -91,7 +87,7 @@ class AirLensGlobe {
     this.earth = new THREE.Mesh(geometry, material);
     this.scene.add(this.earth);
     
-    // Add atmosphere glow
+    // Atmosphere glow
     const atmosphereGeometry = new THREE.SphereGeometry(1.05, 64, 64);
     const atmosphereMaterial = new THREE.MeshPhongMaterial({
       color: 0x5ac8fa,
@@ -113,141 +109,73 @@ class AirLensGlobe {
     this.controls.autoRotateSpeed = 0.5;
   }
   
-  async loadData() {
+  async loadAllData() {
     try {
-      // Load Our World in Data style pollution data
-      const response = await fetch('../data/air-pollution-deaths.json');
-      this.countryData = await response.json();
+      // Load stations
+      const stationsResponse = await fetch('data/stations.json');
+      const stationsData = await stationsResponse.json();
+      this.stations = stationsData.stations;
       
-      // Load stations data
-      this.stations = this.generateSampleStations(500);
+      // Load country pollution data
+      const countryResponse = await fetch('data/air-pollution-deaths.json');
+      this.countryData = await countryResponse.json();
       
-      // Create country markers with Our World in Data visualization
-      this.createCountryMarkers();
+      // Create visualizations
       this.createStationMarkers();
-      this.updateVisualization();
+      this.createCountryMarkers();
       this.updateStats();
+      
+      console.log(`✅ Loaded ${this.stations.length} stations`);
+      console.log(`✅ Loaded ${this.countryData.countries.length} countries`);
     } catch (error) {
       console.error('Failed to load data:', error);
-      // Fallback to sample data
-      this.stations = this.generateSampleStations(500);
-      this.createStationMarkers();
-      this.updateStats();
     }
   }
   
-  createCountryMarkers() {
-    if (!this.countryData || !this.countryData.countries) return;
+  createStationMarkers() {
+    const geometry = new THREE.SphereGeometry(0.012, 8, 8);
     
-    const countryGeometry = new THREE.SphereGeometry(0.04, 16, 16);
+    this.stations.forEach(station => {
+      const color = this.getPM25Color(station.pm25);
+      const material = new THREE.MeshBasicMaterial({ color });
+      const marker = new THREE.Mesh(geometry, material);
+      
+      const pos = this.latLonToVector3(station.latitude, station.longitude, 1.01);
+      marker.position.copy(pos);
+      marker.userData = { type: 'station', ...station };
+      
+      this.earth.add(marker);
+      this.markers.push(marker);
+    });
+  }
+  
+  createCountryMarkers() {
+    if (!this.countryData) return;
+    
+    // Clear existing country markers
+    this.countryMarkers.forEach(m => this.earth.remove(m));
+    this.countryMarkers = [];
+    
+    const geometry = new THREE.SphereGeometry(0.03, 16, 16);
     
     this.countryData.countries.forEach(country => {
       const yearData = country.data.find(d => d.year === this.currentYear);
       if (!yearData) return;
       
-      // Create marker with color based on PM2.5 exposure
       const color = this.getPM25ExposureColor(yearData.pm25Exposure);
       const material = new THREE.MeshBasicMaterial({ 
         color,
         transparent: true,
-        opacity: 0.7
+        opacity: 0.8
       });
       
-      const marker = new THREE.Mesh(countryGeometry, material);
-      
-      // Position marker at country location
+      const marker = new THREE.Mesh(geometry, material);
       const pos = this.latLonToVector3(country.latitude, country.longitude, 1.02);
       marker.position.copy(pos);
-      marker.userData = { 
-        type: 'country',
-        country: country.name,
-        data: country,
-        yearData: yearData
-      };
+      marker.userData = { type: 'country', country, yearData };
       
       this.earth.add(marker);
-      this.markers.push(marker);
-      
-      // Add data label (floating text)
-      this.createDataLabel(country, pos);
-    });
-  }
-  
-  createDataLabel(country, position) {
-    const yearData = country.data.find(d => d.year === this.currentYear);
-    if (!yearData) return;
-    
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
-    canvas.width = 256;
-    canvas.height = 128;
-    
-    // Draw text
-    context.fillStyle = 'rgba(255, 255, 255, 0.9)';
-    context.font = 'bold 24px Arial';
-    context.textAlign = 'center';
-    context.fillText(country.name, 128, 40);
-    context.font = '18px Arial';
-    context.fillText(`PM2.5: ${yearData.pm25Exposure.toFixed(1)}`, 128, 70);
-    context.fillText(`Deaths: ${yearData.totalDeaths.toFixed(1)}/100k`, 128, 95);
-    
-    const texture = new THREE.CanvasTexture(canvas);
-    const spriteMaterial = new THREE.SpriteMaterial({ 
-      map: texture,
-      transparent: true,
-      opacity: 0.8
-    });
-    const sprite = new THREE.Sprite(spriteMaterial);
-    sprite.position.copy(position).multiplyScalar(1.15);
-    sprite.scale.set(0.3, 0.15, 1);
-    
-    this.earth.add(sprite);
-  }
-  
-  getPM25ExposureColor(exposure) {
-    // Our World in Data style gradient
-    if (exposure <= 10) return 0x00e400;     // Excellent (green)
-    if (exposure <= 25) return 0xffff00;     // Good (yellow)
-    if (exposure <= 50) return 0xff7e00;     // Moderate (orange)
-    if (exposure <= 75) return 0xff0000;     // Unhealthy (red)
-    return 0x99004c;                         // Hazardous (purple)
-  }
-  
-  generateSampleStations(count) {
-    const stations = [];
-    for (let i = 0; i < count; i++) {
-      const lat = (Math.random() - 0.5) * 180;
-      const lon = (Math.random() - 0.5) * 360;
-      const pm25 = Math.random() * 150;
-      
-      stations.push({
-        id: `station_${i}`,
-        name: `Station ${i}`,
-        lat,
-        lon,
-        country: 'Sample',
-        pm25,
-        pm10: pm25 * 1.5,
-        aqi: Math.floor(pm25 * 2),
-        updated: new Date().toISOString()
-      });
-    }
-    return stations;
-  }
-  
-  createStationMarkers() {
-    const markerGeometry = new THREE.SphereGeometry(0.008, 8, 8);
-    
-    this.stations.forEach(station => {
-      const color = this.getPM25Color(station.pm25);
-      const material = new THREE.MeshBasicMaterial({ color });
-      const marker = new THREE.Mesh(markerGeometry, material);
-      
-      const pos = this.latLonToVector3(station.lat, station.lon, 1.01);
-      marker.position.copy(pos);
-      marker.userData = { type: 'station', ...station };
-      
-      this.earth.add(marker);
+      this.countryMarkers.push(marker);
       this.markers.push(marker);
     });
   }
@@ -264,14 +192,24 @@ class AirLensGlobe {
   }
   
   getPM25Color(pm25) {
-    if (pm25 <= 12) return 0x00ff00;      // Green
-    if (pm25 <= 35) return 0xffff00;      // Yellow
-    if (pm25 <= 55) return 0xff8800;      // Orange
-    if (pm25 <= 150) return 0xff0000;     // Red
-    return 0x8b0000;                      // Dark red
+    if (pm25 <= 12) return 0x00ff00;
+    if (pm25 <= 35) return 0xffff00;
+    if (pm25 <= 55) return 0xff8800;
+    if (pm25 <= 150) return 0xff0000;
+    return 0x8b0000;
   }
   
-  setupDataPanel() {
+  getPM25ExposureColor(exposure) {
+    if (exposure <= 10) return 0x00e400;
+    if (exposure <= 25) return 0xffff00;
+    if (exposure <= 50) return 0xff7e00;
+    if (exposure <= 75) return 0xff0000;
+    return 0x99004c;
+  }
+  
+  createOWIDPanel() {
+    if (document.getElementById('owid-data-panel')) return;
+    
     const panel = document.createElement('div');
     panel.id = 'owid-data-panel';
     panel.className = 'owid-panel';
@@ -289,7 +227,7 @@ class AirLensGlobe {
       </div>
       <div class="owid-stats">
         <div class="owid-stat">
-          <div class="stat-value" id="global-deaths">0</div>
+          <div class="stat-value" id="global-deaths">105.7</div>
           <div class="stat-label">Global Deaths Rate</div>
         </div>
         <div class="owid-stat">
@@ -299,22 +237,23 @@ class AirLensGlobe {
       </div>
       <div class="owid-legend">
         <h3>PM2.5 Exposure Levels</h3>
-        <div class="legend-item"><span class="legend-color" style="background: #00e400"></span> Excellent (0-10)</div>
-        <div class="legend-item"><span class="legend-color" style="background: #ffff00"></span> Good (10-25)</div>
-        <div class="legend-item"><span class="legend-color" style="background: #ff7e00"></span> Moderate (25-50)</div>
-        <div class="legend-item"><span class="legend-color" style="background: #ff0000"></span> Unhealthy (50-75)</div>
-        <div class="legend-item"><span class="legend-color" style="background: #99004c"></span> Hazardous (75+)</div>
+        <div class="legend-item"><span class="legend-color" style="background:#00e400"></span>Excellent (0-10)</div>
+        <div class="legend-item"><span class="legend-color" style="background:#ffff00"></span>Good (10-25)</div>
+        <div class="legend-item"><span class="legend-color" style="background:#ff7e00"></span>Moderate (25-50)</div>
+        <div class="legend-item"><span class="legend-color" style="background:#ff0000"></span>Unhealthy (50-75)</div>
+        <div class="legend-item"><span class="legend-color" style="background:#99004c"></span>Hazardous (75+)</div>
       </div>
       <div class="owid-footer">
-        <p>Data source: Our World in Data / IHME</p>
+        <p>Data: Our World in Data / IHME</p>
         <button id="play-animation" class="owid-button">▶ Play Timeline</button>
       </div>
     `;
     
     document.body.appendChild(panel);
     
-    // Setup event listeners for panel
-    document.getElementById('year-slider')?.addEventListener('input', (e) => {
+    // Event listeners
+    const slider = document.getElementById('year-slider');
+    slider?.addEventListener('input', (e) => {
       const years = [1990, 2000, 2010, 2019, 2021];
       this.currentYear = years[parseInt(e.target.value)];
       document.getElementById('current-year-display').textContent = this.currentYear;
@@ -324,21 +263,11 @@ class AirLensGlobe {
     document.getElementById('play-animation')?.addEventListener('click', () => {
       this.playTimeline();
     });
+    
+    this.updateGlobalStats();
   }
   
   updateVisualization() {
-    if (!this.countryData) return;
-    
-    // Clear existing country markers
-    this.markers.forEach(marker => {
-      if (marker.userData.type === 'country') {
-        this.earth.remove(marker);
-      }
-    });
-    
-    this.markers = this.markers.filter(m => m.userData.type !== 'country');
-    
-    // Recreate with new year data
     this.createCountryMarkers();
     this.updateGlobalStats();
   }
@@ -349,14 +278,11 @@ class AirLensGlobe {
     const yearData = this.countryData.globalTrends[this.currentYear];
     if (!yearData) return;
     
-    document.getElementById('global-deaths').textContent = 
-      yearData.totalDeaths.toFixed(1);
+    document.getElementById('global-deaths').textContent = yearData.totalDeaths.toFixed(1);
     
-    // Calculate trend since 1990
     const data1990 = this.countryData.globalTrends[1990];
     const percentChange = ((yearData.totalDeaths - data1990.totalDeaths) / data1990.totalDeaths * 100).toFixed(1);
-    document.getElementById('trend-indicator').textContent = 
-      `${percentChange > 0 ? '+' : ''}${percentChange}%`;
+    document.getElementById('trend-indicator').textContent = `${percentChange > 0 ? '+' : ''}${percentChange}%`;
   }
   
   async playTimeline() {
@@ -365,25 +291,21 @@ class AirLensGlobe {
     this.isAnimating = true;
     const button = document.getElementById('play-animation');
     button.textContent = '⏸ Pause';
-    button.disabled = true;
     
     const years = [1990, 2000, 2010, 2019, 2021];
     const slider = document.getElementById('year-slider');
     
     for (let i = 0; i < years.length; i++) {
       if (!this.isAnimating) break;
-      
       this.currentYear = years[i];
       slider.value = i;
       document.getElementById('current-year-display').textContent = this.currentYear;
       this.updateVisualization();
-      
       await new Promise(resolve => setTimeout(resolve, 2000));
     }
     
     this.isAnimating = false;
     button.textContent = '▶ Play Timeline';
-    button.disabled = false;
   }
   
   setupEventListeners() {
@@ -399,7 +321,6 @@ class AirLensGlobe {
   onResize() {
     const width = window.innerWidth;
     const height = window.innerHeight - 48;
-    
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(width, height);
@@ -412,108 +333,75 @@ class AirLensGlobe {
     
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(mouse, this.camera);
-    
     const intersects = raycaster.intersectObjects(this.markers);
     
     if (intersects.length > 0) {
       const marker = intersects[0].object;
       if (marker.userData.type === 'country') {
         this.showCountryInfo(marker.userData);
-      } else {
+      } else if (marker.userData.type === 'station') {
         this.showStationInfo(marker.userData);
       }
     }
   }
   
   showCountryInfo(data) {
-    const panel = document.getElementById('info-panel') || this.createInfoPanel();
-    panel.style.display = 'block';
-    
-    const country = data.data;
-    const yearData = data.yearData;
+    const panel = document.getElementById('info-panel');
+    const { country, yearData } = data;
     
     panel.innerHTML = `
-      <div class="info-header">
-        <h3>${country.name}</h3>
-        <button id="close-info" class="close-btn">✕</button>
+      <button id="close-info" class="close-btn">✕</button>
+      <h3>${country.name}</h3>
+      <div class="info-row">
+        <span class="info-label">Year:</span>
+        <span>${this.currentYear}</span>
       </div>
-      <div class="info-content">
-        <div class="info-row">
-          <span class="info-label">Year:</span>
-          <span class="info-value">${this.currentYear}</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">Total Deaths:</span>
-          <span class="info-value">${yearData.totalDeaths.toFixed(1)}/100k</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">Outdoor:</span>
-          <span class="info-value">${yearData.outdoorDeaths.toFixed(1)}/100k</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">Indoor:</span>
-          <span class="info-value">${yearData.indoorDeaths.toFixed(1)}/100k</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">PM2.5 Exposure:</span>
-          <span class="info-value">${yearData.pm25Exposure.toFixed(1)} μg/m³</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">GDP per capita:</span>
-          <span class="info-value">$${country.gdpPerCapita.toLocaleString()}</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">Population:</span>
-          <span class="info-value">${(country.population / 1000000).toFixed(1)}M</span>
-        </div>
+      <div class="info-row">
+        <span class="info-label">Total Deaths:</span>
+        <span>${yearData.totalDeaths.toFixed(1)}/100k</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">PM2.5 Exposure:</span>
+        <span>${yearData.pm25Exposure.toFixed(1)} μg/m³</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Population:</span>
+        <span>${(country.population / 1000000).toFixed(1)}M</span>
       </div>
     `;
+    
+    panel.style.display = 'block';
     
     document.getElementById('close-info')?.addEventListener('click', () => {
       panel.style.display = 'none';
     }, { once: true });
   }
   
-  createInfoPanel() {
-    const panel = document.createElement('div');
-    panel.id = 'info-panel';
-    panel.className = 'info-panel';
-    document.body.appendChild(panel);
-    return panel;
-  }
-  
   showStationInfo(station) {
-    const panel = document.getElementById('info-panel') || this.createInfoPanel();
-    panel.style.display = 'block';
+    const panel = document.getElementById('info-panel');
     
     panel.innerHTML = `
-      <div class="info-header">
-        <h3>${station.name}</h3>
-        <button id="close-info" class="close-btn">✕</button>
+      <button id="close-info" class="close-btn">✕</button>
+      <h3>${station.name}</h3>
+      <div class="info-row">
+        <span class="info-label">Country:</span>
+        <span>${station.country}</span>
       </div>
-      <div class="info-content">
-        <div class="info-row">
-          <span class="info-label">Country:</span>
-          <span class="info-value">${station.country}</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">PM2.5:</span>
-          <span class="info-value">${station.pm25.toFixed(1)} μg/m³</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">PM10:</span>
-          <span class="info-value">${station.pm10.toFixed(1)} μg/m³</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">AQI:</span>
-          <span class="info-value">${station.aqi}</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">Updated:</span>
-          <span class="info-value">${new Date(station.updated).toLocaleDateString()}</span>
-        </div>
+      <div class="info-row">
+        <span class="info-label">PM2.5:</span>
+        <span class="pm25-value">${station.pm25.toFixed(1)} μg/m³</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">PM10:</span>
+        <span>${station.pm10.toFixed(1)} μg/m³</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">AQI:</span>
+        <span>${station.aqi}</span>
       </div>
     `;
+    
+    panel.style.display = 'block';
     
     document.getElementById('close-info')?.addEventListener('click', () => {
       panel.style.display = 'none';
@@ -521,8 +409,11 @@ class AirLensGlobe {
   }
   
   updateStats() {
-    document.getElementById('total-stations')?.textContent = this.stations.length;
-    document.getElementById('visible-stations')?.textContent = this.markers.length;
+    const totalElement = document.getElementById('total-stations');
+    const visibleElement = document.getElementById('visible-stations');
+    
+    if (totalElement) totalElement.textContent = this.stations.length;
+    if (visibleElement) visibleElement.textContent = this.markers.length;
   }
   
   calculateFPS() {
@@ -533,9 +424,7 @@ class AirLensGlobe {
     if (elapsed >= 1000) {
       this.fps = Math.round((this.frameCount * 1000) / elapsed);
       const fpsElement = document.getElementById('fps-counter');
-      if (fpsElement) {
-        fpsElement.textContent = this.fps;
-      }
+      if (fpsElement) fpsElement.textContent = this.fps;
       this.frameCount = 0;
       this.lastTime = currentTime;
     }
@@ -543,7 +432,6 @@ class AirLensGlobe {
   
   animate() {
     requestAnimationFrame(() => this.animate());
-    
     this.controls.update();
     this.earth.rotation.y += 0.0005;
     this.renderer.render(this.scene, this.camera);
@@ -554,12 +442,10 @@ class AirLensGlobe {
     const loading = document.getElementById('loading-screen');
     if (loading) {
       loading.classList.add('hidden');
-      setTimeout(() => {
-        loading.style.display = 'none';
-      }, 500);
+      setTimeout(() => loading.style.display = 'none', 500);
     }
   }
 }
 
-// Initialize globe
+// Initialize globe when DOM is ready
 new AirLensGlobe();

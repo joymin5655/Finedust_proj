@@ -84,8 +84,8 @@ body.dark-mode .card {
 ```css
 .theme-toggle-container {
   position: fixed;
-  top: 8px;      /* Distance from top */
-  right: 24px;   /* Distance from right */
+  bottom: 24px;  /* Distance from bottom */
+  left: 24px;    /* Distance from left */
   z-index: 10000;
 }
 ```
@@ -96,12 +96,12 @@ body.dark-mode .card {
 
 ```css
 .toggle-cont {
-  height: 32px;  /* Button height */
+  height: 16px;  /* Button height (compact size) */
 }
 
 .toggle-cont .toggle-label {
-  --width: 32px;  /* Button width */
-  --gap: 3px;     /* Internal spacing */
+  --width: 16px;  /* Button width */
+  --gap: 1.5px;   /* Internal spacing */
 }
 ```
 

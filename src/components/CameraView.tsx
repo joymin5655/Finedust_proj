@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import type { PM25Prediction } from '../types';
-import { SettingsIcon, HistoryIcon, CameraIcon, UploadIcon, SignalTowerIcon } from './Icons';
+import { SettingsIcon, HistoryIcon, PolicyIcon, CameraIcon, UploadIcon, SignalTowerIcon } from './Icons';
 import ResultsDisplay from './ResultsDisplay';
 import { getAQILevel } from '../utils/helpers';
 import { storageManager } from '../services/storageManager';
@@ -8,6 +8,7 @@ import { analyzeImageForAirQuality, getLocationInfo, getStationData } from '../s
 
 interface CameraViewProps {
   onNavigateToHistory: () => void;
+  onNavigateToPolicy: () => void;
   onNavigateToSettings: () => void;
 }
 
@@ -35,7 +36,7 @@ const UiverseGlobe: React.FC = () => (
     </>
 );
 
-const CameraView: React.FC<CameraViewProps> = ({ onNavigateToHistory, onNavigateToSettings }) => {
+const CameraView: React.FC<CameraViewProps> = ({ onNavigateToHistory, onNavigateToPolicy, onNavigateToSettings }) => {
   const [prediction, setPrediction] = useState<PM25Prediction | null>(null);
   const [showResults, setShowResults] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -306,10 +307,13 @@ const CameraView: React.FC<CameraViewProps> = ({ onNavigateToHistory, onNavigate
       <header className="absolute top-0 left-0 right-0 p-6 flex justify-between items-center z-20 text-white">
         <h1 className="text-3xl font-bold tracking-tight text-shadow">AirLens</h1>
         <div className="flex items-center gap-3">
-            <button onClick={onNavigateToHistory} className="p-3 rounded-2xl bg-white/10 backdrop-blur-md hover:bg-white/20 active:scale-95 transition-all duration-200 shadow-lg">
+            <button onClick={onNavigateToHistory} className="p-3 rounded-2xl bg-white/10 backdrop-blur-md hover:bg-white/20 active:scale-95 transition-all duration-200 shadow-lg" aria-label="View History">
                 <HistoryIcon className="w-6 h-6" />
             </button>
-            <button onClick={onNavigateToSettings} className="group relative p-3 rounded-2xl bg-white/10 backdrop-blur-md hover:bg-white/20 active:scale-95 transition-all duration-200 shadow-lg">
+            <button onClick={onNavigateToPolicy} className="p-3 rounded-2xl bg-white/10 backdrop-blur-md hover:bg-white/20 active:scale-95 transition-all duration-200 shadow-lg" aria-label="View Policies">
+                <PolicyIcon className="w-6 h-6" />
+            </button>
+            <button onClick={onNavigateToSettings} className="group relative p-3 rounded-2xl bg-white/10 backdrop-blur-md hover:bg-white/20 active:scale-95 transition-all duration-200 shadow-lg" aria-label="Settings">
                 <SettingsIcon className="w-6 h-6 transition-transform duration-300 ease-out group-hover:rotate-90" />
             </button>
         </div>

@@ -1,102 +1,190 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="dark" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About - AirLens</title>
-    <link rel="stylesheet" href="css/main.css">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AirLens - About & Contact</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#25e2f4",
+                        "background-light": "#f5f8f8",
+                        "background-dark": "#102122",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
 </head>
-<body>
-    <nav class="navbar">
-        <div class="navbar-container">
-            <a href="index.html" class="navbar-logo">AirLens</a>
-            <ul class="navbar-menu">
-                <li><a href="globe.html" class="navbar-link">Globe</a></li>
-                <li><a href="camera.html" class="navbar-link">Camera AI</a></li>
-                <li><a href="research.html" class="navbar-link">Research</a></li>
-                <li><a href="about.html" class="navbar-link" style="color: var(--color-primary);">About</a></li>
-            </ul>
-        </div>
-    </nav>
-
-    <section class="section" style="padding-top: calc(48px + var(--space-12));">
-        <div class="container" style="max-width: 800px;">
-            <div class="text-center fade-in" style="margin-bottom: var(--space-12);">
-                <h1>About AirLens</h1>
-                <p class="hero-subtitle">Making air quality data accessible to everyone</p>
-            </div>
-            
-            <div class="card fade-in">
-                <h2>Our Mission</h2>
-                <p>AirLens was created to democratize access to air quality information. 
-                   We believe everyone deserves to know the air they breathe, regardless of their 
-                   location or technical expertise.</p>
-                
-                <p>By combining cutting-edge AI, real-time data from 30,000+ monitoring stations, 
-                   and beautiful 3D visualization, we're making environmental data both accessible 
-                   and actionable.</p>
-            </div>
-            
-            <div class="card fade-in mt-8">
-                <h2>Why AirLens?</h2>
-                <p>Air pollution is responsible for 7 million premature deaths annually. 
-                   Yet most people lack access to reliable, real-time air quality data.</p>
-                
-                <p>AirLens fills this gap by providing:</p>
-                <ul style="padding-left: var(--space-6); margin-top: var(--space-4);">
-                    <li>Real-time global coverage through 30,000+ stations</li>
-                    <li>AI-powered prediction from smartphone cameras</li>
-                    <li>Beautiful, intuitive 3D visualization</li>
-                    <li>Policy research and recommendations</li>
-                    <li>100% free access for everyone</li>
-                </ul>
-            </div>
-            
-            <div class="card fade-in mt-8">
-                <h2>Technology & Accessibility</h2>
-                <p>AirLens is built with modern web technologies and runs entirely in your browser. 
-                   No installation required, no data collection, complete privacy.</p>
-                
-                <p>The platform is designed with accessibility in mind, supporting:</p>
-                <ul style="padding-left: var(--space-6); margin-top: var(--space-4);">
-                    <li>Keyboard navigation</li>
-                    <li>Screen readers</li>
-                    <li>High contrast mode</li>
-                    <li>Responsive design for all devices</li>
-                </ul>
-            </div>
-            
-            <div class="card fade-in mt-8" style="background: var(--color-bg-secondary); text-align: center;">
-                <h2>Open Source</h2>
-                <p>AirLens is proudly open source. We believe in transparency and 
-                   collaborative improvement.</p>
-                
-                <a href="https://github.com/joymin5655/Finedust_proj" 
-                   target="_blank" 
-                   class="btn btn-primary mt-6">
-                    View on GitHub →
-                </a>
-            </div>
-            
-            <div class="card fade-in mt-8">
-                <h2>Contact</h2>
-                <p>Questions, suggestions, or want to collaborate? 
-                   We'd love to hear from you!</p>
-                
-                <p style="margin-top: var(--space-4);">
-                    <strong>Email:</strong> <a href="mailto:joymin5655@gmail.com">joymin5655@gmail.com</a><br>
-                    <strong>GitHub:</strong> <a href="https://github.com/joymin5655" target="_blank">@joymin5655</a>
+<body class="bg-background-light dark:bg-background-dark">
+<div class="relative flex h-auto min-h-screen w-full flex-col font-display group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<div class="px-4 md:px-20 lg:px-40 flex flex-1 justify-center py-5">
+<div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+<!-- TopNavBar -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200/20 dark:border-white/10 px-4 sm:px-10 py-3 sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm">
+<div class="flex items-center gap-4 text-gray-800 dark:text-white">
+<div class="size-4 text-primary">
+<svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M24 4C25.7818 14.2173 33.7827 22.2182 44 24C33.7827 25.7818 25.7818 33.7827 24 44C22.2182 33.7827 14.2173 25.7818 4 24C14.2173 22.2182 22.2182 14.2173 24 4Z" fill="currentColor"></path>
+</svg>
+</div>
+<h2 class="text-gray-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">AirLens</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<div class="hidden sm:flex items-center gap-9">
+<a class="text-gray-700 dark:text-gray-200 text-sm font-medium leading-normal hover:text-primary transition-colors" href="index.html">Home</a>
+<a class="text-gray-700 dark:text-gray-200 text-sm font-medium leading-normal hover:text-primary transition-colors" href="globe.html">Globe</a>
+<a class="text-gray-700 dark:text-gray-200 text-sm font-medium leading-normal hover:text-primary transition-colors" href="camera.html">Camera AI</a>
+<a class="text-gray-700 dark:text-gray-200 text-sm font-medium leading-normal hover:text-primary transition-colors" href="research.html">Research</a>
+<a class="text-primary text-sm font-bold leading-normal" href="about.html">About</a>
+</div>
+<a class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-gray-900 text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity" href="https://github.com/joymin5655/Finedust_proj" target="_blank">
+<span class="truncate">GitHub</span>
+</a>
+</div>
+</header>
+<!-- ProfileHeader -->
+<div class="flex p-4 mt-8 @container">
+<div class="flex w-full flex-col gap-4 @[520px]:flex-row @[520px]:justify-between @[520px]:items-center">
+<div class="flex items-center gap-6">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full min-h-32 w-32 shrink-0" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAfFClQPMdnDcsj1SFs2utbvu5HYWZ0GCxAOVOvdPnbkvEQpYpk8-n9e5sA5IYprX8aOXBF9Bq_9iN_48y1dMBwPcxJWD18C4zgE1dHm-wh3IGHTFrTSX7TwdJd9mcPnn6TjunPERKqmwZxgvkG6va81zBuUuBRdnVau_G77u6oUaVMM3ylPvM0LAuoiKK-8NFer0cS7-El-HcXzaXBD6ZSD4CYL0nkIC29cZp_PCwH-UyHacTelsrGoSsM2S8mE988ozyJPJ_5QpI");'></div>
+<div class="flex flex-col justify-center">
+<p class="text-gray-900 dark:text-white text-[28px] font-bold leading-tight tracking-[-0.015em]">AirLens Team</p>
+<p class="text-gray-600 dark:text-gray-400 text-lg font-normal leading-normal">Data Science & Environmental Tech</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Card -->
+<div class="p-4 @container mt-4">
+<div class="flex flex-col items-stretch justify-start rounded-lg @xl:flex-row @xl:items-start gap-4 @xl:gap-8">
+<div class="w-full @xl:w-2/5 shrink-0 bg-center bg-no-repeat aspect-square @xl:aspect-auto @xl:h-full bg-cover rounded-lg" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCHbPx0l5FLHMahkgXc54OjpnGXe2DiEfqXIz14COAI4J2Pcs5fjzs6X_c8gMUDDWSDd1Hn7Mzmi1mS7m0skNPuSIJBiQps0ZOO-T2oZU6aYTNk9w2dsx602WX2Xu5zzFwJCKc4uDJkYb01o9uy6V0-_Hyikl0UjdnDbmW8FdxLe1panALpIWC0S36dFXA7CLYq9BXz0tfW8HRp286xsVQ0xu8fhZ_MVYaCKCNZSYRGfV-Ks4Sr7izpanV0GjMjCCIstFiS9c3-No8");'></div>
+<div class="flex w-full grow flex-col items-stretch justify-center gap-1 py-4">
+<p class="text-gray-900 dark:text-white text-xl font-bold leading-tight tracking-[-0.015em]">About the Project</p>
+<div class="flex items-end gap-3 justify-between">
+<p class="text-gray-700 dark:text-gray-300 text-base font-normal leading-relaxed mt-2">
+                    AirLens was created to democratize access to air quality information through innovative use of machine learning and real-time data visualization. We believe everyone deserves to know the air they breathe, regardless of their location or technical expertise.
                 </p>
-            </div>
-        </div>
-    </section>
-
-    <footer style="background: var(--color-bg-dark); color: var(--color-text-dark); padding: var(--space-10) 0; margin-top: var(--space-12);">
-        <div class="container text-center">
-            <p style="color: var(--color-text-dark-secondary);">© 2025 AirLens. Built with ❤️ for a cleaner planet.</p>
-        </div>
-    </footer>
-
-    <script src="js/main.js"></script>
+</div>
+</div>
+</div>
+</div>
+<!-- SectionHeader -->
+<h2 class="text-gray-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-10">Technologies & Skills</h2>
+<!-- TextGrid -->
+<div class="grid grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-4 p-4">
+<div class="flex flex-1 gap-3 rounded-lg border border-gray-200/80 dark:border-white/10 bg-white/50 dark:bg-white/5 p-4 flex-col">
+<span class="material-symbols-outlined text-primary text-3xl">psychology</span>
+<div class="flex flex-col gap-1">
+<h2 class="text-gray-900 dark:text-white text-base font-bold leading-tight">TensorFlow.js</h2>
+<p class="text-gray-600 dark:text-gray-400 text-sm font-normal leading-normal">Machine Learning</p>
+</div>
+</div>
+<div class="flex flex-1 gap-3 rounded-lg border border-gray-200/80 dark:border-white/10 bg-white/50 dark:bg-white/5 p-4 flex-col">
+<span class="material-symbols-outlined text-primary text-3xl">code</span>
+<div class="flex flex-col gap-1">
+<h2 class="text-gray-900 dark:text-white text-base font-bold leading-tight">Python</h2>
+<p class="text-gray-600 dark:text-gray-400 text-sm font-normal leading-normal">Data Science</p>
+</div>
+</div>
+<div class="flex flex-1 gap-3 rounded-lg border border-gray-200/80 dark:border-white/10 bg-white/50 dark:bg-white/5 p-4 flex-col">
+<span class="material-symbols-outlined text-primary text-3xl">language</span>
+<div class="flex flex-col gap-1">
+<h2 class="text-gray-900 dark:text-white text-base font-bold leading-tight">JavaScript</h2>
+<p class="text-gray-600 dark:text-gray-400 text-sm font-normal leading-normal">Frontend</p>
+</div>
+</div>
+<div class="flex flex-1 gap-3 rounded-lg border border-gray-200/80 dark:border-white/10 bg-white/50 dark:bg-white/5 p-4 flex-col">
+<span class="material-symbols-outlined text-primary text-3xl">view_in_ar</span>
+<div class="flex flex-col gap-1">
+<h2 class="text-gray-900 dark:text-white text-base font-bold leading-tight">Three.js</h2>
+<p class="text-gray-600 dark:text-gray-400 text-sm font-normal leading-normal">3D Visualization</p>
+</div>
+</div>
+<div class="flex flex-1 gap-3 rounded-lg border border-gray-200/80 dark:border-white/10 bg-white/50 dark:bg-white/5 p-4 flex-col">
+<span class="material-symbols-outlined text-primary text-3xl">insert_chart</span>
+<div class="flex flex-col gap-1">
+<h2 class="text-gray-900 dark:text-white text-base font-bold leading-tight">Chart.js</h2>
+<p class="text-gray-600 dark:text-gray-400 text-sm font-normal leading-normal">Data Visualization</p>
+</div>
+</div>
+<div class="flex flex-1 gap-3 rounded-lg border border-gray-200/80 dark:border-white/10 bg-white/50 dark:bg-white/5 p-4 flex-col">
+<span class="material-symbols-outlined text-primary text-3xl">cloud</span>
+<div class="flex flex-col gap-1">
+<h2 class="text-gray-900 dark:text-white text-base font-bold leading-tight">APIs</h2>
+<p class="text-gray-600 dark:text-gray-400 text-sm font-normal leading-normal">Data Integration</p>
+</div>
+</div>
+</div>
+<!-- Contact Form Section -->
+<div class="w-full px-4 pt-10">
+<div class="flex flex-col gap-6 rounded-lg border border-gray-200/80 dark:border-white/10 bg-white/50 dark:bg-white/5 p-6 sm:p-8">
+<div class="flex flex-col gap-2">
+<h2 class="text-gray-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em]">Get In Touch</h2>
+<p class="text-gray-600 dark:text-gray-400 text-base font-normal leading-normal">Feel free to reach out with any questions or collaboration ideas.</p>
+</div>
+<form action="https://formspree.io/f/YOUR_FORM_ID" method="POST" class="flex flex-col gap-4">
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" for="name">Name</label>
+<input class="w-full rounded-md border-gray-300 dark:border-white/20 bg-background-light dark:bg-background-dark text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-primary focus:ring-primary" id="name" name="name" placeholder="Your Name" type="text" required/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" for="email">Email</label>
+<input class="w-full rounded-md border-gray-300 dark:border-white/20 bg-background-light dark:bg-background-dark text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-primary focus:ring-primary" id="email" name="email" placeholder="your.email@example.com" type="email" required/>
+</div>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" for="message">Message</label>
+<textarea class="w-full rounded-md border-gray-300 dark:border-white/20 bg-background-light dark:bg-background-dark text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-primary focus:ring-primary" id="message" name="message" placeholder="Your message here..." rows="4" required></textarea>
+</div>
+<div class="flex items-center justify-between">
+<p class="text-xs text-gray-500 dark:text-gray-400">Contact: joymin5655@gmail.com</p>
+<button class="flex min-w-[120px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-6 bg-primary text-gray-900 text-sm font-bold leading-normal tracking-[0.015em] hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-background-dark transition-opacity" type="submit">
+<span class="truncate">Send Message</span>
+</button>
+</div>
+</form>
+</div>
+</div>
+<!-- Footer -->
+<footer class="mt-12 mb-4 text-center text-gray-500 dark:text-gray-400">
+<div class="flex justify-center gap-6 mb-4">
+<a class="text-gray-600 hover:text-primary dark:text-gray-400 dark:hover:text-primary transition-colors" href="https://github.com/joymin5655/Finedust_proj" target="_blank">
+<svg aria-hidden="true" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.165 6.839 9.49.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.031-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.03 1.595 1.03 2.688 0 3.848-2.338 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.001 10.001 0 0022 12c0-5.523-4.477-10-10-10z" fill-rule="evenodd"></path></svg>
+</a>
+</div>
+<p class="text-sm">© 2025 AirLens Project. All Rights Reserved.</p>
+</footer>
+</div>
+</div>
+</div>
+</div>
 </body>
 </html>

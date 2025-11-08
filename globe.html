@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>AirLens Newsroom Globe - 세계 대기질 정책 지구본</title>
-    <meta name="description" content="전 세계 미세먼지 정책과 대기질 뉴스를 3D 지구본에서 확인하세요"/>
+    <title>AirLens Policy Globe - 세계 대기질 정책 지구본</title>
+    <meta name="description" content="전 세계 대기질 정책과 규제를 인터랙티브 3D 지구본에서 탐색하세요"/>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -180,7 +180,7 @@
                         <span class="material-symbols-outlined" style="font-size: 32px;">public</span>
                     </div>
                     <h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em] font-display">
-                        AirLens Newsroom Globe
+                        AirLens Policy Globe
                     </h2>
                 </a>
                 <nav class="hidden md:flex items-center gap-9">
@@ -209,8 +209,8 @@
 
                 <!-- Header -->
                 <div class="flex flex-col">
-                    <h1 class="text-white text-base font-medium leading-normal font-display">Newsroom Controls</h1>
-                    <p class="text-white/60 text-sm font-normal leading-normal font-display">Explore global policies</p>
+                    <h1 class="text-white text-base font-medium leading-normal font-display">Policy Explorer</h1>
+                    <p class="text-white/60 text-sm font-normal leading-normal font-display">Discover air quality policies worldwide</p>
                 </div>
 
                 <!-- Search & Filters -->
@@ -286,15 +286,15 @@
                         </div>
                     </label>
 
-                    <!-- Particle Flow -->
+                    <!-- Atmospheric Flow -->
                     <label class="flex items-center gap-4 bg-transparent px-4 min-h-[72px] py-2 justify-between cursor-pointer hover:bg-white/5 rounded-lg transition-colors">
                         <div class="flex items-center gap-4">
                             <div class="text-white flex items-center justify-center rounded-lg bg-black/20 shrink-0 size-12">
                                 <span class="material-symbols-outlined">air</span>
                             </div>
                             <div class="flex flex-col justify-center">
-                                <p class="text-white text-base font-medium leading-normal line-clamp-1 font-display">Particle Flow</p>
-                                <p class="text-white/60 text-sm font-normal leading-normal line-clamp-2 font-display">Atmospheric movement</p>
+                                <p class="text-white text-base font-medium leading-normal line-clamp-1 font-display">Atmospheric Flow</p>
+                                <p class="text-white/60 text-sm font-normal leading-normal line-clamp-2 font-display">Wind direction arrows</p>
                             </div>
                         </div>
                         <div class="shrink-0">
@@ -443,7 +443,7 @@
         <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-30 pointer-events-none">
             <div class="bg-gray-900/90 backdrop-blur-md border border-white/10 rounded-lg px-4 py-2 text-sm text-white/80 font-display">
                 <span class="material-symbols-outlined !text-base inline-block align-middle mr-2">touch_app</span>
-                Click on any country to view air quality policies and news
+                Click on markers to explore air quality policies by country
             </div>
         </div>
 

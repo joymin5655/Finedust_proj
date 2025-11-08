@@ -13,6 +13,7 @@
       "name": "Air Pollution Control Act (Revised)",
       "implementationDate": "2018-04-01",
       "type": "Industrial and Vehicle Standards",
+      "url": "https://www.env.go.jp/en/air/aq/aq.html",
       "description": "Comprehensive revision of the 1968 Act with stricter emission standards for vehicles and industries, focusing on PM2.5 reduction and transboundary pollution monitoring.",
       "targetPollutants": ["PM2.5", "PM10", "NOx", "SOx"],
       "measures": [
@@ -83,6 +84,7 @@
       "name": "Tokyo Metropolitan Diesel Vehicle Regulation",
       "implementationDate": "2003-10-01",
       "type": "Vehicle Emission Standard",
+      "url": "https://www.kankyo.metro.tokyo.lg.jp/en/automobile/pollution/index.html",
       "description": "Pioneering regulation prohibiting operation of diesel vehicles not meeting emission standards in Tokyo metropolitan area.",
       "targetPollutants": ["PM", "NOx"],
       "measures": [

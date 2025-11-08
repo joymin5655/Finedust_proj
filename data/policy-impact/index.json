@@ -132,12 +132,64 @@
         "lat": -25.2744,
         "lon": 133.7751
       }
+    },
+    {
+      "country": "Italy",
+      "countryCode": "IT",
+      "region": "Southern Europe",
+      "flag": "🇮🇹",
+      "dataFile": "italy.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 41.8719,
+        "lon": 12.5674
+      }
+    },
+    {
+      "country": "Indonesia",
+      "countryCode": "ID",
+      "region": "Southeast Asia",
+      "flag": "🇮🇩",
+      "dataFile": "indonesia.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": -6.2088,
+        "lon": 106.8456
+      }
+    },
+    {
+      "country": "Poland",
+      "countryCode": "PL",
+      "region": "Central Europe",
+      "flag": "🇵🇱",
+      "dataFile": "poland.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 51.9194,
+        "lon": 19.1451
+      }
+    },
+    {
+      "country": "Thailand",
+      "countryCode": "TH",
+      "region": "Southeast Asia",
+      "flag": "🇹🇭",
+      "dataFile": "thailand.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 13.7563,
+        "lon": 100.5018
+      }
     }
   ],
   "statistics": {
-    "totalCountries": 10,
-    "totalPolicies": 21,
-    "regionsRepresented": ["East Asia", "South Asia", "Western Europe", "North America", "Oceania"]
+    "totalCountries": 14,
+    "totalPolicies": 29,
+    "regionsRepresented": ["East Asia", "South Asia", "Western Europe", "Central Europe", "Southern Europe", "North America", "Oceania", "Southeast Asia"]
   },
   "apiEndpoints": {
     "openaq": "https://api.openaq.org/v2",

@@ -2039,6 +2039,44 @@ class PolicyGlobe {
       });
     }
 
+    // Real-time data refresh button
+    const refreshBtn = document.getElementById('refresh-data');
+    if (refreshBtn) {
+      refreshBtn.addEventListener('click', async () => {
+        const icon = document.getElementById('refresh-icon');
+        const updateText = document.getElementById('last-update');
+
+        // Add spinning animation
+        if (icon) {
+          icon.style.animation = 'spin 1s linear infinite';
+        }
+
+        // Update status text
+        if (updateText) {
+          updateText.textContent = 'Updating...';
+        }
+
+        // Clear cache and reload data
+        if (this.airQualityAPI) {
+          this.airQualityAPI.clearCache();
+          await this.loadRealTimeAirQuality();
+        }
+
+        // Remove animation
+        if (icon) {
+          icon.style.animation = '';
+        }
+
+        // Update status text with current time
+        if (updateText) {
+          const now = new Date();
+          updateText.textContent = `Updated ${now.toLocaleTimeString()}`;
+        }
+
+        console.log('Real-time data refreshed');
+      });
+    }
+
     this.canvas.addEventListener('click', (e) => this.onClick(e));
     this.canvas.addEventListener('mousemove', (e) => this.onMouseMove(e));
   }

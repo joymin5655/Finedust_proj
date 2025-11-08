@@ -1,13 +1,13 @@
 /**
- * AirLens Newsroom Globe - Interactive 3D Earth Visualization
- * Global air quality policies and news on an interactive globe
- * With realistic Earth textures and country selection
+ * AirLens Policy Globe - Interactive 3D Earth Visualization
+ * Explore global air quality policies and regulations on an interactive globe
+ * With realistic Earth textures and comprehensive country policy data
  */
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-class NewsroomGlobe {
+class PolicyGlobe {
   constructor() {
     this.canvas = document.getElementById('globe-canvas');
     this.container = document.getElementById('globe-container');
@@ -80,7 +80,7 @@ class NewsroomGlobe {
     this.clock = new THREE.Clock();
     this.time = 0;
 
-    console.log('Newsroom Globe initialized');
+    console.log('Policy Globe initialized');
     this.init();
   }
 
@@ -100,7 +100,7 @@ class NewsroomGlobe {
       this.setupEventListeners();
       this.setupToggleSwitches();
 
-      console.log('Newsroom Globe setup complete');
+      console.log('Policy Globe setup complete');
       this.animate();
     } catch (error) {
       console.error('Error initializing globe:', error);
@@ -362,87 +362,143 @@ class NewsroomGlobe {
   }
 
   createParticles() {
-    const geometry = new THREE.BufferGeometry();
-    const positions = [];
-    const velocities = [];
-    const colors = [];
+    // Create atmospheric flow arrows group
+    this.particles = new THREE.Group();
+    this.particleArrows = [];
 
-    for (let i = 0; i < this.particleCount; i++) {
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos(Math.random() * 2 - 1);
-      const radius = 1.02 + Math.random() * 0.02;
+    const arrowCount = 400; // Reduced count for better performance with 3D arrows
+    const radius = 1.03;
+
+    for (let i = 0; i < arrowCount; i++) {
+      // Distribute arrows more evenly using Fibonacci sphere
+      const phi = Math.acos(1 - 2 * (i + 0.5) / arrowCount);
+      const theta = Math.PI * (1 + Math.sqrt(5)) * i;
 
       const x = radius * Math.sin(phi) * Math.cos(theta);
-      const y = radius * Math.sin(phi) * Math.sin(theta);
-      const z = radius * Math.cos(phi);
+      const y = radius * Math.cos(phi);
+      const z = radius * Math.sin(phi) * Math.sin(theta);
 
-      positions.push(x, y, z);
+      const position = new THREE.Vector3(x, y, z);
 
-      const latitudeFactor = Math.sin(phi - Math.PI / 2);
-      const baseSpeed = 0.001 + Math.random() * 0.001;
-      const jetStream = Math.abs(latitudeFactor) > 0.3 ? 1.4 : 1.0;
+      // Calculate atmospheric flow direction
+      // Latitude-dependent flow (jet streams at mid-latitudes)
+      const latitude = (Math.PI / 2) - phi;
+      const latitudeDeg = (latitude * 180) / Math.PI;
 
-      const vx = Math.cos(theta + Math.PI / 2) * baseSpeed * jetStream;
-      const vy = Math.sin(theta + Math.PI / 2) * baseSpeed * jetStream;
-      const vz = (Math.random() - 0.5) * 0.0003;
+      // Eastward flow (westerlies), stronger at jet stream latitudes (30-60 degrees)
+      const jetStreamFactor = Math.abs(latitudeDeg) > 30 && Math.abs(latitudeDeg) < 60 ? 1.5 : 1.0;
 
-      velocities.push(vx, vy, vz);
+      // Create flow direction (primarily eastward)
+      const flowDirection = new THREE.Vector3(
+        -Math.sin(theta),
+        0,
+        Math.cos(theta)
+      );
 
+      // Add slight north-south component based on latitude
+      if (latitudeDeg > 0 && latitudeDeg < 30) {
+        flowDirection.y += 0.1; // Tropical circulation
+      } else if (latitudeDeg < 0 && latitudeDeg > -30) {
+        flowDirection.y -= 0.1;
+      }
+
+      flowDirection.normalize();
+
+      // Create arrow with custom geometry
+      const arrowLength = 0.04 * jetStreamFactor;
+      const arrowHeadLength = 0.012 * jetStreamFactor;
+      const arrowHeadWidth = 0.008 * jetStreamFactor;
+
+      // Arrow shaft (cylinder)
+      const shaftGeometry = new THREE.CylinderGeometry(0.002, 0.002, arrowLength - arrowHeadLength, 4);
+      const shaftMesh = new THREE.Mesh(shaftGeometry);
+      shaftMesh.position.y = (arrowLength - arrowHeadLength) / 2;
+
+      // Arrow head (cone)
+      const headGeometry = new THREE.ConeGeometry(arrowHeadWidth, arrowHeadLength, 4);
+      const headMesh = new THREE.Mesh(headGeometry);
+      headMesh.position.y = arrowLength - arrowHeadLength / 2;
+
+      // Combine shaft and head
+      const arrowGroup = new THREE.Group();
+      arrowGroup.add(shaftMesh);
+      arrowGroup.add(headMesh);
+
+      // Color based on speed (jet stream = cyan, normal = blue-green)
       const color = new THREE.Color();
-      color.setHSL(0.52 + latitudeFactor * 0.08, 0.75, 0.6);
-      colors.push(color.r, color.g, color.b);
+      if (jetStreamFactor > 1) {
+        color.setHSL(0.52, 0.9, 0.6); // Bright cyan for jet streams
+      } else {
+        color.setHSL(0.55, 0.7, 0.5); // Blue-green for normal flow
+      }
+
+      const material = new THREE.MeshBasicMaterial({
+        color: color,
+        transparent: true,
+        opacity: 0.7,
+        depthWrite: false
+      });
+
+      shaftMesh.material = material;
+      headMesh.material = material;
+
+      // Position arrow at globe surface
+      arrowGroup.position.copy(position);
+
+      // Orient arrow to point in flow direction
+      const up = position.clone().normalize();
+      const quaternion = new THREE.Quaternion();
+      quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), flowDirection);
+      arrowGroup.quaternion.copy(quaternion);
+
+      // Align arrow to be tangent to sphere surface
+      const localUp = up.clone();
+      const localRight = new THREE.Vector3().crossVectors(localUp, flowDirection).normalize();
+      const localForward = new THREE.Vector3().crossVectors(localRight, localUp).normalize();
+
+      const rotationMatrix = new THREE.Matrix4();
+      rotationMatrix.makeBasis(localRight, localUp, localForward);
+      arrowGroup.quaternion.setFromRotationMatrix(rotationMatrix);
+
+      // Additional rotation to point arrow in flow direction
+      arrowGroup.rotateOnAxis(localUp, Math.atan2(flowDirection.z, flowDirection.x));
+
+      this.particles.add(arrowGroup);
+      this.particleArrows.push({
+        group: arrowGroup,
+        basePosition: position.clone(),
+        flowDirection: flowDirection.clone(),
+        speed: jetStreamFactor,
+        phase: Math.random() * Math.PI * 2 // For animation
+      });
     }
 
-    geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-    geometry.setAttribute('velocity', new THREE.Float32BufferAttribute(velocities, 3));
-    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-
-    const material = new THREE.PointsMaterial({
-      size: 0.01,
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.7,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false
-    });
-
-    this.particles = new THREE.Points(geometry, material);
     this.particles.visible = this.particlesEnabled;
     this.scene.add(this.particles);
   }
 
   updateParticles() {
-    if (!this.particles || !this.particlesEnabled) return;
+    if (!this.particles || !this.particlesEnabled || !this.particleArrows) return;
 
-    const positions = this.particles.geometry.attributes.position.array;
-    const velocities = this.particles.geometry.attributes.velocity.array;
+    // Animate arrows with pulsing effect to show flow
+    this.particleArrows.forEach((arrow, index) => {
+      // Pulsing opacity animation based on phase
+      const pulseSpeed = 0.001 * arrow.speed;
+      const opacity = 0.5 + Math.sin(this.time * pulseSpeed + arrow.phase) * 0.3;
 
-    for (let i = 0; i < this.particleCount * 3; i += 3) {
-      positions[i] += velocities[i] * this.particleSpeed;
-      positions[i + 1] += velocities[i + 1] * this.particleSpeed;
-      positions[i + 2] += velocities[i + 2] * this.particleSpeed;
+      // Update opacity for both shaft and head
+      arrow.group.children.forEach(mesh => {
+        if (mesh.material) {
+          mesh.material.opacity = opacity;
+        }
+      });
 
-      const x = positions[i];
-      const y = positions[i + 1];
-      const z = positions[i + 2];
-      const radius = Math.sqrt(x * x + y * y + z * z);
-
-      if (radius > 1.15 || radius < 0.97) {
-        const theta = Math.random() * Math.PI * 2;
-        const phi = Math.acos(Math.random() * 2 - 1);
-        const newRadius = 1.02 + Math.random() * 0.02;
-
-        positions[i] = newRadius * Math.sin(phi) * Math.cos(theta);
-        positions[i + 1] = newRadius * Math.sin(phi) * Math.sin(theta);
-        positions[i + 2] = newRadius * Math.cos(phi);
+      // Slight scale animation for jet stream arrows
+      if (arrow.speed > 1) {
+        const scale = 1.0 + Math.sin(this.time * 0.002 + arrow.phase) * 0.1;
+        arrow.group.scale.setScalar(scale);
       }
-
-      const turbulence = Math.sin(this.time * 0.0002 + x * 2) * 0.00002;
-      velocities[i] += turbulence;
-      velocities[i + 1] += turbulence * 0.6;
-    }
-
-    this.particles.geometry.attributes.position.needsUpdate = true;
+    });
   }
 
   createCountryBorders() {
@@ -1815,8 +1871,8 @@ class NewsroomGlobe {
 // Initialize
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
-    new NewsroomGlobe();
+    new PolicyGlobe();
   });
 } else {
-  new NewsroomGlobe();
+  new PolicyGlobe();
 }

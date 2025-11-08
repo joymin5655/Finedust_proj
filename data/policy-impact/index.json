@@ -1,0 +1,56 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2025-11-08T12:00:00Z",
+  "description": "Policy Impact Data Index - Real-time air quality and policy effectiveness data",
+  "countries": [
+    {
+      "country": "China",
+      "countryCode": "CN",
+      "region": "East Asia",
+      "flag": "🇨🇳",
+      "dataFile": "china.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 35.8617,
+        "lon": 104.1954
+      }
+    },
+    {
+      "country": "India",
+      "countryCode": "IN",
+      "region": "South Asia",
+      "flag": "🇮🇳",
+      "dataFile": "india.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 20.5937,
+        "lon": 78.9629
+      }
+    },
+    {
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "region": "Western Europe",
+      "flag": "🇬🇧",
+      "dataFile": "united-kingdom.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 55.3781,
+        "lon": -3.4360
+      }
+    }
+  ],
+  "statistics": {
+    "totalCountries": 3,
+    "totalPolicies": 6,
+    "regionsRepresented": ["East Asia", "South Asia", "Western Europe"]
+  },
+  "apiEndpoints": {
+    "openaq": "https://api.openaq.org/v2",
+    "waqi": "https://api.waqi.info/feed",
+    "who": "https://www.who.int/data/gho/data"
+  }
+}

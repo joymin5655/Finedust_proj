@@ -1,0 +1,155 @@
+{
+  "country": "India",
+  "countryCode": "IN",
+  "region": "South Asia",
+  "flag": "🇮🇳",
+  "coordinates": {
+    "lat": 20.5937,
+    "lon": 78.9629
+  },
+  "policies": [
+    {
+      "id": "in-ncap",
+      "name": "National Clean Air Programme (NCAP)",
+      "implementationDate": "2019-01-10",
+      "type": "National Regulation",
+      "description": "Comprehensive plan to reduce PM2.5 and PM10 concentrations by 20-30% by 2024 compared to 2017 levels across 122 cities.",
+      "targetPollutants": ["PM2.5", "PM10"],
+      "measures": [
+        "City-specific action plans",
+        "Emissions inventory",
+        "Source apportionment studies",
+        "Strengthening monitoring network",
+        "Strict enforcement of emission standards"
+      ],
+      "impact": {
+        "beforePeriod": {
+          "start": "2015-01-01",
+          "end": "2019-01-09",
+          "meanPM25": 74.3,
+          "medianPM25": 68.5,
+          "samples": 1456
+        },
+        "afterPeriod": {
+          "start": "2019-01-10",
+          "end": "2024-01-10",
+          "meanPM25": 62.8,
+          "medianPM25": 58.2,
+          "samples": 1825
+        },
+        "analysis": {
+          "deltaMean": -11.5,
+          "percentChange": -15.5,
+          "pValue": 0.015,
+          "significant": true,
+          "effectSize": "small"
+        }
+      },
+      "timeline": [
+        {
+          "date": "2019-01-10",
+          "event": "NCAP Launched",
+          "pm25": 74.3
+        },
+        {
+          "date": "2020-01-01",
+          "event": "122 Cities Identified",
+          "pm25": 71.5
+        },
+        {
+          "date": "2021-01-01",
+          "event": "First Progress Review",
+          "pm25": 68.2
+        },
+        {
+          "date": "2022-01-01",
+          "event": "Monitoring Network Expansion",
+          "pm25": 65.7
+        },
+        {
+          "date": "2024-01-10",
+          "event": "5-Year Assessment",
+          "pm25": 62.8
+        }
+      ]
+    },
+    {
+      "id": "in-bs6",
+      "name": "Bharat Stage VI (BS-VI) Emission Standards",
+      "implementationDate": "2020-04-01",
+      "type": "Vehicle Emission Standard",
+      "description": "Implementation of BS-VI emission standards for all new vehicles, reducing NOx emissions by 70% and particulate matter by 80% compared to BS-IV.",
+      "targetPollutants": ["NOx", "PM2.5", "PM10"],
+      "measures": [
+        "Mandatory for all new vehicles",
+        "Fuel quality upgrade to BS-VI",
+        "Advanced emission control systems",
+        "On-board diagnostics (OBD)"
+      ],
+      "impact": {
+        "beforePeriod": {
+          "start": "2017-01-01",
+          "end": "2020-03-31",
+          "meanPM25": 71.2,
+          "medianPM25": 66.8,
+          "samples": 1178
+        },
+        "afterPeriod": {
+          "start": "2020-04-01",
+          "end": "2023-12-31",
+          "meanPM25": 64.5,
+          "medianPM25": 60.2,
+          "samples": 1345
+        },
+        "analysis": {
+          "deltaMean": -6.7,
+          "percentChange": -9.4,
+          "pValue": 0.032,
+          "significant": true,
+          "effectSize": "small"
+        }
+      }
+    }
+  ],
+  "realTimeData": {
+    "lastUpdated": "2025-11-08T12:00:00Z",
+    "currentPM25": 68.5,
+    "aqi": 159,
+    "aqiLevel": "Unhealthy",
+    "trend": "improving",
+    "majorCities": [
+      {
+        "name": "New Delhi",
+        "pm25": 142.3,
+        "aqi": 192,
+        "aqiLevel": "Unhealthy"
+      },
+      {
+        "name": "Mumbai",
+        "pm25": 52.8,
+        "aqi": 143,
+        "aqiLevel": "Unhealthy for Sensitive Groups"
+      },
+      {
+        "name": "Bangalore",
+        "pm25": 38.6,
+        "aqi": 109,
+        "aqiLevel": "Unhealthy for Sensitive Groups"
+      }
+    ]
+  },
+  "news": [
+    {
+      "title": "Delhi's Air Quality Shows Improvement in Winter 2024",
+      "date": "2024-12-10",
+      "source": "The Hindu",
+      "url": "https://example.com/news1"
+    },
+    {
+      "title": "NCAP Extended to 2025 with Stricter Targets",
+      "date": "2024-11-25",
+      "source": "Times of India",
+      "url": "https://example.com/news2"
+    }
+  ]
+}

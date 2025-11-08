@@ -1,14 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="dark" lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="AirLens Globe - Interactive 3D visualization of global air quality data with PM2.5 monitoring">
-    <title>AirLens Globe - Real-time Air Quality Visualization</title>
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/globe.css">
-    <link rel="stylesheet" href="css/settings.css">
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>AirLens Global AQI - 실시간 대기질 지구본</title>
+    <meta name="description" content="실시간 PM2.5 농도와 대기 흐름을 3D 지구본에서 확인하세요"/>
 
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+
+    <!-- Three.js -->
     <script type="importmap">
     {
       "imports": {
@@ -17,212 +24,444 @@
       }
     }
     </script>
-</head>
-<body class="globe-body">
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="navbar-container">
-            <a href="index.html" class="navbar-logo">🌍 AirLens</a>
-            <button class="navbar-toggle" aria-label="Toggle menu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-            <ul class="navbar-menu">
-                <li><a href="index.html" class="navbar-link">Home</a></li>
-                <li><a href="globe.html" class="navbar-link active">Globe</a></li>
-                <li><a href="camera.html" class="navbar-link">Camera AI</a></li>
-                <li><a href="research.html" class="navbar-link">Research</a></li>
-                <li><a href="about.html" class="navbar-link">About</a></li>
-                <li><a href="settings.html" class="navbar-link">
-                    <div class="settings-icon">
-                        <div class="loader-icon"></div>
-                    </div>
-                </a></li>
-            </ul>
-        </div>
-    </nav>
 
-    <!-- Globe Container -->
-    <div id="globe-container">
-        <!-- 3D Canvas -->
-        <canvas id="globe-canvas"></canvas>
-        
-        <!-- Loading Screen -->
-        <div id="loading-screen">
-            <div class="loading-content">
-                <div class="loading-spinner"></div>
-                <p class="loading-text">Initializing Earth...</p>
-            </div>
+    <!-- Main Styles -->
+    <link rel="stylesheet" href="css/main.css"/>
+    <link rel="stylesheet" href="css/settings.css"/>
+
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#25e2f4",
+                        "background-light": "#f5f8f8",
+                        "background-dark": "#102122",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            font-size: 24px;
+        }
+
+        #globe-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, #000005 0%, #0a0e1a 100%);
+        }
+
+        #globe-canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .control-panel {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.3) rgba(0,0,0,0.2);
+        }
+
+        .control-panel::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .control-panel::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.2);
+            border-radius: 3px;
+        }
+
+        .control-panel::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 51px;
+            height: 31px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.3);
+            transition: 0.3s;
+            border-radius: 9999px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 27px;
+            width: 27px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+            box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 8px, rgba(0, 0, 0, 0.06) 0px 3px 1px;
+        }
+
+        input:checked + .slider {
+            background-color: #25e2f4;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+
+        .zoom-controls {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            z-index: 20;
+        }
+
+        .zoom-btn {
+            width: 2.5rem;
+            height: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(17, 24, 39, 0.5);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .zoom-btn:hover {
+            background: rgba(17, 24, 39, 0.8);
+            border-color: rgba(37, 226, 244, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            .control-panel {
+                max-width: 100vw !important;
+            }
+
+            .info-panel {
+                max-width: 90vw !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-background-dark font-display text-white">
+    <div class="relative flex h-screen w-full flex-col overflow-hidden">
+
+        <!-- 3D Globe Background -->
+        <div id="globe-container">
+            <canvas id="globe-canvas"></canvas>
         </div>
-        
-        <!-- Left Sidebar Menu (Earth.Nullschool Style) -->
-        <div id="sidebar-menu" class="sidebar">
-            <div class="sidebar-header">
-                <h2>🌍 Earth</h2>
-                <button id="sidebar-toggle" class="sidebar-toggle">☰</button>
+
+        <!-- Top Navigation Bar -->
+        <header class="relative z-30 flex items-center justify-between whitespace-nowrap px-6 py-3 sm:px-10 border-b border-solid border-white/10 bg-black/20 backdrop-blur-sm">
+            <div class="flex items-center gap-8">
+                <div class="flex items-center gap-4 text-white">
+                    <div class="size-6 text-primary">
+                        <span class="material-symbols-outlined !text-3xl">public</span>
+                    </div>
+                    <h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em] font-display">
+                        AirLens Global AQI
+                    </h2>
+                </div>
+                <nav class="hidden md:flex items-center gap-9">
+                    <a class="text-white/80 hover:text-white text-sm font-medium leading-normal transition-colors" href="index.html">Home</a>
+                    <a class="text-white/80 hover:text-white text-sm font-medium leading-normal transition-colors" href="camera.html">Camera AI</a>
+                    <a class="text-white/80 hover:text-white text-sm font-medium leading-normal transition-colors" href="research.html">Research</a>
+                    <a class="text-white/80 hover:text-white text-sm font-medium leading-normal transition-colors" href="about.html">About</a>
+                </nav>
             </div>
-            
-            <div class="sidebar-content">
-                <!-- Data Layer Selection -->
-                <div class="control-section">
-                    <h3>Data Layer</h3>
-                    <select id="data-layer" class="control-select">
-                        <option value="pm25">PM2.5 Concentration</option>
-                        <option value="pm10">PM10 Concentration</option>
-                        <option value="none">None</option>
-                    </select>
+            <div class="flex items-center gap-4">
+                <a href="settings.html" class="settings-icon">
+                    <div class="loader-icon"></div>
+                </a>
+                <a href="https://github.com/joymin5655/Finedust_proj" target="_blank"
+                   class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-background-dark text-sm font-bold leading-normal tracking-[0.015em] hover:bg-opacity-90 transition-opacity">
+                    <span class="truncate hidden sm:inline">GitHub</span>
+                    <span class="truncate sm:hidden">Git</span>
+                </a>
+            </div>
+        </header>
+
+        <main class="relative z-20 flex flex-1 p-4 md:p-6 gap-6 pointer-events-none">
+
+            <!-- Left Control Panel -->
+            <aside class="pointer-events-auto flex h-full w-full max-w-sm flex-col gap-4 rounded-xl bg-gray-900/50 p-4 backdrop-blur-md border border-white/10 overflow-y-auto control-panel">
+
+                <!-- Header -->
+                <div class="flex flex-col">
+                    <h1 class="text-white text-base font-medium leading-normal font-display">Controls</h1>
+                    <p class="text-white/60 text-sm font-normal leading-normal font-display">Customize your view</p>
                 </div>
-                
-                <!-- Overlay Selection -->
-                <div class="control-section">
-                    <h3>Overlay</h3>
-                    <select id="overlay-type" class="control-select">
-                        <option value="particles">Atmospheric Particles</option>
-                        <option value="stations">Monitoring Stations</option>
-                        <option value="heatmap">Heatmap</option>
-                        <option value="none">None</option>
-                    </select>
-                </div>
-                
-                <!-- Projection -->
-                <div class="control-section">
-                    <h3>Projection</h3>
-                    <select id="projection" class="control-select">
-                        <option value="orthographic">Orthographic (3D)</option>
-                        <option value="equirectangular">Equirectangular (Flat)</option>
-                    </select>
-                </div>
-                
-                <!-- Time Control -->
-                <div class="control-section">
-                    <h3>Time Period</h3>
-                    <div class="time-display">
-                        <div class="time-label">Current Year</div>
-                        <div class="time-value" id="current-year">2021</div>
+
+                <!-- Search & Filters -->
+                <div class="flex flex-col gap-4">
+                    <label class="flex flex-col min-w-40 h-12 w-full">
+                        <div class="flex w-full flex-1 items-stretch rounded-lg h-full">
+                            <div class="text-white/60 flex border-none bg-black/20 items-center justify-center pl-4 rounded-l-lg border-r-0">
+                                <span class="material-symbols-outlined">search</span>
+                            </div>
+                            <input id="location-search"
+                                   class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-white focus:outline-0 focus:ring-0 border-none bg-black/20 focus:border-none h-full placeholder:text-white/60 px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal font-display"
+                                   placeholder="Search by Country or City..."
+                                   value=""/>
+                        </div>
+                    </label>
+
+                    <div class="flex gap-3 flex-wrap">
+                        <button class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-black/20 pl-4 pr-2 hover:bg-black/40 transition-colors">
+                            <p class="text-white text-sm font-medium leading-normal font-display">Filter by AQI</p>
+                            <span class="material-symbols-outlined text-white !text-xl">arrow_drop_down</span>
+                        </button>
+                        <button class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-black/20 pl-4 pr-2 hover:bg-black/40 transition-colors">
+                            <p class="text-white text-sm font-medium leading-normal font-display">Date Range</p>
+                            <span class="material-symbols-outlined text-white !text-xl">arrow_drop_down</span>
+                        </button>
                     </div>
                 </div>
-                
-                <!-- Year Slider -->
-                <div class="control-section">
-                    <h3>Historical Data</h3>
-                    <input type="range" id="year-slider" class="time-slider" 
-                           min="0" max="4" value="4" step="1">
-                    <div style="display: flex; justify-content: space-between; font-size: 10px; color: rgba(255,255,255,0.5); margin-top: 8px;">
-                        <span>1990</span>
-                        <span>2000</span>
-                        <span>2010</span>
-                        <span>2019</span>
-                        <span>2021</span>
+
+                <div class="my-2 border-t border-white/10"></div>
+
+                <!-- Layers -->
+                <div class="flex flex-col gap-2">
+                    <div class="flex flex-col mb-2">
+                        <h1 class="text-white text-base font-medium leading-normal font-display">Layers</h1>
+                        <p class="text-white/60 text-sm font-normal leading-normal font-display">Toggle visual layers</p>
+                    </div>
+
+                    <!-- Particle Flow -->
+                    <div class="flex items-center gap-4 bg-transparent px-4 min-h-[72px] py-2 justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="text-white flex items-center justify-center rounded-lg bg-black/20 shrink-0 size-12">
+                                <span class="material-symbols-outlined">air</span>
+                            </div>
+                            <div class="flex flex-col justify-center">
+                                <p class="text-white text-base font-medium leading-normal line-clamp-1 font-display">Particle Flow</p>
+                                <p class="text-white/60 text-sm font-normal leading-normal line-clamp-2 font-display">Visualize atmospheric particle movement</p>
+                            </div>
+                        </div>
+                        <div class="shrink-0">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="toggle-particles" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- PM2.5 Overlay -->
+                    <div class="flex items-center gap-4 bg-transparent px-4 min-h-[72px] py-2 justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="text-white flex items-center justify-center rounded-lg bg-black/20 shrink-0 size-12">
+                                <span class="material-symbols-outlined">blur_on</span>
+                            </div>
+                            <div class="flex flex-col justify-center">
+                                <p class="text-white text-base font-medium leading-normal line-clamp-1 font-display">PM2.5 Overlay</p>
+                                <p class="text-white/60 text-sm font-normal leading-normal line-clamp-2 font-display">Show air quality heatmap</p>
+                            </div>
+                        </div>
+                        <div class="shrink-0">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="toggle-pm25" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Grid Lines -->
+                    <div class="flex items-center gap-4 bg-transparent px-4 min-h-[72px] py-2 justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="text-white flex items-center justify-center rounded-lg bg-black/20 shrink-0 size-12">
+                                <span class="material-symbols-outlined">grid_on</span>
+                            </div>
+                            <div class="flex flex-col justify-center">
+                                <p class="text-white text-base font-medium leading-normal line-clamp-1 font-display">Grid Lines</p>
+                                <p class="text-white/60 text-sm font-normal leading-normal line-clamp-2 font-display">Show latitude/longitude grid</p>
+                            </div>
+                        </div>
+                        <div class="shrink-0">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="toggle-grid">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Day/Night Cycle -->
+                    <div class="flex items-center gap-4 bg-transparent px-4 min-h-[72px] py-2 justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="text-white flex items-center justify-center rounded-lg bg-black/20 shrink-0 size-12">
+                                <span class="material-symbols-outlined">nightlight</span>
+                            </div>
+                            <div class="flex flex-col justify-center">
+                                <p class="text-white text-base font-medium leading-normal line-clamp-1 font-display">Day/Night Cycle</p>
+                                <p class="text-white/60 text-sm font-normal leading-normal line-clamp-2 font-display">Toggle dynamic day/night shading</p>
+                            </div>
+                        </div>
+                        <div class="shrink-0">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="toggle-daynight" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
                     </div>
                 </div>
+
+                <div class="my-2 border-t border-white/10"></div>
+
+                <!-- Animation Speed -->
+                <div class="flex flex-col gap-2">
+                    <div class="flex flex-col mb-2">
+                        <h1 class="text-white text-base font-medium leading-normal font-display">Animation Speed</h1>
+                        <p class="text-white/60 text-sm font-normal leading-normal font-display">Adjust particle flow speed</p>
+                    </div>
+                    <input type="range" id="particle-speed" min="0" max="2" step="0.1" value="1"
+                           class="w-full h-2 bg-black/20 rounded-lg appearance-none cursor-pointer accent-primary"/>
+                    <div class="flex justify-between text-xs text-white/60">
+                        <span>Slow</span>
+                        <span>Normal</span>
+                        <span>Fast</span>
+                    </div>
+                </div>
+
+            </aside>
+
+            <!-- Right Side Information Panel -->
+            <div class="pointer-events-auto flex flex-1 flex-col justify-between">
+
+                <!-- Station Info Pop-up -->
+                <div class="flex justify-end">
+                    <div id="station-info" class="w-full max-w-sm rounded-xl bg-gray-900/50 p-6 backdrop-blur-md border border-white/10 info-panel" style="display: none;">
+                        <div class="flex items-center justify-between pb-4 border-b border-white/10">
+                            <div>
+                                <h3 class="text-lg font-bold text-white font-display" id="station-name">Loading...</h3>
+                                <p class="text-sm text-white/60 font-display" id="station-location">-</p>
+                            </div>
+                            <div class="flex flex-col items-end">
+                                <p class="text-3xl font-bold font-display" id="station-aqi">-</p>
+                                <p class="text-sm font-medium font-display" id="station-level">-</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4 pt-4 text-center">
+                            <div>
+                                <p class="text-xs text-white/60 font-display">PM2.5</p>
+                                <p class="text-lg font-medium text-white font-display" id="station-pm25">- µg/m³</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-white/60 font-display">PM10</p>
+                                <p class="text-lg font-medium text-white font-display" id="station-pm10">- µg/m³</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-white/60 font-display">O₃</p>
+                                <p class="text-lg font-medium text-white font-display" id="station-o3">- ppb</p>
+                            </div>
+                        </div>
+                        <div class="mt-4 text-center text-xs text-white/50 font-display" id="station-time">
+                            Last updated: -
+                        </div>
+                        <button onclick="document.getElementById('station-info').style.display='none'"
+                                class="mt-4 w-full flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary/20 text-primary text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/30 transition-colors">
+                            <span class="truncate">Close</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Bottom Controls -->
+                <div class="flex items-end justify-between">
+
+                    <!-- Legend -->
+                    <div class="rounded-xl bg-gray-900/50 p-4 backdrop-blur-md border border-white/10 max-w-xs">
+                        <h4 class="text-sm font-bold text-white mb-3 font-display">AQI Legend</h4>
+                        <div class="grid grid-cols-2 gap-x-4 gap-y-2">
+                            <div class="flex items-center gap-2">
+                                <div class="size-3 rounded-full bg-green-500"></div>
+                                <span class="text-xs text-white/80 font-display">Good (0-50)</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="size-3 rounded-full bg-yellow-400"></div>
+                                <span class="text-xs text-white/80 font-display">Moderate (51-100)</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="size-3 rounded-full bg-orange-500"></div>
+                                <span class="text-xs text-white/80 font-display">Unhealthy SG (101-150)</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="size-3 rounded-full bg-red-500"></div>
+                                <span class="text-xs text-white/80 font-display">Unhealthy (151-200)</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="size-3 rounded-full bg-purple-500"></div>
+                                <span class="text-xs text-white/80 font-display">Very Unhealthy (201-300)</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="size-3 rounded-full" style="background-color: #7e1946;"></div>
+                                <span class="text-xs text-white/80 font-display">Hazardous (300+)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
+
+        </main>
+
+        <!-- Zoom Controls -->
+        <div class="zoom-controls">
+            <button id="zoom-in" class="zoom-btn" title="Zoom In">
+                <span class="material-symbols-outlined">add</span>
+            </button>
+            <button id="zoom-out" class="zoom-btn" title="Zoom Out">
+                <span class="material-symbols-outlined">remove</span>
+            </button>
+            <button id="reset-view" class="zoom-btn" title="Reset View">
+                <span class="material-symbols-outlined">home</span>
+            </button>
         </div>
-        
-        <!-- Right Data Panel (Analysis Tools) -->
-        <div id="data-panel" class="data-panel">
-            <div class="panel-header">
-                <h3>📊 Data Analysis</h3>
-                <button id="panel-toggle" class="panel-close">×</button>
-            </div>
-            
-            <div class="panel-content">
-                <!-- Global Statistics -->
-                <div class="stat-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">🌍</div>
-                        <div class="stat-info">
-                            <div class="stat-value" id="global-pm25">--</div>
-                            <div class="stat-label">Global Avg PM2.5</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">📍</div>
-                        <div class="stat-info">
-                            <div class="stat-value" id="total-stations">--</div>
-                            <div class="stat-label">Active Stations</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Most Polluted Cities -->
-                <div class="data-list">
-                    <h4>🔴 Most Polluted Regions</h4>
-                    <div id="polluted-list" class="city-list">
-                        <!-- Populated by JavaScript -->
-                    </div>
-                </div>
-                
-                <!-- Cleanest Cities -->
-                <div class="data-list">
-                    <h4>🟢 Cleanest Regions</h4>
-                    <div id="cleanest-list" class="city-list">
-                        <!-- Populated by JavaScript -->
-                    </div>
-                </div>
-                
-                <!-- AQI Scale Reference -->
-                <div class="data-list">
-                    <h4>📏 AQI Scale (PM2.5)</h4>
-                    <div style="background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(93, 188, 210, 0.2); border-radius: 10px; padding: 14px;">
-                        <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                            <div style="width: 20px; height: 20px; background: #00e400; border-radius: 4px; margin-right: 10px;"></div>
-                            <span style="font-size: 12px; color: rgba(255,255,255,0.9);">Good (0-12)</span>
-                        </div>
-                        <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                            <div style="width: 20px; height: 20px; background: #ffff00; border-radius: 4px; margin-right: 10px;"></div>
-                            <span style="font-size: 12px; color: rgba(255,255,255,0.9);">Moderate (12-35)</span>
-                        </div>
-                        <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                            <div style="width: 20px; height: 20px; background: #ff7e00; border-radius: 4px; margin-right: 10px;"></div>
-                            <span style="font-size: 12px; color: rgba(255,255,255,0.9);">Unhealthy (Sensitive) (35-55)</span>
-                        </div>
-                        <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                            <div style="width: 20px; height: 20px; background: #ff0000; border-radius: 4px; margin-right: 10px;"></div>
-                            <span style="font-size: 12px; color: rgba(255,255,255,0.9);">Unhealthy (55-150)</span>
-                        </div>
-                        <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                            <div style="width: 20px; height: 20px; background: #99004c; border-radius: 4px; margin-right: 10px;"></div>
-                            <span style="font-size: 12px; color: rgba(255,255,255,0.9);">Very Unhealthy (150-250)</span>
-                        </div>
-                        <div style="display: flex; align-items: center;">
-                            <div style="width: 20px; height: 20px; background: #7e0023; border-radius: 4px; margin-right: 10px;"></div>
-                            <span style="font-size: 12px; color: rgba(255,255,255,0.9);">Hazardous (250+)</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Info Panel (Click Details) -->
-        <div id="info-panel" class="info-panel">
-            <button id="close-info" class="close-btn">×</button>
-            <div id="info-content"></div>
-        </div>
-        
-        <!-- Bottom Controls -->
-        <div id="bottom-controls" class="bottom-bar">
-            <button id="play-pause" class="control-btn" title="Play Timeline">▶</button>
-            <div style="flex: 1; max-width: 600px; text-align: center;">
-                <div style="font-size: 11px; color: rgba(255,255,255,0.6); margin-bottom: 4px; letter-spacing: 1px;">
-                    HISTORICAL TIMELINE
-                </div>
-            </div>
-            <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: rgba(255,255,255,0.6);">
-                <span id="fps-counter">60 FPS</span>
-            </div>
-        </div>
+
     </div>
 
-    <!-- Scripts -->
+    <!-- JavaScript -->
     <script type="module" src="js/globe.js"></script>
-    
-    <!-- Analytics (Optional) -->
-    <script>
-        // Track page view
-        console.log('🌍 AirLens Globe - Loaded');
-        console.log('📊 Data Source: Our World in Data');
-        console.log('🎨 Design: Earth.Nullschool + Google Earth Style');
-    </script>
+
 </body>
 </html>

@@ -808,11 +808,63 @@
         "lat": -6.7924,
         "lon": 39.2083
       }
+    },
+    {
+      "country": "Croatia",
+      "countryCode": "HR",
+      "region": "Southern Europe",
+      "flag": "🇭🇷",
+      "dataFile": "croatia.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 45.8150,
+        "lon": 15.9819
+      }
+    },
+    {
+      "country": "Myanmar",
+      "countryCode": "MM",
+      "region": "Southeast Asia",
+      "flag": "🇲🇲",
+      "dataFile": "myanmar.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 16.8661,
+        "lon": 96.1951
+      }
+    },
+    {
+      "country": "Qatar",
+      "countryCode": "QA",
+      "region": "Middle East",
+      "flag": "🇶🇦",
+      "dataFile": "qatar.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 25.2854,
+        "lon": 51.5310
+      }
+    },
+    {
+      "country": "Uganda",
+      "countryCode": "UG",
+      "region": "East Africa",
+      "flag": "🇺🇬",
+      "dataFile": "uganda.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 0.3476,
+        "lon": 32.5825
+      }
     }
   ],
   "statistics": {
-    "totalCountries": 62,
-    "totalPolicies": 125,
+    "totalCountries": 66,
+    "totalPolicies": 133,
     "regionsRepresented": ["East Asia", "South Asia", "Western Europe", "Central Europe", "Southern Europe", "Northern Europe", "Eastern Europe", "North America", "Central America", "Oceania", "Southeast Asia", "South America", "Western Asia", "Africa", "North Africa", "East Africa", "Central Africa", "Central Asia", "Middle East", "West Africa"]
   },
   "apiEndpoints": {

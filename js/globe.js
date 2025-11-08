@@ -1577,6 +1577,11 @@ class PolicyGlobe {
     const card = document.getElementById('policy-card');
     card.style.display = 'block';
 
+    // Trigger animation after a brief delay to ensure display change is applied
+    setTimeout(() => {
+      card.classList.add('show');
+    }, 10);
+
     document.getElementById('policy-flag').textContent = policy.flag;
     document.getElementById('policy-country').textContent = countryName;
     document.getElementById('policy-region').textContent = policy.region;

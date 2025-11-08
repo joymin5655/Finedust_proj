@@ -208,18 +208,74 @@
             background: rgba(37, 226, 244, 0.5);
         }
 
+        /* Card animations */
+        #policy-card {
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        }
+
+        #policy-card[style*="display: block"],
+        #policy-card.show {
+            opacity: 1 !important;
+            transform: translateX(0) !important;
+        }
+
+        /* Tablet and below */
+        @media (max-width: 1024px) {
+            #policy-card,
+            .control-panel {
+                max-w-[320px] !important;
+            }
+        }
+
+        /* Mobile landscape and below */
         @media (max-width: 768px) {
             .control-panel {
-                max-width: 90vw !important;
-                top: 4rem !important;
-                max-height: calc(100vh - 140px) !important;
+                max-width: calc(100vw - 2rem) !important;
+                top: 4.5rem !important;
+                left: 1rem !important;
+                right: 1rem !important;
+                max-height: calc(100vh - 5.5rem) !important;
             }
 
             #policy-card {
-                max-width: 90vw !important;
-                top: 4rem !important;
+                max-width: calc(100vw - 2rem) !important;
+                top: 4.5rem !important;
                 left: 1rem !important;
-                max-height: calc(100vh - 140px) !important;
+                max-height: calc(50vh - 3rem) !important;
+                bottom: auto !important;
+            }
+
+            /* Stack cards vertically on mobile */
+            #policy-card[style*="display: block"] ~ aside.control-panel {
+                top: calc(50vh + 1.5rem) !important;
+                max-height: calc(50vh - 7rem) !important;
+            }
+        }
+
+        /* Small mobile */
+        @media (max-width: 480px) {
+            #policy-card,
+            .control-panel {
+                padding: 0.75rem !important;
+                gap: 0.5rem !important;
+            }
+
+            #policy-card h3,
+            .control-panel h1 {
+                font-size: 0.875rem !important;
+            }
+
+            #policy-card .text-xl,
+            .control-panel .text-lg {
+                font-size: 1rem !important;
+            }
+
+            /* Make touch targets larger */
+            button {
+                min-height: 44px;
+                min-width: 44px;
             }
         }
 
@@ -328,7 +384,7 @@
                             </div>
                         </div>
                     </div>
-                    <button onclick="document.getElementById('policy-card').style.display='none'"
+                    <button onclick="closePolicyCard()"
                             class="text-white/60 hover:text-white transition-colors">
                         <span class="material-symbols-outlined !text-xl">close</span>
                     </button>
@@ -597,6 +653,16 @@
     </div>
 
     <!-- JavaScript -->
+    <script>
+        // Close policy card with animation
+        function closePolicyCard() {
+            const card = document.getElementById('policy-card');
+            card.classList.remove('show');
+            setTimeout(() => {
+                card.style.display = 'none';
+            }, 300); // Match the transition duration
+        }
+    </script>
     <script src="js/theme-toggle.js"></script>
     <script src="js/main.js"></script>
     <script src="js/air-quality-api.js"></script>

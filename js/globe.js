@@ -1480,6 +1480,9 @@ class PolicyGlobe {
           ? `✓ Statistically significant (p=${impact.analysis.pValue.toFixed(3)})`
           : `Not statistically significant (p=${impact.analysis.pValue.toFixed(3)})`;
         document.getElementById('impact-significance').textContent = significanceText;
+
+        // Render before/after comparison chart
+        this.renderImpactComparisonChart(impact, mainPolicy.name);
       }
 
       // Render timeline chart if available
@@ -1517,7 +1520,25 @@ class PolicyGlobe {
       viewMoreBtn.parentNode.replaceChild(newBtn, viewMoreBtn);
 
       newBtn.addEventListener('click', () => {
-        this.showFullDetails(countryName, policy);
+        // Try to open policy-specific page or Our World in Data country page
+        let policyUrl = null;
+
+        if (policy.policyImpactData && policy.policyImpactData.policies && policy.policyImpactData.policies.length > 0) {
+          const mainPolicy = policy.policyImpactData.policies[0];
+          // Check if policy has a URL
+          if (mainPolicy.url) {
+            policyUrl = mainPolicy.url;
+          }
+        }
+
+        // Fallback to Our World in Data country air pollution page
+        if (!policyUrl) {
+          const countrySlug = countryName.toLowerCase().replace(/\s+/g, '-');
+          policyUrl = `https://ourworldindata.org/air-pollution#${countrySlug}`;
+        }
+
+        // Open in new tab
+        window.open(policyUrl, '_blank', 'noopener,noreferrer');
       });
     }
   }
@@ -1619,6 +1640,122 @@ class PolicyGlobe {
             title: {
               display: true,
               text: 'PM2.5 (µg/m³)',
+              color: 'rgba(255, 255, 255, 0.8)',
+              font: {
+                size: 11
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  renderImpactComparisonChart(impact, policyName) {
+    const canvas = document.getElementById('policy-impact-chart');
+    if (!canvas) return;
+
+    // Destroy existing chart if it exists
+    if (this.impactChart) {
+      this.impactChart.destroy();
+    }
+
+    const ctx = canvas.getContext('2d');
+
+    // Prepare data
+    const beforePM25 = impact.beforePeriod.meanPM25;
+    const afterPM25 = impact.afterPeriod.meanPM25;
+    const percentChange = impact.analysis.percentChange;
+
+    // Determine if improvement (green) or worsening (red)
+    const beforeColor = 'rgba(239, 68, 68, 0.8)'; // Red for before
+    const afterColor = percentChange < 0 ? 'rgba(34, 197, 94, 0.8)' : 'rgba(239, 68, 68, 0.8)'; // Green if improved, red if worsened
+
+    this.impactChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Before Policy', 'After Policy'],
+        datasets: [{
+          label: 'PM2.5 (µg/m³)',
+          data: [beforePM25, afterPM25],
+          backgroundColor: [beforeColor, afterColor],
+          borderColor: ['rgba(239, 68, 68, 1)', percentChange < 0 ? 'rgba(34, 197, 94, 1)' : 'rgba(239, 68, 68, 1)'],
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          },
+          title: {
+            display: true,
+            text: 'PM2.5 Impact Comparison',
+            color: 'rgba(255, 255, 255, 0.9)',
+            font: {
+              size: 14,
+              weight: 'bold'
+            },
+            padding: {
+              top: 0,
+              bottom: 10
+            }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            titleColor: '#25e2f4',
+            bodyColor: '#fff',
+            borderColor: '#25e2f4',
+            borderWidth: 1,
+            padding: 12,
+            displayColors: false,
+            callbacks: {
+              label: function(context) {
+                const value = context.parsed.y;
+                const period = context.dataIndex === 0 ? 'Before' : 'After';
+                const dateRange = context.dataIndex === 0
+                  ? `${impact.beforePeriod.start} to ${impact.beforePeriod.end}`
+                  : `${impact.afterPeriod.start} to ${impact.afterPeriod.end}`;
+                return [
+                  `${period}: ${value.toFixed(1)} µg/m³`,
+                  `Period: ${dateRange}`,
+                  `Samples: ${context.dataIndex === 0 ? impact.beforePeriod.samples : impact.afterPeriod.samples}`
+                ];
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: {
+              color: 'rgba(255, 255, 255, 0.05)'
+            },
+            ticks: {
+              color: 'rgba(255, 255, 255, 0.7)',
+              font: {
+                size: 11
+              }
+            }
+          },
+          y: {
+            beginAtZero: true,
+            grid: {
+              color: 'rgba(255, 255, 255, 0.05)'
+            },
+            ticks: {
+              color: 'rgba(255, 255, 255, 0.6)',
+              font: {
+                size: 10
+              },
+              callback: function(value) {
+                return value.toFixed(0);
+              }
+            },
+            title: {
+              display: true,
+              text: 'PM2.5 Concentration (µg/m³)',
               color: 'rgba(255, 255, 255, 0.8)',
               font: {
                 size: 11

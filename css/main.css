@@ -211,6 +211,11 @@ a:hover {
   color: var(--color-primary);
 }
 
+.navbar-link-active {
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
 /* Mobile Menu Toggle */
 .navbar-toggle {
   display: none;

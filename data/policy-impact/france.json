@@ -13,6 +13,7 @@
       "name": "Crit'Air Certificate System",
       "implementationDate": "2016-07-01",
       "type": "Vehicle Emission Classification",
+      "url": "https://www.certificat-air.gouv.fr/en",
       "description": "National vehicle emission classification and restriction system using color-coded stickers (vignettes) to regulate traffic in low emission zones across French cities.",
       "targetPollutants": ["PM2.5", "PM10", "NOx"],
       "measures": [
@@ -83,6 +84,7 @@
       "name": "National Air-Climate-Energy Plan (PNACC)",
       "implementationDate": "2018-04-01",
       "type": "Integrated Climate-Air Policy",
+      "url": "https://www.ecologie.gouv.fr/plan-national-reduction-des-emissions-polluants-atmospheriques-prepa",
       "description": "Comprehensive plan integrating air quality, climate, and energy policies with specific PM2.5 reduction targets and measures across all sectors.",
       "targetPollutants": ["PM2.5", "PM10", "NOx", "NH3", "SO2"],
       "measures": [

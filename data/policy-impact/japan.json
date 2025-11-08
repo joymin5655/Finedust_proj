@@ -1,0 +1,166 @@
+{
+  "country": "Japan",
+  "countryCode": "JP",
+  "region": "East Asia",
+  "flag": "🇯🇵",
+  "coordinates": {
+    "lat": 36.2048,
+    "lon": 138.2529
+  },
+  "policies": [
+    {
+      "id": "jp-air-pollution-control-act",
+      "name": "Air Pollution Control Act (Revised)",
+      "implementationDate": "2018-04-01",
+      "type": "Industrial and Vehicle Standards",
+      "description": "Comprehensive revision of the 1968 Act with stricter emission standards for vehicles and industries, focusing on PM2.5 reduction and transboundary pollution monitoring.",
+      "targetPollutants": ["PM2.5", "PM10", "NOx", "SOx"],
+      "measures": [
+        "Strict emission standards for diesel vehicles",
+        "Industrial facility monitoring",
+        "Transboundary pollution research",
+        "Urban air quality improvement zones",
+        "Biomass burning regulations"
+      ],
+      "impact": {
+        "beforePeriod": {
+          "start": "2014-01-01",
+          "end": "2018-03-31",
+          "meanPM25": 13.8,
+          "medianPM25": 12.5,
+          "samples": 1520
+        },
+        "afterPeriod": {
+          "start": "2018-04-01",
+          "end": "2024-03-31",
+          "meanPM25": 11.2,
+          "medianPM25": 10.3,
+          "samples": 2190
+        },
+        "analysis": {
+          "deltaMean": -2.6,
+          "percentChange": -18.8,
+          "pValue": 0.003,
+          "significant": true,
+          "effectSize": "medium"
+        }
+      },
+      "timeline": [
+        {
+          "date": "2018-04-01",
+          "event": "Act Revision Implemented",
+          "pm25": 13.8
+        },
+        {
+          "date": "2019-01-01",
+          "event": "Diesel Standards Enforced",
+          "pm25": 13.1
+        },
+        {
+          "date": "2020-01-01",
+          "event": "Industrial Monitoring Enhanced",
+          "pm25": 12.5
+        },
+        {
+          "date": "2021-04-01",
+          "event": "Urban Zones Designated",
+          "pm25": 11.8
+        },
+        {
+          "date": "2022-10-01",
+          "event": "Biomass Regulations",
+          "pm25": 11.4
+        },
+        {
+          "date": "2024-03-31",
+          "event": "6-Year Assessment",
+          "pm25": 11.2
+        }
+      ]
+    },
+    {
+      "id": "jp-tokyo-diesel-regulation",
+      "name": "Tokyo Metropolitan Diesel Vehicle Regulation",
+      "implementationDate": "2003-10-01",
+      "type": "Vehicle Emission Standard",
+      "description": "Pioneering regulation prohibiting operation of diesel vehicles not meeting emission standards in Tokyo metropolitan area.",
+      "targetPollutants": ["PM", "NOx"],
+      "measures": [
+        "Mandatory DPF installation",
+        "Old vehicle registration ban",
+        "Subsidy programs for vehicle replacement",
+        "Strict enforcement and penalties"
+      ],
+      "impact": {
+        "beforePeriod": {
+          "start": "2000-01-01",
+          "end": "2003-09-30",
+          "meanPM25": 18.5,
+          "medianPM25": 16.8,
+          "samples": 1340
+        },
+        "afterPeriod": {
+          "start": "2003-10-01",
+          "end": "2010-12-31",
+          "meanPM25": 12.3,
+          "medianPM25": 11.2,
+          "samples": 2630
+        },
+        "analysis": {
+          "deltaMean": -6.2,
+          "percentChange": -33.5,
+          "pValue": 0.001,
+          "significant": true,
+          "effectSize": "large"
+        }
+      }
+    }
+  ],
+  "realTimeData": {
+    "lastUpdated": "2025-11-08T12:00:00Z",
+    "currentPM25": 25.0,
+    "aqi": 75,
+    "aqiLevel": "Moderate",
+    "trend": "stable",
+    "majorCities": [
+      {
+        "name": "Tokyo",
+        "pm25": 26.3,
+        "aqi": 79,
+        "aqiLevel": "Moderate"
+      },
+      {
+        "name": "Osaka",
+        "pm25": 23.5,
+        "aqi": 74,
+        "aqiLevel": "Moderate"
+      },
+      {
+        "name": "Fukuoka",
+        "pm25": 28.1,
+        "aqi": 85,
+        "aqiLevel": "Moderate"
+      }
+    ]
+  },
+  "news": [
+    {
+      "title": "Tokyo maintains world-class air quality standards",
+      "date": "2025-01-07",
+      "source": "Japan Times",
+      "url": "https://example.com/news1"
+    },
+    {
+      "title": "New diesel vehicle restrictions announced",
+      "date": "2024-12-20",
+      "source": "NHK",
+      "url": "https://example.com/news2"
+    },
+    {
+      "title": "Cross-border pollution monitoring enhanced",
+      "date": "2024-12-01",
+      "source": "Asahi Shimbun",
+      "url": "https://example.com/news3"
+    }
+  ]
+}

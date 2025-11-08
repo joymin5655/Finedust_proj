@@ -1,0 +1,166 @@
+{
+  "country": "South Korea",
+  "countryCode": "KR",
+  "region": "East Asia",
+  "flag": "🇰🇷",
+  "coordinates": {
+    "lat": 37.5665,
+    "lon": 126.9780
+  },
+  "policies": [
+    {
+      "id": "kr-fine-dust-special-act",
+      "name": "Fine Dust Special Act",
+      "implementationDate": "2019-02-15",
+      "type": "Comprehensive Regulation",
+      "description": "Comprehensive legislation to reduce PM2.5 emissions through vehicle restrictions, industrial controls, and public health measures during high pollution periods.",
+      "targetPollutants": ["PM2.5", "PM10"],
+      "measures": [
+        "Emergency reduction measures during high pollution",
+        "Old diesel vehicle phase-out",
+        "Seasonal management system",
+        "Industrial emission caps",
+        "Public transportation incentives"
+      ],
+      "impact": {
+        "beforePeriod": {
+          "start": "2015-01-01",
+          "end": "2019-02-14",
+          "meanPM25": 28.5,
+          "medianPM25": 25.8,
+          "samples": 1489
+        },
+        "afterPeriod": {
+          "start": "2019-02-15",
+          "end": "2024-02-15",
+          "meanPM25": 24.2,
+          "medianPM25": 21.5,
+          "samples": 1825
+        },
+        "analysis": {
+          "deltaMean": -4.3,
+          "percentChange": -15.1,
+          "pValue": 0.012,
+          "significant": true,
+          "effectSize": "small"
+        }
+      },
+      "timeline": [
+        {
+          "date": "2019-02-15",
+          "event": "Special Act Enacted",
+          "pm25": 28.5
+        },
+        {
+          "date": "2019-12-01",
+          "event": "Seasonal Management Begins",
+          "pm25": 27.1
+        },
+        {
+          "date": "2020-06-01",
+          "event": "Diesel Vehicle Restrictions",
+          "pm25": 26.3
+        },
+        {
+          "date": "2021-03-01",
+          "event": "Industrial Cap Tightened",
+          "pm25": 25.4
+        },
+        {
+          "date": "2022-01-01",
+          "event": "Emergency Measures Enhanced",
+          "pm25": 24.8
+        },
+        {
+          "date": "2024-02-15",
+          "event": "5-Year Review",
+          "pm25": 24.2
+        }
+      ]
+    },
+    {
+      "id": "kr-seasonal-management",
+      "name": "Seasonal PM2.5 Management System",
+      "implementationDate": "2019-12-01",
+      "type": "Seasonal Regulation",
+      "description": "Intensive air quality management during winter months (December-March) when PM2.5 levels are typically highest.",
+      "targetPollutants": ["PM2.5", "PM10"],
+      "measures": [
+        "Public construction site operation limits",
+        "Coal power plant output reduction",
+        "Vehicle operation restrictions",
+        "Real-time monitoring and alerts"
+      ],
+      "impact": {
+        "beforePeriod": {
+          "start": "2016-12-01",
+          "end": "2019-11-30",
+          "meanPM25": 32.8,
+          "medianPM25": 29.5,
+          "samples": 360
+        },
+        "afterPeriod": {
+          "start": "2019-12-01",
+          "end": "2024-03-31",
+          "meanPM25": 26.9,
+          "medianPM25": 24.2,
+          "samples": 480
+        },
+        "analysis": {
+          "deltaMean": -5.9,
+          "percentChange": -18.0,
+          "pValue": 0.008,
+          "significant": true,
+          "effectSize": "medium"
+        }
+      }
+    }
+  ],
+  "realTimeData": {
+    "lastUpdated": "2025-11-08T12:00:00Z",
+    "currentPM25": 45.0,
+    "aqi": 125,
+    "aqiLevel": "Unhealthy for Sensitive Groups",
+    "trend": "improving",
+    "majorCities": [
+      {
+        "name": "Seoul",
+        "pm25": 48.5,
+        "aqi": 133,
+        "aqiLevel": "Unhealthy for Sensitive Groups"
+      },
+      {
+        "name": "Busan",
+        "pm25": 38.2,
+        "aqi": 108,
+        "aqiLevel": "Unhealthy for Sensitive Groups"
+      },
+      {
+        "name": "Incheon",
+        "pm25": 52.1,
+        "aqi": 143,
+        "aqiLevel": "Unhealthy for Sensitive Groups"
+      }
+    ]
+  },
+  "news": [
+    {
+      "title": "Seoul implements emergency fine dust reduction measures",
+      "date": "2025-01-05",
+      "source": "Yonhap News",
+      "url": "https://example.com/news1"
+    },
+    {
+      "title": "New air purifier subsidy program launched",
+      "date": "2024-12-20",
+      "source": "Korea Herald",
+      "url": "https://example.com/news2"
+    },
+    {
+      "title": "Vehicle restrictions expanded in metropolitan areas",
+      "date": "2024-12-10",
+      "source": "KBS News",
+      "url": "https://example.com/news3"
+    }
+  ]
+}

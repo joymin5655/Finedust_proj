@@ -43,7 +43,7 @@ AirLens transforms complex air quality data into an intuitive, beautiful 3D visu
 **Design Inspiration:** Earth.Nullschool + Google Earth
 
 - **Realistic 3D Earth** with atmospheric glow and dynamic lighting
-- **Color-coded PM2.5 markers** for 100+ countries
+- **Color-coded PM2.5 markers** for 66 countries
 - **Atmospheric particle effects** simulating air currents
 - **Smooth camera controls** with zoom, pan, and auto-rotate
 - **60 FPS rendering** using Three.js and WebGL
@@ -88,7 +88,7 @@ Primary data source for PM2.5 concentrations and historical trends.
 - **Long-run Air Pollution:** `https://ourworldindata.org/grapher/long-run-air-pollution.csv`
 
 **Coverage:**
-- 100+ countries
+- 66 countries
 - Historical data from 1990-2021
 - Regularly updated with latest research
 

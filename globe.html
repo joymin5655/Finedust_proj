@@ -144,40 +144,6 @@
             transform: translateX(22px);
         }
 
-        .zoom-controls {
-            position: fixed;
-            bottom: 1.5rem;
-            right: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.4rem;
-            z-index: 20;
-        }
-
-        .zoom-btn {
-            width: 2.5rem;
-            height: 2.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(17, 24, 39, 0.5);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 0.4rem;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .zoom-btn:hover {
-            background: rgba(17, 24, 39, 0.8);
-            border-color: rgba(37, 226, 244, 0.5);
-        }
-
-        .zoom-btn .material-symbols-outlined {
-            font-size: 22px;
-        }
-
         @media (max-width: 768px) {
             .control-panel {
                 max-w-[240px] !important;
@@ -236,7 +202,7 @@
         <main class="relative z-20 flex flex-1 p-4 md:p-6 gap-4 pointer-events-none flex-row-reverse">
 
             <!-- Right Control Panel -->
-            <aside class="pointer-events-auto flex h-full w-full max-w-[280px] lg:max-w-[320px] flex-col gap-3 rounded-xl bg-gray-900/50 p-3 md:p-4 backdrop-blur-md border border-white/10 overflow-y-auto control-panel">
+            <aside class="pointer-events-auto flex h-full w-full max-w-[220px] lg:max-w-[240px] flex-col gap-3 rounded-xl bg-gray-900/50 p-3 md:p-4 backdrop-blur-md border border-white/10 overflow-y-auto control-panel">
 
                 <!-- Header -->
                 <div class="flex flex-col gap-0.5">
@@ -273,14 +239,14 @@
                 <div class="my-1.5 border-t border-white/10"></div>
 
                 <!-- Layers -->
-                <div class="flex flex-col gap-1.5">
-                    <div class="flex flex-col mb-1">
+                <div class="flex flex-col gap-1">
+                    <div class="flex flex-col mb-0.5">
                         <h1 class="text-white text-sm font-semibold leading-tight font-display">Layers</h1>
                         <p class="text-white/60 text-xs font-normal leading-tight font-display">Toggle visual layers</p>
                     </div>
 
                     <!-- Particle Flow -->
-                    <div class="flex items-center gap-2 bg-transparent px-2 min-h-[56px] py-1.5 justify-between">
+                    <div class="flex items-center gap-2 bg-transparent px-2 min-h-[40px] py-1 justify-between">
                         <div class="flex items-center gap-2">
                             <div class="text-white flex items-center justify-center rounded-lg bg-black/20 shrink-0 size-9">
                                 <span class="material-symbols-outlined !text-[20px]">air</span>
@@ -299,7 +265,7 @@
                     </div>
 
                     <!-- PM2.5 Overlay -->
-                    <div class="flex items-center gap-2 bg-transparent px-2 min-h-[56px] py-1.5 justify-between">
+                    <div class="flex items-center gap-2 bg-transparent px-2 min-h-[40px] py-1 justify-between">
                         <div class="flex items-center gap-2">
                             <div class="text-white flex items-center justify-center rounded-lg bg-black/20 shrink-0 size-9">
                                 <span class="material-symbols-outlined !text-[20px]">blur_on</span>
@@ -318,7 +284,7 @@
                     </div>
 
                     <!-- Grid Lines -->
-                    <div class="flex items-center gap-2 bg-transparent px-2 min-h-[56px] py-1.5 justify-between">
+                    <div class="flex items-center gap-2 bg-transparent px-2 min-h-[40px] py-1 justify-between">
                         <div class="flex items-center gap-2">
                             <div class="text-white flex items-center justify-center rounded-lg bg-black/20 shrink-0 size-9">
                                 <span class="material-symbols-outlined !text-[20px]">grid_on</span>
@@ -337,7 +303,7 @@
                     </div>
 
                     <!-- Day/Night Cycle -->
-                    <div class="flex items-center gap-2 bg-transparent px-2 min-h-[56px] py-1.5 justify-between">
+                    <div class="flex items-center gap-2 bg-transparent px-2 min-h-[40px] py-1 justify-between">
                         <div class="flex items-center gap-2">
                             <div class="text-white flex items-center justify-center rounded-lg bg-black/20 shrink-0 size-9">
                                 <span class="material-symbols-outlined !text-[20px]">nightlight</span>
@@ -370,6 +336,28 @@
                         <span>Slow</span>
                         <span>Normal</span>
                         <span>Fast</span>
+                    </div>
+                </div>
+
+                <div class="my-1.5 border-t border-white/10"></div>
+
+                <!-- View Controls -->
+                <div class="flex flex-col gap-1.5">
+                    <div class="flex flex-col mb-1">
+                        <h1 class="text-white text-sm font-semibold leading-tight font-display">View Controls</h1>
+                        <p class="text-white/60 text-xs font-normal leading-tight font-display">Zoom and reset</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button id="reset-view" class="flex-1 flex items-center justify-center gap-1.5 h-9 rounded-lg bg-black/20 hover:bg-black/40 transition-colors" title="Reset View">
+                            <span class="material-symbols-outlined !text-[18px] text-white">home</span>
+                            <span class="text-xs font-medium text-white font-display">Reset</span>
+                        </button>
+                        <button id="zoom-in" class="flex items-center justify-center w-9 h-9 rounded-lg bg-black/20 hover:bg-black/40 transition-colors" title="Zoom In">
+                            <span class="material-symbols-outlined !text-[18px] text-white">add</span>
+                        </button>
+                        <button id="zoom-out" class="flex items-center justify-center w-9 h-9 rounded-lg bg-black/20 hover:bg-black/40 transition-colors" title="Zoom Out">
+                            <span class="material-symbols-outlined !text-[18px] text-white">remove</span>
+                        </button>
                     </div>
                 </div>
 
@@ -453,19 +441,6 @@
             </div>
 
         </main>
-
-        <!-- Zoom Controls -->
-        <div class="zoom-controls">
-            <button id="zoom-in" class="zoom-btn" title="Zoom In">
-                <span class="material-symbols-outlined">add</span>
-            </button>
-            <button id="zoom-out" class="zoom-btn" title="Zoom Out">
-                <span class="material-symbols-outlined">remove</span>
-            </button>
-            <button id="reset-view" class="zoom-btn" title="Reset View">
-                <span class="material-symbols-outlined">home</span>
-            </button>
-        </div>
 
     </div>
 

@@ -666,9 +666,50 @@ class PolicyGlobe {
 
       // Middle East
       ['Riyadh', { lat: 24.7136, lon: 46.6753, pm25: 46, aqi: 128, country: 'Saudi Arabia' }],
-      ['Dubai', { lat: 25.2048, lon: 55.2708, pm25: 36, aqi: 102, country: 'UAE' }],
-      ['Abu Dhabi', { lat: 24.4539, lon: 54.3773, pm25: 38, aqi: 105, country: 'UAE' }],
-      ['Tehran', { lat: 35.6892, lon: 51.3890, pm25: 95, aqi: 195, country: 'Iran' }]
+      ['Dubai', { lat: 25.2048, lon: 55.2708, pm25: 36, aqi: 102, country: 'United Arab Emirates' }],
+      ['Abu Dhabi', { lat: 24.4539, lon: 54.3773, pm25: 38, aqi: 105, country: 'United Arab Emirates' }],
+      ['Tehran', { lat: 35.6892, lon: 51.3890, pm25: 95, aqi: 195, country: 'Iran' }],
+      ['Doha', { lat: 25.2854, lon: 51.5310, pm25: 42, aqi: 118, country: 'Qatar' }],
+      ['Amman', { lat: 31.9454, lon: 35.9284, pm25: 45, aqi: 125, country: 'Jordan' }],
+      ['Tel Aviv', { lat: 32.0853, lon: 34.7818, pm25: 35, aqi: 98, country: 'Israel' }],
+
+      // Additional Europe
+      ['Vienna', { lat: 48.2082, lon: 16.3738, pm25: 25, aqi: 75, country: 'Austria' }],
+      ['Brussels', { lat: 50.8503, lon: 4.3517, pm25: 30, aqi: 90, country: 'Belgium' }],
+      ['Prague', { lat: 50.0755, lon: 14.4378, pm25: 35, aqi: 98, country: 'Czech Republic' }],
+      ['Copenhagen', { lat: 55.6761, lon: 12.5683, pm25: 22, aqi: 68, country: 'Denmark' }],
+      ['Helsinki', { lat: 60.1699, lon: 24.9384, pm25: 18, aqi: 58, country: 'Finland' }],
+      ['Athens', { lat: 37.9838, lon: 23.7275, pm25: 38, aqi: 105, country: 'Greece' }],
+      ['Budapest', { lat: 47.4979, lon: 19.0402, pm25: 42, aqi: 118, country: 'Hungary' }],
+      ['Dublin', { lat: 53.3498, lon: -6.2603, pm25: 28, aqi: 82, country: 'Ireland' }],
+      ['Amsterdam', { lat: 52.1326, lon: 5.2913, pm25: 28, aqi: 82, country: 'Netherlands' }],
+      ['Oslo', { lat: 59.9139, lon: 10.7522, pm25: 20, aqi: 62, country: 'Norway' }],
+      ['Lisbon', { lat: 38.7223, lon: -9.1393, pm25: 32, aqi: 92, country: 'Portugal' }],
+      ['Bucharest', { lat: 44.4268, lon: 26.1025, pm25: 45, aqi: 125, country: 'Romania' }],
+      ['Belgrade', { lat: 44.7866, lon: 20.4489, pm25: 48, aqi: 132, country: 'Serbia' }],
+      ['Stockholm', { lat: 59.3293, lon: 18.0686, pm25: 20, aqi: 62, country: 'Sweden' }],
+      ['Zurich', { lat: 47.3769, lon: 8.5417, pm25: 22, aqi: 68, country: 'Switzerland' }],
+      ['Zagreb', { lat: 45.8150, lon: 15.9819, pm25: 38, aqi: 105, country: 'Croatia' }],
+
+      // Additional South America
+      ['Bogota', { lat: 4.7110, lon: -74.0721, pm25: 42, aqi: 118, country: 'Colombia' }],
+      ['Quito', { lat: -0.1807, lon: -78.4678, pm25: 35, aqi: 98, country: 'Ecuador' }],
+      ['Lima', { lat: -12.0464, lon: -77.0428, pm25: 45, aqi: 125, country: 'Peru' }],
+      ['Montevideo', { lat: -34.9011, lon: -56.1645, pm25: 25, aqi: 75, country: 'Uruguay' }],
+      ['San Jose', { lat: 9.9281, lon: -84.0907, pm25: 28, aqi: 82, country: 'Costa Rica' }],
+
+      // Additional Africa
+      ['Nairobi', { lat: -1.2921, lon: 36.8219, pm25: 38, aqi: 105, country: 'Kenya' }],
+      ['Addis Ababa', { lat: 9.0320, lon: 38.7469, pm25: 48, aqi: 132, country: 'Ethiopia' }],
+      ['Accra', { lat: 5.6037, lon: -0.1870, pm25: 45, aqi: 125, country: 'Ghana' }],
+      ['Casablanca', { lat: 33.5731, lon: -7.5898, pm25: 42, aqi: 118, country: 'Morocco' }],
+      ['Yaounde', { lat: 3.8480, lon: 11.5021, pm25: 52, aqi: 142, country: 'Cameroon' }],
+      ['Dar es Salaam', { lat: -6.7924, lon: 39.2083, pm25: 45, aqi: 125, country: 'Tanzania' }],
+      ['Kampala', { lat: 0.3476, lon: 32.5825, pm25: 48, aqi: 132, country: 'Uganda' }],
+
+      // Additional Asia
+      ['Yangon', { lat: 16.8661, lon: 96.1951, pm25: 55, aqi: 145, country: 'Myanmar' }],
+      ['Almaty', { lat: 43.2220, lon: 76.8512, pm25: 52, aqi: 142, country: 'Kazakhstan' }]
     ]);
   }
 
@@ -1432,8 +1473,50 @@ class PolicyGlobe {
         if (impactData.news && impactData.news.length > 0) {
           existingPolicy.news = impactData.news;
         }
+      } else if (!existingPolicy && impactData.policies && impactData.policies.length > 0) {
+        // Add new country from JSON data that doesn't exist in hardcoded countryPolicies
+        const mainPolicy = impactData.policies[0];
+        const realTimeData = impactData.realTimeData || {};
+
+        this.countryPolicies[countryName] = {
+          flag: impactData.flag || '🌍',
+          region: impactData.region || 'Unknown',
+          policyType: mainPolicy.type || 'Air Quality Policy',
+          mainPolicy: {
+            name: mainPolicy.name,
+            description: mainPolicy.description,
+            implementationDate: mainPolicy.implementationDate,
+            effectivenessRating: this.calculateEffectivenessRating(mainPolicy.impact)
+          },
+          news: impactData.news || [],
+          currentAQI: realTimeData.aqi || 0,
+          currentPM25: realTimeData.currentPM25 || 0,
+          policyImpactData: {
+            policies: impactData.policies,
+            realTimeData: impactData.realTimeData,
+            news: impactData.news
+          }
+        };
+
+        console.log(`Added new country to policies: ${countryName}`);
       }
     });
+  }
+
+  calculateEffectivenessRating(impact) {
+    if (!impact || !impact.analysis) return 5;
+
+    const percentChange = impact.analysis.percentChange;
+    const isSignificant = impact.analysis.significant;
+
+    // Rate from 1-10 based on PM2.5 reduction
+    if (percentChange <= -30) return isSignificant ? 10 : 9;
+    if (percentChange <= -20) return isSignificant ? 9 : 8;
+    if (percentChange <= -10) return isSignificant ? 8 : 7;
+    if (percentChange < 0) return isSignificant ? 7 : 6;
+    if (percentChange < 10) return isSignificant ? 5 : 4;
+    if (percentChange < 20) return isSignificant ? 4 : 3;
+    return isSignificant ? 3 : 2;
   }
 
   async loadRealTimeAirQuality() {

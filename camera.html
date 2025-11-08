@@ -59,6 +59,12 @@
 </div>
 <h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">AirLens</h2>
 </a>
+<!-- Mobile menu button -->
+<button id="mobile-menu-btn" class="md:hidden flex flex-col gap-1 p-2" aria-label="Toggle menu">
+<span class="block w-6 h-0.5 bg-gray-800 dark:bg-white transition-all"></span>
+<span class="block w-6 h-0.5 bg-gray-800 dark:bg-white transition-all"></span>
+<span class="block w-6 h-0.5 bg-gray-800 dark:bg-white transition-all"></span>
+</button>
 <div class="hidden md:flex flex-1 justify-end gap-8">
 <div class="flex items-center gap-9 text-sm font-medium text-gray-800 dark:text-gray-300">
 <a class="hover:text-primary transition-colors" href="index.html">Home</a>
@@ -75,6 +81,16 @@
 <a class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-[#111718] text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity" href="https://github.com/joymin5655/Finedust_proj" target="_blank">
 <span class="truncate">GitHub</span>
 </a>
+</div>
+<!-- Mobile menu -->
+<div id="mobile-menu" class="hidden md:hidden flex-col gap-2 p-4 bg-background-light dark:bg-background-dark border-b border-gray-200/20 dark:border-white/10">
+<a class="hover:text-primary transition-colors py-2 text-sm font-medium text-gray-800 dark:text-gray-300" href="index.html">Home</a>
+<a class="text-primary py-2 text-sm font-medium" href="camera.html">Camera AI</a>
+<a class="hover:text-primary transition-colors py-2 text-sm font-medium text-gray-800 dark:text-gray-300" href="globe.html">Globe</a>
+<a class="hover:text-primary transition-colors py-2 text-sm font-medium text-gray-800 dark:text-gray-300" href="research.html">Research</a>
+<a class="hover:text-primary transition-colors py-2 text-sm font-medium text-gray-800 dark:text-gray-300" href="about.html">About</a>
+<a class="hover:text-primary transition-colors py-2 text-sm font-medium text-gray-800 dark:text-gray-300" href="settings.html">Settings</a>
+<a class="inline-flex items-center justify-center rounded-lg h-10 px-4 bg-primary text-[#111718] text-sm font-bold hover:opacity-90 transition-opacity mt-2" href="https://github.com/joymin5655/Finedust_proj" target="_blank">GitHub</a>
 </div>
 </header>
 <main class="flex-grow">
@@ -277,6 +293,16 @@ const html = document.documentElement;
 const currentTheme = localStorage.getItem('theme') || 'light';
 if (currentTheme === 'dark') {
     html.classList.add('dark');
+}
+
+// 모바일 메뉴 토글
+const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+const mobileMenu = document.getElementById('mobile-menu');
+if (mobileMenuBtn && mobileMenu) {
+    mobileMenuBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+        mobileMenu.classList.toggle('flex');
+    });
 }
 </script>
 </body>

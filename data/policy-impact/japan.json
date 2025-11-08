@@ -172,22 +172,22 @@
   },
   "news": [
     {
-      "title": "Tokyo maintains world-class air quality standards",
-      "date": "2025-01-07",
-      "source": "Japan Times",
-      "url": "https://ourworldindata.org/air-pollution"
+      "title": "Decreasing trends of suspended particulate matter and PM2.5 concentrations in Tokyo, 1990–2010",
+      "date": "2013-05-16",
+      "source": "Taylor & Francis Online",
+      "url": "https://www.tandfonline.com/doi/full/10.1080/10962247.2013.782372"
     },
     {
-      "title": "New diesel vehicle restrictions announced",
-      "date": "2024-12-20",
-      "source": "NHK",
-      "url": "https://ourworldindata.org/air-pollution"
+      "title": "Japan's Environmental Policy - Air Pollution Control",
+      "date": "2020-09-28",
+      "source": "RIETI",
+      "url": "https://www.rieti.go.jp/en/special/policy-update/059.html"
     },
     {
-      "title": "Cross-border pollution monitoring enhanced",
-      "date": "2024-12-01",
-      "source": "Asahi Shimbun",
-      "url": "https://ourworldindata.org/air-pollution"
+      "title": "Cost-efficient strategy for reducing PM2.5 levels in Tokyo metropolitan area",
+      "date": "2018-11-29",
+      "source": "PLOS ONE",
+      "url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0207623"
     }
   ]
 }

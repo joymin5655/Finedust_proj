@@ -178,22 +178,22 @@
   },
   "news": [
     {
-      "title": "France expands low emission zones to 43 cities by 2025",
-      "date": "2025-01-08",
-      "source": "Le Monde",
-      "url": "https://ourworldindata.org/air-pollution"
+      "title": "Crit'Air air quality certificate - Frequently Asked Questions",
+      "date": "2023-06-15",
+      "source": "Ministère de la Transition écologique",
+      "url": "https://www.certificat-air.gouv.fr/en/foire-aux-questions"
     },
     {
-      "title": "Paris bans diesel vehicles from city center",
-      "date": "2024-12-20",
-      "source": "France 24",
-      "url": "https://ourworldindata.org/air-pollution"
+      "title": "All there is to know about the anti-pollution Crit'Air certificate in France",
+      "date": "2022-09-20",
+      "source": "Renault Group",
+      "url": "https://www.renaultgroup.com/en/magazine/sustainable-development/all-there-is-to-know-about-the-anti-pollution-critair-certificate-in-france"
     },
     {
-      "title": "Air quality improvements exceed EU targets",
-      "date": "2024-11-25",
-      "source": "Le Figaro",
-      "url": "https://ourworldindata.org/air-pollution"
+      "title": "Paris Air Quality - PM2.5 decreased by 55% since 2005",
+      "date": "2024-08-10",
+      "source": "IQAir",
+      "url": "https://www.iqair.com/france/ile-de-france/paris"
     }
   ]
 }

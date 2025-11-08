@@ -163,22 +163,22 @@
   },
   "news": [
     {
-      "title": "Australia finally adopts Euro 6 emission standards",
-      "date": "2025-01-15",
-      "source": "The Sydney Morning Herald",
-      "url": "https://ourworldindata.org/air-pollution"
+      "title": "Outdoor air quality - Australia State of the Environment 2021",
+      "date": "2021-07-15",
+      "source": "Australian Government",
+      "url": "https://soe.dcceew.gov.au/air-quality/environment/outdoor-air-quality"
     },
     {
-      "title": "Bushfire smoke management improved for summer season",
-      "date": "2024-12-10",
-      "source": "ABC News",
-      "url": "https://ourworldindata.org/air-pollution"
+      "title": "Fine particulate matter (PM2.5) - Australia State of the Environment",
+      "date": "2016-12-01",
+      "source": "Australian Government",
+      "url": "https://soe.environment.gov.au/theme/ambient-air-quality/topic/2016/fine-particulate-matter-pm25"
     },
     {
-      "title": "Air quality monitoring network reaches 500 stations",
-      "date": "2024-11-22",
-      "source": "The Australian",
-      "url": "https://ourworldindata.org/air-pollution"
+      "title": "National Environment Protection (Ambient Air Quality) Measure",
+      "date": "2021-09-01",
+      "source": "NEPC",
+      "url": "https://www.nepc.gov.au/nepms/ambient-air-quality"
     }
   ]
 }

@@ -168,22 +168,22 @@
   },
   "news": [
     {
-      "title": "Canada's air quality ranks among world's best in 2024",
-      "date": "2025-01-12",
-      "source": "CBC News",
-      "url": "https://ourworldindata.org/air-pollution"
+      "title": "What are the Clean Fuel Regulations?",
+      "date": "2022-07-06",
+      "source": "Environment and Climate Change Canada",
+      "url": "https://www.canada.ca/en/environment-climate-change/services/managing-pollution/energy-production/fuel-regulations/clean-fuel-regulations/about.html"
     },
     {
-      "title": "Clean Fuel Regulations show early success",
-      "date": "2024-12-22",
-      "source": "The Globe and Mail",
-      "url": "https://ourworldindata.org/air-pollution"
+      "title": "Government of Canada actions to reduce air pollution",
+      "date": "2023-06-07",
+      "source": "Environment and Climate Change Canada",
+      "url": "https://www.canada.ca/en/environment-climate-change/campaigns/canadian-environment-week/clean-air-day/action-air-pollution.html"
     },
     {
-      "title": "Wildfire smoke management strategies updated",
-      "date": "2024-11-18",
-      "source": "CTV News",
-      "url": "https://ourworldindata.org/air-pollution"
+      "title": "Air Quality in Canada - Environmental Indicators",
+      "date": "2024-04-22",
+      "source": "Environment and Climate Change Canada",
+      "url": "https://www.canada.ca/en/environment-climate-change/services/environmental-indicators/air-quality.html"
     }
   ]
 }

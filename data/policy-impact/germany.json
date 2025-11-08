@@ -173,22 +173,22 @@
   },
   "news": [
     {
-      "title": "Germany accelerates coal phase-out to 2030",
-      "date": "2025-01-10",
-      "source": "Deutsche Welle",
-      "url": "https://ourworldindata.org/air-pollution"
+      "title": "Population-weighted particulate matter exposure (PM2.5) in Germany",
+      "date": "2024-11-15",
+      "source": "Umweltbundesamt",
+      "url": "https://www.umweltbundesamt.de/en/indicator-population-weighted-particulate-matter"
     },
     {
-      "title": "Berlin expands low emission zone coverage",
-      "date": "2024-12-15",
-      "source": "Der Spiegel",
-      "url": "https://ourworldindata.org/air-pollution"
+      "title": "Germany's National Air Pollution Control Programme 2019",
+      "date": "2019-05-22",
+      "source": "Umweltbundesamt",
+      "url": "https://www.umweltbundesamt.de/en/document/summary-of-germanys-national-air-pollution-control"
     },
     {
-      "title": "Air quality in German cities reaches 10-year best",
-      "date": "2024-11-28",
-      "source": "Frankfurter Allgemeine",
-      "url": "https://ourworldindata.org/air-pollution"
+      "title": "Germany complied with air quality limit values nearly everywhere in 2022",
+      "date": "2023-02-14",
+      "source": "Umweltbundesamt",
+      "url": "https://www.umweltbundesamt.de/en/press/pressinformation/germany-complied-air-quality-limit-values-nearly"
     }
   ]
 }

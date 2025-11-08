@@ -96,6 +96,10 @@ class PolicyGlobe {
       await this.loadPM25Data();
       this.createPM25Markers();
 
+      // Load policy impact data from JSON files
+      this.policyImpactData = await this.loadPolicyImpactData();
+      this.mergePolicyData();
+
       this.setupEventListeners();
       this.setupToggleSwitches();
 
@@ -1310,6 +1314,70 @@ class PolicyGlobe {
     };
   }
 
+  async loadPolicyImpactData() {
+    try {
+      // Load the index to know which countries have policy impact data
+      const indexResponse = await fetch('data/policy-impact/index.json');
+      if (!indexResponse.ok) {
+        console.warn('Policy impact index not found, using fallback data');
+        return {};
+      }
+
+      const index = await indexResponse.json();
+      const policyImpactData = {};
+
+      // Load each country's policy impact data
+      for (const countryInfo of index.countries) {
+        try {
+          const dataResponse = await fetch(`data/policy-impact/${countryInfo.dataFile}`);
+          if (dataResponse.ok) {
+            const countryData = await dataResponse.json();
+            policyImpactData[countryData.country] = countryData;
+            console.log(`Loaded policy impact data for ${countryData.country}`);
+          }
+        } catch (error) {
+          console.warn(`Failed to load policy impact data for ${countryInfo.country}:`, error);
+        }
+      }
+
+      return policyImpactData;
+    } catch (error) {
+      console.error('Error loading policy impact data:', error);
+      return {};
+    }
+  }
+
+  mergePolicyData() {
+    // Merge policy impact data with existing country policies
+    if (!this.policyImpactData) return;
+
+    Object.keys(this.policyImpactData).forEach(countryName => {
+      const impactData = this.policyImpactData[countryName];
+      const existingPolicy = this.countryPolicies[countryName];
+
+      if (existingPolicy && impactData.policies && impactData.policies.length > 0) {
+        // Merge with existing data
+        const mainPolicy = impactData.policies[0];
+        existingPolicy.policyImpactData = {
+          policies: impactData.policies,
+          realTimeData: impactData.realTimeData,
+          news: impactData.news
+        };
+
+        // Update current AQI and PM2.5 from real-time data if available
+        if (impactData.realTimeData) {
+          existingPolicy.currentAQI = impactData.realTimeData.aqi || existingPolicy.currentAQI;
+          existingPolicy.currentPM25 = impactData.realTimeData.currentPM25 || existingPolicy.currentPM25;
+        }
+
+        // Update news if available
+        if (impactData.news && impactData.news.length > 0) {
+          existingPolicy.news = impactData.news;
+        }
+      }
+    });
+  }
+
   showCountryPolicy(countryName) {
     const policy = this.countryPolicies[countryName];
     if (!policy) {
@@ -1332,6 +1400,43 @@ class PolicyGlobe {
     aqiElement.className = `text-2xl font-bold font-display ${this.getAQIClass(policy.currentAQI)}`;
 
     document.getElementById('policy-pm25').textContent = `${policy.currentPM25} µg/m³`;
+
+    // Display policy impact analysis if available
+    const impactSection = document.getElementById('policy-impact-section');
+    const timelineSection = document.getElementById('policy-timeline-section');
+
+    if (policy.policyImpactData && policy.policyImpactData.policies && policy.policyImpactData.policies.length > 0) {
+      const mainPolicy = policy.policyImpactData.policies[0];
+
+      if (mainPolicy.impact) {
+        impactSection.style.display = 'block';
+        const impact = mainPolicy.impact;
+
+        document.getElementById('impact-before').textContent = `${impact.beforePeriod.meanPM25.toFixed(1)} µg/m³`;
+        document.getElementById('impact-after').textContent = `${impact.afterPeriod.meanPM25.toFixed(1)} µg/m³`;
+
+        const changeElement = document.getElementById('impact-change');
+        const percentChange = impact.analysis.percentChange;
+        changeElement.textContent = `${percentChange > 0 ? '+' : ''}${percentChange.toFixed(1)}%`;
+        changeElement.className = `text-lg font-bold font-display ${percentChange < 0 ? 'text-green-400' : 'text-red-400'}`;
+
+        const significanceText = impact.analysis.significant
+          ? `✓ Statistically significant (p=${impact.analysis.pValue.toFixed(3)})`
+          : `Not statistically significant (p=${impact.analysis.pValue.toFixed(3)})`;
+        document.getElementById('impact-significance').textContent = significanceText;
+      }
+
+      // Render timeline chart if available
+      if (mainPolicy.timeline && mainPolicy.timeline.length > 0) {
+        timelineSection.style.display = 'block';
+        this.renderPolicyTimeline(mainPolicy.timeline, mainPolicy.name);
+      } else {
+        timelineSection.style.display = 'none';
+      }
+    } else {
+      impactSection.style.display = 'none';
+      timelineSection.style.display = 'none';
+    }
 
     const newsContainer = document.getElementById('policy-news');
     newsContainer.innerHTML = '';
@@ -1359,6 +1464,114 @@ class PolicyGlobe {
         this.showFullDetails(countryName, policy);
       });
     }
+  }
+
+  renderPolicyTimeline(timelineData, policyName) {
+    const canvas = document.getElementById('policy-timeline-chart');
+    if (!canvas) return;
+
+    // Destroy existing chart if it exists
+    if (this.timelineChart) {
+      this.timelineChart.destroy();
+    }
+
+    const ctx = canvas.getContext('2d');
+
+    // Prepare data for Chart.js
+    const labels = timelineData.map(item => {
+      const date = new Date(item.date);
+      return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+    });
+
+    const pm25Values = timelineData.map(item => item.pm25);
+    const events = timelineData.map(item => item.event);
+
+    this.timelineChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'PM2.5 (µg/m³)',
+          data: pm25Values,
+          borderColor: '#25e2f4',
+          backgroundColor: 'rgba(37, 226, 244, 0.1)',
+          borderWidth: 2,
+          fill: true,
+          tension: 0.4,
+          pointRadius: 5,
+          pointBackgroundColor: '#25e2f4',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+          pointHoverRadius: 7
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            titleColor: '#25e2f4',
+            bodyColor: '#fff',
+            borderColor: '#25e2f4',
+            borderWidth: 1,
+            padding: 12,
+            displayColors: false,
+            callbacks: {
+              title: function(context) {
+                return events[context[0].dataIndex];
+              },
+              label: function(context) {
+                return `PM2.5: ${context.parsed.y.toFixed(1)} µg/m³`;
+              },
+              afterLabel: function(context) {
+                return `Date: ${labels[context.dataIndex]}`;
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: {
+              color: 'rgba(255, 255, 255, 0.05)'
+            },
+            ticks: {
+              color: 'rgba(255, 255, 255, 0.6)',
+              font: {
+                size: 10
+              },
+              maxRotation: 45,
+              minRotation: 45
+            }
+          },
+          y: {
+            grid: {
+              color: 'rgba(255, 255, 255, 0.05)'
+            },
+            ticks: {
+              color: 'rgba(255, 255, 255, 0.6)',
+              font: {
+                size: 10
+              },
+              callback: function(value) {
+                return value.toFixed(0);
+              }
+            },
+            title: {
+              display: true,
+              text: 'PM2.5 (µg/m³)',
+              color: 'rgba(255, 255, 255, 0.8)',
+              font: {
+                size: 11
+              }
+            }
+          }
+        }
+      }
+    });
   }
 
   showFullDetails(countryName, policy) {

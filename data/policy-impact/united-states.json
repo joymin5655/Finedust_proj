@@ -13,6 +13,7 @@
       "name": "National Ambient Air Quality Standards (NAAQS) for PM2.5",
       "implementationDate": "2012-12-14",
       "type": "Federal Air Quality Standard",
+      "url": "https://www.epa.gov/pm-pollution/national-ambient-air-quality-standards-naaqs-pm",
       "description": "EPA's strengthened primary annual PM2.5 standard from 15 to 12 µg/m³ to provide increased protection for public health.",
       "targetPollutants": ["PM2.5"],
       "measures": [
@@ -83,6 +84,7 @@
       "name": "Clean Power Plan (CPP)",
       "implementationDate": "2015-08-03",
       "type": "Power Sector Regulation",
+      "url": "https://www.epa.gov/stationary-sources-air-pollution/clean-power-plan-existing-power-plants",
       "description": "Obama-era regulation to reduce carbon pollution and air pollutants from power plants, with significant PM2.5 co-benefits.",
       "targetPollutants": ["CO2", "PM2.5", "SO2", "NOx"],
       "measures": [
@@ -147,6 +149,7 @@
       "name": "Tier 3 Vehicle Emission and Fuel Standards",
       "implementationDate": "2017-01-01",
       "type": "Vehicle and Fuel Standard",
+      "url": "https://www.epa.gov/regulations-emissions-vehicles-and-engines/final-rule-control-air-pollution-motor-vehicles-tier-3",
       "description": "EPA's Tier 3 standards reducing vehicle emissions and lowering sulfur content in gasoline, significantly reducing PM2.5 precursors.",
       "targetPollutants": ["PM2.5", "NOx", "VOC"],
       "measures": [

@@ -13,6 +13,7 @@
       "name": "Fine Dust Special Act",
       "implementationDate": "2019-02-15",
       "type": "Comprehensive Regulation",
+      "url": "https://elaw.klri.re.kr/eng_mobile/viewer.do?hseq=54102&type=sogan&key=16",
       "description": "Comprehensive legislation to reduce PM2.5 emissions through vehicle restrictions, industrial controls, and public health measures during high pollution periods.",
       "targetPollutants": ["PM2.5", "PM10"],
       "measures": [
@@ -83,6 +84,7 @@
       "name": "Seasonal PM2.5 Management System",
       "implementationDate": "2019-12-01",
       "type": "Seasonal Regulation",
+      "url": "https://www.me.go.kr/home/web/policy_data/read.do?pagerOffset=0&maxPageItems=10&maxIndexPages=10&searchKey=&searchValue=&menuId=10259&orgCd=&condition.hiddenSeqNo=7&condition.orderSeqId=7&condition.rnSeq=289&condition.deleteYn=N&seq=7395",
       "description": "Intensive air quality management during winter months (December-March) when PM2.5 levels are typically highest.",
       "targetPollutants": ["PM2.5", "PM10"],
       "measures": [

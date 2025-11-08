@@ -507,10 +507,10 @@ class AirLensGlobeAdvanced {
         const aqiInfo = this.getAQILevel(125);
         const levelElement = document.getElementById('station-level');
         levelElement.textContent = aqiInfo.level;
-        levelElement.className = `text-sm font-medium font-display ${aqiInfo.color}`;
+        levelElement.className = `text-sm font-medium ${aqiInfo.color}`;
 
         const aqiElement = document.getElementById('station-aqi');
-        aqiElement.className = `text-3xl font-bold font-display ${aqiInfo.color}`;
+        aqiElement.className = `text-3xl font-bold ${aqiInfo.color}`;
       }
     }
   }

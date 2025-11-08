@@ -10,9 +10,6 @@
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com" rel="preconnect"/>
-    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
 
     <!-- Three.js -->
@@ -42,9 +39,6 @@
                         "background-light": "#f5f8f8",
                         "background-dark": "#102122",
                     },
-                    fontFamily: {
-                        "display": ["Space Grotesk", "sans-serif"]
-                    },
                     borderRadius: {
                         "DEFAULT": "0.25rem",
                         "lg": "0.5rem",
@@ -60,7 +54,6 @@
         body {
             margin: 0;
             overflow: hidden;
-            font-family: 'Space Grotesk', sans-serif;
         }
 
         .material-symbols-outlined {
@@ -212,7 +205,7 @@
     </style>
 </head>
 
-<body class="bg-background-light dark:bg-background-dark font-display">
+<body class="bg-background-light dark:bg-background-dark">
     <!-- Dark Mode Toggle Button -->
     <div class="theme-toggle-container">
         <div class="toggle-cont">
@@ -303,8 +296,8 @@
                                 <div class="flex items-center gap-3 mb-1">
                                     <span id="policy-flag" class="text-3xl">🌍</span>
                                     <div>
-                                        <h3 class="text-lg font-bold text-white font-display" id="policy-country">Country</h3>
-                                        <p class="text-xs text-white/60 font-display" id="policy-region">Region</p>
+                                        <h3 class="text-lg font-bold text-white" id="policy-country">Country</h3>
+                                        <p class="text-xs text-white/60" id="policy-region">Region</p>
                                     </div>
                                 </div>
                             </div>
@@ -318,11 +311,11 @@
                         <div class="px-4 py-3 overflow-y-auto flex-1 min-h-0">
                             <div class="flex items-center gap-2 mb-2">
                                 <span class="material-symbols-outlined text-primary !text-lg">policy</span>
-                                <h4 class="text-sm font-semibold text-white font-display">Main Policy</h4>
+                                <h4 class="text-sm font-semibold text-white">Main Policy</h4>
                             </div>
                             <div class="bg-black/20 rounded-lg p-3 mb-3">
-                                <h5 class="text-base font-bold text-primary font-display mb-1" id="policy-name">Policy Name</h5>
-                                <p class="text-xs text-white/80 font-display mb-2" id="policy-desc">Policy description goes here...</p>
+                                <h5 class="text-base font-bold text-primary mb-1" id="policy-name">Policy Name</h5>
+                                <p class="text-xs text-white/80 mb-2" id="policy-desc">Policy description goes here...</p>
                                 <div class="flex items-center gap-2 text-xs text-white/60">
                                     <span class="material-symbols-outlined !text-sm">calendar_today</span>
                                     <span id="policy-date">Implementation date</span>
@@ -332,12 +325,12 @@
                             <!-- AQI Status -->
                             <div class="grid grid-cols-2 gap-2 mb-3">
                                 <div class="bg-black/20 rounded-lg p-3 text-center">
-                                    <p class="text-xs text-white/60 font-display mb-1">Current AQI</p>
-                                    <p class="text-2xl font-bold font-display" id="policy-aqi">-</p>
+                                    <p class="text-xs text-white/60 mb-1">Current AQI</p>
+                                    <p class="text-2xl font-bold" id="policy-aqi">-</p>
                                 </div>
                                 <div class="bg-black/20 rounded-lg p-3 text-center">
-                                    <p class="text-xs text-white/60 font-display mb-1">PM2.5</p>
-                                    <p class="text-2xl font-bold font-display" id="policy-pm25">- µg/m³</p>
+                                    <p class="text-xs text-white/60 mb-1">PM2.5</p>
+                                    <p class="text-2xl font-bold" id="policy-pm25">- µg/m³</p>
                                 </div>
                             </div>
 
@@ -345,7 +338,7 @@
                             <div class="mb-3" id="policy-impact-section" style="display: none;">
                                 <div class="flex items-center gap-2 mb-2">
                                     <span class="material-symbols-outlined text-primary !text-lg">analytics</span>
-                                    <h4 class="text-sm font-semibold text-white font-display">Policy Impact</h4>
+                                    <h4 class="text-sm font-semibold text-white">Policy Impact</h4>
                                 </div>
                                 <div class="bg-black/20 rounded-lg p-3 mb-2">
                                     <!-- Visual Comparison Chart -->
@@ -356,16 +349,16 @@
                                     <!-- Numeric Summary -->
                                     <div class="grid grid-cols-3 gap-2 mb-2">
                                         <div class="text-center">
-                                            <p class="text-xs text-white/60 font-display mb-1">Before</p>
-                                            <p class="text-lg font-bold text-white/90 font-display" id="impact-before">-</p>
+                                            <p class="text-xs text-white/60 mb-1">Before</p>
+                                            <p class="text-lg font-bold text-white/90" id="impact-before">-</p>
                                         </div>
                                         <div class="text-center">
-                                            <p class="text-xs text-white/60 font-display mb-1">After</p>
-                                            <p class="text-lg font-bold text-white/90 font-display" id="impact-after">-</p>
+                                            <p class="text-xs text-white/60 mb-1">After</p>
+                                            <p class="text-lg font-bold text-white/90" id="impact-after">-</p>
                                         </div>
                                         <div class="text-center">
-                                            <p class="text-xs text-white/60 font-display mb-1">Change</p>
-                                            <p class="text-lg font-bold font-display" id="impact-change">-</p>
+                                            <p class="text-xs text-white/60 mb-1">Change</p>
+                                            <p class="text-lg font-bold" id="impact-change">-</p>
                                         </div>
                                     </div>
                                     <div class="text-xs text-white/60 text-center" id="impact-significance">
@@ -378,7 +371,7 @@
                             <div class="mb-3" id="policy-timeline-section" style="display: none;">
                                 <div class="flex items-center gap-2 mb-2">
                                     <span class="material-symbols-outlined text-primary !text-lg">timeline</span>
-                                    <h4 class="text-sm font-semibold text-white font-display">Timeline</h4>
+                                    <h4 class="text-sm font-semibold text-white">Timeline</h4>
                                 </div>
                                 <div class="bg-black/20 rounded-lg p-3">
                                     <canvas id="policy-timeline-chart" style="max-height: 160px;"></canvas>
@@ -389,7 +382,7 @@
                             <div class="mb-3">
                                 <div class="flex items-center gap-2 mb-2">
                                     <span class="material-symbols-outlined text-primary !text-lg">newspaper</span>
-                                    <h4 class="text-sm font-semibold text-white font-display">Recent News</h4>
+                                    <h4 class="text-sm font-semibold text-white">Recent News</h4>
                                 </div>
                                 <div id="policy-news" class="space-y-2">
                                     <!-- News items will be inserted here -->
@@ -411,29 +404,29 @@
 
                 <!-- Header -->
                 <div class="flex flex-col">
-                    <h1 class="text-white text-sm font-medium leading-tight font-display">Policy Explorer</h1>
-                    <p class="text-white/60 text-xs font-normal leading-tight font-display">Explore policies worldwide</p>
+                    <h1 class="text-white text-sm font-medium leading-tight">Policy Explorer</h1>
+                    <p class="text-white/60 text-xs font-normal leading-tight">Explore policies worldwide</p>
                 </div>
 
                 <!-- Global Statistics -->
                 <div class="mt-2 p-3 bg-black/20 rounded-lg border border-white/10">
-                    <h4 class="text-xs font-bold text-white mb-2 font-display">Global Statistics</h4>
+                    <h4 class="text-xs font-bold text-white mb-2">Global Statistics</h4>
                     <div class="grid grid-cols-2 gap-2">
                         <div>
-                            <p class="text-xs text-white/60 font-display">Countries</p>
-                            <p id="stat-countries" class="text-lg font-bold text-primary font-display">-</p>
+                            <p class="text-xs text-white/60">Countries</p>
+                            <p id="stat-countries" class="text-lg font-bold text-primary">-</p>
                         </div>
                         <div>
-                            <p class="text-xs text-white/60 font-display">Policies</p>
-                            <p id="stat-policies" class="text-lg font-bold text-primary font-display">-</p>
+                            <p class="text-xs text-white/60">Policies</p>
+                            <p id="stat-policies" class="text-lg font-bold text-primary">-</p>
                         </div>
                         <div>
-                            <p class="text-xs text-white/60 font-display">Regions</p>
-                            <p id="stat-regions" class="text-lg font-bold text-primary font-display">-</p>
+                            <p class="text-xs text-white/60">Regions</p>
+                            <p id="stat-regions" class="text-lg font-bold text-primary">-</p>
                         </div>
                         <div>
-                            <p class="text-xs text-white/60 font-display">Updates</p>
-                            <p class="text-lg font-bold text-primary font-display">Live</p>
+                            <p class="text-xs text-white/60">Updates</p>
+                            <p class="text-lg font-bold text-primary">Live</p>
                         </div>
                     </div>
                 </div>
@@ -446,7 +439,7 @@
                                 <span class="material-symbols-outlined !text-base">search</span>
                             </div>
                             <input id="country-search"
-                                   class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-white focus:outline-0 focus:ring-0 border-none bg-black/20 focus:border-none h-full placeholder:text-white/60 px-2 rounded-l-none border-l-0 pl-1 text-sm font-normal leading-normal font-display"
+                                   class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-white focus:outline-0 focus:ring-0 border-none bg-black/20 focus:border-none h-full placeholder:text-white/60 px-2 rounded-l-none border-l-0 pl-1 text-sm font-normal leading-normal"
                                    placeholder="Search..."
                                    value=""/>
                         </div>
@@ -454,11 +447,11 @@
 
                     <div class="flex gap-1.5 flex-wrap">
                         <button id="filter-region" class="flex h-7 shrink-0 items-center justify-center gap-x-1 rounded-lg bg-black/20 pl-2 pr-1 hover:bg-black/40 transition-colors">
-                            <p class="text-white text-xs font-medium leading-normal font-display">Region</p>
+                            <p class="text-white text-xs font-medium leading-normal">Region</p>
                             <span class="material-symbols-outlined text-white !text-base">arrow_drop_down</span>
                         </button>
                         <button id="filter-policy" class="flex h-7 shrink-0 items-center justify-center gap-x-1 rounded-lg bg-black/20 pl-2 pr-1 hover:bg-black/40 transition-colors">
-                            <p class="text-white text-xs font-medium leading-normal font-display">Type</p>
+                            <p class="text-white text-xs font-medium leading-normal">Type</p>
                             <span class="material-symbols-outlined text-white !text-base">arrow_drop_down</span>
                         </button>
                     </div>
@@ -469,7 +462,7 @@
                 <!-- Visualization Layers -->
                 <div class="flex flex-col gap-1">
                     <div class="flex flex-col mb-1">
-                        <h1 class="text-white text-sm font-medium leading-tight font-display">Layers</h1>
+                        <h1 class="text-white text-sm font-medium leading-tight">Layers</h1>
                     </div>
 
                     <!-- Country Borders -->
@@ -479,7 +472,7 @@
                                 <span class="material-symbols-outlined !text-base">flag</span>
                             </div>
                             <div class="flex flex-col justify-center">
-                                <p class="text-white text-xs font-medium leading-tight line-clamp-1 font-display">Borders</p>
+                                <p class="text-white text-xs font-medium leading-tight line-clamp-1">Borders</p>
                             </div>
                         </div>
                         <div class="shrink-0">
@@ -497,7 +490,7 @@
                                 <span class="material-symbols-outlined !text-base">location_on</span>
                             </div>
                             <div class="flex flex-col justify-center">
-                                <p class="text-white text-xs font-medium leading-tight line-clamp-1 font-display">Air Quality</p>
+                                <p class="text-white text-xs font-medium leading-tight line-clamp-1">Air Quality</p>
                             </div>
                         </div>
                         <div class="shrink-0">
@@ -515,7 +508,7 @@
                                 <span class="material-symbols-outlined !text-base">air</span>
                             </div>
                             <div class="flex flex-col justify-center">
-                                <p class="text-white text-xs font-medium leading-tight line-clamp-1 font-display">Flow</p>
+                                <p class="text-white text-xs font-medium leading-tight line-clamp-1">Flow</p>
                             </div>
                         </div>
                         <div class="shrink-0">
@@ -532,14 +525,14 @@
                 <!-- Globe Controls -->
                 <div class="flex flex-col gap-1">
                     <div class="flex flex-col mb-1">
-                        <h1 class="text-white text-sm font-medium leading-tight font-display">Controls</h1>
+                        <h1 class="text-white text-sm font-medium leading-tight">Controls</h1>
                     </div>
 
                     <!-- Zoom Controls -->
                     <div class="flex gap-1.5">
                         <button id="reset-view" class="flex flex-1 items-center justify-center gap-1 rounded-lg h-8 bg-black/20 hover:bg-black/40 transition-colors">
                             <span class="material-symbols-outlined text-white !text-base">refresh</span>
-                            <span class="text-white text-xs font-medium font-display">Reset</span>
+                            <span class="text-white text-xs font-medium">Reset</span>
                         </button>
                         <button id="zoom-in" class="flex size-8 items-center justify-center rounded-lg bg-black/20 hover:bg-black/40 transition-colors">
                             <span class="material-symbols-outlined text-white !text-base">add</span>
@@ -553,9 +546,9 @@
                     <div class="mt-2">
                         <button id="refresh-data" class="w-full flex items-center justify-center gap-1 rounded-lg h-8 bg-primary/20 hover:bg-primary/30 transition-colors">
                             <span class="material-symbols-outlined text-primary !text-base" id="refresh-icon">sync</span>
-                            <span class="text-primary text-xs font-medium font-display">Update Air Quality</span>
+                            <span class="text-primary text-xs font-medium">Update Air Quality</span>
                         </button>
-                        <div id="last-update" class="text-center text-white/40 text-[10px] font-display mt-1">
+                        <div id="last-update" class="text-center text-white/40 text-[10px] mt-1">
                             Click to update
                         </div>
                     </div>
@@ -567,7 +560,7 @@
 
         <!-- Help Tooltip -->
         <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-30 pointer-events-none">
-            <div class="bg-gray-900/90 backdrop-blur-md border border-white/10 rounded-lg px-4 py-2 text-sm text-white/80 font-display">
+            <div class="bg-gray-900/90 backdrop-blur-md border border-white/10 rounded-lg px-4 py-2 text-sm text-white/80">
                 <span class="material-symbols-outlined !text-base inline-block align-middle mr-2">touch_app</span>
                 Click on markers to explore air quality policies by country
             </div>

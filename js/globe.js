@@ -1503,7 +1503,7 @@ class PolicyGlobe {
 
     const aqiElement = document.getElementById('policy-aqi');
     aqiElement.textContent = policy.currentAQI;
-    aqiElement.className = `text-2xl font-bold font-display ${this.getAQIClass(policy.currentAQI)}`;
+    aqiElement.className = `text-2xl font-bold ${this.getAQIClass(policy.currentAQI)}`;
 
     document.getElementById('policy-pm25').textContent = `${policy.currentPM25} µg/m³`;
 
@@ -1524,7 +1524,7 @@ class PolicyGlobe {
         const changeElement = document.getElementById('impact-change');
         const percentChange = impact.analysis.percentChange;
         changeElement.textContent = `${percentChange > 0 ? '+' : ''}${percentChange.toFixed(1)}%`;
-        changeElement.className = `text-lg font-bold font-display ${percentChange < 0 ? 'text-green-400' : 'text-red-400'}`;
+        changeElement.className = `text-lg font-bold ${percentChange < 0 ? 'text-green-400' : 'text-red-400'}`;
 
         const significanceText = impact.analysis.significant
           ? `✓ Statistically significant (p=${impact.analysis.pValue.toFixed(3)})`
@@ -1839,8 +1839,8 @@ class PolicyGlobe {
         <div class="flex items-center gap-4">
           <span class="text-6xl">${policy.flag}</span>
           <div>
-            <h2 class="text-3xl font-bold text-white font-display">${countryName}</h2>
-            <p class="text-lg text-white/60 font-display">${policy.region}</p>
+            <h2 class="text-3xl font-bold text-white">${countryName}</h2>
+            <p class="text-lg text-white/60">${policy.region}</p>
           </div>
         </div>
         <button id="close-modal" class="text-white/60 hover:text-white transition-colors">
@@ -1853,26 +1853,26 @@ class PolicyGlobe {
         <div class="bg-black/20 rounded-lg p-6">
           <div class="flex items-center gap-2 mb-4">
             <span class="material-symbols-outlined text-primary text-2xl">policy</span>
-            <h3 class="text-2xl font-bold text-white font-display">Main Policy</h3>
+            <h3 class="text-2xl font-bold text-white">Main Policy</h3>
           </div>
-          <h4 class="text-xl font-bold text-primary font-display mb-3">${policy.mainPolicy.name}</h4>
-          <p class="text-base text-white/90 font-display mb-4 leading-relaxed">${policy.mainPolicy.description}</p>
+          <h4 class="text-xl font-bold text-primary mb-3">${policy.mainPolicy.name}</h4>
+          <p class="text-base text-white/90 mb-4 leading-relaxed">${policy.mainPolicy.description}</p>
           <div class="grid grid-cols-2 gap-4">
             <div class="bg-black/30 rounded-lg p-3">
-              <p class="text-xs text-white/60 font-display mb-1">Implementation Date</p>
-              <p class="text-sm font-semibold text-white font-display">${policy.mainPolicy.implementationDate}</p>
+              <p class="text-xs text-white/60 mb-1">Implementation Date</p>
+              <p class="text-sm font-semibold text-white">${policy.mainPolicy.implementationDate}</p>
             </div>
             <div class="bg-black/30 rounded-lg p-3">
-              <p class="text-xs text-white/60 font-display mb-1">Effectiveness Rating</p>
-              <p class="text-sm font-semibold text-white font-display">${policy.mainPolicy.effectivenessRating}/10</p>
+              <p class="text-xs text-white/60 mb-1">Effectiveness Rating</p>
+              <p class="text-sm font-semibold text-white">${policy.mainPolicy.effectivenessRating}/10</p>
             </div>
             <div class="bg-black/30 rounded-lg p-3">
-              <p class="text-xs text-white/60 font-display mb-1">Policy Type</p>
-              <p class="text-sm font-semibold text-white font-display">${policy.policyType}</p>
+              <p class="text-xs text-white/60 mb-1">Policy Type</p>
+              <p class="text-sm font-semibold text-white">${policy.policyType}</p>
             </div>
             <div class="bg-black/30 rounded-lg p-3">
-              <p class="text-xs text-white/60 font-display mb-1">Region</p>
-              <p class="text-sm font-semibold text-white font-display">${policy.region}</p>
+              <p class="text-xs text-white/60 mb-1">Region</p>
+              <p class="text-sm font-semibold text-white">${policy.region}</p>
             </div>
           </div>
         </div>
@@ -1881,18 +1881,18 @@ class PolicyGlobe {
         <div class="bg-black/20 rounded-lg p-6">
           <div class="flex items-center gap-2 mb-4">
             <span class="material-symbols-outlined text-primary text-2xl">air</span>
-            <h3 class="text-2xl font-bold text-white font-display">Current Air Quality</h3>
+            <h3 class="text-2xl font-bold text-white">Current Air Quality</h3>
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div class="bg-black/30 rounded-lg p-4 text-center">
-              <p class="text-sm text-white/60 font-display mb-2">Air Quality Index</p>
-              <p class="text-4xl font-bold font-display ${this.getAQIClass(policy.currentAQI)}">${policy.currentAQI}</p>
-              <p class="text-xs text-white/60 font-display mt-2">${this.getAQILabel(policy.currentAQI)}</p>
+              <p class="text-sm text-white/60 mb-2">Air Quality Index</p>
+              <p class="text-4xl font-bold ${this.getAQIClass(policy.currentAQI)}">${policy.currentAQI}</p>
+              <p class="text-xs text-white/60 mt-2">${this.getAQILabel(policy.currentAQI)}</p>
             </div>
             <div class="bg-black/30 rounded-lg p-4 text-center">
-              <p class="text-sm text-white/60 font-display mb-2">PM2.5 Level</p>
-              <p class="text-4xl font-bold text-primary font-display">${policy.currentPM25}</p>
-              <p class="text-xs text-white/60 font-display mt-2">µg/m³</p>
+              <p class="text-sm text-white/60 mb-2">PM2.5 Level</p>
+              <p class="text-4xl font-bold text-primary">${policy.currentPM25}</p>
+              <p class="text-xs text-white/60 mt-2">µg/m³</p>
             </div>
           </div>
         </div>
@@ -1901,12 +1901,12 @@ class PolicyGlobe {
         <div class="bg-black/20 rounded-lg p-6">
           <div class="flex items-center gap-2 mb-4">
             <span class="material-symbols-outlined text-primary text-2xl">newspaper</span>
-            <h3 class="text-2xl font-bold text-white font-display">Recent News & Updates</h3>
+            <h3 class="text-2xl font-bold text-white">Recent News & Updates</h3>
           </div>
           <div class="space-y-3">
             ${policy.news.map(news => `
               <div class="bg-black/30 rounded-lg p-4 hover:bg-black/40 transition-colors cursor-pointer">
-                <h5 class="text-base font-semibold text-white mb-2 font-display">${news.title}</h5>
+                <h5 class="text-base font-semibold text-white mb-2">${news.title}</h5>
                 <div class="flex items-center justify-between text-sm text-white/60">
                   <span class="flex items-center gap-1">
                     <span class="material-symbols-outlined !text-base">newspaper</span>
@@ -1926,23 +1926,23 @@ class PolicyGlobe {
         <div class="bg-black/20 rounded-lg p-6">
           <div class="flex items-center gap-2 mb-4">
             <span class="material-symbols-outlined text-primary text-2xl">analytics</span>
-            <h3 class="text-2xl font-bold text-white font-display">Policy Impact</h3>
+            <h3 class="text-2xl font-bold text-white">Policy Impact</h3>
           </div>
           <div class="grid grid-cols-3 gap-3">
             <div class="bg-black/30 rounded-lg p-3 text-center">
               <span class="material-symbols-outlined text-primary text-3xl">trending_down</span>
-              <p class="text-xs text-white/60 font-display mt-2">Emissions</p>
-              <p class="text-lg font-bold text-white font-display">${policy.mainPolicy.effectivenessRating >= 7 ? '↓ 15%' : '↓ 8%'}</p>
+              <p class="text-xs text-white/60 mt-2">Emissions</p>
+              <p class="text-lg font-bold text-white">${policy.mainPolicy.effectivenessRating >= 7 ? '↓ 15%' : '↓ 8%'}</p>
             </div>
             <div class="bg-black/30 rounded-lg p-3 text-center">
               <span class="material-symbols-outlined text-primary text-3xl">groups</span>
-              <p class="text-xs text-white/60 font-display mt-2">Lives Protected</p>
-              <p class="text-lg font-bold text-white font-display">${policy.mainPolicy.effectivenessRating >= 7 ? '1M+' : '500K+'}</p>
+              <p class="text-xs text-white/60 mt-2">Lives Protected</p>
+              <p class="text-lg font-bold text-white">${policy.mainPolicy.effectivenessRating >= 7 ? '1M+' : '500K+'}</p>
             </div>
             <div class="bg-black/30 rounded-lg p-3 text-center">
               <span class="material-symbols-outlined text-primary text-3xl">local_hospital</span>
-              <p class="text-xs text-white/60 font-display mt-2">Health Impact</p>
-              <p class="text-lg font-bold text-white font-display">${policy.mainPolicy.effectivenessRating >= 7 ? 'High' : 'Medium'}</p>
+              <p class="text-xs text-white/60 mt-2">Health Impact</p>
+              <p class="text-lg font-bold text-white">${policy.mainPolicy.effectivenessRating >= 7 ? 'High' : 'Medium'}</p>
             </div>
           </div>
         </div>
@@ -2081,7 +2081,7 @@ class PolicyGlobe {
 
     // Add "All" option
     const allOption = document.createElement('div');
-    allOption.className = 'px-4 py-2 text-white text-sm hover:bg-white/10 cursor-pointer font-display';
+    allOption.className = 'px-4 py-2 text-white text-sm hover:bg-white/10 cursor-pointer';
     allOption.textContent = 'All';
     allOption.addEventListener('click', () => {
       dropdown.remove();
@@ -2092,7 +2092,7 @@ class PolicyGlobe {
     // Add options
     options.sort().forEach(option => {
       const item = document.createElement('div');
-      item.className = 'px-4 py-2 text-white text-sm hover:bg-white/10 cursor-pointer font-display border-t border-white/5';
+      item.className = 'px-4 py-2 text-white text-sm hover:bg-white/10 cursor-pointer border-t border-white/5';
       item.textContent = option;
       item.addEventListener('click', () => {
         dropdown.remove();

@@ -181,19 +181,19 @@
       "title": "France expands low emission zones to 43 cities by 2025",
       "date": "2025-01-08",
       "source": "Le Monde",
-      "url": "https://example.com/news1"
+      "url": "https://ourworldindata.org/air-pollution"
     },
     {
       "title": "Paris bans diesel vehicles from city center",
       "date": "2024-12-20",
       "source": "France 24",
-      "url": "https://example.com/news2"
+      "url": "https://ourworldindata.org/air-pollution"
     },
     {
       "title": "Air quality improvements exceed EU targets",
       "date": "2024-11-25",
       "source": "Le Figaro",
-      "url": "https://example.com/news3"
+      "url": "https://ourworldindata.org/air-pollution"
     }
   ]
 }

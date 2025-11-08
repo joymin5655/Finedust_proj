@@ -176,19 +176,19 @@
       "title": "Germany accelerates coal phase-out to 2030",
       "date": "2025-01-10",
       "source": "Deutsche Welle",
-      "url": "https://example.com/news1"
+      "url": "https://ourworldindata.org/air-pollution"
     },
     {
       "title": "Berlin expands low emission zone coverage",
       "date": "2024-12-15",
       "source": "Der Spiegel",
-      "url": "https://example.com/news2"
+      "url": "https://ourworldindata.org/air-pollution"
     },
     {
       "title": "Air quality in German cities reaches 10-year best",
       "date": "2024-11-28",
       "source": "Frankfurter Allgemeine",
-      "url": "https://example.com/news3"
+      "url": "https://ourworldindata.org/air-pollution"
     }
   ]
 }

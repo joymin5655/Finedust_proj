@@ -13,7 +13,7 @@
       "name": "National Clean Air Programme (NCAP)",
       "implementationDate": "2019-01-10",
       "type": "National Regulation",
-      "description": "Comprehensive plan to reduce PM2.5 and PM10 concentrations by 20-30% by 2024 compared to 2017 levels across 122 cities.",
+      "description": "Comprehensive plan launched in 2019 to reduce PM pollution by 20-30% in 131 non-attainment cities by 2024 (revised to 40% by 2026). Achieved 26.84% nationwide reduction by 2024.",
       "targetPollutants": ["PM2.5", "PM10"],
       "measures": [
         "City-specific action plans",
@@ -167,22 +167,22 @@
   },
   "news": [
     {
-      "title": "Delhi's Air Quality Shows Improvement in Winter 2024",
-      "date": "2024-12-10",
-      "source": "The Hindu",
-      "url": "https://example.com/news1"
+      "title": "Impact of NCAP on PM pollution - 62,219 mortalities avoided",
+      "date": "2025-01-15",
+      "source": "ScienceDirect",
+      "url": "https://www.sciencedirect.com/science/article/pii/S004896972500422X"
     },
     {
-      "title": "NCAP Extended to 2025 with Stricter Targets",
-      "date": "2024-11-25",
-      "source": "Times of India",
-      "url": "https://example.com/news2"
+      "title": "Assessing air quality during India's NCAP: 2019–2023",
+      "date": "2024-11-20",
+      "source": "ScienceDirect",
+      "url": "https://www.sciencedirect.com/science/article/abs/pii/S1352231024006496"
     },
     {
-      "title": "BS-VI fuel rollout accelerates across India",
-      "date": "2024-11-12",
-      "source": "Indian Express",
-      "url": "https://example.com/news3"
+      "title": "India's Progress Under NCAP - 26.84% reduction achieved",
+      "date": "2024-10-15",
+      "source": "Drishti IAS",
+      "url": "https://www.drishtiias.com/daily-updates/daily-news-analysis/indias-progress-under-ncap"
     }
   ]
 }

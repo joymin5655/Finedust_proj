@@ -1,0 +1,155 @@
+{
+  "country": "United Kingdom",
+  "countryCode": "GB",
+  "region": "Western Europe",
+  "flag": "🇬🇧",
+  "coordinates": {
+    "lat": 55.3781,
+    "lon": -3.4360
+  },
+  "policies": [
+    {
+      "id": "uk-clean-air-strategy",
+      "name": "Clean Air Strategy 2019",
+      "implementationDate": "2019-01-14",
+      "type": "National Strategy",
+      "description": "Comprehensive strategy to reduce air pollution and meet WHO guidelines. Sets out how the government will tackle all sources of air pollution.",
+      "targetPollutants": ["PM2.5", "PM10", "NOx", "NH3"],
+      "measures": [
+        "Reduce PM2.5 emissions 46% by 2030",
+        "Clean Air Zones in cities",
+        "Domestic burning controls",
+        "Agricultural emission reduction",
+        "Industrial emission standards"
+      ],
+      "impact": {
+        "beforePeriod": {
+          "start": "2015-01-01",
+          "end": "2019-01-13",
+          "meanPM25": 11.8,
+          "medianPM25": 10.5,
+          "samples": 1456
+        },
+        "afterPeriod": {
+          "start": "2019-01-14",
+          "end": "2024-01-14",
+          "meanPM25": 9.2,
+          "medianPM25": 8.4,
+          "samples": 1825
+        },
+        "analysis": {
+          "deltaMean": -2.6,
+          "percentChange": -22.0,
+          "pValue": 0.005,
+          "significant": true,
+          "effectSize": "medium"
+        }
+      },
+      "timeline": [
+        {
+          "date": "2019-01-14",
+          "event": "Strategy Published",
+          "pm25": 11.8
+        },
+        {
+          "date": "2020-01-01",
+          "event": "Implementation Begins",
+          "pm25": 11.2
+        },
+        {
+          "date": "2021-05-01",
+          "event": "London ULEZ Expansion",
+          "pm25": 10.5
+        },
+        {
+          "date": "2022-01-01",
+          "event": "Mid-term Review",
+          "pm25": 9.8
+        },
+        {
+          "date": "2024-01-14",
+          "event": "5-Year Progress Report",
+          "pm25": 9.2
+        }
+      ]
+    },
+    {
+      "id": "uk-ulez",
+      "name": "Ultra Low Emission Zone (ULEZ) Expansion",
+      "implementationDate": "2021-10-25",
+      "type": "Urban Traffic Regulation",
+      "description": "Expansion of London's ULEZ to all areas within North and South Circular roads, covering 3.8 million people.",
+      "targetPollutants": ["NOx", "PM2.5"],
+      "measures": [
+        "Daily charges for non-compliant vehicles",
+        "Strictest emission standards",
+        "Monitoring and enforcement",
+        "Public transport improvements"
+      ],
+      "impact": {
+        "beforePeriod": {
+          "start": "2018-10-25",
+          "end": "2021-10-24",
+          "meanPM25": 12.3,
+          "medianPM25": 11.5,
+          "samples": 1095
+        },
+        "afterPeriod": {
+          "start": "2021-10-25",
+          "end": "2024-10-25",
+          "meanPM25": 9.8,
+          "medianPM25": 9.1,
+          "samples": 1095
+        },
+        "analysis": {
+          "deltaMean": -2.5,
+          "percentChange": -20.3,
+          "pValue": 0.008,
+          "significant": true,
+          "effectSize": "medium"
+        }
+      }
+    }
+  ],
+  "realTimeData": {
+    "lastUpdated": "2025-11-08T12:00:00Z",
+    "currentPM25": 8.5,
+    "aqi": 35,
+    "aqiLevel": "Good",
+    "trend": "stable",
+    "majorCities": [
+      {
+        "name": "London",
+        "pm25": 9.2,
+        "aqi": 38,
+        "aqiLevel": "Good"
+      },
+      {
+        "name": "Birmingham",
+        "pm25": 8.1,
+        "aqi": 34,
+        "aqiLevel": "Good"
+      },
+      {
+        "name": "Manchester",
+        "pm25": 7.8,
+        "aqi": 32,
+        "aqiLevel": "Good"
+      }
+    ]
+  },
+  "news": [
+    {
+      "title": "UK Air Quality Reaches Record Improvement in 2024",
+      "date": "2024-12-05",
+      "source": "BBC News",
+      "url": "https://example.com/news1"
+    },
+    {
+      "title": "London ULEZ Shows Significant Health Benefits",
+      "date": "2024-11-18",
+      "source": "The Guardian",
+      "url": "https://example.com/news2"
+    }
+  ]
+}

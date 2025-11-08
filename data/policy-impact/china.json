@@ -1,0 +1,154 @@
+{
+  "country": "China",
+  "countryCode": "CN",
+  "region": "East Asia",
+  "flag": "🇨🇳",
+  "coordinates": {
+    "lat": 35.8617,
+    "lon": 104.1954
+  },
+  "policies": [
+    {
+      "id": "cn-air-pollution-action-plan",
+      "name": "Air Pollution Prevention and Control Action Plan",
+      "implementationDate": "2013-09-10",
+      "type": "National Regulation",
+      "description": "Comprehensive national plan to reduce PM2.5 concentrations by 25% in Beijing-Tianjin-Hebei region, 20% in Yangtze River Delta, and 15% in Pearl River Delta by 2017.",
+      "targetPollutants": ["PM2.5", "PM10", "SO2", "NOx"],
+      "measures": [
+        "Coal consumption cap",
+        "Industrial emissions standards",
+        "Vehicle emission controls",
+        "Energy structure optimization"
+      ],
+      "impact": {
+        "beforePeriod": {
+          "start": "2010-01-01",
+          "end": "2013-09-09",
+          "meanPM25": 68.5,
+          "medianPM25": 62.3,
+          "samples": 1345
+        },
+        "afterPeriod": {
+          "start": "2013-09-10",
+          "end": "2017-12-31",
+          "meanPM25": 48.7,
+          "medianPM25": 44.1,
+          "samples": 1584
+        },
+        "analysis": {
+          "deltaMean": -19.8,
+          "percentChange": -28.9,
+          "pValue": 0.001,
+          "significant": true,
+          "effectSize": "large"
+        }
+      },
+      "timeline": [
+        {
+          "date": "2013-09-10",
+          "event": "Policy Announced",
+          "pm25": 68.5
+        },
+        {
+          "date": "2014-01-01",
+          "event": "Implementation Begins",
+          "pm25": 65.2
+        },
+        {
+          "date": "2015-01-01",
+          "event": "First Year Review",
+          "pm25": 58.3
+        },
+        {
+          "date": "2016-01-01",
+          "event": "Mid-term Assessment",
+          "pm25": 52.1
+        },
+        {
+          "date": "2017-12-31",
+          "event": "Target Achievement",
+          "pm25": 48.7
+        }
+      ]
+    },
+    {
+      "id": "cn-blue-sky-protection",
+      "name": "Three-Year Action Plan for Blue Skies",
+      "implementationDate": "2018-07-03",
+      "type": "National Regulation",
+      "description": "Follow-up plan focusing on further PM2.5 reduction and ozone control from 2018-2020.",
+      "targetPollutants": ["PM2.5", "O3"],
+      "measures": [
+        "Stricter industrial controls",
+        "Winter heating restrictions",
+        "Transportation emission standards",
+        "Regional coordination"
+      ],
+      "impact": {
+        "beforePeriod": {
+          "start": "2015-01-01",
+          "end": "2018-07-02",
+          "meanPM25": 50.2,
+          "medianPM25": 46.8,
+          "samples": 1289
+        },
+        "afterPeriod": {
+          "start": "2018-07-03",
+          "end": "2021-12-31",
+          "meanPM25": 38.4,
+          "medianPM25": 35.1,
+          "samples": 1265
+        },
+        "analysis": {
+          "deltaMean": -11.8,
+          "percentChange": -23.5,
+          "pValue": 0.002,
+          "significant": true,
+          "effectSize": "medium"
+        }
+      }
+    }
+  ],
+  "realTimeData": {
+    "lastUpdated": "2025-11-08T12:00:00Z",
+    "currentPM25": 42.3,
+    "aqi": 117,
+    "aqiLevel": "Unhealthy for Sensitive Groups",
+    "trend": "stable",
+    "majorCities": [
+      {
+        "name": "Beijing",
+        "pm25": 58.1,
+        "aqi": 152,
+        "aqiLevel": "Unhealthy"
+      },
+      {
+        "name": "Shanghai",
+        "pm25": 38.2,
+        "aqi": 108,
+        "aqiLevel": "Unhealthy for Sensitive Groups"
+      },
+      {
+        "name": "Guangzhou",
+        "pm25": 32.5,
+        "aqi": 94,
+        "aqiLevel": "Moderate"
+      }
+    ]
+  },
+  "news": [
+    {
+      "title": "China's Air Quality Continues Improvement in 2024",
+      "date": "2024-12-15",
+      "source": "China Daily",
+      "url": "https://example.com/news1"
+    },
+    {
+      "title": "New Emissions Standards for Heavy Industry Announced",
+      "date": "2024-11-20",
+      "source": "Xinhua",
+      "url": "https://example.com/news2"
+    }
+  ]
+}

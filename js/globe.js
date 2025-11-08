@@ -75,6 +75,9 @@ class PolicyGlobe {
     this.countryPolicies = this.loadCountryPolicies();
     this.pm25Data = new Map();
 
+    // Air Quality API for real-time data
+    this.airQualityAPI = typeof AirQualityAPI !== 'undefined' ? new AirQualityAPI() : null;
+
     // Animation
     this.clock = new THREE.Clock();
     this.time = 0;
@@ -99,6 +102,11 @@ class PolicyGlobe {
       // Load policy impact data from JSON files
       this.policyImpactData = await this.loadPolicyImpactData();
       this.mergePolicyData();
+
+      // Load real-time air quality data
+      if (this.airQualityAPI) {
+        this.loadRealTimeAirQuality();
+      }
 
       this.setupEventListeners();
       this.setupToggleSwitches();
@@ -1376,6 +1384,54 @@ class PolicyGlobe {
         }
       }
     });
+  }
+
+  async loadRealTimeAirQuality() {
+    if (!this.airQualityAPI) {
+      console.warn('AirQualityAPI not available');
+      return;
+    }
+
+    console.log('Loading real-time air quality data...');
+
+    // Get list of countries with policy impact data
+    const countryCodes = this.policyImpactData
+      ? Object.values(this.policyImpactData).map(data => data.countryCode)
+      : ['CN', 'IN', 'GB', 'KR', 'JP', 'US'];
+
+    try {
+      // Fetch real-time data for all countries
+      const realTimeData = await this.airQualityAPI.fetchMultipleCountries(countryCodes);
+
+      // Update policy data with real-time information
+      Object.entries(realTimeData).forEach(([countryCode, data]) => {
+        // Find country by code
+        const countryEntry = this.policyImpactData
+          ? Object.values(this.policyImpactData).find(p => p.countryCode === countryCode)
+          : null;
+
+        if (countryEntry) {
+          // Update with real-time data
+          this.airQualityAPI.updatePolicyDataWithRealTime(countryEntry, data);
+          console.log(`Updated real-time data for ${countryEntry.country}: PM2.5 = ${data.avgPM25} µg/m³`);
+
+          // Also update the merged policy data in countryPolicies
+          const existingPolicy = this.countryPolicies[countryEntry.country];
+          if (existingPolicy) {
+            existingPolicy.currentAQI = data.aqi;
+            existingPolicy.currentPM25 = data.avgPM25;
+
+            if (existingPolicy.policyImpactData) {
+              existingPolicy.policyImpactData.realTimeData = countryEntry.realTimeData;
+            }
+          }
+        }
+      });
+
+      console.log(`Real-time air quality data loaded for ${Object.keys(realTimeData).length} countries`);
+    } catch (error) {
+      console.error('Error loading real-time air quality data:', error);
+    }
   }
 
   showCountryPolicy(countryName) {

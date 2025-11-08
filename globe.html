@@ -188,6 +188,11 @@
                 max-width: 90vw !important;
             }
 
+            #policy-card {
+                max-width: 95vw !important;
+                height: calc(100vh - 80px) !important;
+            }
+
             main {
                 flex-direction: column-reverse !important;
             }
@@ -237,14 +242,14 @@
 
                 <!-- Country Policy Card -->
                 <div class="flex justify-start">
-                    <div id="policy-card" class="w-full max-w-md max-h-[calc(100vh-80px)] rounded-xl bg-gray-900/50 backdrop-blur-md border border-white/10 policy-card flex flex-col" style="display: none;">
-                        <div class="flex items-start justify-between p-6 pb-4 border-b border-white/10 flex-shrink-0">
+                    <div id="policy-card" class="w-full max-w-md h-[calc(100vh-100px)] rounded-xl bg-gray-900/50 backdrop-blur-md border border-white/10 policy-card flex flex-col" style="display: none;">
+                        <div class="flex items-start justify-between p-4 pb-3 border-b border-white/10 flex-shrink-0">
                             <div class="flex-1">
-                                <div class="flex items-center gap-3 mb-2">
-                                    <span id="policy-flag" class="text-4xl">🌍</span>
+                                <div class="flex items-center gap-3 mb-1">
+                                    <span id="policy-flag" class="text-3xl">🌍</span>
                                     <div>
-                                        <h3 class="text-xl font-bold text-white font-display" id="policy-country">Country</h3>
-                                        <p class="text-sm text-white/60 font-display" id="policy-region">Region</p>
+                                        <h3 class="text-lg font-bold text-white font-display" id="policy-country">Country</h3>
+                                        <p class="text-xs text-white/60 font-display" id="policy-region">Region</p>
                                     </div>
                                 </div>
                             </div>
@@ -255,22 +260,22 @@
                         </div>
 
                         <!-- Policy Info (Scrollable) -->
-                        <div class="mt-4 px-6 pb-4 overflow-y-auto flex-1">
-                            <div class="flex items-center gap-2 mb-3">
-                                <span class="material-symbols-outlined text-primary">policy</span>
-                                <h4 class="text-base font-semibold text-white font-display">Main Policy</h4>
+                        <div class="px-4 py-3 overflow-y-auto flex-1 min-h-0">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="material-symbols-outlined text-primary !text-lg">policy</span>
+                                <h4 class="text-sm font-semibold text-white font-display">Main Policy</h4>
                             </div>
-                            <div class="bg-black/20 rounded-lg p-4 mb-4">
-                                <h5 class="text-lg font-bold text-primary font-display mb-2" id="policy-name">Policy Name</h5>
-                                <p class="text-sm text-white/80 font-display mb-3" id="policy-desc">Policy description goes here...</p>
+                            <div class="bg-black/20 rounded-lg p-3 mb-3">
+                                <h5 class="text-base font-bold text-primary font-display mb-1" id="policy-name">Policy Name</h5>
+                                <p class="text-xs text-white/80 font-display mb-2" id="policy-desc">Policy description goes here...</p>
                                 <div class="flex items-center gap-2 text-xs text-white/60">
-                                    <span class="material-symbols-outlined !text-base">calendar_today</span>
+                                    <span class="material-symbols-outlined !text-sm">calendar_today</span>
                                     <span id="policy-date">Implementation date</span>
                                 </div>
                             </div>
 
                             <!-- AQI Status -->
-                            <div class="grid grid-cols-2 gap-3 mb-4">
+                            <div class="grid grid-cols-2 gap-2 mb-3">
                                 <div class="bg-black/20 rounded-lg p-3 text-center">
                                     <p class="text-xs text-white/60 font-display mb-1">Current AQI</p>
                                     <p class="text-2xl font-bold font-display" id="policy-aqi">-</p>
@@ -282,19 +287,19 @@
                             </div>
 
                             <!-- Policy Impact Analysis -->
-                            <div class="mb-4" id="policy-impact-section" style="display: none;">
-                                <div class="flex items-center gap-2 mb-3">
-                                    <span class="material-symbols-outlined text-primary">analytics</span>
-                                    <h4 class="text-base font-semibold text-white font-display">Policy Impact</h4>
+                            <div class="mb-3" id="policy-impact-section" style="display: none;">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="material-symbols-outlined text-primary !text-lg">analytics</span>
+                                    <h4 class="text-sm font-semibold text-white font-display">Policy Impact</h4>
                                 </div>
-                                <div class="bg-black/20 rounded-lg p-4 mb-3">
+                                <div class="bg-black/20 rounded-lg p-3 mb-2">
                                     <!-- Visual Comparison Chart -->
-                                    <div class="mb-4">
-                                        <canvas id="policy-impact-chart" style="max-height: 180px;"></canvas>
+                                    <div class="mb-3">
+                                        <canvas id="policy-impact-chart" style="max-height: 150px;"></canvas>
                                     </div>
 
                                     <!-- Numeric Summary -->
-                                    <div class="grid grid-cols-3 gap-2 mb-3">
+                                    <div class="grid grid-cols-3 gap-2 mb-2">
                                         <div class="text-center">
                                             <p class="text-xs text-white/60 font-display mb-1">Before</p>
                                             <p class="text-lg font-bold text-white/90 font-display" id="impact-before">-</p>
@@ -315,29 +320,29 @@
                             </div>
 
                             <!-- Policy Timeline -->
-                            <div class="mb-4" id="policy-timeline-section" style="display: none;">
-                                <div class="flex items-center gap-2 mb-3">
-                                    <span class="material-symbols-outlined text-primary">timeline</span>
-                                    <h4 class="text-base font-semibold text-white font-display">Timeline</h4>
+                            <div class="mb-3" id="policy-timeline-section" style="display: none;">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="material-symbols-outlined text-primary !text-lg">timeline</span>
+                                    <h4 class="text-sm font-semibold text-white font-display">Timeline</h4>
                                 </div>
-                                <div class="bg-black/20 rounded-lg p-4">
-                                    <canvas id="policy-timeline-chart" style="max-height: 200px;"></canvas>
+                                <div class="bg-black/20 rounded-lg p-3">
+                                    <canvas id="policy-timeline-chart" style="max-height: 160px;"></canvas>
                                 </div>
                             </div>
 
                             <!-- Recent News -->
-                            <div class="mb-4">
-                                <div class="flex items-center gap-2 mb-3">
-                                    <span class="material-symbols-outlined text-primary">newspaper</span>
-                                    <h4 class="text-base font-semibold text-white font-display">Recent News</h4>
+                            <div class="mb-3">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="material-symbols-outlined text-primary !text-lg">newspaper</span>
+                                    <h4 class="text-sm font-semibold text-white font-display">Recent News</h4>
                                 </div>
                                 <div id="policy-news" class="space-y-2">
                                     <!-- News items will be inserted here -->
                                 </div>
                             </div>
 
-                            <button id="view-more-btn" class="w-full flex items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-4 bg-primary/20 text-primary text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/30 transition-colors">
-                                <span class="material-symbols-outlined !text-lg">open_in_new</span>
+                            <button id="view-more-btn" class="w-full flex items-center justify-center gap-2 overflow-hidden rounded-lg h-9 px-4 mt-2 bg-primary/20 text-primary text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/30 transition-colors">
+                                <span class="material-symbols-outlined !text-base">open_in_new</span>
                                 <span class="truncate">View Full Details</span>
                             </button>
                         </div>

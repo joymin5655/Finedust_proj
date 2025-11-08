@@ -239,19 +239,19 @@
       "title": "EPA strengthens PM2.5 standards to protect public health",
       "date": "2025-01-12",
       "source": "Reuters",
-      "url": "https://example.com/news1"
+      "url": "https://ourworldindata.org/air-pollution"
     },
     {
       "title": "California leads in zero-emission vehicle adoption",
       "date": "2024-12-18",
       "source": "LA Times",
-      "url": "https://example.com/news2"
+      "url": "https://ourworldindata.org/air-pollution"
     },
     {
       "title": "Wildfire smoke prompts air quality alerts across West Coast",
       "date": "2024-11-30",
       "source": "AP News",
-      "url": "https://example.com/news3"
+      "url": "https://ourworldindata.org/air-pollution"
     }
   ]
 }

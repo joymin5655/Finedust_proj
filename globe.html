@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>AirLens Global AQI - 실시간 대기질 지구본</title>
-    <meta name="description" content="실시간 PM2.5 농도와 대기 흐름을 3D 지구본에서 확인하세요"/>
+    <title>AirLens Newsroom Globe - 세계 대기질 정책 지구본</title>
+    <meta name="description" content="전 세계 미세먼지 정책과 대기질 뉴스를 3D 지구본에서 확인하세요"/>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -115,6 +115,30 @@
             height: 0;
         }
 
+        .policy-card {
+            animation: slideInUp 0.3s ease-out;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .news-item {
+            transition: all 0.2s;
+        }
+
+        .news-item:hover {
+            transform: translateX(4px);
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
         @media (max-width: 768px) {
             .control-panel {
                 max-width: 90vw !important;
@@ -142,14 +166,14 @@
         <!-- Top Navigation Bar -->
         <header class="relative z-30 flex items-center justify-between whitespace-nowrap px-6 py-3 sm:px-10 border-b border-solid border-white/10 bg-black/20 backdrop-blur-sm">
             <div class="flex items-center gap-8">
-                <div class="flex items-center gap-4 text-white">
-                    <div class="size-6 text-primary">
-                        <span class="material-symbols-outlined !text-3xl">public</span>
+                <a href="index.html" class="flex items-center gap-4 text-white hover:opacity-80 transition-opacity">
+                    <div class="w-8 h-8 text-primary flex items-center justify-center">
+                        <span class="material-symbols-outlined" style="font-size: 32px;">public</span>
                     </div>
                     <h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em] font-display">
-                        AirLens Global AQI
+                        AirLens Newsroom Globe
                     </h2>
-                </div>
+                </a>
                 <nav class="hidden md:flex items-center gap-9">
                     <a class="text-white/80 hover:text-white text-sm font-medium leading-normal transition-colors" href="index.html">Home</a>
                     <a class="text-white/80 hover:text-white text-sm font-medium leading-normal transition-colors" href="camera.html">Camera AI</a>
@@ -158,8 +182,8 @@
                 </nav>
             </div>
             <div class="flex items-center gap-4">
-                <a href="settings.html" class="settings-icon">
-                    <div class="loader-icon"></div>
+                <a href="settings.html" class="text-white/60 hover:text-white transition-colors">
+                    <span class="material-symbols-outlined">settings</span>
                 </a>
                 <a href="https://github.com/joymin5655/Finedust_proj" target="_blank"
                    class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-background-dark text-sm font-bold leading-normal tracking-[0.015em] hover:bg-opacity-90 transition-opacity">
@@ -172,12 +196,12 @@
         <main class="relative z-20 flex flex-1 p-4 md:p-6 gap-6 pointer-events-none">
 
             <!-- Left Control Panel -->
-            <aside class="pointer-events-auto flex h-full w-full max-w-sm flex-col gap-4 rounded-xl bg-gray-900/50 p-4 backdrop-blur-md border border-white/10">
+            <aside class="pointer-events-auto flex h-full w-full max-w-sm flex-col gap-4 rounded-xl bg-gray-900/50 p-4 backdrop-blur-md border border-white/10 overflow-y-auto">
 
                 <!-- Header -->
                 <div class="flex flex-col">
-                    <h1 class="text-white text-base font-medium leading-normal font-display">Controls</h1>
-                    <p class="text-white/60 text-sm font-normal leading-normal font-display">Customize your view</p>
+                    <h1 class="text-white text-base font-medium leading-normal font-display">Newsroom Controls</h1>
+                    <p class="text-white/60 text-sm font-normal leading-normal font-display">Explore global policies</p>
                 </div>
 
                 <!-- Search & Filters -->
@@ -187,20 +211,20 @@
                             <div class="text-white/60 flex border-none bg-black/20 items-center justify-center pl-4 rounded-l-lg border-r-0">
                                 <span class="material-symbols-outlined !text-xl">search</span>
                             </div>
-                            <input id="location-search"
+                            <input id="country-search"
                                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-white focus:outline-0 focus:ring-0 border-none bg-black/20 focus:border-none h-full placeholder:text-white/60 px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal font-display"
-                                   placeholder="Search by Country or City..."
+                                   placeholder="Search country..."
                                    value=""/>
                         </div>
                     </label>
 
                     <div class="flex gap-3 flex-wrap">
-                        <button class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-black/20 pl-4 pr-2 hover:bg-black/40 transition-colors">
-                            <p class="text-white text-sm font-medium leading-normal font-display">Filter by AQI</p>
+                        <button id="filter-region" class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-black/20 pl-4 pr-2 hover:bg-black/40 transition-colors">
+                            <p class="text-white text-sm font-medium leading-normal font-display">Region</p>
                             <span class="material-symbols-outlined text-white !text-xl">arrow_drop_down</span>
                         </button>
-                        <button class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-black/20 pl-4 pr-2 hover:bg-black/40 transition-colors">
-                            <p class="text-white text-sm font-medium leading-normal font-display">Date</p>
+                        <button id="filter-policy" class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-black/20 pl-4 pr-2 hover:bg-black/40 transition-colors">
+                            <p class="text-white text-sm font-medium leading-normal font-display">Policy Type</p>
                             <span class="material-symbols-outlined text-white !text-xl">arrow_drop_down</span>
                         </button>
                     </div>
@@ -208,12 +232,50 @@
 
                 <div class="my-2 border-t border-white/10"></div>
 
-                <!-- Layers -->
+                <!-- Visualization Layers -->
                 <div class="flex flex-col gap-2">
                     <div class="flex flex-col mb-2">
                         <h1 class="text-white text-base font-medium leading-normal font-display">Layers</h1>
                         <p class="text-white/60 text-sm font-normal leading-normal font-display">Toggle visual layers</p>
                     </div>
+
+                    <!-- Country Borders -->
+                    <label class="flex items-center gap-4 bg-transparent px-4 min-h-[72px] py-2 justify-between cursor-pointer hover:bg-white/5 rounded-lg transition-colors">
+                        <div class="flex items-center gap-4">
+                            <div class="text-white flex items-center justify-center rounded-lg bg-black/20 shrink-0 size-12">
+                                <span class="material-symbols-outlined">flag</span>
+                            </div>
+                            <div class="flex flex-col justify-center">
+                                <p class="text-white text-base font-medium leading-normal line-clamp-1 font-display">Country Borders</p>
+                                <p class="text-white/60 text-sm font-normal leading-normal line-clamp-2 font-display">Show country boundaries</p>
+                            </div>
+                        </div>
+                        <div class="shrink-0">
+                            <div class="toggle-switch checked" id="toggle-borders-switch">
+                                <input type="checkbox" id="toggle-borders" checked>
+                                <div class="toggle-knob"></div>
+                            </div>
+                        </div>
+                    </label>
+
+                    <!-- PM2.5 Overlay -->
+                    <label class="flex items-center gap-4 bg-transparent px-4 min-h-[72px] py-2 justify-between cursor-pointer hover:bg-white/5 rounded-lg transition-colors">
+                        <div class="flex items-center gap-4">
+                            <div class="text-white flex items-center justify-center rounded-lg bg-black/20 shrink-0 size-12">
+                                <span class="material-symbols-outlined">blur_on</span>
+                            </div>
+                            <div class="flex flex-col justify-center">
+                                <p class="text-white text-base font-medium leading-normal line-clamp-1 font-display">PM2.5 Data</p>
+                                <p class="text-white/60 text-sm font-normal leading-normal line-clamp-2 font-display">Air quality markers</p>
+                            </div>
+                        </div>
+                        <div class="shrink-0">
+                            <div class="toggle-switch checked" id="toggle-pm25-switch">
+                                <input type="checkbox" id="toggle-pm25" checked>
+                                <div class="toggle-knob"></div>
+                            </div>
+                        </div>
+                    </label>
 
                     <!-- Particle Flow -->
                     <label class="flex items-center gap-4 bg-transparent px-4 min-h-[72px] py-2 justify-between cursor-pointer hover:bg-white/5 rounded-lg transition-colors">
@@ -229,44 +291,6 @@
                         <div class="shrink-0">
                             <div class="toggle-switch" id="toggle-particles-switch">
                                 <input type="checkbox" id="toggle-particles">
-                                <div class="toggle-knob"></div>
-                            </div>
-                        </div>
-                    </label>
-
-                    <!-- PM2.5 Overlay -->
-                    <label class="flex items-center gap-4 bg-transparent px-4 min-h-[72px] py-2 justify-between cursor-pointer hover:bg-white/5 rounded-lg transition-colors">
-                        <div class="flex items-center gap-4">
-                            <div class="text-white flex items-center justify-center rounded-lg bg-black/20 shrink-0 size-12">
-                                <span class="material-symbols-outlined">blur_on</span>
-                            </div>
-                            <div class="flex flex-col justify-center">
-                                <p class="text-white text-base font-medium leading-normal line-clamp-1 font-display">PM2.5 Overlay</p>
-                                <p class="text-white/60 text-sm font-normal leading-normal line-clamp-2 font-display">Air quality markers</p>
-                            </div>
-                        </div>
-                        <div class="shrink-0">
-                            <div class="toggle-switch checked" id="toggle-pm25-switch">
-                                <input type="checkbox" id="toggle-pm25" checked>
-                                <div class="toggle-knob"></div>
-                            </div>
-                        </div>
-                    </label>
-
-                    <!-- Grid Lines -->
-                    <label class="flex items-center gap-4 bg-transparent px-4 min-h-[72px] py-2 justify-between cursor-pointer hover:bg-white/5 rounded-lg transition-colors">
-                        <div class="flex items-center gap-4">
-                            <div class="text-white flex items-center justify-center rounded-lg bg-black/20 shrink-0 size-12">
-                                <span class="material-symbols-outlined">grid_on</span>
-                            </div>
-                            <div class="flex flex-col justify-center">
-                                <p class="text-white text-base font-medium leading-normal line-clamp-1 font-display">Grid Lines</p>
-                                <p class="text-white/60 text-sm font-normal leading-normal line-clamp-2 font-display">Lat/Long grid</p>
-                            </div>
-                        </div>
-                        <div class="shrink-0">
-                            <div class="toggle-switch" id="toggle-grid-switch">
-                                <input type="checkbox" id="toggle-grid">
                                 <div class="toggle-knob"></div>
                             </div>
                         </div>
@@ -294,76 +318,96 @@
 
             </aside>
 
-            <!-- Right Side Information Panel & Controls -->
-            <div class="pointer-events-auto flex flex-1 flex-col justify-between">
+            <!-- Right Side Information Panel & Policy Cards -->
+            <div class="pointer-events-auto flex flex-1 flex-col justify-between gap-4">
 
-                <!-- Station Info Pop-up -->
+                <!-- Country Policy Card -->
                 <div class="flex justify-end">
-                    <div id="station-info" class="w-full max-w-sm rounded-xl bg-gray-900/50 p-6 backdrop-blur-md border border-white/10 info-panel" style="display: none;">
-                        <div class="flex items-center justify-between pb-4 border-b border-white/10">
-                            <div>
-                                <h3 class="text-lg font-bold text-white font-display" id="station-name">Loading...</h3>
-                                <p class="text-sm text-white/60 font-display" id="station-location">-</p>
+                    <div id="policy-card" class="w-full max-w-md rounded-xl bg-gray-900/50 p-6 backdrop-blur-md border border-white/10 policy-card" style="display: none;">
+                        <div class="flex items-start justify-between pb-4 border-b border-white/10">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <span id="policy-flag" class="text-4xl">🌍</span>
+                                    <div>
+                                        <h3 class="text-xl font-bold text-white font-display" id="policy-country">Country</h3>
+                                        <p class="text-sm text-white/60 font-display" id="policy-region">Region</p>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="flex flex-col items-end">
-                                <p class="text-3xl font-bold font-display" id="station-aqi">-</p>
-                                <p class="text-sm font-medium font-display" id="station-level">-</p>
-                            </div>
+                            <button onclick="document.getElementById('policy-card').style.display='none'"
+                                    class="text-white/60 hover:text-white transition-colors">
+                                <span class="material-symbols-outlined">close</span>
+                            </button>
                         </div>
-                        <div class="grid grid-cols-3 gap-4 pt-4 text-center">
-                            <div>
-                                <p class="text-xs text-white/60 font-display">PM2.5</p>
-                                <p class="text-lg font-medium text-white font-display" id="station-pm25">- µg/m³</p>
+
+                        <!-- Policy Info -->
+                        <div class="mt-4">
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="material-symbols-outlined text-primary">policy</span>
+                                <h4 class="text-base font-semibold text-white font-display">Main Policy</h4>
                             </div>
-                            <div>
-                                <p class="text-xs text-white/60 font-display">PM10</p>
-                                <p class="text-lg font-medium text-white font-display" id="station-pm10">- µg/m³</p>
+                            <div class="bg-black/20 rounded-lg p-4 mb-4">
+                                <h5 class="text-lg font-bold text-primary font-display mb-2" id="policy-name">Policy Name</h5>
+                                <p class="text-sm text-white/80 font-display mb-3" id="policy-desc">Policy description goes here...</p>
+                                <div class="flex items-center gap-2 text-xs text-white/60">
+                                    <span class="material-symbols-outlined !text-base">calendar_today</span>
+                                    <span id="policy-date">Implementation date</span>
+                                </div>
                             </div>
-                            <div>
-                                <p class="text-xs text-white/60 font-display">O₃</p>
-                                <p class="text-lg font-medium text-white font-display" id="station-o3">- ppb</p>
+
+                            <!-- AQI Status -->
+                            <div class="grid grid-cols-2 gap-3 mb-4">
+                                <div class="bg-black/20 rounded-lg p-3 text-center">
+                                    <p class="text-xs text-white/60 font-display mb-1">Current AQI</p>
+                                    <p class="text-2xl font-bold font-display" id="policy-aqi">-</p>
+                                </div>
+                                <div class="bg-black/20 rounded-lg p-3 text-center">
+                                    <p class="text-xs text-white/60 font-display mb-1">PM2.5</p>
+                                    <p class="text-2xl font-bold font-display" id="policy-pm25">- µg/m³</p>
+                                </div>
                             </div>
+
+                            <!-- Recent News -->
+                            <div class="mb-4">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <span class="material-symbols-outlined text-primary">newspaper</span>
+                                    <h4 class="text-base font-semibold text-white font-display">Recent News</h4>
+                                </div>
+                                <div id="policy-news" class="space-y-2 max-h-48 overflow-y-auto">
+                                    <!-- News items will be inserted here -->
+                                </div>
+                            </div>
+
+                            <button id="view-more-btn" class="w-full flex items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-4 bg-primary/20 text-primary text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/30 transition-colors">
+                                <span class="material-symbols-outlined !text-lg">open_in_new</span>
+                                <span class="truncate">View Full Details</span>
+                            </button>
                         </div>
-                        <div class="mt-4 text-center text-xs text-white/50 font-display" id="station-time">
-                            Last updated: -
-                        </div>
-                        <button onclick="document.getElementById('station-info').style.display='none'"
-                                class="mt-4 w-full flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary/20 text-primary text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/30 transition-colors">
-                            <span class="truncate">Close</span>
-                        </button>
                     </div>
                 </div>
 
                 <!-- Bottom Controls -->
                 <div class="flex items-end justify-between">
 
-                    <!-- Legend -->
+                    <!-- Quick Stats -->
                     <div class="rounded-xl bg-gray-900/50 p-4 backdrop-blur-md border border-white/10 max-w-xs">
-                        <h4 class="text-sm font-bold text-white mb-3 font-display">AQI Legend</h4>
-                        <div class="grid grid-cols-2 gap-x-4 gap-y-2">
-                            <div class="flex items-center gap-2">
-                                <div class="size-3 rounded-full bg-green-500"></div>
-                                <span class="text-xs text-white/80 font-display">Good (0-50)</span>
+                        <h4 class="text-sm font-bold text-white mb-3 font-display">Global Statistics</h4>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <p class="text-xs text-white/60 font-display">Countries</p>
+                                <p class="text-xl font-bold text-primary font-display">30+</p>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <div class="size-3 rounded-full bg-yellow-400"></div>
-                                <span class="text-xs text-white/80 font-display">Moderate (51-100)</span>
+                            <div>
+                                <p class="text-xs text-white/60 font-display">Policies</p>
+                                <p class="text-xl font-bold text-primary font-display">150+</p>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <div class="size-3 rounded-full bg-orange-500"></div>
-                                <span class="text-xs text-white/80 font-display">Unhealthy SG (101-150)</span>
+                            <div>
+                                <p class="text-xs text-white/60 font-display">Cities</p>
+                                <p class="text-xl font-bold text-primary font-display">500+</p>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <div class="size-3 rounded-full bg-red-500"></div>
-                                <span class="text-xs text-white/80 font-display">Unhealthy (151-200)</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <div class="size-3 rounded-full bg-purple-500"></div>
-                                <span class="text-xs text-white/80 font-display">Very Unhealthy (201-300)</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <div class="size-3 rounded-full" style="background-color: #7e1946;"></div>
-                                <span class="text-xs text-white/80 font-display">Hazardous (300+)</span>
+                            <div>
+                                <p class="text-xs text-white/60 font-display">Updates</p>
+                                <p class="text-xl font-bold text-primary font-display">Live</p>
                             </div>
                         </div>
                     </div>
@@ -385,6 +429,14 @@
             </div>
 
         </main>
+
+        <!-- Help Tooltip -->
+        <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-30 pointer-events-none">
+            <div class="bg-gray-900/90 backdrop-blur-md border border-white/10 rounded-lg px-4 py-2 text-sm text-white/80 font-display">
+                <span class="material-symbols-outlined !text-base inline-block align-middle mr-2">touch_app</span>
+                Click on any country to view air quality policies and news
+            </div>
+        </div>
 
     </div>
 

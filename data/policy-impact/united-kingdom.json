@@ -170,19 +170,19 @@
       "title": "UK Air Quality Reaches Record Improvement in 2024",
       "date": "2024-12-05",
       "source": "BBC News",
-      "url": "https://example.com/news1"
+      "url": "https://ourworldindata.org/air-pollution"
     },
     {
       "title": "London ULEZ Shows Significant Health Benefits",
       "date": "2024-11-18",
       "source": "The Guardian",
-      "url": "https://example.com/news2"
+      "url": "https://ourworldindata.org/air-pollution"
     },
     {
       "title": "Government announces new Clean Air Zones for 2025",
       "date": "2024-11-02",
       "source": "The Independent",
-      "url": "https://example.com/news3"
+      "url": "https://ourworldindata.org/air-pollution"
     }
   ]
 }

@@ -113,7 +113,34 @@
           "significant": true,
           "effectSize": "medium"
         }
-      }
+      },
+      "timeline": [
+        {
+          "date": "2019-12-01",
+          "event": "Seasonal Management Begins",
+          "pm25": 32.8
+        },
+        {
+          "date": "2020-03-31",
+          "event": "First Winter Season Ends",
+          "pm25": 30.5
+        },
+        {
+          "date": "2021-12-01",
+          "event": "Enhanced Restrictions Applied",
+          "pm25": 28.9
+        },
+        {
+          "date": "2022-12-01",
+          "event": "3rd Season Implementation",
+          "pm25": 27.6
+        },
+        {
+          "date": "2024-03-31",
+          "event": "5-Season Impact Review",
+          "pm25": 26.9
+        }
+      ]
     }
   ],
   "realTimeData": {

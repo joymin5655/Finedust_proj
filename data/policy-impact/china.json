@@ -107,7 +107,34 @@
           "significant": true,
           "effectSize": "medium"
         }
-      }
+      },
+      "timeline": [
+        {
+          "date": "2018-07-03",
+          "event": "Blue Sky Plan Launched",
+          "pm25": 50.2
+        },
+        {
+          "date": "2019-01-01",
+          "event": "Regional Coordination Begins",
+          "pm25": 46.8
+        },
+        {
+          "date": "2019-12-01",
+          "event": "Industrial Controls Tightened",
+          "pm25": 43.5
+        },
+        {
+          "date": "2020-06-01",
+          "event": "Mid-term Review",
+          "pm25": 40.9
+        },
+        {
+          "date": "2021-12-31",
+          "event": "3-Year Plan Completion",
+          "pm25": 38.4
+        }
+      ]
     }
   ],
   "realTimeData": {
@@ -149,6 +176,12 @@
       "date": "2024-11-20",
       "source": "Xinhua",
       "url": "https://example.com/news2"
+    },
+    {
+      "title": "Beijing-Tianjin-Hebei region sees record low PM2.5 levels",
+      "date": "2024-11-05",
+      "source": "CGTN",
+      "url": "https://example.com/news3"
     }
   ]
 }

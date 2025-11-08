@@ -113,7 +113,34 @@
           "significant": true,
           "effectSize": "small"
         }
-      }
+      },
+      "timeline": [
+        {
+          "date": "2015-08-03",
+          "event": "Clean Power Plan Announced",
+          "pm25": 9.8
+        },
+        {
+          "date": "2016-01-01",
+          "event": "State Planning Begins",
+          "pm25": 9.3
+        },
+        {
+          "date": "2017-01-01",
+          "event": "Early Implementation",
+          "pm25": 8.8
+        },
+        {
+          "date": "2018-01-01",
+          "event": "Compliance Progress Review",
+          "pm25": 8.3
+        },
+        {
+          "date": "2019-06-30",
+          "event": "Repeal Announced",
+          "pm25": 7.9
+        }
+      ]
     },
     {
       "id": "us-tier3-standards",
@@ -150,7 +177,34 @@
           "significant": true,
           "effectSize": "medium"
         }
-      }
+      },
+      "timeline": [
+        {
+          "date": "2017-01-01",
+          "event": "Tier 3 Standards Begin",
+          "pm25": 9.2
+        },
+        {
+          "date": "2018-01-01",
+          "event": "Fuel Sulfur Reduction",
+          "pm25": 8.7
+        },
+        {
+          "date": "2020-01-01",
+          "event": "Mid-term Compliance Check",
+          "pm25": 8.2
+        },
+        {
+          "date": "2022-01-01",
+          "event": "Fleet Turnover Progress",
+          "pm25": 7.8
+        },
+        {
+          "date": "2024-12-31",
+          "event": "8-Year Implementation Review",
+          "pm25": 7.3
+        }
+      ]
     }
   ],
   "realTimeData": {

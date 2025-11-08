@@ -108,7 +108,34 @@
           "significant": true,
           "effectSize": "medium"
         }
-      }
+      },
+      "timeline": [
+        {
+          "date": "2021-10-25",
+          "event": "ULEZ Expansion Implemented",
+          "pm25": 12.3
+        },
+        {
+          "date": "2022-04-01",
+          "event": "First Quarter Assessment",
+          "pm25": 11.5
+        },
+        {
+          "date": "2022-10-25",
+          "event": "One Year Anniversary",
+          "pm25": 10.8
+        },
+        {
+          "date": "2023-08-29",
+          "event": "London-wide ULEZ Expansion",
+          "pm25": 10.2
+        },
+        {
+          "date": "2024-10-25",
+          "event": "3-Year Impact Report",
+          "pm25": 9.8
+        }
+      ]
     }
   ],
   "realTimeData": {
@@ -150,6 +177,12 @@
       "date": "2024-11-18",
       "source": "The Guardian",
       "url": "https://example.com/news2"
+    },
+    {
+      "title": "Government announces new Clean Air Zones for 2025",
+      "date": "2024-11-02",
+      "source": "The Independent",
+      "url": "https://example.com/news3"
     }
   ]
 }

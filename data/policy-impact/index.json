@@ -756,12 +756,64 @@
         "lat": 3.8480,
         "lon": 11.5021
       }
+    },
+    {
+      "country": "Serbia",
+      "countryCode": "RS",
+      "region": "Southern Europe",
+      "flag": "🇷🇸",
+      "dataFile": "serbia.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 44.7866,
+        "lon": 20.4489
+      }
+    },
+    {
+      "country": "Uruguay",
+      "countryCode": "UY",
+      "region": "South America",
+      "flag": "🇺🇾",
+      "dataFile": "uruguay.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": -34.9011,
+        "lon": -56.1645
+      }
+    },
+    {
+      "country": "Kazakhstan",
+      "countryCode": "KZ",
+      "region": "Central Asia",
+      "flag": "🇰🇿",
+      "dataFile": "kazakhstan.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 51.1694,
+        "lon": 71.4491
+      }
+    },
+    {
+      "country": "Tanzania",
+      "countryCode": "TZ",
+      "region": "East Africa",
+      "flag": "🇹🇿",
+      "dataFile": "tanzania.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": -6.7924,
+        "lon": 39.2083
+      }
     }
   ],
   "statistics": {
-    "totalCountries": 58,
-    "totalPolicies": 117,
-    "regionsRepresented": ["East Asia", "South Asia", "Western Europe", "Central Europe", "Southern Europe", "Northern Europe", "Eastern Europe", "North America", "Central America", "Oceania", "Southeast Asia", "South America", "Western Asia", "Africa", "North Africa", "East Africa", "Central Africa", "Middle East", "West Africa"]
+    "totalCountries": 62,
+    "totalPolicies": 125,
+    "regionsRepresented": ["East Asia", "South Asia", "Western Europe", "Central Europe", "Southern Europe", "Northern Europe", "Eastern Europe", "North America", "Central America", "Oceania", "Southeast Asia", "South America", "Western Asia", "Africa", "North Africa", "East Africa", "Central Africa", "Central Asia", "Middle East", "West Africa"]
   },
   "apiEndpoints": {
     "openaq": "https://api.openaq.org/v2",

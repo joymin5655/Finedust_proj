@@ -171,19 +171,19 @@
       "title": "Canada's air quality ranks among world's best in 2024",
       "date": "2025-01-12",
       "source": "CBC News",
-      "url": "https://example.com/news1"
+      "url": "https://ourworldindata.org/air-pollution"
     },
     {
       "title": "Clean Fuel Regulations show early success",
       "date": "2024-12-22",
       "source": "The Globe and Mail",
-      "url": "https://example.com/news2"
+      "url": "https://ourworldindata.org/air-pollution"
     },
     {
       "title": "Wildfire smoke management strategies updated",
       "date": "2024-11-18",
       "source": "CTV News",
-      "url": "https://example.com/news3"
+      "url": "https://ourworldindata.org/air-pollution"
     }
   ]
 }

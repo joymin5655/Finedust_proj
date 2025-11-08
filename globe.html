@@ -223,9 +223,12 @@
 
         /* Tablet and below */
         @media (max-width: 1024px) {
-            #policy-card,
+            #policy-card {
+                max-width: 360px !important;
+            }
+
             .control-panel {
-                max-w-[320px] !important;
+                max-width: 200px !important;
             }
         }
 
@@ -484,7 +487,7 @@
             </aside>
 
             <!-- Right Control Panel -->
-            <aside class="pointer-events-auto fixed top-20 bottom-6 right-6 flex w-full max-w-[480px] flex-col gap-2 rounded-xl bg-gray-900/50 p-5 backdrop-blur-md border border-white/10 overflow-y-auto control-panel max-h-[calc(100vh-104px)] z-30">
+            <aside class="pointer-events-auto fixed top-20 bottom-6 right-6 flex w-full max-w-[240px] flex-col gap-2 rounded-xl bg-gray-900/50 p-3 backdrop-blur-md border border-white/10 overflow-y-auto control-panel max-h-[calc(100vh-104px)] z-30">
 
                 <!-- Header -->
                 <div class="flex flex-col">

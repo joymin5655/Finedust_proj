@@ -1549,24 +1549,29 @@ class PolicyGlobe {
 
     const newsContainer = document.getElementById('policy-news');
     newsContainer.innerHTML = '';
-    policy.news.forEach(news => {
-      const newsItem = document.createElement('div');
-      newsItem.className = 'news-item bg-black/20 rounded-lg p-3 cursor-pointer hover:bg-black/30 transition-colors';
-      newsItem.innerHTML = `
-        <h6 class="text-sm font-medium text-white mb-1">${news.title}</h6>
-        <div class="flex items-center justify-between text-xs text-white/60">
-          <span>${news.source}</span>
-          <span>${news.date}</span>
-        </div>
-      `;
-      // Add click event to open news URL
-      newsItem.addEventListener('click', () => {
-        if (news.url) {
-          window.open(news.url, '_blank', 'noopener,noreferrer');
-        }
+
+    if (policy.news && policy.news.length > 0) {
+      policy.news.forEach(news => {
+        const newsItem = document.createElement('div');
+        newsItem.className = 'news-item bg-black/20 rounded-lg p-3 cursor-pointer hover:bg-black/30 transition-colors';
+        newsItem.innerHTML = `
+          <h6 class="text-sm font-medium text-white mb-1">${news.title}</h6>
+          <div class="flex items-center justify-between text-xs text-white/60">
+            <span>${news.source}</span>
+            <span>${news.date}</span>
+          </div>
+        `;
+        // Add click event to open news URL
+        newsItem.addEventListener('click', () => {
+          if (news.url) {
+            window.open(news.url, '_blank', 'noopener,noreferrer');
+          }
+        });
+        newsContainer.appendChild(newsItem);
       });
-      newsContainer.appendChild(newsItem);
-    });
+    } else {
+      newsContainer.innerHTML = '<p class="text-sm text-white/60 text-center py-2">No recent news available</p>';
+    }
 
     // Set up "View Full Details" button
     const viewMoreBtn = document.getElementById('view-more-btn');

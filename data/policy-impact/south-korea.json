@@ -172,22 +172,22 @@
   },
   "news": [
     {
-      "title": "Seoul implements emergency fine dust reduction measures",
-      "date": "2025-01-05",
-      "source": "Yonhap News",
-      "url": "https://ourworldindata.org/air-pollution"
+      "title": "Special Act on the Reduction and Management of Fine Dust",
+      "date": "2019-02-15",
+      "source": "Korea Legislation Research Institute",
+      "url": "https://elaw.klri.re.kr/eng_mobile/viewer.do?hseq=54102&type=sogan&key=16"
     },
     {
-      "title": "New air purifier subsidy program launched",
-      "date": "2024-12-20",
-      "source": "Korea Herald",
-      "url": "https://ourworldindata.org/air-pollution"
+      "title": "What is S. Korea doing to combat fine dust pollution?",
+      "date": "2019-03-15",
+      "source": "The Korea Herald",
+      "url": "https://www.koreaherald.com/article/1917053"
     },
     {
-      "title": "Vehicle restrictions expanded in metropolitan areas",
-      "date": "2024-12-10",
-      "source": "KBS News",
-      "url": "https://ourworldindata.org/air-pollution"
+      "title": "Wintertime trends of fine particulate matter (PM2.5) in South Korea",
+      "date": "2024-03-20",
+      "source": "ESS Open Archive",
+      "url": "https://essopenarchive.org/users/906488/articles/1280781"
     }
   ]
 }

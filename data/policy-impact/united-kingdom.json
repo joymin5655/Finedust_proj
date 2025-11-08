@@ -167,22 +167,22 @@
   },
   "news": [
     {
-      "title": "UK Air Quality Reaches Record Improvement in 2024",
-      "date": "2024-12-05",
-      "source": "BBC News",
-      "url": "https://ourworldindata.org/air-pollution"
+      "title": "London pollution improved with evidence for small initial ULEZ effect",
+      "date": "2023-01-09",
+      "source": "Imperial College London",
+      "url": "https://www.imperial.ac.uk/news/231894/london-pollution-improved-with-evidence-small/"
     },
     {
-      "title": "London ULEZ Shows Significant Health Benefits",
-      "date": "2024-11-18",
-      "source": "The Guardian",
-      "url": "https://ourworldindata.org/air-pollution"
+      "title": "Has the ultra low emission zone in London improved air quality?",
+      "date": "2021-12-06",
+      "source": "ResearchGate",
+      "url": "https://www.researchgate.net/publication/356266007_Has_the_ultra_low_emission_zone_in_London_improved_air_quality"
     },
     {
-      "title": "Government announces new Clean Air Zones for 2025",
-      "date": "2024-11-02",
-      "source": "The Independent",
-      "url": "https://ourworldindata.org/air-pollution"
+      "title": "London-wide Ultra Low Emission Zone One Year Report",
+      "date": "2024-08-29",
+      "source": "London City Hall",
+      "url": "https://www.london.gov.uk/programmes-strategies/environment-and-climate-change/environment-and-climate-change-publications/london-wide-ultra-low-emission-zone-one-year-report"
     }
   ]
 }

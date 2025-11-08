@@ -236,22 +236,22 @@
   },
   "news": [
     {
-      "title": "EPA strengthens PM2.5 standards to protect public health",
-      "date": "2025-01-12",
-      "source": "Reuters",
-      "url": "https://ourworldindata.org/air-pollution"
+      "title": "EPA finalizes stronger standards for harmful soot pollution",
+      "date": "2024-02-07",
+      "source": "US EPA",
+      "url": "https://www.epa.gov/newsreleases/epa-finalizes-stronger-standards-harmful-soot-pollution-significantly-increasing"
     },
     {
-      "title": "California leads in zero-emission vehicle adoption",
-      "date": "2024-12-18",
-      "source": "LA Times",
-      "url": "https://ourworldindata.org/air-pollution"
+      "title": "Progress Cleaning the Air and Improving People's Health",
+      "date": "2023-08-15",
+      "source": "US EPA",
+      "url": "https://www.epa.gov/clean-air-act-overview/progress-cleaning-air-and-improving-peoples-health"
     },
     {
-      "title": "Wildfire smoke prompts air quality alerts across West Coast",
-      "date": "2024-11-30",
-      "source": "AP News",
-      "url": "https://ourworldindata.org/air-pollution"
+      "title": "Nationwide PM2.5-Related Air Quality Health Benefits From Emission Reductions",
+      "date": "2022-04-12",
+      "source": "PMC",
+      "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9109601/"
     }
   ]
 }

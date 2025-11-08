@@ -13,6 +13,7 @@
       "name": "Air Quality Management System (AQMS)",
       "implementationDate": "2013-10-01",
       "type": "Federal-Provincial Air Quality Framework",
+      "url": "https://www.ccme.ca/en/air-quality-report",
       "description": "Collaborative federal-provincial system establishing ambient air quality standards for PM2.5 and ozone, with coordinated action plans across all provinces and territories.",
       "targetPollutants": ["PM2.5", "Ozone"],
       "measures": [
@@ -83,6 +84,7 @@
       "name": "Clean Fuel Regulations (CFR)",
       "implementationDate": "2022-12-01",
       "type": "Fuel Quality Standard",
+      "url": "https://www.canada.ca/en/environment-climate-change/services/managing-pollution/energy-production/fuel-regulations/clean-fuel-regulations.html",
       "description": "Federal regulations requiring reduction in carbon intensity of gasoline and diesel, with significant PM2.5 co-benefits through cleaner combustion.",
       "targetPollutants": ["PM2.5", "NOx", "CO2", "Black Carbon"],
       "measures": [

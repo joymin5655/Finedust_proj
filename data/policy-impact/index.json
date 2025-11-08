@@ -41,12 +41,51 @@
         "lat": 55.3781,
         "lon": -3.4360
       }
+    },
+    {
+      "country": "South Korea",
+      "countryCode": "KR",
+      "region": "East Asia",
+      "flag": "🇰🇷",
+      "dataFile": "south-korea.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 37.5665,
+        "lon": 126.9780
+      }
+    },
+    {
+      "country": "Japan",
+      "countryCode": "JP",
+      "region": "East Asia",
+      "flag": "🇯🇵",
+      "dataFile": "japan.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 36.2048,
+        "lon": 138.2529
+      }
+    },
+    {
+      "country": "United States",
+      "countryCode": "US",
+      "region": "North America",
+      "flag": "🇺🇸",
+      "dataFile": "united-states.json",
+      "policyCount": 3,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 37.0902,
+        "lon": -95.7129
+      }
     }
   ],
   "statistics": {
-    "totalCountries": 3,
-    "totalPolicies": 6,
-    "regionsRepresented": ["East Asia", "South Asia", "Western Europe"]
+    "totalCountries": 6,
+    "totalPolicies": 13,
+    "regionsRepresented": ["East Asia", "South Asia", "Western Europe", "North America"]
   },
   "apiEndpoints": {
     "openaq": "https://api.openaq.org/v2",

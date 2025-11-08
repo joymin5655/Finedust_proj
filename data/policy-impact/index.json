@@ -236,12 +236,64 @@
         "lat": -23.5505,
         "lon": -46.6333
       }
+    },
+    {
+      "country": "Mexico",
+      "countryCode": "MX",
+      "region": "North America",
+      "flag": "🇲🇽",
+      "dataFile": "mexico.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 19.4326,
+        "lon": -99.1332
+      }
+    },
+    {
+      "country": "Chile",
+      "countryCode": "CL",
+      "region": "South America",
+      "flag": "🇨🇱",
+      "dataFile": "chile.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": -33.4489,
+        "lon": -70.6693
+      }
+    },
+    {
+      "country": "Turkey",
+      "countryCode": "TR",
+      "region": "Western Asia",
+      "flag": "🇹🇷",
+      "dataFile": "turkey.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 41.0082,
+        "lon": 28.9784
+      }
+    },
+    {
+      "country": "Singapore",
+      "countryCode": "SG",
+      "region": "Southeast Asia",
+      "flag": "🇸🇬",
+      "dataFile": "singapore.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 1.3521,
+        "lon": 103.8198
+      }
     }
   ],
   "statistics": {
-    "totalCountries": 18,
-    "totalPolicies": 37,
-    "regionsRepresented": ["East Asia", "South Asia", "Western Europe", "Central Europe", "Southern Europe", "North America", "Oceania", "Southeast Asia", "South America"]
+    "totalCountries": 22,
+    "totalPolicies": 45,
+    "regionsRepresented": ["East Asia", "South Asia", "Western Europe", "Central Europe", "Southern Europe", "North America", "Oceania", "Southeast Asia", "South America", "Western Asia"]
   },
   "apiEndpoints": {
     "openaq": "https://api.openaq.org/v2",

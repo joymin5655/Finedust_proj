@@ -67,7 +67,6 @@ class PolicyGlobe {
     this.showBorders = true;
     this.showPM25 = true;
     this.showParticles = false;
-    this.dayNightEnabled = true;
     this.particleSpeed = 1.0;
     this.particlesEnabled = false;
     this.particleCount = 6000;
@@ -1714,10 +1713,6 @@ class PolicyGlobe {
       this.particlesEnabled = checked;
       if (this.particles) this.particles.visible = checked;
     });
-
-    setupToggle('toggle-daynight-switch', 'toggle-daynight', (checked) => {
-      this.dayNightEnabled = checked;
-    });
   }
 
   setupEventListeners() {
@@ -1846,12 +1841,6 @@ class PolicyGlobe {
     if (this.earth) this.earth.rotation.y += 0.0001;
     if (this.clouds) this.clouds.rotation.y += 0.00015;
     if (this.stars) this.stars.rotation.y += 0.00001;
-
-    if (this.dayNightEnabled && this.sunLight) {
-      const angle = this.time * 0.00005;
-      this.sunLight.position.x = Math.cos(angle) * 5;
-      this.sunLight.position.z = Math.sin(angle) * 5;
-    }
 
     this.updateParticles();
 

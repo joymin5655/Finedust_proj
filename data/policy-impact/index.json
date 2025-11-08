@@ -340,12 +340,64 @@
         "lat": -34.6037,
         "lon": -58.3816
       }
+    },
+    {
+      "country": "Pakistan",
+      "countryCode": "PK",
+      "region": "South Asia",
+      "flag": "🇵🇰",
+      "dataFile": "pakistan.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 33.6844,
+        "lon": 73.0479
+      }
+    },
+    {
+      "country": "Bangladesh",
+      "countryCode": "BD",
+      "region": "South Asia",
+      "flag": "🇧🇩",
+      "dataFile": "bangladesh.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 23.8103,
+        "lon": 90.4125
+      }
+    },
+    {
+      "country": "Egypt",
+      "countryCode": "EG",
+      "region": "North Africa",
+      "flag": "🇪🇬",
+      "dataFile": "egypt.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 30.0444,
+        "lon": 31.2357
+      }
+    },
+    {
+      "country": "Sweden",
+      "countryCode": "SE",
+      "region": "Northern Europe",
+      "flag": "🇸🇪",
+      "dataFile": "sweden.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 59.3293,
+        "lon": 18.0686
+      }
     }
   ],
   "statistics": {
-    "totalCountries": 26,
-    "totalPolicies": 53,
-    "regionsRepresented": ["East Asia", "South Asia", "Western Europe", "Central Europe", "Southern Europe", "North America", "Oceania", "Southeast Asia", "South America", "Western Asia", "Africa"]
+    "totalCountries": 30,
+    "totalPolicies": 61,
+    "regionsRepresented": ["East Asia", "South Asia", "Western Europe", "Central Europe", "Southern Europe", "Northern Europe", "North America", "Oceania", "Southeast Asia", "South America", "Western Asia", "Africa", "North Africa"]
   },
   "apiEndpoints": {
     "openaq": "https://api.openaq.org/v2",

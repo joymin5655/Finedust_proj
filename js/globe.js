@@ -1501,7 +1501,7 @@ class PolicyGlobe {
     newsContainer.innerHTML = '';
     policy.news.forEach(news => {
       const newsItem = document.createElement('div');
-      newsItem.className = 'news-item bg-black/20 rounded-lg p-3 cursor-pointer';
+      newsItem.className = 'news-item bg-black/20 rounded-lg p-3 cursor-pointer hover:bg-black/30 transition-colors';
       newsItem.innerHTML = `
         <h6 class="text-sm font-medium text-white mb-1">${news.title}</h6>
         <div class="flex items-center justify-between text-xs text-white/60">
@@ -1509,6 +1509,12 @@ class PolicyGlobe {
           <span>${news.date}</span>
         </div>
       `;
+      // Add click event to open news URL
+      newsItem.addEventListener('click', () => {
+        if (news.url) {
+          window.open(news.url, '_blank', 'noopener,noreferrer');
+        }
+      });
       newsContainer.appendChild(newsItem);
     });
 

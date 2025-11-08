@@ -189,12 +189,16 @@
             }
 
             #policy-card {
-                max-width: 95vw !important;
-                height: calc(100vh - 80px) !important;
+                max-width: calc(100vw - 1rem) !important;
+                max-height: calc(100vh - 100px) !important;
             }
 
             main {
-                flex-direction: column-reverse !important;
+                flex-direction: column !important;
+            }
+
+            main > div {
+                padding: 0.5rem !important;
             }
         }
     </style>
@@ -238,11 +242,11 @@
         <main class="relative z-20 flex flex-1 pointer-events-none">
 
             <!-- Left Side - Policy Cards & Stats -->
-            <div class="pointer-events-auto flex flex-col justify-between gap-4 p-4 md:p-6">
+            <div class="pointer-events-auto flex flex-col justify-start gap-4 p-2 md:p-4 max-h-screen overflow-y-auto">
 
                 <!-- Country Policy Card -->
                 <div class="flex justify-start">
-                    <div id="policy-card" class="w-full max-w-md h-[calc(100vh-100px)] rounded-xl bg-gray-900/50 backdrop-blur-md border border-white/10 policy-card flex flex-col" style="display: none;">
+                    <div id="policy-card" class="w-full max-w-md max-h-[calc(100vh-120px)] rounded-xl bg-gray-900/50 backdrop-blur-md border border-white/10 policy-card flex flex-col" style="display: none;">
                         <div class="flex items-start justify-between p-4 pb-3 border-b border-white/10 flex-shrink-0">
                             <div class="flex-1">
                                 <div class="flex items-center gap-3 mb-1">

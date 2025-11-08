@@ -101,8 +101,8 @@
 
         .toggle-switch {
             position: relative;
-            width: 60px;
-            height: 34px;
+            width: 50px;
+            height: 28px;
         }
 
         .toggle-switch input {
@@ -126,8 +126,8 @@
         .slider:before {
             position: absolute;
             content: "";
-            height: 28px;
-            width: 28px;
+            height: 22px;
+            width: 22px;
             left: 3px;
             bottom: 3px;
             background-color: white;
@@ -141,29 +141,29 @@
         }
 
         input:checked + .slider:before {
-            transform: translateX(26px);
+            transform: translateX(22px);
         }
 
         .zoom-controls {
             position: fixed;
-            bottom: 2rem;
-            right: 2rem;
+            bottom: 1.5rem;
+            right: 1.5rem;
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
+            gap: 0.4rem;
             z-index: 20;
         }
 
         .zoom-btn {
-            width: 3rem;
-            height: 3rem;
+            width: 2.5rem;
+            height: 2.5rem;
             display: flex;
             align-items: center;
             justify-content: center;
             background: rgba(17, 24, 39, 0.5);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 0.5rem;
+            border-radius: 0.4rem;
             color: white;
             cursor: pointer;
             transition: all 0.3s;
@@ -175,16 +175,21 @@
         }
 
         .zoom-btn .material-symbols-outlined {
-            font-size: 28px;
+            font-size: 22px;
         }
 
         @media (max-width: 768px) {
             .control-panel {
-                max-width: 100vw !important;
+                max-w-[240px] !important;
             }
 
             .info-panel {
                 max-width: 90vw !important;
+            }
+
+            main {
+                flex-direction: column-reverse !important;
+                padding: 0.75rem !important;
             }
         }
     </style>
@@ -228,61 +233,61 @@
             </div>
         </header>
 
-        <main class="relative z-20 flex flex-1 p-4 md:p-6 gap-6 pointer-events-none flex-row-reverse">
+        <main class="relative z-20 flex flex-1 p-4 md:p-6 gap-4 pointer-events-none flex-row-reverse">
 
             <!-- Right Control Panel -->
-            <aside class="pointer-events-auto flex h-full w-full max-w-md flex-col gap-4 rounded-xl bg-gray-900/50 p-4 md:p-6 backdrop-blur-md border border-white/10 overflow-y-auto control-panel">
+            <aside class="pointer-events-auto flex h-full w-full max-w-[280px] lg:max-w-[320px] flex-col gap-3 rounded-xl bg-gray-900/50 p-3 md:p-4 backdrop-blur-md border border-white/10 overflow-y-auto control-panel">
 
                 <!-- Header -->
-                <div class="flex flex-col">
-                    <h1 class="text-white text-base font-medium leading-normal font-display">Controls</h1>
-                    <p class="text-white/60 text-sm font-normal leading-normal font-display">Customize your view</p>
+                <div class="flex flex-col gap-0.5">
+                    <h1 class="text-white text-sm font-semibold leading-tight font-display">Controls</h1>
+                    <p class="text-white/60 text-xs font-normal leading-tight font-display">Customize your view</p>
                 </div>
 
                 <!-- Search & Filters -->
-                <div class="flex flex-col gap-4">
-                    <label class="flex flex-col min-w-40 h-12 w-full">
+                <div class="flex flex-col gap-2.5">
+                    <label class="flex flex-col h-9 w-full">
                         <div class="flex w-full flex-1 items-stretch rounded-lg h-full">
-                            <div class="text-white/60 flex border-none bg-black/20 items-center justify-center pl-4 rounded-l-lg border-r-0">
-                                <span class="material-symbols-outlined">search</span>
+                            <div class="text-white/60 flex border-none bg-black/20 items-center justify-center pl-2.5 rounded-l-lg border-r-0">
+                                <span class="material-symbols-outlined !text-[20px]">search</span>
                             </div>
                             <input id="location-search"
-                                   class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-white focus:outline-0 focus:ring-0 border-none bg-black/20 focus:border-none h-full placeholder:text-white/60 px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal font-display"
-                                   placeholder="Search by Country or City..."
+                                   class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-white focus:outline-0 focus:ring-0 border-none bg-black/20 focus:border-none h-full placeholder:text-white/60 px-2.5 rounded-l-none border-l-0 pl-2 text-sm font-normal leading-normal font-display"
+                                   placeholder="Search location..."
                                    value=""/>
                         </div>
                     </label>
 
-                    <div class="flex gap-3 flex-wrap">
-                        <button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-black/20 pl-5 pr-3 hover:bg-black/40 transition-colors">
-                            <p class="text-white text-sm font-medium leading-normal font-display">Filter by AQI</p>
-                            <span class="material-symbols-outlined text-white !text-xl">arrow_drop_down</span>
+                    <div class="flex gap-2 flex-wrap">
+                        <button class="flex h-8 shrink-0 items-center justify-center gap-x-1.5 rounded-lg bg-black/20 pl-3 pr-2 hover:bg-black/40 transition-colors">
+                            <p class="text-white text-xs font-medium leading-normal font-display">AQI Filter</p>
+                            <span class="material-symbols-outlined text-white !text-lg">arrow_drop_down</span>
                         </button>
-                        <button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-black/20 pl-5 pr-3 hover:bg-black/40 transition-colors">
-                            <p class="text-white text-sm font-medium leading-normal font-display">Date Range</p>
-                            <span class="material-symbols-outlined text-white !text-xl">arrow_drop_down</span>
+                        <button class="flex h-8 shrink-0 items-center justify-center gap-x-1.5 rounded-lg bg-black/20 pl-3 pr-2 hover:bg-black/40 transition-colors">
+                            <p class="text-white text-xs font-medium leading-normal font-display">Date</p>
+                            <span class="material-symbols-outlined text-white !text-lg">arrow_drop_down</span>
                         </button>
                     </div>
                 </div>
 
-                <div class="my-2 border-t border-white/10"></div>
+                <div class="my-1.5 border-t border-white/10"></div>
 
                 <!-- Layers -->
-                <div class="flex flex-col gap-2">
-                    <div class="flex flex-col mb-2">
-                        <h1 class="text-white text-base font-medium leading-normal font-display">Layers</h1>
-                        <p class="text-white/60 text-sm font-normal leading-normal font-display">Toggle visual layers</p>
+                <div class="flex flex-col gap-1.5">
+                    <div class="flex flex-col mb-1">
+                        <h1 class="text-white text-sm font-semibold leading-tight font-display">Layers</h1>
+                        <p class="text-white/60 text-xs font-normal leading-tight font-display">Toggle visual layers</p>
                     </div>
 
                     <!-- Particle Flow -->
-                    <div class="flex items-center gap-4 bg-transparent px-4 min-h-[72px] py-2 justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="text-white flex items-center justify-center rounded-lg bg-black/20 shrink-0 size-12">
-                                <span class="material-symbols-outlined">air</span>
+                    <div class="flex items-center gap-2 bg-transparent px-2 min-h-[56px] py-1.5 justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="text-white flex items-center justify-center rounded-lg bg-black/20 shrink-0 size-9">
+                                <span class="material-symbols-outlined !text-[20px]">air</span>
                             </div>
                             <div class="flex flex-col justify-center">
-                                <p class="text-white text-base font-medium leading-normal line-clamp-1 font-display">Particle Flow</p>
-                                <p class="text-white/60 text-sm font-normal leading-normal line-clamp-2 font-display">Visualize atmospheric particle movement</p>
+                                <p class="text-white text-xs font-medium leading-tight line-clamp-1 font-display">Particle Flow</p>
+                                <p class="text-white/60 text-[10px] font-normal leading-tight line-clamp-1 font-display">Atmospheric movement</p>
                             </div>
                         </div>
                         <div class="shrink-0">
@@ -294,14 +299,14 @@
                     </div>
 
                     <!-- PM2.5 Overlay -->
-                    <div class="flex items-center gap-4 bg-transparent px-4 min-h-[72px] py-2 justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="text-white flex items-center justify-center rounded-lg bg-black/20 shrink-0 size-12">
-                                <span class="material-symbols-outlined">blur_on</span>
+                    <div class="flex items-center gap-2 bg-transparent px-2 min-h-[56px] py-1.5 justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="text-white flex items-center justify-center rounded-lg bg-black/20 shrink-0 size-9">
+                                <span class="material-symbols-outlined !text-[20px]">blur_on</span>
                             </div>
                             <div class="flex flex-col justify-center">
-                                <p class="text-white text-base font-medium leading-normal line-clamp-1 font-display">PM2.5 Overlay</p>
-                                <p class="text-white/60 text-sm font-normal leading-normal line-clamp-2 font-display">Show air quality heatmap</p>
+                                <p class="text-white text-xs font-medium leading-tight line-clamp-1 font-display">PM2.5 Overlay</p>
+                                <p class="text-white/60 text-[10px] font-normal leading-tight line-clamp-1 font-display">Air quality markers</p>
                             </div>
                         </div>
                         <div class="shrink-0">
@@ -313,14 +318,14 @@
                     </div>
 
                     <!-- Grid Lines -->
-                    <div class="flex items-center gap-4 bg-transparent px-4 min-h-[72px] py-2 justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="text-white flex items-center justify-center rounded-lg bg-black/20 shrink-0 size-12">
-                                <span class="material-symbols-outlined">grid_on</span>
+                    <div class="flex items-center gap-2 bg-transparent px-2 min-h-[56px] py-1.5 justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="text-white flex items-center justify-center rounded-lg bg-black/20 shrink-0 size-9">
+                                <span class="material-symbols-outlined !text-[20px]">grid_on</span>
                             </div>
                             <div class="flex flex-col justify-center">
-                                <p class="text-white text-base font-medium leading-normal line-clamp-1 font-display">Grid Lines</p>
-                                <p class="text-white/60 text-sm font-normal leading-normal line-clamp-2 font-display">Show latitude/longitude grid</p>
+                                <p class="text-white text-xs font-medium leading-tight line-clamp-1 font-display">Grid Lines</p>
+                                <p class="text-white/60 text-[10px] font-normal leading-tight line-clamp-1 font-display">Lat/Long grid</p>
                             </div>
                         </div>
                         <div class="shrink-0">
@@ -332,14 +337,14 @@
                     </div>
 
                     <!-- Day/Night Cycle -->
-                    <div class="flex items-center gap-4 bg-transparent px-4 min-h-[72px] py-2 justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="text-white flex items-center justify-center rounded-lg bg-black/20 shrink-0 size-12">
-                                <span class="material-symbols-outlined">nightlight</span>
+                    <div class="flex items-center gap-2 bg-transparent px-2 min-h-[56px] py-1.5 justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="text-white flex items-center justify-center rounded-lg bg-black/20 shrink-0 size-9">
+                                <span class="material-symbols-outlined !text-[20px]">nightlight</span>
                             </div>
                             <div class="flex flex-col justify-center">
-                                <p class="text-white text-base font-medium leading-normal line-clamp-1 font-display">Day/Night Cycle</p>
-                                <p class="text-white/60 text-sm font-normal leading-normal line-clamp-2 font-display">Toggle dynamic day/night shading</p>
+                                <p class="text-white text-xs font-medium leading-tight line-clamp-1 font-display">Day/Night Cycle</p>
+                                <p class="text-white/60 text-[10px] font-normal leading-tight line-clamp-1 font-display">Dynamic sun shading</p>
                             </div>
                         </div>
                         <div class="shrink-0">
@@ -351,17 +356,17 @@
                     </div>
                 </div>
 
-                <div class="my-2 border-t border-white/10"></div>
+                <div class="my-1.5 border-t border-white/10"></div>
 
                 <!-- Animation Speed -->
-                <div class="flex flex-col gap-2">
-                    <div class="flex flex-col mb-2">
-                        <h1 class="text-white text-base font-medium leading-normal font-display">Animation Speed</h1>
-                        <p class="text-white/60 text-sm font-normal leading-normal font-display">Adjust particle flow speed</p>
+                <div class="flex flex-col gap-1.5">
+                    <div class="flex flex-col mb-1">
+                        <h1 class="text-white text-sm font-semibold leading-tight font-display">Animation Speed</h1>
+                        <p class="text-white/60 text-xs font-normal leading-tight font-display">Particle flow speed</p>
                     </div>
                     <input type="range" id="particle-speed" min="0" max="2" step="0.1" value="1"
-                           class="w-full h-2 bg-black/20 rounded-lg appearance-none cursor-pointer accent-primary"/>
-                    <div class="flex justify-between text-xs text-white/60">
+                           class="w-full h-1.5 bg-black/20 rounded-lg appearance-none cursor-pointer accent-primary"/>
+                    <div class="flex justify-between text-[10px] text-white/60">
                         <span>Slow</span>
                         <span>Normal</span>
                         <span>Fast</span>
@@ -414,32 +419,32 @@
                 <div class="flex items-end justify-between">
 
                     <!-- Legend -->
-                    <div class="rounded-xl bg-gray-900/50 p-4 backdrop-blur-md border border-white/10 max-w-xs">
-                        <h4 class="text-sm font-bold text-white mb-3 font-display">AQI Legend</h4>
-                        <div class="grid grid-cols-2 gap-x-4 gap-y-2">
-                            <div class="flex items-center gap-2">
-                                <div class="size-3 rounded-full bg-green-500"></div>
-                                <span class="text-xs text-white/80 font-display">Good (0-50)</span>
+                    <div class="rounded-lg bg-gray-900/50 p-3 backdrop-blur-md border border-white/10 max-w-[260px]">
+                        <h4 class="text-xs font-bold text-white mb-2 font-display">AQI Legend</h4>
+                        <div class="grid grid-cols-2 gap-x-3 gap-y-1.5">
+                            <div class="flex items-center gap-1.5">
+                                <div class="size-2.5 rounded-full bg-green-500"></div>
+                                <span class="text-[10px] text-white/80 font-display">Good (0-50)</span>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <div class="size-3 rounded-full bg-yellow-400"></div>
-                                <span class="text-xs text-white/80 font-display">Moderate (51-100)</span>
+                            <div class="flex items-center gap-1.5">
+                                <div class="size-2.5 rounded-full bg-yellow-400"></div>
+                                <span class="text-[10px] text-white/80 font-display">Moderate (51-100)</span>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <div class="size-3 rounded-full bg-orange-500"></div>
-                                <span class="text-xs text-white/80 font-display">Unhealthy SG (101-150)</span>
+                            <div class="flex items-center gap-1.5">
+                                <div class="size-2.5 rounded-full bg-orange-500"></div>
+                                <span class="text-[10px] text-white/80 font-display">Unhealthy SG (101-150)</span>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <div class="size-3 rounded-full bg-red-500"></div>
-                                <span class="text-xs text-white/80 font-display">Unhealthy (151-200)</span>
+                            <div class="flex items-center gap-1.5">
+                                <div class="size-2.5 rounded-full bg-red-500"></div>
+                                <span class="text-[10px] text-white/80 font-display">Unhealthy (151-200)</span>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <div class="size-3 rounded-full bg-purple-500"></div>
-                                <span class="text-xs text-white/80 font-display">Very Unhealthy (201-300)</span>
+                            <div class="flex items-center gap-1.5">
+                                <div class="size-2.5 rounded-full bg-purple-500"></div>
+                                <span class="text-[10px] text-white/80 font-display">Very Unhealthy (201-300)</span>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <div class="size-3 rounded-full" style="background-color: #7e1946;"></div>
-                                <span class="text-xs text-white/80 font-display">Hazardous (300+)</span>
+                            <div class="flex items-center gap-1.5">
+                                <div class="size-2.5 rounded-full" style="background-color: #7e1946;"></div>
+                                <span class="text-[10px] text-white/80 font-display">Hazardous (300+)</span>
                             </div>
                         </div>
                     </div>

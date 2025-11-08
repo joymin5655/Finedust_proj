@@ -1345,6 +1345,30 @@ class PolicyGlobe {
     };
   }
 
+  updateGlobalStatistics(statistics) {
+    if (!statistics) return;
+
+    // Update countries count
+    const countriesEl = document.getElementById('stat-countries');
+    if (countriesEl && statistics.totalCountries) {
+      countriesEl.textContent = statistics.totalCountries;
+    }
+
+    // Update policies count
+    const policiesEl = document.getElementById('stat-policies');
+    if (policiesEl && statistics.totalPolicies) {
+      policiesEl.textContent = statistics.totalPolicies;
+    }
+
+    // Update regions count
+    const regionsEl = document.getElementById('stat-regions');
+    if (regionsEl && statistics.regionsRepresented) {
+      regionsEl.textContent = statistics.regionsRepresented.length;
+    }
+
+    console.log('Global statistics updated:', statistics);
+  }
+
   async loadPolicyImpactData() {
     try {
       // Load the index to know which countries have policy impact data
@@ -1356,6 +1380,9 @@ class PolicyGlobe {
 
       const index = await indexResponse.json();
       const policyImpactData = {};
+
+      // Update global statistics from index
+      this.updateGlobalStatistics(index.statistics);
 
       // Load each country's policy impact data
       for (const countryInfo of index.countries) {

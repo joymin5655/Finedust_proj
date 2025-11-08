@@ -13,6 +13,7 @@
       "name": "Air Pollution Prevention and Control Action Plan",
       "implementationDate": "2013-09-10",
       "type": "National Regulation",
+      "url": "https://www.cleanairasia.org/portal/node/7397",
       "description": "Comprehensive national plan to reduce PM2.5 concentrations by 25% in Beijing-Tianjin-Hebei region, 20% in Yangtze River Delta, and 15% in Pearl River Delta by 2017.",
       "targetPollutants": ["PM2.5", "PM10", "SO2", "NOx"],
       "measures": [
@@ -77,6 +78,7 @@
       "name": "Three-Year Action Plan for Blue Skies",
       "implementationDate": "2018-07-03",
       "type": "National Regulation",
+      "url": "https://www.iea.org/policies/6666-three-year-action-plan-for-winning-the-blue-sky-defense-war",
       "description": "Follow-up plan focusing on further PM2.5 reduction and ozone control from 2018-2020.",
       "targetPollutants": ["PM2.5", "O3"],
       "measures": [

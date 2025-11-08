@@ -13,6 +13,7 @@
       "name": "Clean Air Programme (Luftreinhalteplan)",
       "implementationDate": "2017-09-01",
       "type": "National Air Quality Programme",
+      "url": "https://www.bmuv.de/en/topics/air-mobility-noise/air-pollution-control",
       "description": "Comprehensive federal programme to reduce air pollutants through traffic restrictions, industrial emission controls, and promotion of clean energy in major cities.",
       "targetPollutants": ["PM2.5", "PM10", "NOx", "NH3"],
       "measures": [
@@ -83,6 +84,7 @@
       "name": "Coal Phase-Out Law (Kohleausstiegsgesetz)",
       "implementationDate": "2020-08-14",
       "type": "Energy Transition Policy",
+      "url": "https://www.bmwk.de/Redaktion/EN/Artikel/Industry/coal-fired-power-generation.html",
       "description": "Federal law mandating the complete phase-out of coal power generation by 2038, with significant reductions by 2030, reducing PM2.5 and other air pollutants.",
       "targetPollutants": ["PM2.5", "SO2", "NOx", "CO2"],
       "measures": [

@@ -13,6 +13,7 @@
       "name": "National Environment Protection (Ambient Air Quality) Measure",
       "implementationDate": "2016-06-01",
       "type": "National Air Quality Standard",
+      "url": "https://www.nepc.gov.au/nepms/ambient-air-quality",
       "description": "Updated national standard reducing PM2.5 annual average from 8 to 7 µg/m³ and 24-hour average from 25 to 20 µg/m³, with state-based implementation plans.",
       "targetPollutants": ["PM2.5", "PM10", "Ozone", "NO2", "SO2"],
       "measures": [
@@ -83,6 +84,7 @@
       "name": "National Vehicle Emission Standards (Euro 6)",
       "implementationDate": "2024-07-01",
       "type": "Vehicle Emission Standard",
+      "url": "https://www.infrastructure.gov.au/infrastructure-transport-vehicles/vehicles/environment/nves",
       "description": "Introduction of Euro 6 emission standards for new light vehicles, bringing Australia in line with international best practice after years of delay.",
       "targetPollutants": ["PM2.5", "NOx", "HC"],
       "measures": [

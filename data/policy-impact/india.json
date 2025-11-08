@@ -13,6 +13,7 @@
       "name": "National Clean Air Programme (NCAP)",
       "implementationDate": "2019-01-10",
       "type": "National Regulation",
+      "url": "https://moef.gov.in/en/national-clean-air-programme/",
       "description": "Comprehensive plan launched in 2019 to reduce PM pollution by 20-30% in 131 non-attainment cities by 2024 (revised to 40% by 2026). Achieved 26.84% nationwide reduction by 2024.",
       "targetPollutants": ["PM2.5", "PM10"],
       "measures": [
@@ -78,6 +79,7 @@
       "name": "Bharat Stage VI (BS-VI) Emission Standards",
       "implementationDate": "2020-04-01",
       "type": "Vehicle Emission Standard",
+      "url": "https://morth.nic.in/bs-vi-emission-norms",
       "description": "Implementation of BS-VI emission standards for all new vehicles, reducing NOx emissions by 70% and particulate matter by 80% compared to BS-IV.",
       "targetPollutants": ["NOx", "PM2.5", "PM10"],
       "measures": [

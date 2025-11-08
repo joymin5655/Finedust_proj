@@ -704,12 +704,64 @@
         "lat": 31.9454,
         "lon": 35.9284
       }
+    },
+    {
+      "country": "Hungary",
+      "countryCode": "HU",
+      "region": "Central Europe",
+      "flag": "🇭🇺",
+      "dataFile": "hungary.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 47.4979,
+        "lon": 19.0402
+      }
+    },
+    {
+      "country": "Ghana",
+      "countryCode": "GH",
+      "region": "West Africa",
+      "flag": "🇬🇭",
+      "dataFile": "ghana.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 5.6037,
+        "lon": -0.1870
+      }
+    },
+    {
+      "country": "Switzerland",
+      "countryCode": "CH",
+      "region": "Western Europe",
+      "flag": "🇨🇭",
+      "dataFile": "switzerland.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 47.3769,
+        "lon": 8.5417
+      }
+    },
+    {
+      "country": "Cameroon",
+      "countryCode": "CM",
+      "region": "Central Africa",
+      "flag": "🇨🇲",
+      "dataFile": "cameroon.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 3.8480,
+        "lon": 11.5021
+      }
     }
   ],
   "statistics": {
-    "totalCountries": 54,
-    "totalPolicies": 109,
-    "regionsRepresented": ["East Asia", "South Asia", "Western Europe", "Central Europe", "Southern Europe", "Northern Europe", "Eastern Europe", "North America", "Central America", "Oceania", "Southeast Asia", "South America", "Western Asia", "Africa", "North Africa", "East Africa", "Middle East", "West Africa"]
+    "totalCountries": 58,
+    "totalPolicies": 117,
+    "regionsRepresented": ["East Asia", "South Asia", "Western Europe", "Central Europe", "Southern Europe", "Northern Europe", "Eastern Europe", "North America", "Central America", "Oceania", "Southeast Asia", "South America", "Western Asia", "Africa", "North Africa", "East Africa", "Central Africa", "Middle East", "West Africa"]
   },
   "apiEndpoints": {
     "openaq": "https://api.openaq.org/v2",

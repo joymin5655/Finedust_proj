@@ -444,12 +444,64 @@
         "lat": 59.9139,
         "lon": 10.7522
       }
+    },
+    {
+      "country": "New Zealand",
+      "countryCode": "NZ",
+      "region": "Oceania",
+      "flag": "🇳🇿",
+      "dataFile": "new-zealand.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": -41.2865,
+        "lon": 174.7762
+      }
+    },
+    {
+      "country": "Kenya",
+      "countryCode": "KE",
+      "region": "East Africa",
+      "flag": "🇰🇪",
+      "dataFile": "kenya.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": -1.2921,
+        "lon": 36.8219
+      }
+    },
+    {
+      "country": "Peru",
+      "countryCode": "PE",
+      "region": "South America",
+      "flag": "🇵🇪",
+      "dataFile": "peru.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": -12.0464,
+        "lon": -77.0428
+      }
+    },
+    {
+      "country": "Saudi Arabia",
+      "countryCode": "SA",
+      "region": "Middle East",
+      "flag": "🇸🇦",
+      "dataFile": "saudi-arabia.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 24.7136,
+        "lon": 46.6753
+      }
     }
   ],
   "statistics": {
-    "totalCountries": 34,
-    "totalPolicies": 69,
-    "regionsRepresented": ["East Asia", "South Asia", "Western Europe", "Central Europe", "Southern Europe", "Northern Europe", "North America", "Oceania", "Southeast Asia", "South America", "Western Asia", "Africa", "North Africa", "Middle East", "West Africa"]
+    "totalCountries": 38,
+    "totalPolicies": 77,
+    "regionsRepresented": ["East Asia", "South Asia", "Western Europe", "Central Europe", "Southern Europe", "Northern Europe", "North America", "Oceania", "Southeast Asia", "South America", "Western Asia", "Africa", "North Africa", "East Africa", "Middle East", "West Africa"]
   },
   "apiEndpoints": {
     "openaq": "https://api.openaq.org/v2",

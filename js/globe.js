@@ -50,7 +50,7 @@ class AirLensGlobeAdvanced {
     this.particles = null;
     this.particleCount = 3000; // Reduced for better performance
     this.particleSpeed = 1.0;
-    this.particlesEnabled = true;
+    this.particlesEnabled = false;
 
     // Globe objects
     this.earth = null;
@@ -314,6 +314,7 @@ class AirLensGlobeAdvanced {
     });
 
     this.particles = new THREE.Points(geometry, material);
+    this.particles.visible = this.particlesEnabled;
     this.scene.add(this.particles);
     console.log('Particles created');
   }

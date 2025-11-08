@@ -600,11 +600,63 @@
         "lat": -0.1807,
         "lon": -78.4678
       }
+    },
+    {
+      "country": "Denmark",
+      "countryCode": "DK",
+      "region": "Northern Europe",
+      "flag": "🇩🇰",
+      "dataFile": "denmark.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 55.6761,
+        "lon": 12.5683
+      }
+    },
+    {
+      "country": "Greece",
+      "countryCode": "GR",
+      "region": "Southern Europe",
+      "flag": "🇬🇷",
+      "dataFile": "greece.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 37.9838,
+        "lon": 23.7275
+      }
+    },
+    {
+      "country": "Ireland",
+      "countryCode": "IE",
+      "region": "Western Europe",
+      "flag": "🇮🇪",
+      "dataFile": "ireland.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 53.3498,
+        "lon": -6.2603
+      }
+    },
+    {
+      "country": "Portugal",
+      "countryCode": "PT",
+      "region": "Southern Europe",
+      "flag": "🇵🇹",
+      "dataFile": "portugal.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 38.7223,
+        "lon": -9.1393
+      }
     }
   ],
   "statistics": {
-    "totalCountries": 46,
-    "totalPolicies": 93,
+    "totalCountries": 50,
+    "totalPolicies": 101,
     "regionsRepresented": ["East Asia", "South Asia", "Western Europe", "Central Europe", "Southern Europe", "Northern Europe", "North America", "Oceania", "Southeast Asia", "South America", "Western Asia", "Africa", "North Africa", "East Africa", "Middle East", "West Africa"]
   },
   "apiEndpoints": {

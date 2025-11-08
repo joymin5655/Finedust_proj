@@ -101,8 +101,8 @@
 
         .toggle-switch {
             position: relative;
-            width: 51px;
-            height: 31px;
+            width: 60px;
+            height: 34px;
         }
 
         .toggle-switch input {
@@ -126,10 +126,10 @@
         .slider:before {
             position: absolute;
             content: "";
-            height: 27px;
-            width: 27px;
-            left: 2px;
-            bottom: 2px;
+            height: 28px;
+            width: 28px;
+            left: 3px;
+            bottom: 3px;
             background-color: white;
             transition: 0.3s;
             border-radius: 50%;
@@ -141,7 +141,7 @@
         }
 
         input:checked + .slider:before {
-            transform: translateX(20px);
+            transform: translateX(26px);
         }
 
         .zoom-controls {
@@ -155,8 +155,8 @@
         }
 
         .zoom-btn {
-            width: 2.5rem;
-            height: 2.5rem;
+            width: 3rem;
+            height: 3rem;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -172,6 +172,10 @@
         .zoom-btn:hover {
             background: rgba(17, 24, 39, 0.8);
             border-color: rgba(37, 226, 244, 0.5);
+        }
+
+        .zoom-btn .material-symbols-outlined {
+            font-size: 28px;
         }
 
         @media (max-width: 768px) {
@@ -224,10 +228,10 @@
             </div>
         </header>
 
-        <main class="relative z-20 flex flex-1 p-4 md:p-6 gap-6 pointer-events-none">
+        <main class="relative z-20 flex flex-1 p-4 md:p-6 gap-6 pointer-events-none flex-row-reverse">
 
-            <!-- Left Control Panel -->
-            <aside class="pointer-events-auto flex h-full w-full max-w-sm flex-col gap-4 rounded-xl bg-gray-900/50 p-4 backdrop-blur-md border border-white/10 overflow-y-auto control-panel">
+            <!-- Right Control Panel -->
+            <aside class="pointer-events-auto flex h-full w-full max-w-md flex-col gap-4 rounded-xl bg-gray-900/50 p-4 md:p-6 backdrop-blur-md border border-white/10 overflow-y-auto control-panel">
 
                 <!-- Header -->
                 <div class="flex flex-col">
@@ -250,11 +254,11 @@
                     </label>
 
                     <div class="flex gap-3 flex-wrap">
-                        <button class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-black/20 pl-4 pr-2 hover:bg-black/40 transition-colors">
+                        <button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-black/20 pl-5 pr-3 hover:bg-black/40 transition-colors">
                             <p class="text-white text-sm font-medium leading-normal font-display">Filter by AQI</p>
                             <span class="material-symbols-outlined text-white !text-xl">arrow_drop_down</span>
                         </button>
-                        <button class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-black/20 pl-4 pr-2 hover:bg-black/40 transition-colors">
+                        <button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-black/20 pl-5 pr-3 hover:bg-black/40 transition-colors">
                             <p class="text-white text-sm font-medium leading-normal font-display">Date Range</p>
                             <span class="material-symbols-outlined text-white !text-xl">arrow_drop_down</span>
                         </button>

@@ -184,12 +184,64 @@
         "lat": 13.7563,
         "lon": 100.5018
       }
+    },
+    {
+      "country": "Spain",
+      "countryCode": "ES",
+      "region": "Southern Europe",
+      "flag": "🇪🇸",
+      "dataFile": "spain.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 40.4637,
+        "lon": -3.7492
+      }
+    },
+    {
+      "country": "Netherlands",
+      "countryCode": "NL",
+      "region": "Western Europe",
+      "flag": "🇳🇱",
+      "dataFile": "netherlands.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 52.1326,
+        "lon": 5.2913
+      }
+    },
+    {
+      "country": "Vietnam",
+      "countryCode": "VN",
+      "region": "Southeast Asia",
+      "flag": "🇻🇳",
+      "dataFile": "vietnam.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 21.0285,
+        "lon": 105.8542
+      }
+    },
+    {
+      "country": "Brazil",
+      "countryCode": "BR",
+      "region": "South America",
+      "flag": "🇧🇷",
+      "dataFile": "brazil.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": -23.5505,
+        "lon": -46.6333
+      }
     }
   ],
   "statistics": {
-    "totalCountries": 14,
-    "totalPolicies": 29,
-    "regionsRepresented": ["East Asia", "South Asia", "Western Europe", "Central Europe", "Southern Europe", "North America", "Oceania", "Southeast Asia"]
+    "totalCountries": 18,
+    "totalPolicies": 37,
+    "regionsRepresented": ["East Asia", "South Asia", "Western Europe", "Central Europe", "Southern Europe", "North America", "Oceania", "Southeast Asia", "South America"]
   },
   "apiEndpoints": {
     "openaq": "https://api.openaq.org/v2",

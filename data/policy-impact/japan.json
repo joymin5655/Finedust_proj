@@ -113,7 +113,34 @@
           "significant": true,
           "effectSize": "large"
         }
-      }
+      },
+      "timeline": [
+        {
+          "date": "2003-10-01",
+          "event": "Diesel Regulation Enacted",
+          "pm25": 18.5
+        },
+        {
+          "date": "2004-10-01",
+          "event": "First Year Enforcement",
+          "pm25": 16.8
+        },
+        {
+          "date": "2006-04-01",
+          "event": "DPF Mandate Expanded",
+          "pm25": 14.9
+        },
+        {
+          "date": "2008-01-01",
+          "event": "Mid-term Review",
+          "pm25": 13.5
+        },
+        {
+          "date": "2010-12-31",
+          "event": "7-Year Impact Assessment",
+          "pm25": 12.3
+        }
+      ]
     }
   ],
   "realTimeData": {

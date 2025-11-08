@@ -108,7 +108,34 @@
           "significant": true,
           "effectSize": "small"
         }
-      }
+      },
+      "timeline": [
+        {
+          "date": "2020-04-01",
+          "event": "BS-VI Standards Implemented",
+          "pm25": 71.2
+        },
+        {
+          "date": "2021-01-01",
+          "event": "Full Fleet Conversion Begins",
+          "pm25": 69.3
+        },
+        {
+          "date": "2021-12-01",
+          "event": "First Year Assessment",
+          "pm25": 67.1
+        },
+        {
+          "date": "2022-09-01",
+          "event": "Fuel Quality Improvements",
+          "pm25": 65.8
+        },
+        {
+          "date": "2023-12-31",
+          "event": "3-Year Impact Review",
+          "pm25": 64.5
+        }
+      ]
     }
   ],
   "realTimeData": {
@@ -150,6 +177,12 @@
       "date": "2024-11-25",
       "source": "Times of India",
       "url": "https://example.com/news2"
+    },
+    {
+      "title": "BS-VI fuel rollout accelerates across India",
+      "date": "2024-11-12",
+      "source": "Indian Express",
+      "url": "https://example.com/news3"
     }
   ]
 }

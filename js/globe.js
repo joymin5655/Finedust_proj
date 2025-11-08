@@ -709,7 +709,171 @@ class PolicyGlobe {
 
       // Additional Asia
       ['Yangon', { lat: 16.8661, lon: 96.1951, pm25: 55, aqi: 145, country: 'Myanmar' }],
-      ['Almaty', { lat: 43.2220, lon: 76.8512, pm25: 52, aqi: 142, country: 'Kazakhstan' }]
+      ['Almaty', { lat: 43.2220, lon: 76.8512, pm25: 52, aqi: 142, country: 'Kazakhstan' }],
+
+      // Additional Eastern Europe
+      ['Reykjavik', { lat: 64.1466, lon: -21.9426, pm25: 12, aqi: 45, country: 'Iceland' }],
+      ['Tirana', { lat: 41.3275, lon: 19.8187, pm25: 38, aqi: 105, country: 'Albania' }],
+      ['Minsk', { lat: 53.9045, lon: 27.5615, pm25: 42, aqi: 118, country: 'Belarus' }],
+      ['Sofia', { lat: 42.6977, lon: 23.3219, pm25: 45, aqi: 125, country: 'Bulgaria' }],
+      ['Sarajevo', { lat: 43.8564, lon: 18.4131, pm25: 52, aqi: 142, country: 'Bosnia and Herzegovina' }],
+      ['Tallinn', { lat: 59.4370, lon: 24.7536, pm25: 18, aqi: 58, country: 'Estonia' }],
+      ['Riga', { lat: 56.9496, lon: 24.1052, pm25: 22, aqi: 68, country: 'Latvia' }],
+      ['Vilnius', { lat: 54.6872, lon: 25.2797, pm25: 25, aqi: 75, country: 'Lithuania' }],
+      ['Chisinau', { lat: 47.0105, lon: 28.8638, pm25: 38, aqi: 105, country: 'Moldova' }],
+      ['Podgorica', { lat: 42.4304, lon: 19.2594, pm25: 35, aqi: 98, country: 'Montenegro' }],
+      ['Skopje', { lat: 41.9973, lon: 21.4280, pm25: 48, aqi: 132, country: 'North Macedonia' }],
+      ['Bratislava', { lat: 48.1486, lon: 17.1077, pm25: 32, aqi: 92, country: 'Slovakia' }],
+      ['Ljubljana', { lat: 46.0569, lon: 14.5058, pm25: 28, aqi: 82, country: 'Slovenia' }],
+      ['Kyiv', { lat: 50.4501, lon: 30.5234, pm25: 42, aqi: 118, country: 'Ukraine' }],
+
+      // Additional Western Europe
+      ['Vaduz', { lat: 47.1410, lon: 9.5209, pm25: 18, aqi: 58, country: 'Liechtenstein' }],
+      ['Luxembourg', { lat: 49.6116, lon: 6.1319, pm25: 25, aqi: 75, country: 'Luxembourg' }],
+      ['Monaco', { lat: 43.7384, lon: 7.4246, pm25: 22, aqi: 68, country: 'Monaco' }],
+      ['San Marino', { lat: 43.9424, lon: 12.4578, pm25: 28, aqi: 82, country: 'San Marino' }],
+      ['Vatican City', { lat: 41.9029, lon: 12.4534, pm25: 35, aqi: 98, country: 'Vatican City' }],
+      ['Andorra la Vella', { lat: 42.5063, lon: 1.5218, pm25: 20, aqi: 62, country: 'Andorra' }],
+
+      // Additional Southern Europe
+      ['Valletta', { lat: 35.8989, lon: 14.5146, pm25: 32, aqi: 92, country: 'Malta' }],
+      ['Nicosia', { lat: 35.1856, lon: 33.3823, pm25: 38, aqi: 105, country: 'Cyprus' }],
+      ['Pristina', { lat: 42.6629, lon: 21.1655, pm25: 45, aqi: 125, country: 'Kosovo' }],
+
+      // Central Asia
+      ['Bishkek', { lat: 42.8746, lon: 74.5698, pm25: 48, aqi: 132, country: 'Kyrgyzstan' }],
+      ['Ashgabat', { lat: 37.9601, lon: 58.3261, pm25: 52, aqi: 142, country: 'Turkmenistan' }],
+      ['Dushanbe', { lat: 38.5598, lon: 68.7738, pm25: 55, aqi: 145, country: 'Tajikistan' }],
+      ['Tashkent', { lat: 41.2995, lon: 69.2401, pm25: 50, aqi: 135, country: 'Uzbekistan' }],
+
+      // Additional East Asia
+      ['Ulaanbaatar', { lat: 47.8864, lon: 106.9057, pm25: 85, aqi: 168, country: 'Mongolia' }],
+      ['Pyongyang', { lat: 39.0392, lon: 125.7625, pm25: 72, aqi: 155, country: 'North Korea' }],
+
+      // Additional South Asia
+      ['Colombo', { lat: 6.9271, lon: 79.8612, pm25: 42, aqi: 118, country: 'Sri Lanka' }],
+      ['Kathmandu', { lat: 27.7172, lon: 85.3240, pm25: 95, aqi: 182, country: 'Nepal' }],
+      ['Thimphu', { lat: 27.4728, lon: 89.6393, pm25: 32, aqi: 92, country: 'Bhutan' }],
+      ['Male', { lat: 4.1755, lon: 73.5093, pm25: 28, aqi: 82, country: 'Maldives' }],
+
+      // Additional Southeast Asia
+      ['Vientiane', { lat: 17.9757, lon: 102.6331, pm25: 48, aqi: 132, country: 'Laos' }],
+      ['Phnom Penh', { lat: 11.5564, lon: 104.9282, pm25: 55, aqi: 145, country: 'Cambodia' }],
+      ['Bandar Seri Begawan', { lat: 4.9031, lon: 114.9398, pm25: 25, aqi: 75, country: 'Brunei' }],
+      ['Dili', { lat: -8.5569, lon: 125.5603, pm25: 35, aqi: 98, country: 'East Timor' }],
+
+      // Additional Western Asia
+      ['Tbilisi', { lat: 41.7151, lon: 44.8271, pm25: 42, aqi: 118, country: 'Georgia' }],
+      ['Yerevan', { lat: 40.1792, lon: 44.4991, pm25: 48, aqi: 132, country: 'Armenia' }],
+      ['Baku', { lat: 40.4093, lon: 49.8671, pm25: 52, aqi: 142, country: 'Azerbaijan' }],
+
+      // Additional Middle East
+      ['Baghdad', { lat: 33.3152, lon: 44.3661, pm25: 98, aqi: 185, country: 'Iraq' }],
+      ['Beirut', { lat: 33.8886, lon: 35.4955, pm25: 45, aqi: 125, country: 'Lebanon' }],
+      ['Damascus', { lat: 33.5138, lon: 36.2765, pm25: 62, aqi: 152, country: 'Syria' }],
+      ['Sanaa', { lat: 15.3694, lon: 44.1910, pm25: 72, aqi: 158, country: 'Yemen' }],
+      ['Muscat', { lat: 23.5880, lon: 58.3829, pm25: 42, aqi: 118, country: 'Oman' }],
+      ['Manama', { lat: 26.0667, lon: 50.5577, pm25: 48, aqi: 132, country: 'Bahrain' }],
+      ['Kuwait City', { lat: 29.3759, lon: 47.9774, pm25: 58, aqi: 148, country: 'Kuwait' }],
+      ['Ramallah', { lat: 31.9073, lon: 35.2044, pm25: 38, aqi: 105, country: 'Palestine' }],
+
+      // North Africa
+      ['Algiers', { lat: 36.7538, lon: 3.0588, pm25: 52, aqi: 142, country: 'Algeria' }],
+      ['Tunis', { lat: 36.8065, lon: 10.1815, pm25: 42, aqi: 118, country: 'Tunisia' }],
+      ['Tripoli', { lat: 32.8872, lon: 13.1913, pm25: 62, aqi: 152, country: 'Libya' }],
+      ['Khartoum', { lat: 15.5007, lon: 32.5599, pm25: 85, aqi: 168, country: 'Sudan' }],
+      ['Juba', { lat: 4.8517, lon: 31.5825, pm25: 72, aqi: 158, country: 'South Sudan' }],
+
+      // West Africa
+      ['Abidjan', { lat: 5.3600, lon: -4.0083, pm25: 58, aqi: 148, country: 'Ivory Coast' }],
+      ['Dakar', { lat: 14.7167, lon: -17.4677, pm25: 48, aqi: 132, country: 'Senegal' }],
+      ['Bamako', { lat: 12.6392, lon: -8.0029, pm25: 62, aqi: 152, country: 'Mali' }],
+      ['Ouagadougou', { lat: 12.3714, lon: -1.5197, pm25: 68, aqi: 155, country: 'Burkina Faso' }],
+      ['Niamey', { lat: 13.5127, lon: 2.1128, pm25: 72, aqi: 158, country: 'Niger' }],
+      ['Conakry', { lat: 9.6412, lon: -13.5784, pm25: 55, aqi: 145, country: 'Guinea' }],
+      ['Freetown', { lat: 8.4657, lon: -13.2317, pm25: 58, aqi: 148, country: 'Sierra Leone' }],
+      ['Monrovia', { lat: 6.2907, lon: -10.7605, pm25: 52, aqi: 142, country: 'Liberia' }],
+      ['Lome', { lat: 6.1256, lon: 1.2318, pm25: 48, aqi: 132, country: 'Togo' }],
+      ['Porto-Novo', { lat: 6.4969, lon: 2.6289, pm25: 55, aqi: 145, country: 'Benin' }],
+      ['Banjul', { lat: 13.4549, lon: -16.5790, pm25: 42, aqi: 118, country: 'Gambia' }],
+      ['Bissau', { lat: 11.8037, lon: -15.1804, pm25: 45, aqi: 125, country: 'Guinea-Bissau' }],
+      ['Praia', { lat: 14.9177, lon: -23.5092, pm25: 35, aqi: 98, country: 'Cape Verde' }],
+      ['Nouakchott', { lat: 18.0735, lon: -15.9582, pm25: 68, aqi: 155, country: 'Mauritania' }],
+
+      // East Africa
+      ['Asmara', { lat: 15.3229, lon: 38.9251, pm25: 52, aqi: 142, country: 'Eritrea' }],
+      ['Djibouti', { lat: 11.8251, lon: 42.5903, pm25: 58, aqi: 148, country: 'Djibouti' }],
+      ['Mogadishu', { lat: 2.0469, lon: 45.3182, pm25: 72, aqi: 158, country: 'Somalia' }],
+      ['Kigali', { lat: -1.9536, lon: 30.0606, pm25: 42, aqi: 118, country: 'Rwanda' }],
+      ['Bujumbura', { lat: -3.3731, lon: 29.3644, pm25: 48, aqi: 132, country: 'Burundi' }],
+      ['Lilongwe', { lat: -13.9626, lon: 33.7741, pm25: 45, aqi: 125, country: 'Malawi' }],
+      ['Lusaka', { lat: -15.3875, lon: 28.3228, pm25: 42, aqi: 118, country: 'Zambia' }],
+      ['Harare', { lat: -17.8252, lon: 31.0335, pm25: 38, aqi: 105, country: 'Zimbabwe' }],
+      ['Antananarivo', { lat: -18.8792, lon: 47.5079, pm25: 48, aqi: 132, country: 'Madagascar' }],
+      ['Port Louis', { lat: -20.1609, lon: 57.5012, pm25: 28, aqi: 82, country: 'Mauritius' }],
+      ['Victoria', { lat: -4.6191, lon: 55.4513, pm25: 25, aqi: 75, country: 'Seychelles' }],
+      ['Moroni', { lat: -11.7172, lon: 43.2473, pm25: 32, aqi: 92, country: 'Comoros' }],
+
+      // Central Africa
+      ['Ndjamena', { lat: 12.1348, lon: 15.0557, pm25: 85, aqi: 168, country: 'Chad' }],
+      ['Bangui', { lat: 4.3947, lon: 18.5582, pm25: 72, aqi: 158, country: 'Central African Republic' }],
+      ['Libreville', { lat: 0.4162, lon: 9.4673, pm25: 48, aqi: 132, country: 'Gabon' }],
+      ['Brazzaville', { lat: -4.2634, lon: 15.2429, pm25: 62, aqi: 152, country: 'Congo' }],
+      ['Kinshasa', { lat: -4.4419, lon: 15.2663, pm25: 68, aqi: 155, country: 'DR Congo' }],
+      ['Malabo', { lat: 3.7504, lon: 8.7371, pm25: 52, aqi: 142, country: 'Equatorial Guinea' }],
+      ['Sao Tome', { lat: 0.3365, lon: 6.7273, pm25: 35, aqi: 98, country: 'Sao Tome and Principe' }],
+
+      // Southern Africa
+      ['Gaborone', { lat: -24.6282, lon: 25.9231, pm25: 38, aqi: 105, country: 'Botswana' }],
+      ['Mbabane', { lat: -26.3054, lon: 31.1367, pm25: 42, aqi: 118, country: 'Eswatini' }],
+      ['Maseru', { lat: -29.3167, lon: 27.4833, pm25: 38, aqi: 105, country: 'Lesotho' }],
+      ['Windhoek', { lat: -22.5597, lon: 17.0832, pm25: 32, aqi: 92, country: 'Namibia' }],
+      ['Maputo', { lat: -25.9655, lon: 32.5832, pm25: 45, aqi: 125, country: 'Mozambique' }],
+      ['Luanda', { lat: -8.8383, lon: 13.2344, pm25: 62, aqi: 152, country: 'Angola' }],
+
+      // Central America
+      ['Guatemala City', { lat: 14.6349, lon: -90.5069, pm25: 42, aqi: 118, country: 'Guatemala' }],
+      ['Belmopan', { lat: 17.2510, lon: -88.7590, pm25: 32, aqi: 92, country: 'Belize' }],
+      ['San Salvador', { lat: 13.6929, lon: -89.2182, pm25: 45, aqi: 125, country: 'El Salvador' }],
+      ['Tegucigalpa', { lat: 14.0723, lon: -87.1921, pm25: 48, aqi: 132, country: 'Honduras' }],
+      ['Managua', { lat: 12.1150, lon: -86.2362, pm25: 42, aqi: 118, country: 'Nicaragua' }],
+      ['Panama City', { lat: 8.9824, lon: -79.5199, pm25: 35, aqi: 98, country: 'Panama' }],
+
+      // Caribbean
+      ['Havana', { lat: 23.1136, lon: -82.3666, pm25: 32, aqi: 92, country: 'Cuba' }],
+      ['Kingston', { lat: 17.9714, lon: -76.7931, pm25: 35, aqi: 98, country: 'Jamaica' }],
+      ['Port-au-Prince', { lat: 18.5944, lon: -72.3074, pm25: 52, aqi: 142, country: 'Haiti' }],
+      ['Santo Domingo', { lat: 18.4861, lon: -69.9312, pm25: 38, aqi: 105, country: 'Dominican Republic' }],
+      ['Nassau', { lat: 25.0443, lon: -77.3504, pm25: 28, aqi: 82, country: 'Bahamas' }],
+      ['Bridgetown', { lat: 13.1132, lon: -59.5988, pm25: 25, aqi: 75, country: 'Barbados' }],
+      ['Port of Spain', { lat: 10.6549, lon: -61.5019, pm25: 32, aqi: 92, country: 'Trinidad and Tobago' }],
+      ['Basseterre', { lat: 17.3026, lon: -62.7177, pm25: 22, aqi: 68, country: 'Saint Kitts and Nevis' }],
+      ['Castries', { lat: 13.9972, lon: -60.9969, pm25: 25, aqi: 75, country: 'Saint Lucia' }],
+      ['Kingstown', { lat: 13.1600, lon: -61.2248, pm25: 28, aqi: 82, country: 'Saint Vincent and the Grenadines' }],
+      ['St. Georges', { lat: 12.0567, lon: -61.7486, pm25: 28, aqi: 82, country: 'Grenada' }],
+      ['Roseau', { lat: 15.3014, lon: -61.3883, pm25: 25, aqi: 75, country: 'Dominica' }],
+      ['St. Johns', { lat: 17.1274, lon: -61.8468, pm25: 28, aqi: 82, country: 'Antigua and Barbuda' }],
+
+      // Additional South America
+      ['Caracas', { lat: 10.4806, lon: -66.9036, pm25: 52, aqi: 142, country: 'Venezuela' }],
+      ['Georgetown', { lat: 6.8013, lon: -58.1551, pm25: 38, aqi: 105, country: 'Guyana' }],
+      ['Paramaribo', { lat: 5.8520, lon: -55.2038, pm25: 35, aqi: 98, country: 'Suriname' }],
+      ['La Paz', { lat: -16.5000, lon: -68.1500, pm25: 48, aqi: 132, country: 'Bolivia' }],
+      ['Asuncion', { lat: -25.2637, lon: -57.5759, pm25: 42, aqi: 118, country: 'Paraguay' }],
+
+      // Oceania
+      ['Port Moresby', { lat: -9.4438, lon: 147.1803, pm25: 35, aqi: 98, country: 'Papua New Guinea' }],
+      ['Suva', { lat: -18.1248, lon: 178.4501, pm25: 20, aqi: 62, country: 'Fiji' }],
+      ['Honiara', { lat: -9.4456, lon: 159.9729, pm25: 25, aqi: 75, country: 'Solomon Islands' }],
+      ['Port Vila', { lat: -17.7404, lon: 168.3273, pm25: 22, aqi: 68, country: 'Vanuatu' }],
+      ['Apia', { lat: -13.8333, lon: -171.7667, pm25: 18, aqi: 58, country: 'Samoa' }],
+      ['Nuku\'alofa', { lat: -21.1393, lon: -175.2018, pm25: 20, aqi: 62, country: 'Tonga' }],
+      ['Tarawa', { lat: 1.3382, lon: 173.0176, pm25: 22, aqi: 68, country: 'Kiribati' }],
+      ['Majuro', { lat: 7.1315, lon: 171.1845, pm25: 20, aqi: 62, country: 'Marshall Islands' }],
+      ['Palikir', { lat: 6.9177, lon: 158.1851, pm25: 18, aqi: 58, country: 'Micronesia' }],
+      ['Ngerulmud', { lat: 7.5006, lon: 134.6242, pm25: 18, aqi: 58, country: 'Palau' }],
+      ['Funafuti', { lat: -8.5211, lon: 179.1962, pm25: 15, aqi: 48, country: 'Tuvalu' }],
+      ['Yaren', { lat: -0.5477, lon: 166.9209, pm25: 20, aqi: 62, country: 'Nauru' }]
     ]);
   }
 

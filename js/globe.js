@@ -58,6 +58,8 @@ class AirLensGlobeAdvanced {
     this.clouds = null;
     this.grid = null;
     this.stars = null;
+    this.pm25Markers = null;
+    this.sunLight = null;
 
     // PM2.5 data
     this.pm25Data = new Map();
@@ -85,8 +87,10 @@ class AirLensGlobeAdvanced {
       this.createParticles();
       this.createGrid();
 
-      this.setupEventListeners();
       await this.loadPM25Data();
+      this.createPM25Markers();
+
+      this.setupEventListeners();
 
       console.log('Globe setup complete');
       this.animate();
@@ -101,9 +105,9 @@ class AirLensGlobeAdvanced {
     this.scene.add(ambientLight);
 
     // Directional light (sun)
-    const sunLight = new THREE.DirectionalLight(0xffffff, 1.0);
-    sunLight.position.set(5, 3, 5);
-    this.scene.add(sunLight);
+    this.sunLight = new THREE.DirectionalLight(0xffffff, 1.0);
+    this.sunLight.position.set(5, 3, 5);
+    this.scene.add(this.sunLight);
 
     // Fill light from opposite side
     const fillLight = new THREE.DirectionalLight(0x6495ed, 0.3);
@@ -419,6 +423,61 @@ class AirLensGlobeAdvanced {
     console.log('Grid created');
   }
 
+  createPM25Markers() {
+    if (!this.pm25Data || this.pm25Data.size === 0) {
+      console.warn('No PM2.5 data available');
+      return;
+    }
+
+    const markerGroup = new THREE.Group();
+
+    this.pm25Data.forEach((data, city) => {
+      const { lat, lon, aqi } = data;
+
+      // Convert lat/lon to 3D coordinates
+      const phi = (90 - lat) * (Math.PI / 180);
+      const theta = (lon + 180) * (Math.PI / 180);
+      const radius = 1.05;
+
+      const x = -radius * Math.sin(phi) * Math.cos(theta);
+      const z = radius * Math.sin(phi) * Math.sin(theta);
+      const y = radius * Math.cos(phi);
+
+      // Create marker
+      const markerGeometry = new THREE.SphereGeometry(0.02, 16, 16);
+      const markerMaterial = new THREE.MeshBasicMaterial({
+        color: this.getAQIColor(aqi),
+        transparent: true,
+        opacity: 0.9
+      });
+
+      const marker = new THREE.Mesh(markerGeometry, markerMaterial);
+      marker.position.set(x, y, z);
+      marker.userData = { city, data };
+
+      // Create glow ring
+      const ringGeometry = new THREE.RingGeometry(0.025, 0.035, 32);
+      const ringMaterial = new THREE.MeshBasicMaterial({
+        color: this.getAQIColor(aqi),
+        transparent: true,
+        opacity: 0.5,
+        side: THREE.DoubleSide
+      });
+
+      const ring = new THREE.Mesh(ringGeometry, ringMaterial);
+      ring.lookAt(0, 0, 0);
+      ring.position.set(x, y, z);
+
+      markerGroup.add(marker);
+      markerGroup.add(ring);
+    });
+
+    this.pm25Markers = markerGroup;
+    this.pm25Markers.visible = this.showPM25;
+    this.scene.add(this.pm25Markers);
+    console.log('PM2.5 markers created');
+  }
+
   async loadPM25Data() {
     this.pm25Data = new Map([
       ['Seoul', { lat: 37.5665, lon: 126.9780, pm25: 45, aqi: 125 }],
@@ -471,6 +530,9 @@ class AirLensGlobeAdvanced {
     if (togglePM25) {
       togglePM25.addEventListener('change', (e) => {
         this.showPM25 = e.target.checked;
+        if (this.pm25Markers) {
+          this.pm25Markers.visible = this.showPM25;
+        }
       });
     }
 
@@ -601,6 +663,13 @@ class AirLensGlobeAdvanced {
     // Subtle star rotation
     if (this.stars) {
       this.stars.rotation.y += 0.00002;
+    }
+
+    // Day/Night cycle - rotate sun light
+    if (this.dayNightEnabled && this.sunLight) {
+      const angle = this.time * 0.0001;
+      this.sunLight.position.x = Math.cos(angle) * 5;
+      this.sunLight.position.z = Math.sin(angle) * 5;
     }
 
     // Update particles

@@ -392,12 +392,64 @@
         "lat": 59.3293,
         "lon": 18.0686
       }
+    },
+    {
+      "country": "United Arab Emirates",
+      "countryCode": "AE",
+      "region": "Middle East",
+      "flag": "🇦🇪",
+      "dataFile": "uae.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 25.2048,
+        "lon": 55.2708
+      }
+    },
+    {
+      "country": "Nigeria",
+      "countryCode": "NG",
+      "region": "West Africa",
+      "flag": "🇳🇬",
+      "dataFile": "nigeria.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 6.5244,
+        "lon": 3.3792
+      }
+    },
+    {
+      "country": "Colombia",
+      "countryCode": "CO",
+      "region": "South America",
+      "flag": "🇨🇴",
+      "dataFile": "colombia.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 4.7110,
+        "lon": -74.0721
+      }
+    },
+    {
+      "country": "Norway",
+      "countryCode": "NO",
+      "region": "Northern Europe",
+      "flag": "🇳🇴",
+      "dataFile": "norway.json",
+      "policyCount": 2,
+      "lastUpdated": "2025-11-08T12:00:00Z",
+      "coordinates": {
+        "lat": 59.9139,
+        "lon": 10.7522
+      }
     }
   ],
   "statistics": {
-    "totalCountries": 30,
-    "totalPolicies": 61,
-    "regionsRepresented": ["East Asia", "South Asia", "Western Europe", "Central Europe", "Southern Europe", "Northern Europe", "North America", "Oceania", "Southeast Asia", "South America", "Western Asia", "Africa", "North Africa"]
+    "totalCountries": 34,
+    "totalPolicies": 69,
+    "regionsRepresented": ["East Asia", "South Asia", "Western Europe", "Central Europe", "Southern Europe", "Northern Europe", "North America", "Oceania", "Southeast Asia", "South America", "Western Asia", "Africa", "North Africa", "Middle East", "West Africa"]
   },
   "apiEndpoints": {
     "openaq": "https://api.openaq.org/v2",

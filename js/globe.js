@@ -112,9 +112,32 @@ class PolicyGlobe {
       this.setupToggleSwitches();
 
       console.log('Policy Globe setup complete');
+
+      // Hide loading indicator
+      const loadingIndicator = document.getElementById('loading-indicator');
+      if (loadingIndicator) {
+        loadingIndicator.style.opacity = '0';
+        loadingIndicator.style.transition = 'opacity 0.5s ease-out';
+        setTimeout(() => {
+          loadingIndicator.style.display = 'none';
+        }, 500);
+      }
+
       this.animate();
     } catch (error) {
       console.error('Error initializing globe:', error);
+
+      // Show error message and hide loading indicator
+      const loadingIndicator = document.getElementById('loading-indicator');
+      if (loadingIndicator) {
+        loadingIndicator.innerHTML = `
+          <div class="flex flex-col items-center gap-4">
+            <span class="material-symbols-outlined text-red-500 !text-6xl">error</span>
+            <p class="text-white text-lg font-medium">Failed to load globe</p>
+            <p class="text-white/60 text-sm">Please refresh the page</p>
+          </div>
+        `;
+      }
     }
   }
 

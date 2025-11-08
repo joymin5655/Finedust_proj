@@ -203,10 +203,10 @@
 
         /* Transparent navbar for globe page */
         .navbar-transparent {
-            background: rgba(16, 33, 34, 0.3) !important;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background: transparent !important;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            border-bottom: none;
             z-index: 1000 !important;
         }
     </style>
@@ -297,7 +297,7 @@
 
                 <!-- Country Policy Card -->
                 <div class="flex justify-start">
-                    <div id="policy-card" class="w-full max-w-md max-h-[calc(100vh-180px)] rounded-xl bg-gray-900/50 backdrop-blur-md border border-white/10 policy-card flex flex-col" style="display: none;">
+                    <div id="policy-card" class="w-full max-w-[240px] max-h-[calc(100vh-180px)] rounded-xl bg-gray-900/50 backdrop-blur-md border border-white/10 policy-card flex flex-col" style="display: none;">
                         <div class="flex items-start justify-between p-4 pb-3 border-b border-white/10 flex-shrink-0">
                             <div class="flex-1">
                                 <div class="flex items-center gap-3 mb-1">

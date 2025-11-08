@@ -25,6 +25,9 @@
     }
     </script>
 
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
     <!-- Main Styles -->
     <link rel="stylesheet" href="css/main.css"/>
     <link rel="stylesheet" href="css/settings.css"/>
@@ -247,6 +250,44 @@
                                 <div class="bg-black/20 rounded-lg p-3 text-center">
                                     <p class="text-xs text-white/60 font-display mb-1">PM2.5</p>
                                     <p class="text-2xl font-bold font-display" id="policy-pm25">- µg/m³</p>
+                                </div>
+                            </div>
+
+                            <!-- Policy Impact Analysis -->
+                            <div class="mb-4" id="policy-impact-section" style="display: none;">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <span class="material-symbols-outlined text-primary">analytics</span>
+                                    <h4 class="text-base font-semibold text-white font-display">Policy Impact</h4>
+                                </div>
+                                <div class="bg-black/20 rounded-lg p-4 mb-3">
+                                    <div class="grid grid-cols-3 gap-2 mb-3">
+                                        <div class="text-center">
+                                            <p class="text-xs text-white/60 font-display mb-1">Before</p>
+                                            <p class="text-lg font-bold text-white/90 font-display" id="impact-before">-</p>
+                                        </div>
+                                        <div class="text-center">
+                                            <p class="text-xs text-white/60 font-display mb-1">After</p>
+                                            <p class="text-lg font-bold text-white/90 font-display" id="impact-after">-</p>
+                                        </div>
+                                        <div class="text-center">
+                                            <p class="text-xs text-white/60 font-display mb-1">Change</p>
+                                            <p class="text-lg font-bold font-display" id="impact-change">-</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-xs text-white/60 text-center" id="impact-significance">
+                                        Statistical analysis loading...
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Policy Timeline -->
+                            <div class="mb-4" id="policy-timeline-section" style="display: none;">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <span class="material-symbols-outlined text-primary">timeline</span>
+                                    <h4 class="text-base font-semibold text-white font-display">Timeline</h4>
+                                </div>
+                                <div class="bg-black/20 rounded-lg p-4">
+                                    <canvas id="policy-timeline-chart" style="max-height: 200px;"></canvas>
                                 </div>
                             </div>
 

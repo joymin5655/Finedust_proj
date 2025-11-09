@@ -6,7 +6,8 @@
 /* Globe Container */
 #globe-container {
   position: relative;
-  width: 100vw;
+  width: 100%;
+  max-width: 100%;
   height: calc(100vh - 48px);
   background: radial-gradient(ellipse at center, #0a1929 0%, #000510 70%, #000000 100%);
   overflow: hidden;

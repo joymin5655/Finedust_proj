@@ -520,3 +520,26 @@ body.dark-mode .flower-loader {
     opacity: 0;
   }
 }
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .settings-section {
+    padding: calc(48px + var(--space-4)) var(--space-3) var(--space-6);
+  }
+
+  .settings-title {
+    font-size: var(--text-3xl);
+  }
+
+  .settings-card {
+    padding: var(--space-4);
+  }
+
+  .settings-option-label h4 {
+    font-size: var(--text-base);
+  }
+
+  .settings-option-label p {
+    font-size: var(--text-xs);
+  }
+}

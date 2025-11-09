@@ -290,6 +290,62 @@
             border-bottom: none;
             z-index: 1000 !important;
         }
+
+        /* Transparent navbar menu for mobile */
+        @media (max-width: 768px) {
+            .navbar-transparent .navbar-menu {
+                background: rgba(16, 33, 34, 0.95) !important;
+                backdrop-filter: saturate(180%) blur(20px);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+        }
+
+        /* Mobile Policy Explorer Toggle */
+        @media (max-width: 768px) {
+            .control-panel {
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+            }
+
+            .control-panel.active {
+                transform: translateX(0);
+            }
+        }
+
+        /* Floating Toggle Button */
+        #policy-explorer-toggle {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: rgba(37, 226, 244, 0.9);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 40;
+            transition: all 0.3s ease;
+        }
+
+        #policy-explorer-toggle:hover {
+            background: rgba(37, 226, 244, 1);
+            transform: scale(1.1);
+        }
+
+        #policy-explorer-toggle .material-symbols-outlined {
+            font-size: 28px;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            #policy-explorer-toggle {
+                display: flex;
+            }
+        }
     </style>
 </head>
 
@@ -643,6 +699,11 @@
 
             </aside>
 
+            <!-- Floating Policy Explorer Toggle Button (Mobile Only) -->
+            <button id="policy-explorer-toggle" onclick="togglePolicyExplorer()" aria-label="Toggle Policy Explorer">
+                <span class="material-symbols-outlined">layers</span>
+            </button>
+
         </main>
 
         <!-- Help Tooltip -->
@@ -665,6 +726,36 @@
                 card.style.display = 'none';
             }, 300); // Match the transition duration
         }
+
+        // Toggle Policy Explorer panel (mobile)
+        function togglePolicyExplorer() {
+            const panel = document.querySelector('.control-panel');
+            const button = document.getElementById('policy-explorer-toggle');
+
+            if (panel) {
+                panel.classList.toggle('active');
+
+                // Change icon based on state
+                const icon = button.querySelector('.material-symbols-outlined');
+                if (panel.classList.contains('active')) {
+                    icon.textContent = 'close';
+                } else {
+                    icon.textContent = 'layers';
+                }
+            }
+        }
+
+        // Close panel when clicking outside (mobile)
+        document.addEventListener('click', function(event) {
+            const panel = document.querySelector('.control-panel');
+            const button = document.getElementById('policy-explorer-toggle');
+
+            if (window.innerWidth <= 768 && panel && button) {
+                if (!panel.contains(event.target) && !button.contains(event.target) && panel.classList.contains('active')) {
+                    togglePolicyExplorer();
+                }
+            }
+        });
     </script>
     <script src="js/theme-toggle.js"></script>
     <script src="js/main.js"></script>

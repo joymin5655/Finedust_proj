@@ -85,17 +85,43 @@ AirLens transforms complex air quality data into an intuitive, beautiful 3D visu
 
 ## 📊 Data Sources
 
-### Our World In Data
-Primary data source for PM2.5 concentrations and historical trends.
+**✅ ALL DATA FROM OFFICIAL INTERNATIONAL AGENCIES**
 
-**APIs Used:**
-- **PM2.5 Concentrations:** `https://ourworldindata.org/grapher/pm25-air-pollution.csv`
-- **Long-run Air Pollution:** `https://ourworldindata.org/grapher/long-run-air-pollution.csv`
+### 🇪🇺 EU Copernicus CAMS (Primary - NO TOKEN REQUIRED)
+Real-time atmospheric monitoring data via Open-Meteo API.
 
-**Coverage:**
-- 66 countries
-- Historical data from 1990-2021
-- Regularly updated with latest research
+**Provider:** ECMWF (European Centre for Medium-Range Weather Forecasts)
+**Data:** PM2.5, PM10, NO₂, SO₂, O₃, CO, AOD, Dust
+**Coverage:** Worldwide
+**Cost:** ✅ FREE - No API key needed
+**Used in:** Globe, Camera AI, All real-time features
+
+### 🌍 Optional Enhancement APIs (All FREE)
+
+**WAQI (World Air Quality Index):**
+- 11,000+ government monitoring stations worldwide
+- Real-time PM2.5, AQI data
+- Free token: https://aqicn.org/data-platform/token
+
+**OpenWeather Air Pollution API:**
+- Global coordinate-based data
+- 1M free calls/month
+- Sign up: https://home.openweathermap.org/users/sign_up
+
+**OpenAQ API v3:**
+- Government official monitoring stations
+- Free API key
+- Register: https://explore.openaq.org/register
+
+### 📈 Historical PM2.5 Trends (8 Countries)
+
+**Sources:**
+- WHO Global Air Quality Database
+- OECD Air Quality Statistics
+- World Bank Air Pollution Data
+- National environmental agencies (Korea EPA, China MEE, US EPA, etc.)
+
+**Countries with trends:** South Korea, China, Japan, India, Bangladesh, USA, UK, Germany
 
 ---
 

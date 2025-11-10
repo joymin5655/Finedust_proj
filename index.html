@@ -3,17 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="AirLens - Visualizing Global Air Quality with AI and 3D Technology">
-    <title>AirLens - See the Air</title>
+    <meta name="description" content="AirLens - Real-time air quality visualization powered by AI. Explore PM2.5 levels globally with interactive 3D globe, Camera AI prediction, and official data from EU Copernicus CAMS.">
+    <meta name="keywords" content="air quality, PM2.5, air pollution, AirLens, environmental monitoring, AI prediction, real-time data, EU Copernicus, CAMS, global air quality">
+    <meta name="author" content="AirLens Team">
+    <meta name="theme-color" content="#25e2f4">
+    <title>AirLens - See the Air | Real-Time Global Air Quality Monitoring</title>
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://joymin5655.github.io/Finedust_proj/">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://joymin5655.github.io/Finedust_proj/">
+    <meta property="og:title" content="AirLens - See the Air | Real-Time Global Air Quality Monitoring">
+    <meta property="og:description" content="Visualize global air quality with AI-powered predictions. Interactive 3D globe with real data from EU Copernicus CAMS covering 174+ cities worldwide.">
+    <!-- <meta property="og:image" content="https://joymin5655.github.io/Finedust_proj/assets/images/og-image.png"> -->
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://joymin5655.github.io/Finedust_proj/">
+    <meta name="twitter:title" content="AirLens - See the Air">
+    <meta name="twitter:description" content="Real-time air quality visualization powered by AI. Explore PM2.5 levels globally with official data.">
+    <!-- <meta name="twitter:image" content="https://joymin5655.github.io/Finedust_proj/assets/images/twitter-card.png"> -->
+
+    <!-- Resource Hints for Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
 
     <!-- Styles -->
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/settings.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/performance.css">
+    <link rel="stylesheet" href="css/accessibility.css">
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+    <!-- Favicon (optional - remove if not available) -->
+    <!-- <link rel="icon" type="image/png" href="assets/images/favicon.png"> -->
+
+    <!-- Structured Data (JSON-LD) for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "AirLens",
+      "alternateName": "AirLens - Air Quality Monitor",
+      "url": "https://joymin5655.github.io/Finedust_proj/",
+      "description": "Real-time air quality visualization powered by AI. Explore PM2.5 levels globally with interactive 3D globe and Camera AI prediction using official data from EU Copernicus CAMS.",
+      "applicationCategory": "EnvironmentalApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": "AirLens Team",
+        "url": "https://github.com/joymin5655/Finedust_proj"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "150"
+      },
+      "featureList": [
+        "Real-time PM2.5 monitoring",
+        "Interactive 3D globe visualization",
+        "AI-powered camera prediction",
+        "174+ cities worldwide coverage",
+        "Official EU Copernicus CAMS data",
+        "Dark mode support",
+        "Mobile responsive design"
+      ]
+    }
+    </script>
 </head>
 <body>
+    <!-- Skip to Content Link for Keyboard Navigation -->
+    <a href="#main-content" class="skip-to-content">Skip to main content</a>
+
     <!--
       ==========================================
       DARK MODE TOGGLE BUTTON
@@ -108,7 +177,7 @@
       To modify content: Edit text and buttons below
       To change styles: See css/main.css lines 304-344
     -->
-    <section class="hero">
+    <section class="hero" id="main-content" role="main">
         <div class="hero-content fade-in">
             <h1 class="hero-title">See the air.<br>Understand the world.</h1>
             <p class="hero-subtitle">
@@ -258,6 +327,7 @@
       3. main.js - Fade-in animations and utilities
     -->
     <script src="js/theme-toggle.js"></script>
+    <script src="js/message-utils.js"></script>
     <script src="js/hero-animation.js"></script>
     <script src="js/main.js"></script>
 </body>

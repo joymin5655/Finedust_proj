@@ -22,7 +22,7 @@ AirLens transforms complex air quality data into an intuitive, beautiful 3D visu
 
 - **✅ NO TOKEN REQUIRED**: Works immediately - no API keys, no registration needed!
 - **🇪🇺 Official EU Data**: Real-time data from EU Copernicus CAMS (ECMWF)
-- **🌍 3D Globe Visualization**: 50+ major cities with live PM2.5 data
+- **🌍 3D Globe Visualization**: 174+ cities worldwide with live PM2.5 data (11,000+ with optional WAQI)
 - **📸 Camera AI**: Upload sky photos to predict PM2.5 using multimodal AI
 - **🎨 Beautiful Interface**: Atmospheric particles, color-coded markers, smooth animations
 - **🔍 Real-time Analysis**: Satellite + ground station data fusion
@@ -46,12 +46,13 @@ AirLens transforms complex air quality data into an intuitive, beautiful 3D visu
 
 **Design Inspiration:** Earth.Nullschool + Google Earth
 
-- **Realistic 3D Earth** with atmospheric glow and dynamic lighting
-- **Color-coded PM2.5 markers** for 66 countries
+- **Realistic 3D Earth** with NASA Blue Marble texture and atmospheric glow
+- **Color-coded PM2.5 markers** for 174+ cities across 50+ countries
+- **Country policy visualization** with historical PM2.5 trends (8 major countries)
 - **Atmospheric particle effects** simulating air currents
 - **Smooth camera controls** with zoom, pan, and auto-rotate
 - **60 FPS rendering** using Three.js and WebGL
-- **Detailed country information** on click
+- **Detailed country information** on click with interactive charts
 
 ### 📸 Camera AI - PM2.5 Predictor
 

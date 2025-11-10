@@ -31,17 +31,30 @@ class CameraAI {
    * Initialize Satellite Data API
    */
   async initSatelliteAPI() {
+    // Get OpenAQ API key from config
+    const openaqApiKey = window.API_CONFIG?.openaq?.enabled
+      ? window.API_CONFIG.openaq.apiKey
+      : null;
+
     if (window.SatelliteDataAPI) {
-      this.satelliteAPI = new window.SatelliteDataAPI();
+      this.satelliteAPI = new window.SatelliteDataAPI(openaqApiKey);
       console.log('✅ Satellite API initialized');
+      if (!openaqApiKey) {
+        console.warn('⚠️ OpenAQ API key not configured. Ground station data will be unavailable.');
+        console.warn('📝 Configure your API key in js/config.js to enable ground station validation.');
+      }
     } else {
       console.warn('⚠️ Satellite API not available - loading...');
       // Load satellite-api.js if not already loaded
       const script = document.createElement('script');
       script.src = 'js/satellite-api.js';
       script.onload = () => {
-        this.satelliteAPI = new window.SatelliteDataAPI();
+        this.satelliteAPI = new window.SatelliteDataAPI(openaqApiKey);
         console.log('✅ Satellite API loaded and initialized');
+        if (!openaqApiKey) {
+          console.warn('⚠️ OpenAQ API key not configured. Ground station data will be unavailable.');
+          console.warn('📝 Configure your API key in js/config.js to enable ground station validation.');
+        }
       };
       document.head.appendChild(script);
     }
@@ -228,7 +241,8 @@ class CameraAI {
         satelliteData = await this.satelliteAPI.getMultimodalData(
           imageFeatures,
           this.currentLocation.lat,
-          this.currentLocation.lon
+          this.currentLocation.lon,
+          this.currentLocation.accuracy
         );
         this.multimodalData = satelliteData;
         console.log('✅ Satellite data fetched');

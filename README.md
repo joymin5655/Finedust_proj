@@ -1,7 +1,7 @@
 # 🌍 AirLens - See the Air
 
-> **Interactive global air quality visualization powered by real data**
-> Real-time PM2.5 monitoring • AI-powered predictions • Advanced 3D visualization
+> **Interactive global air quality visualization powered by official international data**
+> Historical PM2.5 analysis • AI-powered predictions • Advanced 3D visualization
 
 [![Deploy](https://github.com/joymin5655/Finedust_proj/actions/workflows/deploy.yml/badge.svg)](https://github.com/joymin5655/Finedust_proj/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
@@ -16,16 +16,16 @@
 
 ## 🎯 What is AirLens?
 
-AirLens transforms complex air quality data into an intuitive, beautiful 3D visualization. Using **official EU Copernicus CAMS data** (no API keys required), explore global PM2.5 levels in real-time, predict air quality from sky photos using AI, and discover pollution patterns across the globe - all on an interactive Earth globe.
+AirLens transforms complex air quality data into an intuitive, beautiful 3D visualization. Using **official international data sources** including EU Copernicus CAMS (no API keys required), explore global PM2.5 levels, predict air quality from sky photos using experimental AI, and discover pollution patterns across the globe - all on an interactive Earth.
 
 ### 🌟 Key Highlights
 
 - **✅ NO TOKEN REQUIRED**: Works immediately - no API keys, no registration needed!
-- **🇪🇺 Official EU Data**: Real-time data from EU Copernicus CAMS (ECMWF)
-- **🌍 3D Globe Visualization**: 174+ cities worldwide with live PM2.5 data (11,000+ with optional WAQI)
-- **📸 Camera AI**: Upload sky photos to predict PM2.5 using multimodal AI
+- **🇪🇺 Official EU Data**: Historical data from EU Copernicus CAMS (ECMWF)
+- **📊 Verified Sources**: Our World in Data (IHME), WAQI, government agencies
+- **🌍 3D Globe Visualization**: Interactive Earth with country-level air quality policies
+- **📸 Camera AI**: Experimental multimodal AI combining sky photos + satellite data
 - **🎨 Beautiful Interface**: Atmospheric particles, color-coded markers, smooth animations
-- **🔍 Real-time Analysis**: Satellite + ground station data fusion
 - **📱 Fully Responsive**: Works seamlessly on desktop, tablet, and mobile
 
 ---
@@ -42,60 +42,73 @@ AirLens transforms complex air quality data into an intuitive, beautiful 3D visu
 - **Optimized performance** - no flash on page load
 - **Mobile-responsive** - scales beautifully on all devices
 
-### 🌐 Interactive Enhanced Globe
+### 🌐 Interactive Globe
 
 **Design Inspiration:** Earth.Nullschool + Google Earth
 
 - **Realistic 3D Earth** with NASA Blue Marble texture and atmospheric glow
-- **Color-coded PM2.5 markers** for 174+ cities across 50+ countries
-- **Country policy visualization** with historical PM2.5 trends (8 major countries)
+- **Country policy visualization** with historical PM2.5 trends
 - **Atmospheric particle effects** simulating air currents
 - **Smooth camera controls** with zoom, pan, and auto-rotate
 - **60 FPS rendering** using Three.js and WebGL
 - **Detailed country information** on click with interactive charts
 
-### 📸 Camera AI - PM2.5 Predictor
+### 📸 Camera AI - Experimental PM2.5 Predictor
 
 **Sky Image Analysis with Machine Learning**
 
 - **Upload sky photos** to estimate PM2.5 levels
-- **CNN-LSTM architecture** for accurate predictions
+- **CNN-LSTM architecture** for experimental predictions
+- **Multimodal data fusion**: Image + Satellite + Ground data
 - **Browser-based processing** with TensorFlow.js
 - **No server uploads** - all processing happens locally
-- **MAE < 8.5 µg/m³** accuracy on validation data
+- **Educational purposes** - experimental AI model
 
-### 📊 Data Analysis Tools
+### 📊 Research & Data Analysis
 
-- **Global Statistics Dashboard**
-  - Average PM2.5 levels worldwide
-  - Most/least polluted regions
-  - Historical trends visualization
-
-- **Historical Timeline**
-  - Explore data from 1990 to 2021
-  - Animated timeline playback
-  - Year-by-year comparison
-
-- **WHO Air Quality Guidelines**
-  - Color-coded AQI scale
-  - Health impact descriptions
-  - Interactive legend
+- **Global air quality policies** from major countries
+- **Historical PM2.5 trends** (1990-2021)
+- **Policy impact analysis** with before/after statistics
+- **WHO Air Quality Guidelines** with health impact descriptions
+- **Data source transparency** - all sources clearly attributed
 
 ---
 
 ## 📊 Data Sources
 
-### Our World In Data
-Primary data source for PM2.5 concentrations and historical trends.
+All data from official international organizations and government agencies:
 
-**APIs Used:**
-- **PM2.5 Concentrations:** `https://ourworldindata.org/grapher/pm25-air-pollution.csv`
-- **Long-run Air Pollution:** `https://ourworldindata.org/grapher/long-run-air-pollution.csv`
+### 🇪🇺 EU Copernicus CAMS (Primary - No API Key Required)
+European Union's official atmospheric monitoring service
+- **Agency:** ECMWF (European Centre for Medium-Range Weather Forecasts)
+- **Data:** PM2.5, PM10, NO₂, SO₂, O₃, CO, AOD, Dust
+- **Coverage:** Worldwide
+- **Access:** FREE via Open-Meteo API
+- **URL:** https://atmosphere.copernicus.eu
 
-**Coverage:**
-- 66 countries
-- Historical data from 1990-2021
-- Regularly updated with latest research
+### 📊 Our World in Data
+Verified research data from IHME (Institute for Health Metrics and Evaluation)
+- **Data:** Historical PM2.5 concentrations (1990-2021)
+- **Coverage:** Global
+- **License:** CC BY 4.0
+- **URL:** https://ourworldindata.org
+
+### 🌍 Optional Enhancement APIs
+
+**WAQI (World Air Quality Index)**
+- Global ground monitoring stations
+- Access: FREE token (email only)
+- URL: https://aqicn.org
+
+**OpenWeather Air Pollution**
+- Global meteorological and air quality data
+- Access: FREE API key (1M calls/month)
+- URL: https://openweathermap.org
+
+**OpenAQ**
+- Government official monitoring stations
+- Access: FREE API key
+- URL: https://openaq.org
 
 ---
 
@@ -119,16 +132,18 @@ python -m http.server 8000
 npx http-server -p 8000
 ```
 
-Then navigate to: `http://localhost:8000/globe-enhanced.html`
+Then navigate to: `http://localhost:8000`
 
 ---
 
 ## 🛠️ Technology Stack
 
 - **Three.js** - 3D graphics and WebGL rendering
+- **TensorFlow.js** - Browser-based machine learning
 - **Vanilla JavaScript** - Fast and efficient
 - **CSS3** - Modern styling with glassmorphism
-- **Our World In Data API** - Verified global data
+- **Chart.js** - Data visualization
+- **Official APIs** - EU Copernicus CAMS, Our World in Data
 
 ---
 
@@ -137,28 +152,37 @@ Then navigate to: `http://localhost:8000/globe-enhanced.html`
 ```
 Finedust_proj/
 ├── index.html               # Main landing page
-├── globe-enhanced.html      # Enhanced 3D globe visualization
+├── globe.html               # 3D globe visualization
 ├── camera.html              # Camera AI PM2.5 predictor
-├── research.html            # Air quality research & policies
+├── research.html            # Research & methodology
 ├── about.html               # About page
+├── settings.html            # Settings & information
 │
 ├── js/
 │   ├── theme-toggle.js      # Dark/light mode management
 │   ├── main.js              # Common utilities & animations
 │   ├── hero-animation.js    # Landing page animations
-│   ├── globe-enhanced.js    # Enhanced globe logic
+│   ├── globe.js             # Globe visualization logic
 │   ├── camera.js            # Camera AI functionality
-│   └── data-service.js      # OWID API integration
+│   ├── satellite-api.js     # Satellite data integration
+│   ├── air-quality-api.js   # Air quality data fetching
+│   └── data-service.js      # Data management
 │
 ├── css/
 │   ├── main.css             # Global styles & theme system
-│   ├── globe-enhanced.css   # Globe-specific styles
-│   └── camera.css           # Camera AI styles
+│   ├── globe.css            # Globe-specific styles
+│   ├── camera.css           # Camera AI styles
+│   └── settings.css         # Settings page styles
 │
 └── data/
-    ├── pm25-data.json       # PM2.5 historical data
-    ├── stations.json        # Monitoring stations data
-    └── policies.json        # Air quality policies data
+    ├── pm25-data.json       # PM2.5 historical data (Our World in Data)
+    ├── policies.json        # Air quality policies
+    ├── air-pollution-deaths.json  # Health impact data (IHME)
+    └── policy-impact/       # Policy effectiveness data
+        ├── south-korea.json
+        ├── china.json
+        ├── united-states.json
+        └── european-union.json
 ```
 
 ### 🎨 Code Organization
@@ -172,9 +196,27 @@ Finedust_proj/
 
 ---
 
+## 🔬 Research Foundations
+
+Our multimodal PM2.5 prediction system is built upon cutting-edge research:
+
+- **Rowley & Karakuş (2023)** - Multimodal fusion (satellite + ground sensors)
+- **AirFusion (2025)** - Late Fusion architecture for air quality
+- **Park et al. (2019)** - AOD to PM2.5 conversion models
+- **Li et al. (2022)** - Multi-source data integration techniques
+- **Hameed et al. (2023)** - Optimal weighting for fusion models
+
+---
+
 ## 🤝 Contributing
 
-Contributions welcome! Fork the repo and submit a PR.
+Contributions welcome! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ---
 
@@ -184,15 +226,29 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ### Data Attribution
 
-- **Our World In Data**: PM2.5 data (CC BY 4.0)
+- **EU Copernicus CAMS**: Atmospheric data (Free, no registration)
+- **Our World in Data**: PM2.5 historical data (CC BY 4.0)
+- **IHME**: Health impact data (Free for research)
+- **Government Agencies**: Official monitoring data
+
+---
+
+## ⚠️ Disclaimer
+
+**Educational & Research Purposes Only**
+
+This project is designed for educational and research purposes. The AI model for PM2.5 prediction is experimental and should not be used as the sole basis for health or safety decisions. Always refer to official air quality monitoring agencies for authoritative information.
 
 ---
 
 ## 🙏 Acknowledgments
 
-- **Our World In Data** for air quality data
+- **EU Copernicus CAMS** for free atmospheric data
+- **Our World in Data** for verified research data
+- **IHME** for health impact statistics
 - **Earth.Nullschool** for design inspiration
 - **Three.js** team for 3D library
+- **TensorFlow.js** team for machine learning framework
 
 ---
 

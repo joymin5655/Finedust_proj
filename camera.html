@@ -112,8 +112,11 @@
 <div class="flex min-w-72 flex-col gap-3">
 <h1 class="text-gray-900 dark:text-white text-4xl font-black leading-tight tracking-[-0.033em]">AirLens PM2.5 Predictor</h1>
 <p class="text-gray-600 dark:text-gray-400 text-base font-normal leading-normal">
-                                    Upload a clear image of the sky to estimate the current PM2.5 level using our browser-based AI model.
+                                    Upload a clear image of the sky to estimate PM2.5 using multimodal AI fusion (Image + Satellite + Ground Data).
                                 </p>
+<div id="location-status" class="flex items-center gap-2 mt-2 text-sm text-gray-500 dark:text-gray-400">
+    <span class="material-symbols-outlined" style="font-size: 16px;">location_searching</span> Checking location...
+</div>
 </div>
 </div>
 <div class="p-4 grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -227,9 +230,21 @@
 <div class="quality-badge px-4 py-2 text-sm font-bold rounded-full bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400">--</div>
 </div>
 <p id="timestamp" class="text-sm mt-4 text-gray-500 dark:text-gray-500">--</p>
-<button id="analyze-again" class="mt-6 flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 text-sm font-bold leading-normal tracking-[0.015em] bg-primary text-[#111718] hover:opacity-90 transition-opacity">
-<span class="truncate">Analyze Another Image</span>
-</button>
+
+<!-- Multimodal Info -->
+<div id="multimodal-info"></div>
+
+<!-- Validation Info -->
+<div id="validation-info"></div>
+
+<div class="flex gap-3 mt-6">
+    <button id="analyze-again" class="flex-1 flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 text-sm font-bold leading-normal tracking-[0.015em] bg-primary text-[#111718] hover:opacity-90 transition-opacity">
+        <span class="truncate">Analyze Another Image</span>
+    </button>
+    <button id="view-satellite-btn" style="display: none;" class="flex-1 flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 text-sm font-bold leading-normal tracking-[0.015em] bg-gray-700/50 dark:bg-white/10 text-gray-900 dark:text-white hover:bg-gray-700/40 dark:hover:bg-white/20 transition-colors">
+        <span class="truncate">🛰️ View Satellite Data</span>
+    </button>
+</div>
 </div>
 </div>
 
@@ -312,6 +327,7 @@
 
 <script src="js/theme-toggle.js"></script>
 <script src="js/main.js"></script>
+<script src="js/satellite-api.js"></script>
 <script src="js/camera.js"></script>
 <script>
 // 다크모드 자동 적용

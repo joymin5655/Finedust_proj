@@ -277,8 +277,26 @@ class CameraAI {
 
     } catch (error) {
       console.error('❌ Analysis failed:', error);
-      alert('Failed to analyze image. Please try again.');
       this.hideLoading();
+
+      // Show user-friendly error message
+      if (window.MessageUtils) {
+        const errorMsg = error.message || 'Failed to analyze image. Please try again.';
+        let detailedMsg = errorMsg;
+
+        // Provide specific error messages
+        if (errorMsg.includes('location') || errorMsg.includes('GPS')) {
+          detailedMsg = '📍 Location access required for accurate PM2.5 prediction. Please enable location services and try again.';
+        } else if (errorMsg.includes('network') || errorMsg.includes('fetch')) {
+          detailedMsg = '🌐 Network error. Please check your internet connection and try again.';
+        } else if (errorMsg.includes('image') || errorMsg.includes('load')) {
+          detailedMsg = '🖼️ Could not process the image. Please upload a clear photo of the sky.';
+        }
+
+        window.MessageUtils.showError(detailedMsg, '.layout-content-container', 8000);
+      } else {
+        alert('Failed to analyze image. Please try again.');
+      }
     }
   }
 

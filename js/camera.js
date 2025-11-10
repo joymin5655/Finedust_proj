@@ -400,14 +400,25 @@ class CameraAI {
     const modalInfo = document.getElementById('multimodal-info');
     if (modalInfo) {
       const modalities = [];
-      if (prediction.modalitiesUsed.image) modalities.push('📷 Image CNN');
-      if (prediction.modalitiesUsed.satellite) modalities.push('🛰️ Satellite');
-      if (prediction.modalitiesUsed.ground) modalities.push('📡 Ground Stations');
+      if (prediction.modalitiesUsed.image) modalities.push({ icon: '📷', name: 'Image CNN' });
+      if (prediction.modalitiesUsed.satellite) modalities.push({ icon: '🛰️', name: 'Satellite' });
+      if (prediction.modalitiesUsed.ground) modalities.push({ icon: '📡', name: 'Ground' });
+
+      const modalitiesHTML = modalities.map(m => `
+        <div class="flex items-center gap-2 py-2">
+          <span class="text-xl">${m.icon}</span>
+          <span class="text-sm text-gray-700 dark:text-gray-300">${m.name}</span>
+        </div>
+      `).join('');
 
       modalInfo.innerHTML = `
-        <div style="font-size: 0.875rem; color: var(--color-text-secondary); margin-top: 1rem;">
-          <strong>Data Sources:</strong> ${modalities.join(' + ')}<br>
-          <strong>Fusion Method:</strong> Late Fusion (Weighted Average)
+        <div class="space-y-1">
+          ${modalitiesHTML}
+          <div class="pt-3 mt-3 border-t border-gray-300 dark:border-gray-700">
+            <div class="text-xs text-gray-500 dark:text-gray-400">
+              <strong>Method:</strong> Late Fusion (Weighted Average)
+            </div>
+          </div>
         </div>
       `;
     }
@@ -417,15 +428,34 @@ class CameraAI {
       const validationInfo = document.getElementById('validation-info');
       if (validationInfo) {
         const errorClass = prediction.validation.withinThreshold ? 'good' : 'moderate';
+        const statusColor = prediction.validation.withinThreshold ? '#10b981' : '#f59e0b';
+        const statusIcon = prediction.validation.withinThreshold ? 'check_circle' : 'warning';
+
         validationInfo.innerHTML = `
-          <div style="margin-top: 1rem; padding: 0.75rem; background: rgba(37, 226, 244, 0.1); border-radius: 0.5rem; border: 1px solid var(--color-primary);">
-            <div style="font-size: 0.875rem; font-weight: 600; color: var(--color-primary); margin-bottom: 0.5rem;">
-              ✓ Cross-Validated with Ground Stations
+          <div class="bg-gray-100 dark:bg-gray-800/30 rounded-xl p-5">
+            <div class="flex items-center gap-2 mb-4">
+              <span class="material-symbols-outlined" style="color: ${statusColor};">${statusIcon}</span>
+              <h3 class="text-lg font-bold text-gray-900 dark:text-white">Cross-Validation</h3>
             </div>
-            <div style="font-size: 0.875rem; color: var(--color-text-secondary);">
-              <strong>Ground Truth:</strong> ${prediction.validation.groundTruth.toFixed(1)} µg/m³<br>
-              <strong>Prediction:</strong> ${prediction.validation.predicted.toFixed(1)} µg/m³<br>
-              <strong>Error:</strong> <span class="quality-${errorClass}">${prediction.validation.absoluteError.toFixed(1)} µg/m³ (${prediction.validation.relativeError.toFixed(1)}%)</span>
+            <div class="grid grid-cols-3 gap-4 mb-3">
+              <div class="text-center">
+                <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">Ground Truth</div>
+                <div class="text-lg font-bold text-gray-900 dark:text-white">${prediction.validation.groundTruth.toFixed(1)}</div>
+                <div class="text-xs text-gray-500">µg/m³</div>
+              </div>
+              <div class="text-center">
+                <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">Prediction</div>
+                <div class="text-lg font-bold text-primary">${prediction.validation.predicted.toFixed(1)}</div>
+                <div class="text-xs text-gray-500">µg/m³</div>
+              </div>
+              <div class="text-center">
+                <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">Error</div>
+                <div class="text-lg font-bold quality-${errorClass}">${prediction.validation.absoluteError.toFixed(1)}</div>
+                <div class="text-xs text-gray-500">(${prediction.validation.relativeError.toFixed(1)}%)</div>
+              </div>
+            </div>
+            <div class="text-xs text-gray-600 dark:text-gray-400 text-center pt-3 border-t border-gray-300 dark:border-gray-700">
+              Validated against nearby ground monitoring stations
             </div>
           </div>
         `;

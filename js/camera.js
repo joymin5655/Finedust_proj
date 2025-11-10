@@ -603,32 +603,40 @@ class CameraAI {
           ` : '<div style="color: var(--color-text-secondary);">No data available</div>'}
         </div>
 
-        <!-- Satellite Data -->
+        <!-- Atmospheric Data -->
         <div style="background: var(--color-bg-secondary); padding: 1rem; border-radius: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1);">
           <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
             <span style="font-size: 1.5rem;">🛰️</span>
-            <strong>Satellite Remote Sensing</strong>
+            <strong>Atmospheric Data</strong>
           </div>
-          ${sources.satellite ? `
+          ${sources.satellite?.cams ? `
             <div style="font-size: 0.875rem; display: flex; flex-direction: column; gap: 0.5rem;">
-              ${sources.satellite.modis ? `
-                <div style="background: rgba(37, 226, 244, 0.1); padding: 0.5rem; border-radius: 0.5rem;">
-                  <div style="color: var(--color-primary); font-weight: 600; margin-bottom: 0.25rem;">NASA MODIS</div>
-                  <div style="color: var(--color-text-secondary); font-size: 0.75rem;">AOD: ${sources.satellite.modis.aod?.toFixed(3) || 'N/A'}</div>
+              <div style="background: rgba(37, 226, 244, 0.1); padding: 0.5rem; border-radius: 0.5rem; border: 1px solid rgba(37, 226, 244, 0.3);">
+                <div style="color: var(--color-primary); font-weight: 600; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.3rem;">
+                  <span>🇪🇺</span> EU Copernicus CAMS
                 </div>
-              ` : ''}
-              ${sources.satellite.sentinel ? `
-                <div style="background: rgba(37, 226, 244, 0.1); padding: 0.5rem; border-radius: 0.5rem;">
-                  <div style="color: var(--color-primary); font-weight: 600; margin-bottom: 0.25rem;">ESA Sentinel-5P</div>
-                  <div style="color: var(--color-text-secondary); font-size: 0.75rem;">
-                    NO₂: ${sources.satellite.sentinel.no2?.toFixed(2) || 'N/A'} μmol/m²<br>
-                    CO: ${sources.satellite.sentinel.co?.toFixed(2) || 'N/A'} mol/m²
-                  </div>
+                <div style="color: var(--color-text-secondary); font-size: 0.75rem; line-height: 1.6;">
+                  <strong style="color: var(--color-text);">Particulate Matter:</strong><br>
+                  PM2.5: ${sources.satellite.cams.data?.pm25?.toFixed(1) || 'N/A'} µg/m³<br>
+                  PM10: ${sources.satellite.cams.data?.pm10?.toFixed(1) || 'N/A'} µg/m³<br>
+                  <br>
+                  <strong style="color: var(--color-text);">Aerosols:</strong><br>
+                  AOD: ${sources.satellite.cams.data?.aod?.toFixed(3) || 'N/A'}<br>
+                  Dust: ${sources.satellite.cams.data?.dust?.toFixed(1) || 'N/A'} µg/m³<br>
+                  <br>
+                  <strong style="color: var(--color-text);">Gases:</strong><br>
+                  NO₂: ${sources.satellite.cams.data?.no2?.toFixed(1) || 'N/A'} µg/m³<br>
+                  SO₂: ${sources.satellite.cams.data?.so2?.toFixed(1) || 'N/A'} µg/m³<br>
+                  O₃: ${sources.satellite.cams.data?.o3?.toFixed(1) || 'N/A'} µg/m³<br>
+                  CO: ${sources.satellite.cams.data?.co?.toFixed(0) || 'N/A'} µg/m³
                 </div>
-              ` : ''}
-              ${!sources.satellite.modis && !sources.satellite.sentinel ? '<div style="color: var(--color-text-secondary);">Simulated data</div>' : ''}
+                <div style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(37, 226, 244, 0.2); font-size: 0.65rem; color: var(--color-text-secondary);">
+                  <strong>Official EU Agency Data</strong><br>
+                  European Centre for Medium-Range Weather Forecasts (ECMWF)
+                </div>
+              </div>
             </div>
-          ` : '<div style="color: var(--color-text-secondary);">No satellite data</div>'}
+          ` : '<div style="color: var(--color-text-secondary);">CAMS data not available</div>'}
         </div>
 
         <!-- Ground Stations -->

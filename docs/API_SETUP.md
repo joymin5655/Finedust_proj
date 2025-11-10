@@ -1,222 +1,326 @@
-# API Configuration Guide
+# 🌍 API 설정 가이드 | API Configuration Guide
 
-## Overview
+## 개요 | Overview
 
-The AirLens multimodal PM2.5 prediction system integrates multiple real data sources to provide accurate air quality predictions. This guide explains how to configure and use these data sources.
+AirLens는 **완전 무료** 공식 공기질 API를 사용하여 실시간 PM2.5 데이터를 제공합니다.
+최소 1개의 API를 설정하시면 실제 지상 관측소 데이터를 활용할 수 있습니다.
 
-## Data Sources
+AirLens uses **completely FREE** official air quality APIs to provide real-time PM2.5 data.
+Configure at least ONE API to access real ground station data.
 
-### 1. NASA MODIS - Satellite AOD Data ✅ **No API Key Required**
+---
 
-**Status:** Fully functional with realistic estimates
+## 🎯 추천 API | Recommended APIs
 
-- **Source:** NASA Terra/Aqua MODIS satellites
-- **Parameter:** Aerosol Optical Depth (AOD) at 550nm
-- **Coverage:** Global
-- **Resolution:** 1km
-- **Implementation:** Uses regional pollution patterns to provide realistic AOD estimates based on geographic location
-- **Configuration:** None required - works out of the box
+### 1️⃣ WAQI (World Air Quality Index) - ⭐ 최우선 추천
 
-**Regional AOD Ranges:**
-- East Asia (China, Korea, Japan): 0.35-0.50
-- South Asia (India, Pakistan): 0.45-0.65
-- Middle East: 0.40-0.55
-- Europe: 0.20-0.30
-- North America: 0.18-0.30
-- Other regions: 0.12-0.20
+**Coverage:** 전 세계 11,000+ 관측소 | 11,000+ stations worldwide
+**Data:** PM2.5, PM10, O3, NO2, SO2, CO (실시간)
+**Cost:** ✅ 완전 무료 | Completely FREE
 
-### 2. ESA Sentinel-5P - Atmospheric Composition ✅ **No API Key Required**
+#### 무료 토큰 받기 | Get FREE Token
 
-**Status:** Fully functional with realistic estimates
+1. **토큰 요청 | Request Token:**
+   👉 https://aqicn.org/data-platform/token
 
-- **Source:** ESA Sentinel-5P TROPOMI satellite
-- **Parameters:**
-  - NO₂ (Nitrogen Dioxide) - μmol/m²
-  - CO (Carbon Monoxide) - mol/m²
-  - UV Aerosol Index
-- **Coverage:** Global
-- **Resolution:** 7km × 3.5km
-- **Implementation:** Uses regional pollution patterns to provide realistic atmospheric composition estimates
-- **Configuration:** None required - works out of the box
+2. **이메일 입력 | Enter Email:**
+   이메일 주소를 입력하고 "Request Token" 클릭
 
-**Regional Pollution Estimates:**
-- East Asia: High NO₂ (80-120), elevated CO (0.04-0.06)
-- South Asia: Very high NO₂ (120-170), high CO (0.05-0.08)
-- Europe: Moderate NO₂ (50-75), moderate CO (0.028-0.040)
-- North America: Lower NO₂ (40-65), lower CO (0.025-0.040)
+3. **이메일 확인 | Check Email:**
+   받은 이메일에서 API 토큰 복사
 
-### 3. OpenAQ - Ground Station Validation ⚠️ **API Key Required**
-
-**Status:** Requires configuration (API migrated to v3 on January 31, 2025)
-
-- **Source:** OpenAQ Platform - Community air quality data
-- **Parameter:** PM2.5 measurements from ground monitoring stations
-- **Coverage:** Global (varies by region)
-- **API Version:** v3 (v1 and v2 retired on Jan 31, 2025)
-- **Configuration:** **Required** - See setup instructions below
-
-## OpenAQ API Setup
-
-### Why Configure OpenAQ?
-
-OpenAQ provides **real-time PM2.5 measurements** from actual ground monitoring stations worldwide. This data is crucial for:
-- ✅ Cross-validating model predictions with real measurements
-- ✅ Providing ground truth data for accuracy assessment
-- ✅ Improving model confidence scores
-- ✅ Showing nearby stations and their actual readings
-
-### Station Coverage
-
-OpenAQ aggregates data from multiple sources globally:
-- **Coverage:** Varies by country and region
-- **Station Types:** Government monitoring stations, low-cost sensors, research networks
-- **Data Quality:** Varies by provider (check metadata for each station)
-- **Update Frequency:** Real-time to hourly updates (depending on source)
-
-**Well-covered regions:**
-- United States (EPA network)
-- Europe (EEA network)
-- India (CPCB network)
-- China (MEE network)
-- Many other countries with government monitoring programs
-
-### How to Get Your FREE OpenAQ API Key
-
-1. **Register for a free account:**
-   - Visit: https://explore.openaq.org/register
-   - Fill in your details
-   - Verify your email
-
-2. **Generate your API key:**
-   - Log in to https://explore.openaq.org
-   - Go to your account settings/dashboard
-   - Generate a new API key
-   - Copy your API key (you'll need it in the next step)
-
-3. **Configure the application:**
-   - Open the file: `js/config.js`
-   - Find the `openaq` section:
+4. **설정 파일에 추가 | Add to Config:**
    ```javascript
-   openaq: {
-     apiKey: null, // Replace null with your API key
-     enabled: false // Set to true after adding your API key
+   // js/config.js
+   waqi: {
+     token: 'your-token-here',  // ← 여기에 토큰 붙여넣기
+     enabled: true               // ← true로 변경
    }
    ```
-   - Update it to:
+
+#### API 장점 | Advantages
+- ✅ 가장 많은 관측소 (11,000+)
+- ✅ 간단한 토큰 발급 (이메일만 필요)
+- ✅ 빠른 응답 속도
+- ✅ 한국 포함 전 세계 커버리지
+
+---
+
+### 2️⃣ OpenWeather Air Pollution API - ⭐ 추천
+
+**Coverage:** 전 세계 좌표 기반 데이터 | Global coordinates-based
+**Data:** PM2.5, PM10, CO, NO, NO2, O3, SO2, NH3
+**Cost:** ✅ 무료 (월 1,000,000 호출) | FREE (1M calls/month)
+
+#### 무료 API 키 받기 | Get FREE API Key
+
+1. **회원가입 | Sign Up:**
+   👉 https://home.openweathermap.org/users/sign_up
+
+2. **계정 생성 | Create Account:**
+   이메일 인증 후 로그인
+
+3. **API 키 생성 | Generate Key:**
+   My API Keys → Create Key → 키 복사
+
+4. **설정 파일에 추가 | Add to Config:**
    ```javascript
-   openaq: {
-     apiKey: 'your-actual-api-key-here', // Your API key from OpenAQ
-     enabled: true // Enable OpenAQ integration
+   // js/config.js
+   openweather: {
+     apiKey: 'your-api-key-here',  // ← 여기에 API 키 붙여넣기
+     enabled: true                  // ← true로 변경
    }
    ```
-   - Save the file
 
-4. **Verify it's working:**
-   - Open the browser console (F12)
-   - Load camera.html
-   - Look for messages:
-     - ✅ `Satellite API initialized`
-     - ✅ `Found X stations, Y with PM2.5 data`
-   - If you see `OpenAQ API key not configured`, check your config.js file
+#### API 장점 | Advantages
+- ✅ 전 세계 어디서나 사용 가능 (좌표 기반)
+- ✅ 관측소가 없는 지역에서도 데이터 제공
+- ✅ 매우 높은 무료 한도 (100만 호출/월)
+- ✅ 다양한 오염물질 데이터
 
-### API Rate Limits
+---
 
-OpenAQ v3 API has the following rate limits:
-- Free tier: 100 requests per day
-- Registered users: Higher limits (check your account dashboard)
-- The application uses caching (30 minutes) to minimize API calls
+### 3️⃣ OpenAQ API v3 - 선택 사항
 
-### Troubleshooting
+**Coverage:** 지역별 차이 (미국, 유럽, 인도, 중국 양호)
+**Data:** PM2.5 (정부 공식 관측소)
+**Cost:** ✅ 무료 | FREE
 
-**Problem:** "OpenAQ API key not configured"
-- **Solution:** Make sure you set `enabled: true` in `js/config.js`
+#### 무료 API 키 받기 | Get FREE API Key
 
-**Problem:** "OpenAQ API key invalid or expired"
-- **Solution:** Generate a new API key from your OpenAQ account
+1. **회원가입 | Sign Up:**
+   👉 https://explore.openaq.org/register
 
-**Problem:** "No ground stations found within 25km"
-- **Solution:** This is normal for some regions. OpenAQ coverage varies globally. The model will still work using satellite and image data.
+2. **계정 생성 후 API 키 발급 | Generate Key:**
+   Account → API Keys → Create
 
-**Problem:** "OpenAQ API rate limit exceeded"
-- **Solution:** The application caches data for 30 minutes. Wait a bit before making new requests, or upgrade your OpenAQ account for higher limits.
+3. **설정 파일에 추가 | Add to Config:**
+   ```javascript
+   // js/config.js
+   openaq: {
+     apiKey: 'your-api-key-here',  // ← 여기에 API 키 붙여넣기
+     enabled: true                  // ← true로 변경
+   }
+   ```
 
-## Data Flow
+#### API 특징 | Features
+- ✅ 정부 공식 관측소 데이터
+- ⚠️ 한국은 커버리지 제한적
+- ⚠️ 2025년 1월 31일부터 v3만 사용 가능 (v1/v2 종료)
+
+---
+
+## 🔄 API 우선순위 | API Priority
+
+시스템은 다음 순서로 API를 시도합니다:
+
+1. **WAQI** (가장 많은 관측소)
+2. **OpenWeather** (전 세계 커버리지)
+3. **OpenAQ** (정부 공식 데이터)
+
+✅ **권장:** WAQI + OpenWeather 둘 다 설정하면 가장 좋습니다!
+✅ **Recommended:** Configure both WAQI + OpenWeather for best results!
+
+---
+
+## 📊 데이터 소스 비교 | Data Source Comparison
+
+| API | 관측소 수 | 전 세계 커버리지 | 한국 커버리지 | 무료 한도 |
+|-----|---------|---------------|------------|---------|
+| **WAQI** | 11,000+ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | 무제한 |
+| **OpenWeather** | 좌표 기반 | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | 1M/월 |
+| **OpenAQ** | 지역별 | ⭐⭐⭐ | ⭐⭐ | 100/일 |
+
+---
+
+## 🚀 빠른 시작 | Quick Start
+
+### 최소 설정 (1분 소요)
+
+1. **WAQI 토큰 받기** (가장 빠름)
+   - https://aqicn.org/data-platform/token
+   - 이메일만 입력하면 즉시 토큰 발급
+
+2. **config.js 편집**
+   ```javascript
+   waqi: {
+     token: 'your-actual-token',
+     enabled: true
+   }
+   ```
+
+3. **완료!** 브라우저에서 camera.html 열기
+
+### 권장 설정 (3분 소요)
+
+WAQI + OpenWeather 둘 다 설정:
+
+```javascript
+const API_CONFIG = {
+  waqi: {
+    token: 'your-waqi-token',
+    enabled: true
+  },
+  openweather: {
+    apiKey: 'your-openweather-key',
+    enabled: true
+  },
+  openaq: {
+    apiKey: null,  // 선택사항
+    enabled: false
+  }
+};
+```
+
+---
+
+## 🔍 작동 확인 | Verification
+
+### 브라우저 콘솔 확인 (F12)
+
+**API 설정 성공 시:**
+```
+✅ Satellite API initialized
+✅ Ground station APIs configured: WAQI, OpenWeather
+🌍 Fetching WAQI data for (37.5665, 126.9780)...
+✅ WAQI: Found station "Seoul", PM2.5: 45
+```
+
+**API 미설정 시:**
+```
+⚠️ No ground station API configured. System will use satellite + image data only.
+📝 RECOMMENDED: Configure at least ONE free API in js/config.js:
+   - WAQI (11,000+ stations): https://aqicn.org/data-platform/token
+   - OpenWeather (global): https://home.openweathermap.org/users/sign_up
+```
+
+---
+
+## 🛠️ 문제 해결 | Troubleshooting
+
+### "WAQI token invalid"
+- **문제:** 토큰이 잘못되었거나 만료됨
+- **해결:** 새 토큰을 https://aqicn.org/data-platform/token 에서 발급
+
+### "OpenWeather API key invalid"
+- **문제:** API 키가 잘못되었거나 활성화 대기 중
+- **해결:**
+  1. API 키 생성 후 몇 분 기다리기 (활성화 시간 필요)
+  2. My API Keys에서 키 재확인
+
+### "No ground station data available"
+- **문제:** 해당 위치에 사용 가능한 데이터 없음
+- **해결:**
+  - 정상입니다! 위성 + 이미지 데이터로 계속 작동
+  - 다른 API도 추가로 설정하면 커버리지 향상
+
+### 한국에서 데이터가 안 나올 때
+- **WAQI 사용:** 한국 전역 우수한 커버리지 ⭐⭐⭐⭐⭐
+- **OpenWeather 사용:** 좌표 기반으로 항상 사용 가능 ⭐⭐⭐⭐⭐
+- **OpenAQ:** 한국은 제한적 (권장하지 않음)
+
+---
+
+## 📈 데이터 흐름 | Data Flow
 
 ```
-User uploads image
+사용자 이미지 업로드
     ↓
-Location requested (GPS)
+GPS 위치 요청
     ↓
-Parallel data fetching:
-├── Image features (CNN) ─────────────────┐
-├── MODIS AOD (regional estimate) ────────┤
-├── Sentinel-5P (regional estimate) ──────┼─→ Late Fusion
-└── OpenAQ ground stations (real API) ────┘   (Weighted average)
+병렬 데이터 수집:
+├── 이미지 특징 (CNN) ──────────────────┐
+├── MODIS AOD (지역별 추정) ──────────────┤
+├── Sentinel-5P (지역별 추정) ────────────┼─→ Late Fusion
+└── 지상 관측소 (WAQI/OpenWeather/OpenAQ)─┘   (가중 평균)
     ↓
-PM2.5 prediction + Cross-validation
+PM2.5 예측 + 교차 검증
 ```
 
-## Fusion Weights
+### 융합 가중치 | Fusion Weights
 
-The Late Fusion architecture combines all data sources with the following weights:
+- **이미지 CNN:** 40%
+- **위성 데이터:** 35%
+- **지상 관측소:** 25%
 
-- **Image CNN:** 40% - Visual features from sky image
-- **Satellite Data:** 35% - MODIS AOD + Sentinel-5P atmospheric composition
-- **Ground Stations:** 25% - Real PM2.5 measurements from OpenAQ (if available)
+---
 
-If ground station data is unavailable, the weights are redistributed between image and satellite data.
+## 🆓 비용 | Costs
 
-## Data Quality & Validation
+### 모든 API 완전 무료! | All APIs are FREE!
 
-### Satellite Estimates
-The MODIS and Sentinel-5P data use **realistic regional estimates** based on:
-- Known pollution patterns from scientific literature
-- Geographic location (latitude/longitude)
-- Typical values for major regions (Asia, Europe, North America, etc.)
+- **WAQI:** 무제한 무료
+- **OpenWeather:** 월 100만 호출 무료
+- **OpenAQ:** 일 100 호출 무료
 
-These estimates are **not real-time satellite retrievals** but provide realistic baseline values that correlate with actual air quality conditions.
+**캐싱:** 30분 캐시로 API 호출 최소화
 
-### Ground Station Data
-When OpenAQ is configured, the system fetches **real, live PM2.5 measurements** from actual monitoring stations within 25km of your location. This provides:
-- Real-time validation data
-- Cross-reference for model predictions
-- Confidence scoring based on ground truth
+---
 
-### Cross-Validation
-When ground station data is available, the system:
-1. Compares model prediction with average ground station readings
-2. Calculates percentage difference
-3. Adjusts confidence score based on agreement
-4. Displays validation status in results
+## 🔐 보안 | Security
 
-## Migration Notes (v2 → v3)
+### API 키 보안 주의사항
 
-**Important:** OpenAQ API v2 was retired on **January 31, 2025**. This application has been updated to use v3.
+⚠️ **주의:** `js/config.js`는 클라이언트 측 파일입니다.
 
-**Key changes:**
-- ✅ API endpoint: `/v2/` → `/v3/`
-- ✅ Coordinates format: `lat,lon` → `lon,lat` (reversed!)
-- ✅ Parameter format: `parameter=pm25` → `parameters_id=2`
-- ✅ Response structure: Nested sensors array with latest measurements
-- ✅ **Authentication required:** All requests need `X-API-Key` header
+**GitHub에 업로드 시:**
+```bash
+# .gitignore에 추가
+echo "js/config.js" >> .gitignore
+```
 
-**For developers:**
-- Old v2 code will return HTTP 410 Gone
-- Update all OpenAQ integrations to v3
-- Add API key configuration
-- Update response parsing for new structure
+**또는 환경 변수 템플릿 사용:**
+```javascript
+// js/config.template.js (GitHub에 커밋)
+const API_CONFIG = {
+  waqi: { token: null, enabled: false },
+  openweather: { apiKey: null, enabled: false },
+  openaq: { apiKey: null, enabled: false }
+};
 
-## References
+// js/config.js (로컬만, .gitignore에 포함)
+// 실제 키 입력
+```
 
-- OpenAQ Documentation: https://docs.openaq.org
-- OpenAQ Explorer: https://explore.openaq.org
-- NASA MODIS: https://modis.gsfc.nasa.gov
-- ESA Sentinel-5P: https://sentinel.esa.int/web/sentinel/missions/sentinel-5p
-- Research papers: See `research.html` for full bibliography
+---
 
-## Support
+## 📚 참고 자료 | References
 
-For issues with:
-- **OpenAQ API:** Contact OpenAQ support or check their documentation
-- **This application:** Open an issue on GitHub
-- **Data accuracy:** Cross-reference with official monitoring networks in your region
+- **WAQI 문서:** https://aqicn.org/api/
+- **OpenWeather 문서:** https://openweathermap.org/api/air-pollution
+- **OpenAQ 문서:** https://docs.openaq.org
+- **프로젝트 GitHub:** https://github.com/joymin5655/Finedust_proj
+
+---
+
+## 💡 FAQ
+
+**Q: API 키 없이도 작동하나요?**
+A: 네! 위성 + 이미지 데이터로 작동합니다. 하지만 지상 관측소 데이터가 있으면 정확도가 높아집니다.
+
+**Q: 어떤 API를 선택해야 하나요?**
+A: WAQI (가장 많은 관측소) + OpenWeather (전 세계 커버리지) 조합을 추천합니다.
+
+**Q: 한국에서는 어떤 API가 좋나요?**
+A: WAQI가 한국 전역을 우수하게 커버합니다. OpenWeather도 좋습니다.
+
+**Q: 비용이 발생할 수 있나요?**
+A: 아니요! 모든 API가 무료입니다. 한도를 초과해도 비용은 없고 요청만 거부됩니다.
+
+**Q: 여러 API를 동시에 설정하면?**
+A: 시스템이 자동으로 가장 좋은 데이터를 선택합니다 (WAQI → OpenWeather → OpenAQ 순서).
+
+---
+
+## 🎉 설정 완료!
+
+API를 설정하셨다면 이제 **camera.html**에서 실시간 PM2.5 예측을 체험해보세요!
+
+**Configured your APIs? Now try real-time PM2.5 prediction at camera.html!**
+
+---
+
+### 📧 지원 | Support
+
+문제가 있으신가요? GitHub Issues에 문의하세요:
+https://github.com/joymin5655/Finedust_proj/issues

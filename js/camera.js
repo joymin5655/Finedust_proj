@@ -24,7 +24,7 @@ class CameraAI {
     this.setupEventListeners();
     await this.loadModel();
     await this.initSatelliteAPI();
-    this.requestLocation();
+    // Location will be requested only when analyzing images
   }
 
   /**
@@ -48,13 +48,19 @@ class CameraAI {
   }
 
   /**
-   * Request user's GPS location
+   * Request user's GPS location (Promise-based for analysis)
    */
-  requestLocation() {
-    if ('geolocation' in navigator) {
+  async requestLocationForAnalysis() {
+    return new Promise((resolve, reject) => {
+      if (!('geolocation' in navigator)) {
+        console.warn('📍 Geolocation not supported');
+        resolve(); // Continue without location
+        return;
+      }
+
       const statusElement = document.getElementById('location-status');
       if (statusElement) {
-        statusElement.innerHTML = '<span class="material-symbols-outlined" style="font-size: 16px;">location_searching</span> Requesting location...';
+        statusElement.innerHTML = '<span class="material-symbols-outlined" style="font-size: 16px;">location_searching</span> Requesting location for analysis...';
       }
 
       navigator.geolocation.getCurrentPosition(
@@ -70,13 +76,15 @@ class CameraAI {
             statusElement.innerHTML = `<span class="material-symbols-outlined" style="font-size: 16px;">location_on</span> Location: ${this.currentLocation.lat.toFixed(4)}, ${this.currentLocation.lon.toFixed(4)}`;
             statusElement.style.color = 'var(--color-primary)';
           }
+          resolve();
         },
         (error) => {
           console.warn('📍 Location access denied:', error.message);
           if (statusElement) {
-            statusElement.innerHTML = '<span class="material-symbols-outlined" style="font-size: 16px;">location_off</span> Location unavailable (limited validation)';
+            statusElement.innerHTML = '<span class="material-symbols-outlined" style="font-size: 16px;">location_off</span> Location unavailable (image-only analysis)';
             statusElement.style.color = 'var(--color-text-secondary)';
           }
+          resolve(); // Continue without location
         },
         {
           enableHighAccuracy: true,
@@ -84,7 +92,7 @@ class CameraAI {
           maximumAge: 0
         }
       );
-    }
+    });
   }
 
   setupEventListeners() {
@@ -202,6 +210,12 @@ class CameraAI {
 
     try {
       console.log('🔬 Starting multimodal analysis...');
+
+      // Request location only when needed for analysis
+      if (!this.currentLocation) {
+        console.log('📍 Requesting location for multimodal analysis...');
+        await this.requestLocationForAnalysis();
+      }
 
       // Step 1: Extract image features (CNN-based)
       const imageFeatures = await this.extractImageFeatures();

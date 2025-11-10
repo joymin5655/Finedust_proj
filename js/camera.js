@@ -442,7 +442,7 @@ class CameraAI {
   }
 
   /**
-   * Show satellite data modal
+   * Show satellite data modal with visual representation
    */
   showSatelliteDataModal() {
     if (!this.multimodalData) return;
@@ -454,31 +454,178 @@ class CameraAI {
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0, 0, 0, 0.85);
       z-index: 10000;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 2rem;
+      padding: 1rem;
+      backdrop-filter: blur(4px);
+      animation: fadeIn 0.2s ease-out;
     `;
 
     const content = document.createElement('div');
     content.style.cssText = `
       background: var(--color-bg-light);
-      padding: 2rem;
+      padding: 1.5rem;
       border-radius: 1rem;
-      max-width: 800px;
-      max-height: 80vh;
+      max-width: 900px;
+      width: 100%;
+      max-height: 85vh;
       overflow-y: auto;
       color: var(--color-text);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     `;
 
+    const data = this.multimodalData;
+    const location = data.location || {};
+    const sources = data.sources || {};
+
     content.innerHTML = `
-      <h2 style="margin-top: 0;">🛰️ Satellite & Ground Data</h2>
-      <pre style="background: var(--color-bg-secondary); padding: 1rem; border-radius: 0.5rem; overflow-x: auto; font-size: 0.875rem;">
-${JSON.stringify(this.multimodalData, null, 2)}
-      </pre>
-      <button onclick="this.closest('div[style*=fixed]').remove()" style="margin-top: 1rem;" class="btn btn-primary">Close</button>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h2 style="margin: 0; display: flex; align-items: center; gap: 0.5rem; font-size: 1.5rem;">
+          <span>🛰️</span> Multimodal Data Sources
+        </h2>
+        <button onclick="this.closest('div[style*=fixed]').remove()" style="background: none; border: none; color: var(--color-text-secondary); cursor: pointer; font-size: 1.5rem; padding: 0.25rem; line-height: 1;">
+          ✕
+        </button>
+      </div>
+
+      <!-- Location Info -->
+      <div style="background: linear-gradient(135deg, rgba(37, 226, 244, 0.1), rgba(37, 226, 244, 0.05)); padding: 1rem; border-radius: 0.75rem; margin-bottom: 1.5rem; border: 1px solid rgba(37, 226, 244, 0.2);">
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+          <span style="font-size: 1.25rem;">📍</span>
+          <strong style="color: var(--color-primary);">Location</strong>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.75rem; font-size: 0.875rem;">
+          <div>
+            <div style="color: var(--color-text-secondary);">Latitude</div>
+            <div style="font-weight: 600; margin-top: 0.25rem;">${location.lat?.toFixed(4) || 'N/A'}</div>
+          </div>
+          <div>
+            <div style="color: var(--color-text-secondary);">Longitude</div>
+            <div style="font-weight: 600; margin-top: 0.25rem;">${location.lon?.toFixed(4) || 'N/A'}</div>
+          </div>
+          <div>
+            <div style="color: var(--color-text-secondary);">Accuracy</div>
+            <div style="font-weight: 600; margin-top: 0.25rem;">${location.accuracy ? location.accuracy.toFixed(0) + 'm' : 'N/A'}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Data Sources Grid -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+
+        <!-- Image Features -->
+        <div style="background: var(--color-bg-secondary); padding: 1rem; border-radius: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1);">
+          <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+            <span style="font-size: 1.5rem;">📷</span>
+            <strong>Image CNN</strong>
+          </div>
+          <div style="font-size: 0.875rem; color: var(--color-text-secondary); margin-bottom: 0.75rem;">
+            Sky visibility, color, texture analysis
+          </div>
+          ${sources.image ? `
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+              <div style="display: flex; justify-content: space-between;">
+                <span>Sky Visibility</span>
+                <strong>${(sources.image.skyVisibility * 100).toFixed(0)}%</strong>
+              </div>
+              <div style="background: rgba(255,255,255,0.1); height: 6px; border-radius: 3px; overflow: hidden;">
+                <div style="background: var(--color-primary); height: 100%; width: ${sources.image.skyVisibility * 100}%; transition: width 0.3s;"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-top: 0.25rem;">
+                <span>Haze Level</span>
+                <strong>${(sources.image.hazeLevel * 100).toFixed(0)}%</strong>
+              </div>
+              <div style="background: rgba(255,255,255,0.1); height: 6px; border-radius: 3px; overflow: hidden;">
+                <div style="background: #f59e0b; height: 100%; width: ${sources.image.hazeLevel * 100}%; transition: width 0.3s;"></div>
+              </div>
+            </div>
+          ` : '<div style="color: var(--color-text-secondary);">No data available</div>'}
+        </div>
+
+        <!-- Satellite Data -->
+        <div style="background: var(--color-bg-secondary); padding: 1rem; border-radius: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1);">
+          <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+            <span style="font-size: 1.5rem;">🛰️</span>
+            <strong>Satellite Remote Sensing</strong>
+          </div>
+          ${sources.satellite ? `
+            <div style="font-size: 0.875rem; display: flex; flex-direction: column; gap: 0.5rem;">
+              ${sources.satellite.modis ? `
+                <div style="background: rgba(37, 226, 244, 0.1); padding: 0.5rem; border-radius: 0.5rem;">
+                  <div style="color: var(--color-primary); font-weight: 600; margin-bottom: 0.25rem;">NASA MODIS</div>
+                  <div style="color: var(--color-text-secondary); font-size: 0.75rem;">AOD: ${sources.satellite.modis.aod?.toFixed(3) || 'N/A'}</div>
+                </div>
+              ` : ''}
+              ${sources.satellite.sentinel ? `
+                <div style="background: rgba(37, 226, 244, 0.1); padding: 0.5rem; border-radius: 0.5rem;">
+                  <div style="color: var(--color-primary); font-weight: 600; margin-bottom: 0.25rem;">ESA Sentinel-5P</div>
+                  <div style="color: var(--color-text-secondary); font-size: 0.75rem;">
+                    NO₂: ${sources.satellite.sentinel.no2?.toFixed(2) || 'N/A'} μmol/m²<br>
+                    CO: ${sources.satellite.sentinel.co?.toFixed(2) || 'N/A'} mol/m²
+                  </div>
+                </div>
+              ` : ''}
+              ${!sources.satellite.modis && !sources.satellite.sentinel ? '<div style="color: var(--color-text-secondary);">Simulated data</div>' : ''}
+            </div>
+          ` : '<div style="color: var(--color-text-secondary);">No satellite data</div>'}
+        </div>
+
+        <!-- Ground Stations -->
+        <div style="background: var(--color-bg-secondary); padding: 1rem; border-radius: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1);">
+          <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+            <span style="font-size: 1.5rem;">📡</span>
+            <strong>Ground Stations</strong>
+          </div>
+          ${sources.ground ? `
+            <div style="font-size: 0.875rem;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span style="color: var(--color-text-secondary);">Stations Found</span>
+                <strong style="color: var(--color-primary);">${sources.ground.stationCount || 0}</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span style="color: var(--color-text-secondary);">Search Radius</span>
+                <strong>25 km</strong>
+              </div>
+              ${sources.ground.averagePM25 ? `
+                <div style="margin-top: 0.75rem; padding: 0.75rem; background: rgba(16, 185, 129, 0.1); border-radius: 0.5rem; border: 1px solid rgba(16, 185, 129, 0.3);">
+                  <div style="color: var(--color-text-secondary); font-size: 0.75rem; margin-bottom: 0.25rem;">Avg PM2.5</div>
+                  <div style="font-size: 1.5rem; font-weight: 700; color: #10b981;">${sources.ground.averagePM25.toFixed(1)} µg/m³</div>
+                </div>
+              ` : '<div style="color: var(--color-text-secondary); margin-top: 0.5rem;">No recent measurements</div>'}
+            </div>
+          ` : '<div style="color: var(--color-text-secondary);">No ground data available</div>'}
+        </div>
+      </div>
+
+      <!-- Fusion Weights -->
+      <div style="background: var(--color-bg-secondary); padding: 1rem; border-radius: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1);">
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+          <span style="font-size: 1.25rem;">🔀</span>
+          <strong>Late Fusion Weights</strong>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; font-size: 0.875rem;">
+          <div style="text-align: center;">
+            <div style="color: var(--color-text-secondary); margin-bottom: 0.5rem;">Image CNN</div>
+            <div style="font-size: 2rem; font-weight: 700; color: var(--color-primary);">40%</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="color: var(--color-text-secondary); margin-bottom: 0.5rem;">Satellite</div>
+            <div style="font-size: 2rem; font-weight: 700; color: var(--color-primary);">35%</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="color: var(--color-text-secondary); margin-bottom: 0.5rem;">Ground</div>
+            <div style="font-size: 2rem; font-weight: 700; color: var(--color-primary);">25%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Close Button -->
+      <button onclick="this.closest('div[style*=fixed]').remove()" style="width: 100%; margin-top: 1.5rem; padding: 0.75rem; background: var(--color-primary); color: #111; border: none; border-radius: 0.5rem; font-weight: 600; cursor: pointer; font-size: 1rem; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+        Close
+      </button>
     `;
 
     modal.appendChild(content);

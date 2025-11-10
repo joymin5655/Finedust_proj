@@ -1,18 +1,33 @@
 # 🌍 API 설정 가이드 | API Configuration Guide
 
-## 개요 | Overview
+## ✅ 중요: API 키 없이도 작동합니다! | Works Without API Keys!
 
-AirLens는 **완전 무료** 공식 공기질 API를 사용하여 실시간 PM2.5 데이터를 제공합니다.
-최소 1개의 API를 설정하시면 실제 지상 관측소 데이터를 활용할 수 있습니다.
+**AirLens는 설치 후 바로 작동합니다. API 키가 전혀 필요 없습니다!**
 
-AirLens uses **completely FREE** official air quality APIs to provide real-time PM2.5 data.
-Configure at least ONE API to access real ground station data.
+**AirLens works immediately after installation. NO API KEYS NEEDED AT ALL!**
+
+### 기본 데이터 소스 (토큰 불필요) | Default Data Source (No Token)
+
+🇪🇺 **EU Copernicus CAMS** (via Open-Meteo)
+- ✅ **NO TOKEN REQUIRED** - 바로 작동 | Works immediately
+- **Coverage:** 전 세계 | Worldwide
+- **Data:** PM2.5, PM10, NO₂, SO₂, O₃, CO, AOD, Dust
+- **Provider:** 유럽연합 공식 대기 모니터링 시스템 | European Union Official Atmospheric Monitoring
+- **Source:** ECMWF (European Centre for Medium-Range Weather Forecasts)
+
+모든 페이지(Globe, Camera AI, Research)가 이 데이터로 완벽하게 작동합니다.
+
+All pages (Globe, Camera AI, Research) work perfectly with this data.
 
 ---
 
-## 🎯 추천 API | Recommended APIs
+## 🎯 선택적 API (정확도 향상용) | Optional APIs (For Enhanced Accuracy)
 
-### 1️⃣ WAQI (World Air Quality Index) - ⭐ 최우선 추천
+아래 API들은 **선택 사항**입니다. 지상 관측소 데이터를 추가하여 정확도를 높이고 싶을 때만 설정하세요.
+
+The APIs below are **OPTIONAL**. Configure them only if you want to add ground station data for enhanced accuracy.
+
+### 1️⃣ WAQI (World Air Quality Index) - ⚙️ 선택 사항 | Optional
 
 **Coverage:** 전 세계 11,000+ 관측소 | 11,000+ stations worldwide
 **Data:** PM2.5, PM10, O3, NO2, SO2, CO (실시간)

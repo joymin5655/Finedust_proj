@@ -1,10 +1,29 @@
 <!DOCTYPE html>
-<html class="dark" lang="ko">
+<html class="dark" lang="en">
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>AirLens Policy Globe - 세계 대기질 정책 지구본</title>
-    <meta name="description" content="전 세계 대기질 정책과 규제를 인터랙티브 3D 지구본에서 탐색하세요"/>
+    <meta name="description" content="Explore real-time PM2.5 levels on an interactive 3D globe. 174+ cities with official EU Copernicus CAMS data. Visualize country policy impacts on air quality.">
+    <meta name="keywords" content="3D globe, air quality map, PM2.5 visualization, global pollution, Three.js, environmental data">
+    <meta name="author" content="AirLens Team">
+    <meta name="theme-color" content="#25e2f4">
+    <title>Interactive Globe - Real-Time PM2.5 Visualization | AirLens</title>
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://joymin5655.github.io/Finedust_proj/globe.html">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://joymin5655.github.io/Finedust_proj/globe.html">
+    <meta property="og:title" content="Interactive 3D Globe - PM2.5 Visualization | AirLens">
+    <meta property="og:description" content="Explore air quality worldwide on an interactive 3D globe. Real-time PM2.5 data from 174+ cities with country policy impacts.">
+    <!-- <meta property="og:image" content="https://joymin5655.github.io/Finedust_proj/assets/images/globe-og.png"> -->
+
+    <!-- Resource Hints -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="https://api.open-meteo.com">
+    <link rel="dns-prefetch" href="https://aqicn.org">
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -28,6 +47,9 @@
     <!-- Main Styles -->
     <link rel="stylesheet" href="css/main.css"/>
     <link rel="stylesheet" href="css/settings.css"/>
+    <link rel="stylesheet" href="css/responsive.css"/>
+    <link rel="stylesheet" href="css/performance.css"/>
+    <link rel="stylesheet" href="css/accessibility.css"/>
 
     <script>
         tailwind.config = {
@@ -761,6 +783,7 @@
     </script>
     <script src="js/theme-toggle.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/message-utils.js"></script>
     <script src="js/air-quality-api.js"></script>
     <script type="module" src="js/globe.js"></script>
 

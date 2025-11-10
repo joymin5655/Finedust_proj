@@ -284,21 +284,86 @@ class CameraAI {
 
   /**
    * Extract features from uploaded image
-   * In production: Use CNN (ResNet50, EfficientNet, etc.)
+   * ✅ REAL IMAGE ANALYSIS - No fake data!
+   * Analyzes actual pixel data: brightness, color, haze, contrast
    */
   async extractImageFeatures() {
-    // Simulate CNN feature extraction
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    console.log('🖼️ Extracting REAL features from image pixels...');
 
-    // In production, process image through CNN:
-    // const tensor = tf.browser.fromPixels(this.previewImage);
-    // const features = await this.model.predict(tensor);
+    // Create canvas to analyze image pixels
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const img = this.previewImage;
+
+    // Resize for faster processing
+    const maxSize = 200;
+    const scale = Math.min(maxSize / img.width, maxSize / img.height);
+    canvas.width = img.width * scale;
+    canvas.height = img.height * scale;
+
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const pixels = imageData.data;
+
+    // Analyze actual pixel data
+    let totalR = 0, totalG = 0, totalB = 0;
+    let totalBrightness = 0;
+    let totalSaturation = 0;
+    let totalContrast = 0;
+    const pixelCount = pixels.length / 4;
+
+    for (let i = 0; i < pixels.length; i += 4) {
+      const r = pixels[i];
+      const g = pixels[i + 1];
+      const b = pixels[i + 2];
+
+      totalR += r;
+      totalG += g;
+      totalB += b;
+
+      // Calculate brightness (perceived luminance)
+      const brightness = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+      totalBrightness += brightness;
+
+      // Calculate saturation
+      const max = Math.max(r, g, b) / 255;
+      const min = Math.min(r, g, b) / 255;
+      const saturation = max === 0 ? 0 : (max - min) / max;
+      totalSaturation += saturation;
+
+      // For contrast (simplified)
+      totalContrast += (max - min);
+    }
+
+    // Calculate averages
+    const avgR = totalR / pixelCount / 255;
+    const avgG = totalG / pixelCount / 255;
+    const avgB = totalB / pixelCount / 255;
+    const avgBrightness = totalBrightness / pixelCount;
+    const avgSaturation = totalSaturation / pixelCount;
+    const avgContrast = totalContrast / pixelCount / 255;
+
+    // Haze level: Low contrast + high brightness = more haze
+    const hazeLevel = avgBrightness * (1 - avgContrast);
+
+    // Sky visibility: Blue-ish color + high brightness = clear sky
+    const blueness = avgB - (avgR + avgG) / 2;
+    const skyVisibility = Math.max(0, Math.min(1, blueness * avgBrightness * 2));
+
+    console.log('✅ Real image features extracted:', {
+      brightness: avgBrightness.toFixed(3),
+      hazeLevel: hazeLevel.toFixed(3),
+      skyVisibility: skyVisibility.toFixed(3),
+      contrast: avgContrast.toFixed(3)
+    });
 
     return {
-      skyVisibility: Math.random(),
-      colorFeatures: [Math.random(), Math.random(), Math.random()],
-      textureComplexity: Math.random(),
-      hazeLevel: Math.random()
+      skyVisibility: skyVisibility,
+      colorFeatures: [avgR, avgG, avgB],
+      textureComplexity: avgContrast,
+      hazeLevel: hazeLevel,
+      brightness: avgBrightness,
+      saturation: avgSaturation
     };
   }
 
@@ -319,21 +384,33 @@ class CameraAI {
       ground: 0.25      // Ground stations contribute 25%
     };
 
-    // Base prediction from image features
-    let imagePM25 = 10 + (imageFeatures.hazeLevel * 60);
+    // Base prediction from image features (enhanced with real pixel analysis)
+    // Haze level is a strong indicator of PM2.5
+    // High haze + low visibility = high PM2.5
+    const hazeScore = imageFeatures.hazeLevel * 80; // 0-80 range
+    const visibilityPenalty = (1 - imageFeatures.skyVisibility) * 30; // 0-30 range
+    const brightnessAdjustment = (1 - imageFeatures.brightness) * 20; // 0-20 range
+    let imagePM25 = hazeScore + visibilityPenalty + brightnessAdjustment;
 
-    // Adjust with satellite data if available
+    // Adjust with satellite data if available (EU Copernicus CAMS)
     let satellitePM25 = imagePM25;
-    if (satelliteData?.sources?.satellite?.modis) {
-      // In production: use actual AOD -> PM2.5 conversion
-      // PM2.5 ≈ AOD × 30 (simplified linear relationship)
-      satellitePM25 = imagePM25 * (0.8 + Math.random() * 0.4);
+    if (satelliteData?.sources?.satellite?.cams?.data?.pm25) {
+      // Use REAL PM2.5 from EU Copernicus CAMS
+      satellitePM25 = satelliteData.sources.satellite.cams.data.pm25;
+      console.log('✅ Using real satellite PM2.5:', satellitePM25);
+    } else if (satelliteData?.sources?.satellite?.cams?.data?.aod) {
+      // Convert AOD to PM2.5 using empirical relationship
+      // PM2.5 ≈ AOD × 25-35 (varies by region and aerosol type)
+      const aod = satelliteData.sources.satellite.cams.data.aod;
+      satellitePM25 = aod * 30;
+      console.log('✅ Calculated PM2.5 from real AOD:', aod, '→', satellitePM25);
     }
 
     // Adjust with ground station data if available
     let groundPM25 = imagePM25;
     if (satelliteData?.sources?.ground?.averagePM25) {
       groundPM25 = satelliteData.sources.ground.averagePM25;
+      console.log('✅ Using real ground station PM2.5:', groundPM25);
     }
 
     // Weighted fusion
@@ -343,7 +420,7 @@ class CameraAI {
       fusedPM25 = (weights.image * imagePM25) +
                   (weights.satellite * satellitePM25) +
                   (weights.ground * groundPM25);
-    } else if (satelliteData) {
+    } else if (satelliteData?.sources?.satellite) {
       // Image + Satellite only
       const normalizedWeights = {
         image: weights.image / (weights.image + weights.satellite),
@@ -357,13 +434,19 @@ class CameraAI {
     }
 
     // Calculate confidence based on available data sources
+    // Higher confidence with more data sources and clearer images
     let confidence;
+    const imageQuality = (imageFeatures.textureComplexity + imageFeatures.skyVisibility) / 2;
+
     if (satelliteData?.sources?.ground?.averagePM25) {
-      confidence = 0.85 + (Math.random() * 0.10); // 85-95% with ground validation
-    } else if (satelliteData) {
-      confidence = 0.70 + (Math.random() * 0.15); // 70-85% with satellite
+      // All three modalities: highest confidence
+      confidence = 0.85 + (imageQuality * 0.10); // 85-95%
+    } else if (satelliteData?.sources?.satellite) {
+      // Image + Satellite: medium-high confidence
+      confidence = 0.70 + (imageQuality * 0.15); // 70-85%
     } else {
-      confidence = 0.60 + (Math.random() * 0.15); // 60-75% image only
+      // Image only: lower confidence
+      confidence = 0.55 + (imageQuality * 0.20); // 55-75%
     }
 
     return {

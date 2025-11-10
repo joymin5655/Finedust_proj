@@ -135,6 +135,44 @@
 </div>
 <div class="flex flex-col md:flex-row-reverse gap-6 items-start">
 <div class="flex-1">
+<h3 class="font-bold text-lg text-slate-800 dark:text-slate-100 mb-2">Multimodal Data Fusion Architecture</h3>
+<p class="text-slate-700 dark:text-slate-300 text-base mb-3">Building on recent research in multimodal air quality prediction (Rowley & Karakuş 2023, AirFusion 2025), we implemented a Late Fusion architecture that combines three data modalities: image features extracted via CNN (40% weight), satellite remote sensing data (35% weight), and ground station measurements (25% weight). This approach leverages NASA MODIS for Aerosol Optical Depth (AOD), ESA Sentinel-5P for atmospheric composition (NO₂, CO, aerosol index), and OpenAQ for real-time ground truth within a 25km radius.</p>
+<div class="bg-slate-200/50 dark:bg-slate-800/50 p-3 rounded-lg text-sm">
+<strong class="text-slate-900 dark:text-white">Key Features:</strong>
+<ul class="list-disc list-inside mt-2 text-slate-700 dark:text-slate-300 space-y-1">
+<li>Multi-source data integration for enhanced accuracy</li>
+<li>Weighted fusion based on data reliability and availability</li>
+<li>Cross-validation with ground stations when available</li>
+<li>Global coverage via satellite data APIs</li>
+</ul>
+</div>
+</div>
+<div class="w-full md:w-1/2 rounded-lg bg-slate-200 dark:bg-slate-900/50 p-4 flex items-center justify-center">
+<div class="text-center space-y-3 p-4">
+<div class="flex items-center justify-center gap-2 text-sm">
+<span class="text-2xl">📷</span>
+<span class="text-slate-700 dark:text-slate-300">Image CNN</span>
+<span class="font-bold text-primary">40%</span>
+</div>
+<div class="flex items-center justify-center gap-2 text-sm">
+<span class="text-2xl">🛰️</span>
+<span class="text-slate-700 dark:text-slate-300">Satellite Data</span>
+<span class="font-bold text-primary">35%</span>
+</div>
+<div class="flex items-center justify-center gap-2 text-sm">
+<span class="text-2xl">📡</span>
+<span class="text-slate-700 dark:text-slate-300">Ground Stations</span>
+<span class="font-bold text-primary">25%</span>
+</div>
+<div class="mt-4 pt-4 border-t border-slate-300 dark:border-slate-700">
+<div class="text-xs text-slate-600 dark:text-slate-400">Late Fusion Architecture</div>
+<div class="text-lg font-bold text-slate-900 dark:text-white mt-1">Multimodal PM2.5 Prediction</div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex flex-col md:flex-row gap-6 items-start">
+<div class="flex-1">
 <h3 class="font-bold text-lg text-slate-800 dark:text-slate-100 mb-2">Triple Verification Pipeline</h3>
 <p class="text-slate-700 dark:text-slate-300 text-base">To ensure the reliability of our predictions, we developed a triple verification pipeline. Data is first cross-validated against ground-truth sensor readings. Second, it is compared with outputs from established atmospheric models like CAMS. Finally, historical predictions are checked against satellite-derived aerosol optical depth (AOD) measurements, creating a robust, multi-faceted validation process that builds confidence in the model's output.</p>
 </div>
@@ -165,7 +203,7 @@
 </section>
 <section class="scroll-mt-24" id="datasources">
 <div class="p-6 rounded-xl border border-white/10 bg-slate-100 dark:bg-white/5">
-<h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Data Sources & Publications</h2>
+<h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Data Sources & APIs</h2>
 <div class="px-4 flex flex-col gap-6">
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
 <div class="flex items-center gap-4 p-4 bg-slate-200 dark:bg-slate-900/50 rounded-lg">
@@ -176,9 +214,16 @@
 </div>
 </div>
 <div class="flex items-center gap-4 p-4 bg-slate-200 dark:bg-slate-900/50 rounded-lg">
+<div class="w-10 h-10 bg-orange-500 rounded-full flex-shrink-0"></div>
+<div>
+<h4 class="font-bold text-slate-800 dark:text-slate-100">NASA MODIS</h4>
+<a class="text-sm text-primary hover:underline" href="https://modis.gsfc.nasa.gov" target="_blank">modis.gsfc.nasa.gov</a>
+</div>
+</div>
+<div class="flex items-center gap-4 p-4 bg-slate-200 dark:bg-slate-900/50 rounded-lg">
 <div class="w-10 h-10 bg-blue-500 rounded-full flex-shrink-0"></div>
 <div>
-<h4 class="font-bold text-slate-800 dark:text-slate-100">Sentinel-5P</h4>
+<h4 class="font-bold text-slate-800 dark:text-slate-100">ESA Sentinel-5P</h4>
 <a class="text-sm text-primary hover:underline" href="https://sentinel.esa.int" target="_blank">sentinel.esa.int</a>
 </div>
 </div>
@@ -210,6 +255,61 @@
 <a class="text-sm text-primary hover:underline" href="https://www.airkorea.or.kr" target="_blank">airkorea.or.kr</a>
 </div>
 </div>
+</div>
+</div>
+</div>
+</section>
+<section class="scroll-mt-24" id="research-papers">
+<div class="p-6 rounded-xl border border-white/10 bg-slate-100 dark:bg-white/5">
+<h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Research Foundations</h2>
+<div class="px-4 flex flex-col gap-4">
+<p class="text-slate-700 dark:text-slate-300 text-base mb-2">Our multimodal PM2.5 prediction system is built upon cutting-edge research in air quality monitoring and machine learning:</p>
+<div class="overflow-x-auto">
+<table class="w-full text-sm text-left">
+<thead class="text-xs uppercase bg-slate-200 dark:bg-slate-900/50">
+<tr>
+<th class="px-4 py-3 text-slate-900 dark:text-white">Research</th>
+<th class="px-4 py-3 text-slate-900 dark:text-white">Contribution</th>
+<th class="px-4 py-3 text-slate-900 dark:text-white">Applied To</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-200 dark:divide-slate-700">
+<tr class="bg-slate-100 dark:bg-slate-800/30">
+<td class="px-4 py-3 font-medium text-slate-900 dark:text-white">Rowley & Karakuş (2023)</td>
+<td class="px-4 py-3 text-slate-700 dark:text-slate-300">Multimodal fusion (satellite + ground sensors)</td>
+<td class="px-4 py-3 text-slate-700 dark:text-slate-300">Data integration architecture</td>
+</tr>
+<tr class="bg-slate-100 dark:bg-slate-800/30">
+<td class="px-4 py-3 font-medium text-slate-900 dark:text-white">AirFusion (2025)</td>
+<td class="px-4 py-3 text-slate-700 dark:text-slate-300">Late Fusion architecture for air quality</td>
+<td class="px-4 py-3 text-slate-700 dark:text-slate-300">Weighted fusion methodology</td>
+</tr>
+<tr class="bg-slate-100 dark:bg-slate-800/30">
+<td class="px-4 py-3 font-medium text-slate-900 dark:text-white">Park et al. (2019)</td>
+<td class="px-4 py-3 text-slate-700 dark:text-slate-300">AOD to PM2.5 conversion models</td>
+<td class="px-4 py-3 text-slate-700 dark:text-slate-300">Satellite data interpretation</td>
+</tr>
+<tr class="bg-slate-100 dark:bg-slate-800/30">
+<td class="px-4 py-3 font-medium text-slate-900 dark:text-white">Li et al. (2022)</td>
+<td class="px-4 py-3 text-slate-700 dark:text-slate-300">Multi-source data integration techniques</td>
+<td class="px-4 py-3 text-slate-700 dark:text-slate-300">Cross-validation framework</td>
+</tr>
+<tr class="bg-slate-100 dark:bg-slate-800/30">
+<td class="px-4 py-3 font-medium text-slate-900 dark:text-white">Hameed et al. (2023)</td>
+<td class="px-4 py-3 text-slate-700 dark:text-slate-300">Optimal weighting for fusion models</td>
+<td class="px-4 py-3 text-slate-700 dark:text-slate-300">Fusion weight optimization</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="mt-4 p-4 bg-slate-200/50 dark:bg-slate-800/50 rounded-lg">
+<h3 class="font-bold text-slate-900 dark:text-white mb-2">Key Innovations</h3>
+<ul class="list-disc list-inside text-slate-700 dark:text-slate-300 space-y-1">
+<li><strong>Real-time satellite integration:</strong> Live AOD and atmospheric composition data from MODIS and Sentinel-5P</li>
+<li><strong>Adaptive weighting:</strong> Confidence scores adjust based on data availability (ground stations > satellite > image-only)</li>
+<li><strong>Cross-validation transparency:</strong> Users can see prediction errors when ground truth is available</li>
+<li><strong>Browser-based processing:</strong> All analysis runs client-side using TensorFlow.js for privacy and speed</li>
+</ul>
 </div>
 </div>
 </div>

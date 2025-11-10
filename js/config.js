@@ -1,10 +1,16 @@
 /**
  * API Configuration
  *
- * This application uses FREE official air quality APIs to provide real-time ground station data.
- * All APIs are completely FREE - just register to get your token/key.
+ * ✅ ALL DATA FROM OFFICIAL INTERNATIONAL AGENCIES ONLY
+ * This application uses ONLY data from verified international organizations:
  *
- * RECOMMENDED: Configure at least ONE of the APIs below for the best experience.
+ * 🇪🇺 EU Copernicus CAMS - European Union official atmospheric monitoring (NO API KEY NEEDED)
+ * 🌍 WAQI - World Air Quality Index (11,000+ stations)
+ * ☁️ OpenWeather - Global meteorological data
+ * 🏛️ OpenAQ - Government official monitoring stations
+ *
+ * All APIs are completely FREE - just register to get your token/key.
+ * RECOMMENDED: Configure at least ONE of the APIs below for ground station data.
  */
 
 const API_CONFIG = {

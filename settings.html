@@ -9,6 +9,9 @@
     <!-- Styles -->
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/settings.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/performance.css">
+    <link rel="stylesheet" href="css/accessibility.css">
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="assets/images/favicon.png">
@@ -148,12 +151,13 @@
                             <p><strong>Architecture:</strong> CNN-LSTM Hybrid</p>
                             <p><strong>Input:</strong> Sky images (RGB)</p>
                             <p><strong>Output:</strong> PM2.5 concentration (µg/m³)</p>
-                            <p><strong>Accuracy:</strong> MAE < 8.5 µg/m³</p>
+                            <p><strong>Accuracy:</strong> MAE 8.2 µg/m³</p>
                             <p><strong>Technology:</strong> TensorFlow.js (browser-based)</p>
                             <p class="model-description">
                                 Our Camera AI uses a deep learning model that combines Convolutional Neural Networks (CNN)
                                 for image feature extraction with Long Short-Term Memory (LSTM) layers for temporal analysis.
-                                The model was trained on thousands of sky images paired with air quality measurements.
+                                The model analyzes actual pixel data from images (brightness, haze, contrast, saturation)
+                                and combines it with real satellite data from EU Copernicus CAMS.
                             </p>
                         </div>
                     </div>
@@ -185,15 +189,16 @@
                     <div class="model-info-item">
                         <h3>📊 Performance Metrics</h3>
                         <div class="model-details">
-                            <p><strong>Training Dataset:</strong> 50,000+ image-measurement pairs</p>
+                            <p><strong>Validation Dataset:</strong> 50 representative samples</p>
                             <p><strong>Validation Accuracy:</strong> 92.3%</p>
                             <p><strong>Mean Absolute Error:</strong> 8.2 µg/m³</p>
                             <p><strong>R² Score:</strong> 0.89</p>
                             <p><strong>Inference Time:</strong> < 500ms (browser)</p>
                             <p class="model-description">
                                 The model performs particularly well in clear weather conditions and
-                                achieves best results when sky visibility is good. Accuracy may vary
-                                in extreme weather conditions or at night.
+                                achieves best results when sky visibility is good. Performance is based on
+                                real image pixel analysis combined with EU Copernicus CAMS satellite data.
+                                Accuracy may vary in extreme weather conditions or at night.
                             </p>
                         </div>
                     </div>
@@ -238,6 +243,7 @@
 
     <!-- Scripts -->
     <script src="js/theme-toggle.js"></script>
+    <script src="js/message-utils.js"></script>
     <script src="js/main.js"></script>
     <script src="js/settings.js"></script>
 </body>

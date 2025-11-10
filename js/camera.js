@@ -31,17 +31,44 @@ class CameraAI {
    * Initialize Satellite Data API
    */
   async initSatelliteAPI() {
+    // Get API keys/tokens from config
+    const config = {
+      waqiToken: window.API_CONFIG?.waqi?.enabled ? window.API_CONFIG.waqi.token : null,
+      openweatherKey: window.API_CONFIG?.openweather?.enabled ? window.API_CONFIG.openweather.apiKey : null,
+      openaqKey: window.API_CONFIG?.openaq?.enabled ? window.API_CONFIG.openaq.apiKey : null
+    };
+
+    const hasAnyAPI = config.waqiToken || config.openweatherKey || config.openaqKey;
+
     if (window.SatelliteDataAPI) {
-      this.satelliteAPI = new window.SatelliteDataAPI();
+      this.satelliteAPI = new window.SatelliteDataAPI(config);
       console.log('✅ Satellite API initialized');
+
+      if (!hasAnyAPI) {
+        console.warn('⚠️ No ground station API configured. System will use satellite + image data only.');
+        console.warn('📝 RECOMMENDED: Configure at least ONE free API in js/config.js:');
+        console.warn('   - WAQI (11,000+ stations): https://aqicn.org/data-platform/token');
+        console.warn('   - OpenWeather (global): https://home.openweathermap.org/users/sign_up');
+      } else {
+        const configured = [];
+        if (config.waqiToken) configured.push('WAQI');
+        if (config.openweatherKey) configured.push('OpenWeather');
+        if (config.openaqKey) configured.push('OpenAQ');
+        console.log(`✅ Ground station APIs configured: ${configured.join(', ')}`);
+      }
     } else {
       console.warn('⚠️ Satellite API not available - loading...');
       // Load satellite-api.js if not already loaded
       const script = document.createElement('script');
       script.src = 'js/satellite-api.js';
       script.onload = () => {
-        this.satelliteAPI = new window.SatelliteDataAPI();
+        this.satelliteAPI = new window.SatelliteDataAPI(config);
         console.log('✅ Satellite API loaded and initialized');
+
+        if (!hasAnyAPI) {
+          console.warn('⚠️ No ground station API configured. System will use satellite + image data only.');
+          console.warn('📝 RECOMMENDED: Configure at least ONE free API in js/config.js');
+        }
       };
       document.head.appendChild(script);
     }
@@ -228,7 +255,8 @@ class CameraAI {
         satelliteData = await this.satelliteAPI.getMultimodalData(
           imageFeatures,
           this.currentLocation.lat,
-          this.currentLocation.lon
+          this.currentLocation.lon,
+          this.currentLocation.accuracy
         );
         this.multimodalData = satelliteData;
         console.log('✅ Satellite data fetched');

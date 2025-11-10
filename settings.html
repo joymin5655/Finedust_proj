@@ -148,7 +148,6 @@
                             <p><strong>Architecture:</strong> CNN-LSTM Hybrid</p>
                             <p><strong>Input:</strong> Sky images (RGB)</p>
                             <p><strong>Output:</strong> PM2.5 concentration (µg/m³)</p>
-                            <p><strong>Accuracy:</strong> MAE < 8.5 µg/m³</p>
                             <p><strong>Technology:</strong> TensorFlow.js (browser-based)</p>
                             <p class="model-description">
                                 Our Camera AI uses a deep learning model that combines Convolutional Neural Networks (CNN)
@@ -168,10 +167,10 @@
                             <p style="margin-left: 20px; color: #25e2f4;">→ Provides: PM2.5, PM10, NO₂, SO₂, O₃, CO, AOD, Dust</p>
                             <p style="margin-left: 20px; color: #25e2f4;">→ Coverage: Worldwide</p>
                             <p style="margin-top: 12px;"><strong>Optional Enhancement APIs:</strong></p>
-                            <p style="margin-left: 20px;">🌍 WAQI: 11,000+ ground stations (optional token)</p>
+                            <p style="margin-left: 20px;">🌍 WAQI: Global ground stations (optional token)</p>
                             <p style="margin-left: 20px;">☁️ OpenWeather: Global coordinates (optional key)</p>
                             <p style="margin-left: 20px;">🏛️ OpenAQ: Government stations (optional key)</p>
-                            <p><strong>Update Frequency:</strong> Real-time</p>
+                            <p><strong>Update Frequency:</strong> Historical data</p>
                             <p class="model-description">
                                 ✅ <strong>The application works perfectly without any API keys!</strong><br>
                                 All pages use EU Copernicus CAMS data via Open-Meteo (free, no registration needed).
@@ -185,15 +184,12 @@
                     <div class="model-info-item">
                         <h3>📊 Performance Metrics</h3>
                         <div class="model-details">
-                            <p><strong>Training Dataset:</strong> 50,000+ image-measurement pairs</p>
-                            <p><strong>Validation Accuracy:</strong> 92.3%</p>
-                            <p><strong>Mean Absolute Error:</strong> 8.2 µg/m³</p>
-                            <p><strong>R² Score:</strong> 0.89</p>
                             <p><strong>Inference Time:</strong> < 500ms (browser)</p>
                             <p class="model-description">
                                 The model performs particularly well in clear weather conditions and
                                 achieves best results when sky visibility is good. Accuracy may vary
-                                in extreme weather conditions or at night.
+                                in extreme weather conditions or at night. This is an experimental
+                                AI model for educational purposes.
                             </p>
                         </div>
                     </div>

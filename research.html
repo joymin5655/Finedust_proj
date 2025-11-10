@@ -102,7 +102,7 @@
 <div class="flex flex-col gap-6 text-center">
 <div class="flex flex-col gap-2">
 <h1 class="text-slate-900 dark:text-white text-4xl font-black leading-tight tracking-[-0.033em] sm:text-5xl">AirLens Research & Methodology</h1>
-<p class="text-slate-600 dark:text-slate-300 text-base font-normal leading-normal max-w-3xl mx-auto">A deep dive into the technical foundations of the AirLens project, detailing our innovative CNN-LSTM architecture for real-time air quality prediction, triple-verification methodology, and data fusion techniques.</p>
+<p class="text-slate-600 dark:text-slate-300 text-base font-normal leading-normal max-w-3xl mx-auto">A deep dive into the technical foundations of the AirLens project, detailing our innovative CNN-LSTM architecture for air quality analysis, triple-verification methodology, and data fusion techniques using historical data.</p>
 </div>
 <div class="flex flex-wrap gap-3 justify-center">
 <button onclick="window.location.href='https://github.com/joymin5655/Finedust_proj'" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 sm:h-12 sm:px-5 bg-primary text-slate-900 text-sm font-bold leading-normal tracking-[0.015em] sm:text-base hover:opacity-90 transition-opacity">
@@ -239,8 +239,8 @@
 <div class="w-12 h-12 bg-green-500 rounded-full flex-shrink-0 flex items-center justify-center text-2xl">🌍</div>
 <div>
 <h4 class="font-bold text-slate-900 dark:text-white">WAQI (World Air Quality Index)</h4>
-<p class="text-xs text-slate-700 dark:text-slate-300 mb-1">11,000+ ground monitoring stations worldwide</p>
-<p class="text-xs text-slate-600 dark:text-slate-400 mb-2">Real-time PM2.5, PM10, O₃, NO₂, SO₂, CO</p>
+<p class="text-xs text-slate-700 dark:text-slate-300 mb-1">Global ground monitoring stations</p>
+<p class="text-xs text-slate-600 dark:text-slate-400 mb-2">Historical PM2.5, PM10, O₃, NO₂, SO₂, CO</p>
 <a class="text-sm text-primary hover:underline font-medium" href="https://aqicn.org" target="_blank">aqicn.org</a>
 <div class="mt-2 text-xs bg-white dark:bg-slate-800/50 p-2 rounded">
 <strong>Coverage:</strong> Global<br>
@@ -339,7 +339,7 @@ EU 공식 대기 모니터링 | European Union Official Atmospheric Monitoring<b
 <strong class="text-slate-900 dark:text-white text-sm">WAQI</strong>
 </div>
 <div class="text-xs text-slate-600 dark:text-slate-400">
-11,000+ 관측소 | stations<br>
+Global monitoring stations<br>
 ✅ 이메일만으로 즉시 발급<br>
 <a href="https://aqicn.org/data-platform/token" target="_blank" class="text-primary hover:underline font-medium">Get Free Token →</a>
 </div>
@@ -440,7 +440,7 @@ EU 공식 대기 모니터링 | European Union Official Atmospheric Monitoring<b
 <div class="mt-4 p-4 bg-slate-200/50 dark:bg-slate-800/50 rounded-lg">
 <h3 class="font-bold text-slate-900 dark:text-white mb-2">Key Innovations</h3>
 <ul class="list-disc list-inside text-slate-700 dark:text-slate-300 space-y-1">
-<li><strong>Real-time satellite integration:</strong> Live AOD and atmospheric composition data from MODIS and Sentinel-5P</li>
+<li><strong>Satellite data integration:</strong> AOD and atmospheric composition data from MODIS and Sentinel-5P</li>
 <li><strong>Adaptive weighting:</strong> Confidence scores adjust based on data availability (ground stations > satellite > image-only)</li>
 <li><strong>Cross-validation transparency:</strong> Users can see prediction errors when ground truth is available</li>
 <li><strong>Browser-based processing:</strong> All analysis runs client-side using TensorFlow.js for privacy and speed</li>

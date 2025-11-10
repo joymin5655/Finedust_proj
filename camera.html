@@ -147,19 +147,21 @@
 </div>
 <div class="p-4">
 <h2 class="text-gray-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] mb-4">3. Analysis Results</h2>
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+<!-- Results Container - Single Column Layout -->
 <div class="rounded-xl border border-gray-200 dark:border-white/10 p-6 bg-background-light dark:bg-black/20">
+
 <!-- Empty State -->
-<div id="empty-state" class="flex flex-col justify-center items-center text-center h-full min-h-[200px]">
+<div id="empty-state" class="flex flex-col justify-center items-center text-center h-full min-h-[250px]">
 <div class="text-6xl mb-4">🤖</div>
-<p class="text-gray-900 dark:text-white font-medium">Upload an image to get started</p>
+<p class="text-gray-900 dark:text-white font-medium text-lg">Upload an image to get started</p>
 <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
-                                        Our AI will analyze sky conditions and predict PM2.5 levels
-                                    </p>
+Our AI will analyze sky conditions and predict PM2.5 levels using multimodal fusion
+</p>
 </div>
 
 <!-- Loading State -->
-<div id="loading-state" class="flex flex-col justify-center items-center text-center h-full min-h-[200px]" style="display: none;">
+<div id="loading-state" class="flex flex-col justify-center items-center text-center h-full min-h-[250px]" style="display: none;">
 <div class="flower-loader mb-4">
 <svg id="pegtopone" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 100 100">
 <defs>
@@ -220,66 +222,97 @@
 </div>
 
 <!-- Results State -->
-<div id="results-state" class="flex flex-col justify-center items-center text-center" style="display: none;">
-<p class="text-sm text-gray-600 dark:text-gray-400 mb-2 font-medium">ESTIMATED PM2.5</p>
+<div id="results-state" style="display: none;">
+<!-- PM2.5 Result Card -->
+<div class="flex flex-col items-center text-center mb-6 p-6 bg-gray-100 dark:bg-gray-800/30 rounded-xl">
+<p class="text-sm text-gray-600 dark:text-gray-400 mb-2 font-medium uppercase tracking-wider">Estimated PM2.5</p>
 <div class="flex items-center gap-3">
-<p id="pm25-result" class="text-6xl font-black text-primary tracking-tighter">--.-</p>
-<p class="text-gray-600 dark:text-gray-400 text-lg self-end pb-1">µg/m³</p>
+<p id="pm25-result" class="text-7xl font-black text-primary tracking-tighter">--.-</p>
+<p class="text-gray-600 dark:text-gray-400 text-xl self-end pb-2">µg/m³</p>
 </div>
 <div id="air-quality" class="mt-4">
-<div class="quality-badge px-4 py-2 text-sm font-bold rounded-full bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400">--</div>
+<div class="quality-badge px-6 py-2 text-base font-bold rounded-full bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400">--</div>
 </div>
-<p id="timestamp" class="text-sm mt-4 text-gray-500 dark:text-gray-500">--</p>
-
-<!-- Multimodal Info -->
-<div id="multimodal-info"></div>
-
-<!-- Validation Info -->
-<div id="validation-info"></div>
-
-<div class="flex gap-3 mt-6">
-    <button id="analyze-again" class="flex-1 flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 text-sm font-bold leading-normal tracking-[0.015em] bg-primary text-[#111718] hover:opacity-90 transition-opacity">
-        <span class="truncate">Analyze Another Image</span>
-    </button>
-    <button id="view-satellite-btn" style="display: none;" class="flex-1 flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 text-sm font-bold leading-normal tracking-[0.015em] bg-gray-700/50 dark:bg-white/10 text-gray-900 dark:text-white hover:bg-gray-700/40 dark:hover:bg-white/20 transition-colors">
-        <span class="truncate">🛰️ View Satellite Data</span>
-    </button>
-</div>
-</div>
+<p id="timestamp" class="text-sm mt-3 text-gray-500 dark:text-gray-500">--</p>
 </div>
 
-<div class="rounded-xl border border-gray-200 dark:border-white/10 p-6 bg-background-light dark:bg-black/20">
+<!-- Grid Layout for Confidence and Data Sources -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<!-- Confidence Card -->
+<div class="bg-gray-100 dark:bg-gray-800/30 rounded-xl p-5">
 <div class="flex items-center gap-2 mb-4">
-<h3 class="text-lg font-bold text-gray-900 dark:text-white">Confidence & Model Info</h3>
+<span class="material-symbols-outlined text-primary">analytics</span>
+<h3 class="text-lg font-bold text-gray-900 dark:text-white">Model Confidence</h3>
 </div>
-<div class="space-y-4">
-<div class="flex flex-col gap-2">
+<div class="flex flex-col gap-3">
 <div class="flex justify-between items-center text-sm">
-<span class="font-medium text-gray-600 dark:text-gray-400">Camera Analysis</span>
-<span id="camera-percent" class="font-bold text-primary">--%</span>
+<span class="font-medium text-gray-600 dark:text-gray-400">Analysis Accuracy</span>
+<span id="camera-percent" class="font-bold text-primary text-lg">--%</span>
 </div>
 <div class="h-3 w-full bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
 <div id="camera-confidence" class="h-3 rounded-full bg-primary transition-all duration-500" style="width: 0%;"></div>
 </div>
+<p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+CNN-LSTM architecture analyzing sky conditions with TensorFlow.js
+</p>
 </div>
-<div class="flex flex-col gap-2 pt-4 border-t border-gray-200 dark:border-white/10">
-<div class="flex justify-between items-center text-sm">
-<span class="font-medium text-gray-600 dark:text-gray-400">CNN-LSTM Architecture</span>
 </div>
-<p class="text-xs text-gray-500 dark:text-gray-400">Uses computer vision to analyze sky conditions and predict PM2.5 levels</p>
+
+<!-- Data Sources Card -->
+<div class="bg-gray-100 dark:bg-gray-800/30 rounded-xl p-5">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary">memory</span>
+<h3 class="text-lg font-bold text-gray-900 dark:text-white">Data Sources</h3>
 </div>
-<div class="flex flex-col gap-2">
-<div class="flex justify-between items-center text-sm">
-<span class="font-medium text-gray-600 dark:text-gray-400">Browser-Based Processing</span>
+<div id="multimodal-info" class="text-left"></div>
 </div>
-<p class="text-xs text-gray-500 dark:text-gray-400">All processing happens locally with TensorFlow.js - no server uploads</p>
 </div>
-<div class="flex flex-col gap-2">
-<div class="flex justify-between items-center text-sm">
-<span class="font-medium text-gray-600 dark:text-gray-400">Model Accuracy</span>
+
+<!-- Validation Info (Full Width) -->
+<div id="validation-info" class="mb-6"></div>
+
+<!-- Action Buttons -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<button id="analyze-again" class="flex items-center justify-center gap-2 overflow-hidden rounded-lg h-12 px-6 text-base font-bold leading-normal tracking-[0.015em] bg-primary text-[#111718] hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined">refresh</span>
+<span class="truncate">Analyze Another Image</span>
+</button>
+<button id="view-satellite-btn" style="display: none;" class="flex items-center justify-center gap-2 overflow-hidden rounded-lg h-12 px-6 text-base font-bold leading-normal tracking-[0.015em] bg-gradient-to-r from-blue-500 to-cyan-500 text-white hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined">satellite_alt</span>
+<span class="truncate">View Satellite Data</span>
+</button>
 </div>
-<p class="text-xs text-gray-500 dark:text-gray-400">MAE < 8.5 µg/m³ on validation dataset</p>
 </div>
+
+</div>
+
+<!-- Model Information Card -->
+<div class="mt-6 rounded-xl border border-gray-200 dark:border-white/10 p-6 bg-gray-50 dark:bg-gray-900/30">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary">info</span>
+<h3 class="text-lg font-bold text-gray-900 dark:text-white">About This Model</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<div class="flex flex-col">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary text-base">psychology</span>
+<span class="font-semibold text-gray-900 dark:text-white text-sm">Architecture</span>
+</div>
+<p class="text-xs text-gray-600 dark:text-gray-400">Hybrid CNN-LSTM neural network for spatial and temporal feature extraction</p>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary text-base">speed</span>
+<span class="font-semibold text-gray-900 dark:text-white text-sm">Processing</span>
+</div>
+<p class="text-xs text-gray-600 dark:text-gray-400">Real-time browser-based analysis with TensorFlow.js - no server uploads required</p>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary text-base">verified</span>
+<span class="font-semibold text-gray-900 dark:text-white text-sm">Accuracy</span>
+</div>
+<p class="text-xs text-gray-600 dark:text-gray-400">MAE < 8.5 µg/m³ validated against ground truth measurements</p>
 </div>
 </div>
 </div>
@@ -309,19 +342,38 @@
   100% { transform: rotate(360deg); }
 }
 
-.quality-good {
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Quality badge colors */
+.quality-badge.quality-good {
   background-color: #10b981 !important;
   color: white !important;
 }
 
-.quality-moderate {
+.quality-badge.quality-moderate {
   background-color: #f59e0b !important;
   color: white !important;
 }
 
-.quality-unhealthy {
+.quality-badge.quality-unhealthy {
   background-color: #ef4444 !important;
   color: white !important;
+}
+
+/* Text colors for quality indicators */
+.quality-good {
+  color: #10b981 !important;
+}
+
+.quality-moderate {
+  color: #f59e0b !important;
+}
+
+.quality-unhealthy {
+  color: #ef4444 !important;
 }
 </style>
 

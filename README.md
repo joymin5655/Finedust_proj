@@ -1,11 +1,14 @@
 # 🌍 AirLens - See the Air
 
-> **Interactive global air quality visualization powered by real data**  
-> Real-time PM2.5 monitoring • Historical trends • Advanced 3D visualization
+> **Interactive global air quality visualization powered by real data**
+> Real-time PM2.5 monitoring • AI-powered predictions • Advanced 3D visualization
 
 [![Deploy](https://github.com/joymin5655/Finedust_proj/actions/workflows/deploy.yml/badge.svg)](https://github.com/joymin5655/Finedust_proj/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Data Source](https://img.shields.io/badge/Data-Our_World_In_Data-blue)](https://ourworldindata.org)
+[![Data Source](https://img.shields.io/badge/Data-EU_Copernicus_CAMS-blue)](https://atmosphere.copernicus.eu/)
+[![No Token](https://img.shields.io/badge/API_Keys-NOT_REQUIRED-brightgreen)](https://github.com/joymin5655/Finedust_proj)
+
+**✅ NO API KEYS NEEDED - Works immediately!**
 
 **Live Demo:** [https://joymin5655.github.io/Finedust_proj](https://joymin5655.github.io/Finedust_proj)
 
@@ -13,15 +16,16 @@
 
 ## 🎯 What is AirLens?
 
-AirLens transforms complex air quality data into an intuitive, beautiful 3D visualization. Explore global PM2.5 levels from 1990 to present day, understand pollution trends, and discover how air quality varies across different regions - all on an interactive Earth globe.
+AirLens transforms complex air quality data into an intuitive, beautiful 3D visualization. Using **official EU Copernicus CAMS data** (no API keys required), explore global PM2.5 levels in real-time, predict air quality from sky photos using AI, and discover pollution patterns across the globe - all on an interactive Earth globe.
 
 ### 🌟 Key Highlights
 
-- **🌍 Enhanced 3D Globe**: Earth.Nullschool-inspired design with smooth interactions
-- **📊 Real Data**: Powered by Our World In Data - trusted, verified sources
-- **📈 Historical Timeline**: Track PM2.5 trends from 1990 to 2021
-- **🎨 Beautiful Visualization**: Atmospheric particles, color-coded markers, real-time rendering
-- **🔍 Deep Analysis**: Click any country to see detailed air quality information
+- **✅ NO TOKEN REQUIRED**: Works immediately - no API keys, no registration needed!
+- **🇪🇺 Official EU Data**: Real-time data from EU Copernicus CAMS (ECMWF)
+- **🌍 3D Globe Visualization**: 50+ major cities with live PM2.5 data
+- **📸 Camera AI**: Upload sky photos to predict PM2.5 using multimodal AI
+- **🎨 Beautiful Interface**: Atmospheric particles, color-coded markers, smooth animations
+- **🔍 Real-time Analysis**: Satellite + ground station data fusion
 - **📱 Fully Responsive**: Works seamlessly on desktop, tablet, and mobile
 
 ---

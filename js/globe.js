@@ -78,6 +78,11 @@ class PolicyGlobe {
     // Air Quality API for real-time data
     this.airQualityAPI = typeof AirQualityAPI !== 'undefined' ? new AirQualityAPI() : null;
 
+    // User location tracking
+    this.userLocation = null;
+    this.userLocationMarker = null;
+    this.highlightedMarker = null;
+
     // Animation
     this.clock = new THREE.Clock();
     this.time = 0;
@@ -110,6 +115,9 @@ class PolicyGlobe {
 
       this.setupEventListeners();
       this.setupToggleSwitches();
+
+      // Get user location and highlight their country
+      this.getUserLocationAndHighlight();
 
       console.log('Policy Globe setup complete');
 
@@ -729,10 +737,14 @@ class PolicyGlobe {
       const y = radius * Math.cos(phi);
 
       const markerGeometry = new THREE.SphereGeometry(0.02, 16, 16);
-      const markerMaterial = new THREE.MeshBasicMaterial({
+      const markerMaterial = new THREE.MeshStandardMaterial({
         color: this.getAQIColor(aqi),
         transparent: true,
-        opacity: 0.9
+        opacity: 0.9,
+        emissive: new THREE.Color(0x000000),
+        emissiveIntensity: 0,
+        metalness: 0.3,
+        roughness: 0.4
       });
 
       const marker = new THREE.Mesh(markerGeometry, markerMaterial);
@@ -767,6 +779,97 @@ class PolicyGlobe {
     if (aqi <= 200) return new THREE.Color(0xff0000);
     if (aqi <= 300) return new THREE.Color(0x8f3f97);
     return new THREE.Color(0x7e1946);
+  }
+
+  /**
+   * Get user's current GPS location and highlight their country on the globe
+   */
+  async getUserLocationAndHighlight() {
+    if (!('geolocation' in navigator)) {
+      console.log('📍 Geolocation not supported');
+      return;
+    }
+
+    try {
+      const position = await new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: false,
+          timeout: 10000,
+          maximumAge: 600000 // Cache for 10 minutes
+        });
+      });
+
+      this.userLocation = {
+        lat: position.coords.latitude,
+        lon: position.coords.longitude
+      };
+
+      console.log('📍 User location:', this.userLocation);
+
+      // Find and highlight nearest city/country
+      this.highlightUserLocation();
+    } catch (error) {
+      console.log('📍 Location permission denied or unavailable:', error.message);
+    }
+  }
+
+  /**
+   * Calculate distance between two coordinates (Haversine formula)
+   */
+  calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Radius of Earth in km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+  }
+
+  /**
+   * Find nearest city and highlight it on the globe
+   */
+  highlightUserLocation() {
+    if (!this.userLocation || !this.pm25Data) return;
+
+    let nearestCity = null;
+    let minDistance = Infinity;
+
+    // Find nearest city marker
+    this.pm25Data.forEach((data, city) => {
+      const distance = this.calculateDistance(
+        this.userLocation.lat,
+        this.userLocation.lon,
+        data.lat,
+        data.lon
+      );
+
+      if (distance < minDistance) {
+        minDistance = distance;
+        nearestCity = { city, data, distance };
+      }
+    });
+
+    if (nearestCity && nearestCity.distance < 500) { // Within 500km
+      console.log(`📍 Nearest city: ${nearestCity.city} (${nearestCity.distance.toFixed(0)}km away)`);
+
+      // Find the marker in the scene and mark it as highlighted
+      if (this.pm25Markers) {
+        this.pm25Markers.children.forEach((marker) => {
+          if (marker.userData && marker.userData.city === nearestCity.city) {
+            marker.userData.isUserLocation = true;
+            this.highlightedMarker = marker;
+
+            // Make it more visible
+            if (marker.material) {
+              marker.material.emissive = new THREE.Color(0x25e2f4);
+              marker.material.emissiveIntensity = 0.8;
+            }
+          }
+        });
+      }
+    }
   }
 
   loadCountryPolicies() {
@@ -2439,7 +2542,18 @@ class PolicyGlobe {
 
     if (this.pm25Markers && this.showPM25) {
       this.pm25Markers.children.forEach((child, index) => {
-        if (index % 2 === 0) {
+        // User location marker gets special pulsing animation
+        if (child.userData && child.userData.isUserLocation) {
+          const specialPulse = Math.sin(this.time * 0.004) * 0.4 + 1.2; // Faster, larger pulse
+          child.scale.setScalar(specialPulse);
+
+          // Update emissive intensity for glow effect
+          if (child.material && child.material.emissive) {
+            child.material.emissiveIntensity = Math.sin(this.time * 0.003) * 0.4 + 0.6;
+          }
+        }
+        // Normal pulse for rings (every other child)
+        else if (index % 2 === 0) {
           const pulse = Math.sin(this.time * 0.002 + index) * 0.15 + 1;
           child.scale.setScalar(pulse);
         }

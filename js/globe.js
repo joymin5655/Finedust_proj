@@ -599,25 +599,15 @@ class PolicyGlobe {
   }
 
   /**
-   * Load REAL PM2.5 data from WAQI (World Air Quality Index) API
-   * Uses official government monitoring stations worldwide
-   * NO MORE FAKE DATA - All values from actual measurements!
+   * Load REAL PM2.5 data from Open-Meteo (EU Copernicus CAMS)
+   * ✅ NO TOKEN REQUIRED - Works immediately!
+   * Uses official EU atmospheric monitoring data
    */
   async loadPM25Data() {
-    console.log('🌍 Loading REAL PM2.5 data from WAQI (World Air Quality Index) API...');
+    console.log('🌍 Loading REAL PM2.5 data from Open-Meteo (EU Copernicus CAMS)...');
+    console.log('✅ NO TOKEN REQUIRED - Using free official EU data!');
 
-    // Get WAQI token from config
-    const waqiToken = window.API_CONFIG?.waqi?.enabled ? window.API_CONFIG.waqi.token : null;
-
-    if (!waqiToken) {
-      console.warn('⚠️ WAQI token not configured. Globe will show empty markers.');
-      console.warn('📝 Configure WAQI token in js/config.js to load real PM2.5 data for 100+ cities');
-      console.warn('🔗 Get FREE token at: https://aqicn.org/data-platform/token');
-      this.pm25Data = new Map();
-      return;
-    }
-
-    // Major cities worldwide - coordinates only, data fetched from WAQI
+    // Major cities worldwide - coordinates only, data fetched from Open-Meteo
     const cities = [
       // East Asia
       { name: 'Seoul', lat: 37.5665, lon: 126.9780, country: 'South Korea' },
@@ -686,16 +676,23 @@ class PolicyGlobe {
       { name: 'Tel Aviv', lat: 32.0853, lon: 34.7818, country: 'Israel' }
     ];
 
-    console.log(`📍 Fetching REAL data for ${cities.length} major cities...`);
+    console.log(`📍 Fetching REAL data for ${cities.length} major cities from EU Copernicus...`);
 
     this.pm25Data = new Map();
     let successCount = 0;
     let failCount = 0;
 
-    // Fetch data for each city from WAQI API
+    // Fetch data for each city from Open-Meteo (EU Copernicus CAMS)
     for (const city of cities) {
       try {
-        const url = `https://api.waqi.info/feed/geo:${city.lat};${city.lon}/?token=${waqiToken}`;
+        // Open-Meteo Air Quality API (NO TOKEN REQUIRED)
+        const params = new URLSearchParams({
+          latitude: city.lat,
+          longitude: city.lon,
+          current: 'pm2_5,pm10,us_aqi',
+          timezone: 'auto'
+        });
+        const url = `https://air-quality-api.open-meteo.com/v1/air-quality?${params}`;
         const response = await fetch(url);
 
         if (!response.ok) {
@@ -706,17 +703,10 @@ class PolicyGlobe {
 
         const data = await response.json();
 
-        if (data.status === 'ok' && data.data) {
-          const station = data.data;
-
-          // Extract PM2.5 value
-          let pm25 = null;
-          if (station.iaqi && station.iaqi.pm25) {
-            pm25 = station.iaqi.pm25.v;
-          }
-
-          // Use overall AQI
-          const aqi = station.aqi || null;
+        if (data.current) {
+          const current = data.current;
+          const pm25 = current.pm2_5 || null;
+          const aqi = current.us_aqi || null;
 
           if (pm25 !== null || aqi !== null) {
             this.pm25Data.set(city.name, {
@@ -725,8 +715,9 @@ class PolicyGlobe {
               pm25: pm25,
               aqi: aqi,
               country: city.country,
-              stationName: station.city?.name || city.name,
-              lastUpdate: station.time?.iso || new Date().toISOString()
+              stationName: city.name,
+              source: 'EU Copernicus CAMS',
+              lastUpdate: new Date().toISOString()
             });
             successCount++;
           } else {
@@ -736,8 +727,8 @@ class PolicyGlobe {
           failCount++;
         }
 
-        // Add small delay to avoid rate limiting
-        await new Promise(resolve => setTimeout(resolve, 100));
+        // Add small delay to be respectful to the free API
+        await new Promise(resolve => setTimeout(resolve, 50));
 
       } catch (error) {
         console.error(`❌ Error fetching data for ${city.name}:`, error.message);
@@ -746,7 +737,8 @@ class PolicyGlobe {
     }
 
     console.log(`✅ Loaded REAL PM2.5 data: ${successCount} cities succeeded, ${failCount} failed`);
-    console.log(`🌍 Showing official WAQI data from ${this.pm25Data.size} monitoring stations worldwide`);
+    console.log(`🇪🇺 Showing official EU Copernicus CAMS data from ${this.pm25Data.size} locations worldwide`);
+    console.log('✅ NO TOKEN REQUIRED - All data is FREE and PUBLIC!');
   }
 
   createPM25Markers() {

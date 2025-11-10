@@ -259,26 +259,69 @@
 
 <!-- API Configuration Note -->
 <div class="mt-4 px-4">
-<div class="p-4 bg-blue-100 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+<div class="p-4 bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
 <div class="flex items-start gap-3">
-<span class="text-2xl">ℹ️</span>
+<span class="text-3xl">🌍</span>
 <div class="flex-1">
-<h4 class="font-bold text-slate-900 dark:text-white mb-2">API Configuration Required</h4>
-<p class="text-sm text-slate-700 dark:text-slate-300 mb-2">
-<strong>OpenAQ v3 API</strong> requires a free API key to access real-time ground station data. Without configuration, the system will use satellite and image data only.
+<h4 class="font-bold text-slate-900 dark:text-white mb-2">실시간 지상 관측소 데이터 | Real-Time Ground Station Data</h4>
+<p class="text-sm text-slate-700 dark:text-slate-300 mb-3">
+<strong>완전 무료 공식 API</strong>를 사용하여 전 세계 실시간 PM2.5 데이터를 가져옵니다. 최소 1개의 API를 설정하시면 정확도가 향상됩니다.
+<br><strong>Completely FREE official APIs</strong> provide real-time PM2.5 data worldwide. Configure at least ONE API for improved accuracy.
 </p>
-<div class="text-sm space-y-1">
-<p class="text-slate-700 dark:text-slate-300">
-<strong>To enable ground station validation:</strong>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+<div class="bg-white dark:bg-slate-800/50 p-3 rounded-lg border border-blue-200 dark:border-blue-700">
+<div class="flex items-center gap-2 mb-1">
+<span class="text-xl">⭐</span>
+<strong class="text-slate-900 dark:text-white text-sm">WAQI</strong>
+</div>
+<div class="text-xs text-slate-600 dark:text-slate-400">
+11,000+ 관측소 | stations<br>
+✅ 이메일만으로 즉시 발급<br>
+<a href="https://aqicn.org/data-platform/token" target="_blank" class="text-primary hover:underline font-medium">Get Free Token →</a>
+</div>
+</div>
+
+<div class="bg-white dark:bg-slate-800/50 p-3 rounded-lg border border-blue-200 dark:border-blue-700">
+<div class="flex items-center gap-2 mb-1">
+<span class="text-xl">⭐</span>
+<strong class="text-slate-900 dark:text-white text-sm">OpenWeather</strong>
+</div>
+<div class="text-xs text-slate-600 dark:text-slate-400">
+전 세계 좌표 기반 | Global<br>
+✅ 월 100만 호출 무료<br>
+<a href="https://home.openweathermap.org/users/sign_up" target="_blank" class="text-primary hover:underline font-medium">Get Free API Key →</a>
+</div>
+</div>
+
+<div class="bg-white dark:bg-slate-800/50 p-3 rounded-lg border border-blue-200 dark:border-blue-700">
+<div class="flex items-center gap-2 mb-1">
+<span class="text-xl">📡</span>
+<strong class="text-slate-900 dark:text-white text-sm">OpenAQ v3</strong>
+</div>
+<div class="text-xs text-slate-600 dark:text-slate-400">
+정부 공식 관측소 | Official<br>
+⚠️ 지역별 차이 있음<br>
+<a href="https://explore.openaq.org/register" target="_blank" class="text-primary hover:underline font-medium">Get Free API Key →</a>
+</div>
+</div>
+</div>
+
+<div class="text-sm space-y-1 bg-white dark:bg-slate-800/30 p-3 rounded-lg">
+<p class="text-slate-700 dark:text-slate-300 font-medium">
+<strong>빠른 시작 | Quick Start:</strong>
 </p>
-<ol class="list-decimal list-inside text-slate-600 dark:text-slate-400 space-y-1 ml-2">
-<li>Get a free API key at <a href="https://explore.openaq.org/register" target="_blank" class="text-primary hover:underline">explore.openaq.org/register</a></li>
-<li>Configure it in <code class="px-1 py-0.5 bg-slate-200 dark:bg-slate-800 rounded text-xs">js/config.js</code></li>
-<li>See <a href="docs/API_SETUP.md" target="_blank" class="text-primary hover:underline">API_SETUP.md</a> for detailed instructions</li>
+<ol class="list-decimal list-inside text-slate-600 dark:text-slate-400 space-y-1 ml-2 text-xs">
+<li>위 링크에서 무료 토큰/키 받기 (이메일만 필요) | Get free token/key (email only)</li>
+<li><code class="px-1 py-0.5 bg-slate-200 dark:bg-slate-700 rounded text-xs">js/config.js</code> 파일 수정 | Edit config file</li>
+<li><code class="px-1 py-0.5 bg-slate-200 dark:bg-slate-700 rounded text-xs">enabled: true</code>로 활성화 | Enable it</li>
+<li>자세한 설명: <a href="docs/API_SETUP.md" target="_blank" class="text-primary hover:underline font-medium">API_SETUP.md</a></li>
 </ol>
 </div>
-<div class="mt-3 text-xs text-slate-600 dark:text-slate-400">
-<strong>Note:</strong> OpenAQ API v1/v2 were retired on January 31, 2025. The system now uses v3 which requires authentication.
+
+<div class="mt-3 text-xs text-slate-600 dark:text-slate-400 bg-amber-50 dark:bg-amber-900/20 p-2 rounded">
+<strong>💡 권장:</strong> WAQI + OpenWeather 둘 다 설정하면 전 세계 어디서나 데이터 이용 가능!<br>
+<strong>Recommended:</strong> Configure both WAQI + OpenWeather for global coverage!
 </div>
 </div>
 </div>

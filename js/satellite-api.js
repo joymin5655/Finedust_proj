@@ -5,16 +5,22 @@
  */
 
 class SatelliteDataAPI {
-  constructor(openAQApiKey = null) {
+  constructor(config = {}) {
     // NASA GIBS (Global Imagery Browse Services) - Free, no API key required
     this.nasaGIBSBaseURL = 'https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi';
 
     // Sentinel Hub - Requires API key (user should provide)
     this.sentinelHubBaseURL = 'https://services.sentinel-hub.com/ogc/wms';
 
-    // OpenAQ v3 API - Requires API key (migrated from v2 on Jan 31, 2025)
+    // Ground Station APIs (all free with registration)
+    this.waqiToken = config.waqiToken || null;
+    this.openweatherKey = config.openweatherKey || null;
+    this.openAQApiKey = config.openaqKey || null;
+
+    // API Base URLs
+    this.waqiBaseURL = 'https://api.waqi.info';
+    this.openweatherBaseURL = 'https://api.openweathermap.org/data/2.5';
     this.openAQBaseURL = 'https://api.openaq.org/v3';
-    this.openAQApiKey = openAQApiKey;
 
     this.cache = new Map();
     this.cacheTimeout = 30 * 60 * 1000; // 30 minutes
@@ -163,6 +169,181 @@ class SatelliteDataAPI {
   }
 
   /**
+   * Get ground station data from WAQI (World Air Quality Index)
+   * Coverage: 11,000+ stations worldwide
+   * @param {number} lat - Latitude
+   * @param {number} lon - Longitude
+   * @returns {Promise<Object>} WAQI station data
+   */
+  async getWAQIData(lat, lon) {
+    const cacheKey = `waqi_${lat}_${lon}`;
+    const cached = this.getCachedData(cacheKey);
+    if (cached) return cached;
+
+    if (!this.waqiToken) {
+      console.warn('⚠️ WAQI token not configured.');
+      return null;
+    }
+
+    try {
+      // WAQI geo-location API: /feed/geo:{lat};{lng}/?token={token}
+      const url = `${this.waqiBaseURL}/feed/geo:${lat};${lon}/?token=${this.waqiToken}`;
+
+      console.log(`🌍 Fetching WAQI data for (${lat}, ${lon})...`);
+
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          console.error('❌ WAQI token invalid');
+        }
+        throw new Error(`WAQI API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.status === 'ok' && data.data) {
+        const station = data.data;
+
+        // Extract PM2.5 value (can be in iaqi.pm25.v or direct aqi)
+        let pm25 = null;
+        if (station.iaqi && station.iaqi.pm25) {
+          pm25 = station.iaqi.pm25.v;
+        } else if (station.aqi) {
+          // If no PM2.5 specific, use overall AQI as estimate
+          pm25 = station.aqi;
+        }
+
+        const result = {
+          source: 'WAQI (World Air Quality Index)',
+          location: {
+            lat: station.city?.geo?.[0] || lat,
+            lon: station.city?.geo?.[1] || lon
+          },
+          stationCount: 1,
+          nearestStations: [{
+            name: station.city?.name || 'Unknown Station',
+            distance: 0, // WAQI returns nearest station
+            coordinates: {
+              latitude: station.city?.geo?.[0] || lat,
+              longitude: station.city?.geo?.[1] || lon
+            },
+            pm25: pm25,
+            aqi: station.aqi,
+            lastUpdated: station.time?.iso || new Date().toISOString(),
+            city: station.city?.name || 'Unknown',
+            country: station.city?.country || 'Unknown',
+            provider: 'WAQI',
+            // Additional pollutants if available
+            pollutants: {
+              pm10: station.iaqi?.pm10?.v || null,
+              o3: station.iaqi?.o3?.v || null,
+              no2: station.iaqi?.no2?.v || null,
+              so2: station.iaqi?.so2?.v || null,
+              co: station.iaqi?.co?.v || null
+            }
+          }],
+          averagePM25: pm25,
+          apiVersion: 'WAQI'
+        };
+
+        console.log(`✅ WAQI: Found station "${result.nearestStations[0].name}", PM2.5: ${pm25}`);
+        this.setCachedData(cacheKey, result);
+        return result;
+      }
+
+      console.log(`ℹ️ No WAQI station data available for (${lat}, ${lon})`);
+      return null;
+
+    } catch (error) {
+      console.error('❌ Failed to fetch WAQI data:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Get air pollution data from OpenWeather API
+   * Coverage: Global coordinates-based data
+   * @param {number} lat - Latitude
+   * @param {number} lon - Longitude
+   * @returns {Promise<Object>} OpenWeather pollution data
+   */
+  async getOpenWeatherData(lat, lon) {
+    const cacheKey = `openweather_${lat}_${lon}`;
+    const cached = this.getCachedData(cacheKey);
+    if (cached) return cached;
+
+    if (!this.openweatherKey) {
+      console.warn('⚠️ OpenWeather API key not configured.');
+      return null;
+    }
+
+    try {
+      // OpenWeather Air Pollution API
+      const url = `${this.openweatherBaseURL}/air_pollution?lat=${lat}&lon=${lon}&appid=${this.openweatherKey}`;
+
+      console.log(`☁️ Fetching OpenWeather pollution data for (${lat}, ${lon})...`);
+
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          console.error('❌ OpenWeather API key invalid');
+        } else if (response.status === 429) {
+          console.error('❌ OpenWeather API rate limit exceeded');
+        }
+        throw new Error(`OpenWeather API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.list && data.list.length > 0) {
+        const current = data.list[0];
+        const components = current.components;
+
+        const result = {
+          source: 'OpenWeather Air Pollution API',
+          location: { lat, lon },
+          stationCount: 1,
+          nearestStations: [{
+            name: 'OpenWeather Grid Point',
+            distance: 0,
+            coordinates: { latitude: lat, longitude: lon },
+            pm25: components.pm2_5 || null,
+            aqi: current.main?.aqi || null,
+            lastUpdated: new Date(current.dt * 1000).toISOString(),
+            city: 'Coordinates-based',
+            country: 'Global',
+            provider: 'OpenWeather',
+            pollutants: {
+              pm10: components.pm10 || null,
+              o3: components.o3 || null,
+              no2: components.no2 || null,
+              so2: components.so2 || null,
+              co: components.co || null,
+              no: components.no || null,
+              nh3: components.nh3 || null
+            }
+          }],
+          averagePM25: components.pm2_5 || null,
+          apiVersion: 'OpenWeather'
+        };
+
+        console.log(`✅ OpenWeather: PM2.5: ${components.pm2_5}, AQI: ${current.main?.aqi}`);
+        this.setCachedData(cacheKey, result);
+        return result;
+      }
+
+      console.log(`ℹ️ No OpenWeather data available for (${lat}, ${lon})`);
+      return null;
+
+    } catch (error) {
+      console.error('❌ Failed to fetch OpenWeather data:', error);
+      return null;
+    }
+  }
+
+  /**
    * Get nearest ground station data from OpenAQ v3 API
    * @param {number} lat - Latitude
    * @param {number} lon - Longitude
@@ -255,6 +436,55 @@ class SatelliteDataAPI {
   }
 
   /**
+   * Get ground station data from best available API
+   * Tries APIs in order: WAQI → OpenWeather → OpenAQ
+   * @param {number} lat - Latitude
+   * @param {number} lon - Longitude
+   * @param {number} radius - Search radius in km (for OpenAQ)
+   * @returns {Promise<Object>} Ground station data from first successful API
+   */
+  async getBestGroundStationData(lat, lon, radius = 25) {
+    console.log('🔍 Searching for ground station data from available APIs...');
+
+    // Try WAQI first (11,000+ stations worldwide)
+    if (this.waqiToken) {
+      const waqiData = await this.getWAQIData(lat, lon);
+      if (waqiData && waqiData.averagePM25 !== null) {
+        console.log('✅ Using WAQI data (11,000+ stations)');
+        return waqiData;
+      }
+    }
+
+    // Try OpenWeather second (global coordinates-based)
+    if (this.openweatherKey) {
+      const openweatherData = await this.getOpenWeatherData(lat, lon);
+      if (openweatherData && openweatherData.averagePM25 !== null) {
+        console.log('✅ Using OpenWeather data (global coverage)');
+        return openweatherData;
+      }
+    }
+
+    // Try OpenAQ last (regional coverage, varies by location)
+    if (this.openAQApiKey) {
+      const openaqData = await this.getNearestGroundStation(lat, lon, radius);
+      if (openaqData && openaqData.averagePM25 !== null) {
+        console.log('✅ Using OpenAQ data (government stations)');
+        return openaqData;
+      }
+    }
+
+    // No API configured or no data available
+    if (!this.waqiToken && !this.openweatherKey && !this.openAQApiKey) {
+      console.warn('⚠️ No ground station API configured. Configure at least one API in js/config.js');
+      console.warn('📝 Recommended: WAQI (https://aqicn.org/data-platform/token) or OpenWeather (https://home.openweathermap.org/users/sign_up)');
+    } else {
+      console.log('ℹ️ No ground station data available from any API for this location');
+    }
+
+    return null;
+  }
+
+  /**
    * Multimodal Fusion: Combine satellite and ground data
    * Implements Late Fusion approach from research papers
    * @param {Object} imageData - Image features from CNN
@@ -270,7 +500,7 @@ class SatelliteDataAPI {
     const [modisData, sentinelData, groundData] = await Promise.all([
       this.getMODIS_AOD(lat, lon),
       this.getSentinel5P_AerosolData(lat, lon),
-      this.getNearestGroundStation(lat, lon, 25)
+      this.getBestGroundStationData(lat, lon, 25)
     ]);
 
     const fusedData = {

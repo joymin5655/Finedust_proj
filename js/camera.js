@@ -31,17 +31,30 @@ class CameraAI {
    * Initialize Satellite Data API
    */
   async initSatelliteAPI() {
-    // Get OpenAQ API key from config
-    const openaqApiKey = window.API_CONFIG?.openaq?.enabled
-      ? window.API_CONFIG.openaq.apiKey
-      : null;
+    // Get API keys/tokens from config
+    const config = {
+      waqiToken: window.API_CONFIG?.waqi?.enabled ? window.API_CONFIG.waqi.token : null,
+      openweatherKey: window.API_CONFIG?.openweather?.enabled ? window.API_CONFIG.openweather.apiKey : null,
+      openaqKey: window.API_CONFIG?.openaq?.enabled ? window.API_CONFIG.openaq.apiKey : null
+    };
+
+    const hasAnyAPI = config.waqiToken || config.openweatherKey || config.openaqKey;
 
     if (window.SatelliteDataAPI) {
-      this.satelliteAPI = new window.SatelliteDataAPI(openaqApiKey);
+      this.satelliteAPI = new window.SatelliteDataAPI(config);
       console.log('✅ Satellite API initialized');
-      if (!openaqApiKey) {
-        console.warn('⚠️ OpenAQ API key not configured. Ground station data will be unavailable.');
-        console.warn('📝 Configure your API key in js/config.js to enable ground station validation.');
+
+      if (!hasAnyAPI) {
+        console.warn('⚠️ No ground station API configured. System will use satellite + image data only.');
+        console.warn('📝 RECOMMENDED: Configure at least ONE free API in js/config.js:');
+        console.warn('   - WAQI (11,000+ stations): https://aqicn.org/data-platform/token');
+        console.warn('   - OpenWeather (global): https://home.openweathermap.org/users/sign_up');
+      } else {
+        const configured = [];
+        if (config.waqiToken) configured.push('WAQI');
+        if (config.openweatherKey) configured.push('OpenWeather');
+        if (config.openaqKey) configured.push('OpenAQ');
+        console.log(`✅ Ground station APIs configured: ${configured.join(', ')}`);
       }
     } else {
       console.warn('⚠️ Satellite API not available - loading...');
@@ -49,11 +62,12 @@ class CameraAI {
       const script = document.createElement('script');
       script.src = 'js/satellite-api.js';
       script.onload = () => {
-        this.satelliteAPI = new window.SatelliteDataAPI(openaqApiKey);
+        this.satelliteAPI = new window.SatelliteDataAPI(config);
         console.log('✅ Satellite API loaded and initialized');
-        if (!openaqApiKey) {
-          console.warn('⚠️ OpenAQ API key not configured. Ground station data will be unavailable.');
-          console.warn('📝 Configure your API key in js/config.js to enable ground station validation.');
+
+        if (!hasAnyAPI) {
+          console.warn('⚠️ No ground station API configured. System will use satellite + image data only.');
+          console.warn('📝 RECOMMENDED: Configure at least ONE free API in js/config.js');
         }
       };
       document.head.appendChild(script);

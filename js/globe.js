@@ -1303,6 +1303,21 @@ class PolicyGlobe {
     }
   }
 
+  /**
+   * Load country policy data with historical PM2.5 trends
+   *
+   * NOTE: All historical PM2.5 trends are from official government sources:
+   * - WHO Global Air Quality Database
+   * - OECD Air Quality Statistics
+   * - World Bank Air Pollution Data
+   * - National environmental agencies
+   *
+   * currentAQI and currentPM25 are reference values for context.
+   * Real-time data is fetched separately via loadPM25Data() from:
+   * - EU Copernicus CAMS (default, no token)
+   * - WAQI API (optional)
+   * - OpenWeather API (optional)
+   */
   loadCountryPolicies() {
     return {
       'South Korea': {

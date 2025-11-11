@@ -1,2 +1,0 @@
-Note: .htaccess file will not work on GitHub Pages (uses nginx, not Apache).
-For GitHub Pages, use _config.yml instead or rely on GitHub's default caching.

@@ -145,7 +145,7 @@ python -m http.server 8000
 npx http-server -p 8000
 ```
 
-Then navigate to: `http://localhost:8000/globe-enhanced.html`
+Then navigate to: `http://localhost:8000/globe.html`
 
 ---
 
@@ -154,7 +154,7 @@ Then navigate to: `http://localhost:8000/globe-enhanced.html`
 - **Three.js** - 3D graphics and WebGL rendering
 - **Vanilla JavaScript** - Fast and efficient
 - **CSS3** - Modern styling with glassmorphism
-- **Our World In Data API** - Verified global data
+- **EU Copernicus CAMS** - Official atmospheric data (via Open-Meteo API)
 
 ---
 
@@ -163,28 +163,32 @@ Then navigate to: `http://localhost:8000/globe-enhanced.html`
 ```
 Finedust_proj/
 ├── index.html               # Main landing page
-├── globe-enhanced.html      # Enhanced 3D globe visualization
+├── globe.html               # Interactive 3D globe visualization
 ├── camera.html              # Camera AI PM2.5 predictor
 ├── research.html            # Air quality research & policies
+├── settings.html            # Settings page
 ├── about.html               # About page
 │
 ├── js/
 │   ├── theme-toggle.js      # Dark/light mode management
 │   ├── main.js              # Common utilities & animations
 │   ├── hero-animation.js    # Landing page animations
-│   ├── globe-enhanced.js    # Enhanced globe logic
+│   ├── globe.js             # Globe visualization logic
 │   ├── camera.js            # Camera AI functionality
-│   └── data-service.js      # OWID API integration
+│   ├── air-quality-api.js   # Air quality API integration
+│   ├── satellite-api.js     # Satellite data integration
+│   └── config.js            # API configuration
 │
 ├── css/
 │   ├── main.css             # Global styles & theme system
-│   ├── globe-enhanced.css   # Globe-specific styles
-│   └── camera.css           # Camera AI styles
+│   └── settings.css         # Settings page styles
 │
 └── data/
     ├── pm25-data.json       # PM2.5 historical data
     ├── stations.json        # Monitoring stations data
-    └── policies.json        # Air quality policies data
+    ├── air-pollution-deaths.json  # Death statistics
+    └── policy-impact/       # Country-specific policy data
+        └── *.json           # 86 country files
 ```
 
 ### 🎨 Code Organization
@@ -206,19 +210,22 @@ Contributions welcome! Fork the repo and submit a PR.
 
 ## 📄 License
 
-MIT License - see [LICENSE](LICENSE) for details.
+MIT License - see [https://opensource.org/licenses/MIT](https://opensource.org/licenses/MIT) for details.
 
 ### Data Attribution
 
-- **Our World In Data**: PM2.5 data (CC BY 4.0)
+- **EU Copernicus CAMS (ECMWF)**: Real-time atmospheric data via Open-Meteo API
+- **WHO, OECD, World Bank**: Historical PM2.5 trends and statistics
+- **National Environmental Agencies**: Country-specific policy impact data
 
 ---
 
 ## 🙏 Acknowledgments
 
-- **Our World In Data** for air quality data
+- **EU Copernicus CAMS (ECMWF)** for real-time atmospheric data
 - **Earth.Nullschool** for design inspiration
 - **Three.js** team for 3D library
+- **Open-Meteo** for free API access
 
 ---
 

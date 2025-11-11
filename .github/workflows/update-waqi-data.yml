@@ -1,0 +1,51 @@
+name: Update WAQI Data
+
+on:
+  schedule:
+    # 매일 UTC 0시 (한국 시간 오전 9시)에 실행
+    - cron: '0 0 * * *'
+  workflow_dispatch:  # 수동 실행 버튼 활성화
+
+jobs:
+  fetch-waqi-data:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install dependencies
+        run: |
+          npm install --no-save axios
+      
+      - name: Create data directory
+        run: |
+          mkdir -p app/data/waqi
+      
+      - name: Fetch WAQI data
+        env:
+          WAQI_TOKEN: ${{ secrets.WAQI_TOKEN }}
+        run: |
+          node scripts/fetch-waqi-data.js
+      
+      - name: Commit and push changes
+        run: |
+          git config user.name "AirLens Bot"
+          git config user.email "bot@airlens.app"
+          git add app/data/waqi/
+          
+          # 변경사항이 있을 때만 커밋
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "🌍 Update WAQI data - $(date +'%Y-%m-%d %H:%M UTC')"
+            git push
+            echo "✅ Data updated and pushed"
+          fi

@@ -192,10 +192,7 @@ Finedust_proj/
 │   └── responsive.css       # Mobile responsive styles
 │
 └── data/
-    ├── pm25-data.json              # PM2.5 historical data
-    ├── air-pollution-deaths.json   # Air pollution death statistics
-    ├── policies.json               # Air quality policies data
-    └── policy-impact/              # Policy impact analysis data
+    └── policy-impact/              # Policy impact analysis data (67 countries)
 ```
 
 ### 🎨 Code Organization

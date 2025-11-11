@@ -1,0 +1,68 @@
+.globe-page {
+  min-height: 100vh;
+  padding-top: 80px;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+}
+
+.globe-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.globe-title {
+  font-size: 3rem;
+  text-align: center;
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.globe-subtitle {
+  font-size: 1.25rem;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 2rem;
+}
+
+.globe-canvas-wrapper {
+  height: 600px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 1rem;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.globe-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.info-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  color: white;
+}
+
+.info-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #25e2f4;
+}
+
+.info-card p {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+@media (max-width: 768px) {
+  .globe-canvas-wrapper {
+    height: 400px;
+  }
+
+  .globe-title {
+    font-size: 2rem;
+  }
+}

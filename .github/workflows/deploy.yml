@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ main, web-portfolio-redesign ]
+    branches: [ main, web-portfolio-redesign, claude/fix-white-screen-issue-011CUzQUgNSrBxTNEMM9Kyk9, claude/fix-commit-stall-011CV17xHsAuxGoE97kCWz8D ]
   workflow_dispatch:
 
 permissions:
@@ -13,19 +13,34 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: airlens-react/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./airlens-react
+        run: npm ci
+
+      - name: Build React app
+        working-directory: ./airlens-react
+        run: npm run build
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
-      
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
-      
+          path: 'airlens-react/dist'
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

@@ -1,5 +1,13 @@
 /**
- * API Configuration
+ * API Configuration Template
+ *
+ * ⚠️ SECURITY NOTICE:
+ * This is a TEMPLATE file. DO NOT add your actual API keys here!
+ *
+ * Setup Instructions:
+ * 1. Copy this file to config.js: cp js/config.template.js js/config.js
+ * 2. Add your API keys to config.js (NOT this template file)
+ * 3. config.js is in .gitignore and will NOT be committed to GitHub
  *
  * ✅ ALL DATA FROM OFFICIAL INTERNATIONAL AGENCIES ONLY
  * This application uses ONLY data from verified international organizations:
@@ -29,11 +37,11 @@ const API_CONFIG = {
    * 1. Visit: https://aqicn.org/data-platform/token
    * 2. Enter your email
    * 3. Check email for token
-   * 4. Paste token below
+   * 4. Paste token in config.js (NOT this template file!)
    */
   waqi: {
-    token: null, // Optional: 'your-token-here'
-    enabled: false // Optional: Set to true after adding token
+    token: null, // Replace with 'your-token-here' in config.js
+    enabled: false // Set to true in config.js after adding token
   },
 
   /**
@@ -47,11 +55,11 @@ const API_CONFIG = {
    * 1. Visit: https://home.openweathermap.org/users/sign_up
    * 2. Create free account
    * 3. Generate API key from dashboard
-   * 4. Paste API key below
+   * 4. Paste API key in config.js (NOT this template file!)
    */
   openweather: {
-    apiKey: null, // Optional: 'your-api-key-here'
-    enabled: false // Optional: Set to true after adding key
+    apiKey: null, // Replace with 'your-api-key-here' in config.js
+    enabled: false // Set to true in config.js after adding key
   },
 
   /**
@@ -65,11 +73,11 @@ const API_CONFIG = {
    * 1. Visit: https://explore.openaq.org/register
    * 2. Create account
    * 3. Generate API key
-   * 4. Paste API key below
+   * 4. Paste API key in config.js (NOT this template file!)
    */
   openaq: {
-    apiKey: null, // Optional: 'your-api-key-here'
-    enabled: false // Optional: Set to true after adding key
+    apiKey: null, // Replace with 'your-api-key-here' in config.js
+    enabled: false // Set to true in config.js after adding key
   }
 };
 

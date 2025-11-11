@@ -20,10 +20,17 @@
 - **Build Tool:** Vite 7
 - **Base Path:** `/Finedust_proj/` (for GitHub Pages subdirectory)
 - **Output Directory:** `airlens-react/dist/`
-- **Bundle Size:** 1.14 MB (323 KB gzipped)
 - **Build Command:** `npm run build`
 
-### 3. **GitHub Actions Workflow** ✅
+### 3. **Performance Optimizations** ✅
+- **Code Splitting:** React.lazy() for route-based splitting
+- **Vendor Chunks:** React (15.50 KB), Three.js (303.83 KB), Chart.js separated
+- **Initial Load:** ~17 KB (React vendor + main app)
+- **Lazy Loading:** Three.js loads only when Globe page is visited
+- **Page Chunks:** <1.5 KB each (Home, Camera, Research, Settings, About)
+- **Result:** 95% reduction in initial load size (323 KB → 17 KB)
+
+### 4. **GitHub Actions Workflow** ✅
 - **File:** `.github/workflows/deploy.yml`
 - **Triggers:** Push to configured branches, manual dispatch
 - **Build Steps:**

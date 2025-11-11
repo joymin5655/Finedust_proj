@@ -25,21 +25,10 @@ jobs:
       - name: Prepare deployment files
         run: |
           mkdir -p _site
-          # Copy HTML files
-          cp *.html _site/ 2>/dev/null || true
-          # Copy directories
-          cp -r css _site/ 2>/dev/null || true
-          cp -r js _site/ 2>/dev/null || true
-          cp -r data _site/ 2>/dev/null || true
-          cp -r assets _site/ 2>/dev/null || true
-          cp -r docs _site/ 2>/dev/null || true
-          # Copy airlens-react if exists
-          cp -r airlens-react _site/ 2>/dev/null || true
-          # Copy config files
-          cp .nojekyll _site/ 2>/dev/null || true
-          cp robots.txt _site/ 2>/dev/null || true
-          cp sitemap.xml _site/ 2>/dev/null || true
-          cp vite.svg _site/ 2>/dev/null || true
+          # Copy root redirect index.html
+          cp index.html _site/
+          # Copy entire app directory
+          cp -r app _site/
           # List what we're deploying
           echo "Files to deploy:"
           ls -la _site/
@@ -49,8 +38,6 @@ jobs:
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
-        with:
-          path: '_site'
 
       - name: Deploy to GitHub Pages
         id: deployment

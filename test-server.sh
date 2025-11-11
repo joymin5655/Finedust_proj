@@ -1,10 +1,18 @@
 #!/bin/bash
-echo "🚀 Starting AirLens Local Test Server..."
-echo "📍 URL: http://localhost:8000"
-echo "📄 Main page: http://localhost:8000/index.html"
-echo "🌍 Globe: http://localhost:8000/globe.html"
-echo "📸 Camera AI: http://localhost:8000/camera.html"
+
+# AirLens Test Server
+# Simple HTTP server for local development
+
+PORT=8000
+
+echo "🌍 Starting AirLens Test Server..."
 echo ""
-echo "Press Ctrl+C to stop the server"
-echo "================================"
-python3 -m http.server 8000
+echo "Server will run at:"
+echo "  Local:   http://localhost:$PORT/app/"
+echo "  Network: http://$(ipconfig getifaddr en0 || echo "N/A"):$PORT/app/"
+echo ""
+echo "Press Ctrl+C to stop"
+echo ""
+
+# Start Python HTTP server
+python3 -m http.server $PORT

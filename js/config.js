@@ -32,8 +32,8 @@ const API_CONFIG = {
    * 4. Paste token below
    */
   waqi: {
-    token: null, // Optional: 'your-token-here'
-    enabled: false // Optional: Set to true after adding token
+    token: 5601d6701fdb2cad7cceea4bc5e5cb029e3da947, // Optional: 'your-token-here'
+    enabled: true // Optional: Set to true after adding token
   },
 
   /**

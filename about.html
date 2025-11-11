@@ -121,7 +121,7 @@
 <p class="text-gray-900 dark:text-white text-xl font-bold leading-tight tracking-[-0.015em]">About the Project</p>
 <div class="flex items-end gap-3 justify-between">
 <p class="text-gray-700 dark:text-gray-300 text-base font-normal leading-relaxed mt-2">
-                    AirLens was created to democratize access to air quality information through innovative use of machine learning and real-time data visualization. We believe everyone deserves to know the air they breathe, regardless of their location or technical expertise.
+                    AirLens was created to democratize access to air quality information through innovative use of machine learning and verified historical data visualization. We believe everyone deserves to know the air they breathe, regardless of their location or technical expertise.
                 </p>
 </div>
 </div>
@@ -181,7 +181,13 @@
 <h2 class="text-gray-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em]">Get In Touch</h2>
 <p class="text-gray-600 dark:text-gray-400 text-base font-normal leading-normal">Feel free to reach out with any questions or collaboration ideas.</p>
 </div>
-<form action="https://formspree.io/f/YOUR_FORM_ID" method="POST" class="flex flex-col gap-4">
+<!-- To enable the contact form:
+     1. Sign up at https://formspree.io (free)
+     2. Create a new form
+     3. Replace YOUR_FORM_ID below with your actual form ID
+     4. Example: https://formspree.io/f/xvoepzrj
+-->
+<form action="https://formspree.io/f/YOUR_FORM_ID" method="POST" class="flex flex-col gap-4" onsubmit="if(this.action.includes('YOUR_FORM_ID')){alert('Please configure Formspree form ID in about.html. See source code for instructions.'); return false;}">
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 <div>
 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" for="name">Name</label>
@@ -205,8 +211,13 @@
 </form>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
+
 <!-- Footer -->
-<footer style="background: var(--color-bg-dark); color: var(--color-text-dark); padding: var(--space-5) 0; margin-top: var(--space-12);">
+<footer style="background: var(--color-bg-dark); color: var(--color-text-dark); padding: var(--space-5) 0;">
     <div class="container text-center">
         <p style="color: var(--color-text-dark-secondary);">
             © 2025 AirLens. Built with ❤️ for a cleaner planet.
@@ -218,11 +229,8 @@
         </p>
     </div>
 </footer>
-</div>
-</div>
-</div>
-</div>
 <script src="js/theme-toggle.js"></script>
+<script src="js/message-utils.js"></script>
 <script src="js/main.js"></script>
 <script>
 // 다크모드 자동 적용

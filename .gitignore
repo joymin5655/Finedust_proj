@@ -23,8 +23,11 @@ build/
 .env.local
 
 # API Configuration (contains sensitive API keys)
-js/config.js
+app/js/config.js
 
 # Temporary files
 *.tmp
 .cache/
+
+# Archives
+archive/

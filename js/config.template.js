@@ -32,7 +32,7 @@ const API_CONFIG = {
    * 4. Paste token below
    */
   waqi: {
-    token: ., // Optional: 'your-token-here'
+    token: null, // Optional: 'your-token-here'
     enabled: false // Optional: Set to true after adding token
   },
 

@@ -1,12 +1,12 @@
 # 🌍 AirLens - See the Air
 
-> **Interactive global air quality visualization powered by real data**
+> **Interactive global air quality visualization powered by React**
 > Real-time PM2.5 monitoring • AI-powered predictions • Advanced 3D visualization
 
 [![Deploy](https://github.com/joymin5655/Finedust_proj/actions/workflows/deploy.yml/badge.svg)](https://github.com/joymin5655/Finedust_proj/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Data Source](https://img.shields.io/badge/Data-EU_Copernicus_CAMS-blue)](https://atmosphere.copernicus.eu/)
-[![No Token](https://img.shields.io/badge/API_Keys-NOT_REQUIRED-brightgreen)](https://github.com/joymin5655/Finedust_proj)
+[![React](https://img.shields.io/badge/React-19-blue.svg)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Vite-7-646CFF.svg)](https://vitejs.dev/)
 
 **✅ NO API KEYS NEEDED - Works immediately!**
 
@@ -16,16 +16,16 @@
 
 ## 🎯 What is AirLens?
 
-AirLens transforms complex air quality data into an intuitive, beautiful 3D visualization. Using **official EU Copernicus CAMS data** (no API keys required), explore global PM2.5 levels in real-time, predict air quality from sky photos using AI, and discover pollution patterns across the globe - all on an interactive Earth globe.
+AirLens transforms complex air quality data into an intuitive, beautiful 3D visualization built with modern React. Using **official EU Copernicus CAMS data** (no API keys required), explore global PM2.5 levels in real-time, predict air quality from sky photos using AI, and discover pollution patterns across the globe - all on an interactive Earth globe.
 
 ### 🌟 Key Highlights
 
 - **✅ NO TOKEN REQUIRED**: Works immediately - no API keys, no registration needed!
+- **⚛️ React-Powered**: Modern React 19 with Vite for blazing fast performance
 - **🇪🇺 Official EU Data**: Real-time data from EU Copernicus CAMS (ECMWF)
-- **🌍 3D Globe Visualization**: 174+ cities worldwide with live PM2.5 data (11,000+ with optional WAQI)
+- **🌍 3D Globe Visualization**: 174+ cities worldwide with live PM2.5 data
 - **📸 Camera AI**: Upload sky photos to predict PM2.5 using multimodal AI
-- **🎨 Beautiful Interface**: Atmospheric particles, color-coded markers, smooth animations
-- **🔍 Real-time Analysis**: Satellite + ground station data fusion
+- **🎨 Beautiful Interface**: Smooth animations, responsive design, dark mode
 - **📱 Fully Responsive**: Works seamlessly on desktop, tablet, and mobile
 
 ---
@@ -33,53 +33,129 @@ AirLens transforms complex air quality data into an intuitive, beautiful 3D visu
 ## ✨ Features
 
 ### 🌙 Dark/Light Mode Toggle
-
-**Beautiful Animated Theme Switcher**
-
-- **Sparkle-animated toggle button** with smooth transitions
 - **Persistent theme preference** using localStorage
-- **Dynamic UI adaptation** - all elements adjust automatically
-- **Optimized performance** - no flash on page load
-- **Mobile-responsive** - scales beautifully on all devices
+- **Dynamic UI adaptation** across all components
+- **Smooth transitions** with React state management
 
-### 🌐 Interactive Enhanced Globe
-
-**Design Inspiration:** Earth.Nullschool + Google Earth
-
-- **Realistic 3D Earth** with NASA Blue Marble texture and atmospheric glow
-- **Color-coded PM2.5 markers** for 174+ cities across 50+ countries
-- **Country policy visualization** with historical PM2.5 trends (8 major countries)
-- **Atmospheric particle effects** simulating air currents
-- **Smooth camera controls** with zoom, pan, and auto-rotate
-- **60 FPS rendering** using Three.js and WebGL
-- **Detailed country information** on click with interactive charts
+### 🌐 Interactive 3D Globe
+Built with **React Three Fiber** and **Three.js**:
+- **Realistic 3D Earth** with NASA Blue Marble texture
+- **Color-coded PM2.5 markers** for 174+ cities
+- **Country policy visualization** with historical trends
+- **Smooth OrbitControls** for intuitive navigation
+- **60 FPS rendering** using WebGL
 
 ### 📸 Camera AI - PM2.5 Predictor
-
-**Sky Image Analysis with Machine Learning**
-
-- **Upload sky photos** to estimate PM2.5 levels
-- **CNN-LSTM architecture** for accurate predictions
-- **Browser-based processing** with TensorFlow.js
-- **No server uploads** - all processing happens locally
-- **MAE < 8.5 µg/m³** accuracy on validation data
+**Sky Image Analysis with Machine Learning**:
+- Upload sky photos to estimate PM2.5 levels
+- Browser-based processing (no server uploads)
+- React-based UI with drag & drop support
 
 ### 📊 Data Analysis Tools
-
 - **Global Statistics Dashboard**
-  - Average PM2.5 levels worldwide
-  - Most/least polluted regions
-  - Historical trends visualization
-
-- **Historical Timeline**
-  - Explore data from 1990 to 2021
-  - Animated timeline playback
-  - Year-by-year comparison
-
+- **Historical Timeline** (1990-2021)
 - **WHO Air Quality Guidelines**
-  - Color-coded AQI scale
-  - Health impact descriptions
-  - Interactive legend
+- **Interactive Charts** with Chart.js
+
+---
+
+## 🚀 Quick Start
+
+### View Live
+Visit: **[https://joymin5655.github.io/Finedust_proj](https://joymin5655.github.io/Finedust_proj)**
+
+### Run Locally
+
+```bash
+# Clone the repository
+git clone https://github.com/joymin5655/Finedust_proj.git
+cd Finedust_proj/airlens-react
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Deploy to GitHub Pages
+npm run deploy
+```
+
+Then navigate to: `http://localhost:5173`
+
+---
+
+## 🛠️ Technology Stack
+
+### Frontend
+- **React 19** - Latest React with concurrent features
+- **Vite 7** - Next generation frontend tooling
+- **React Router 7** - Client-side routing
+- **React Three Fiber** - React renderer for Three.js
+- **Three.js** - 3D graphics and WebGL rendering
+
+### Visualization
+- **@react-three/drei** - Useful helpers for R3F
+- **@react-three/fiber** - React reconciler for Three.js
+- **Chart.js** - Data visualization
+- **react-chartjs-2** - React wrapper for Chart.js
+
+### Build & Deploy
+- **Vite** - Build tool and dev server
+- **gh-pages** - GitHub Pages deployment
+- **ESLint** - Code linting
+
+---
+
+## 📁 Project Structure
+
+```
+Finedust_proj/
+├── airlens-react/                # React source code
+│   ├── src/
+│   │   ├── pages/               # Page components
+│   │   │   ├── Home.jsx         # Landing page with hero animation
+│   │   │   ├── Globe.jsx        # 3D Globe visualization
+│   │   │   ├── Camera.jsx       # Camera AI PM2.5 predictor
+│   │   │   ├── Research.jsx     # Research & policies
+│   │   │   ├── About.jsx        # About page
+│   │   │   └── Settings.jsx     # Settings & API configuration
+│   │   │
+│   │   ├── components/          # Reusable components
+│   │   │   ├── Navbar.jsx       # Navigation bar
+│   │   │   └── ThemeToggle.jsx  # Dark/light mode toggle
+│   │   │
+│   │   ├── styles/              # CSS modules
+│   │   │   ├── main.css         # Global styles
+│   │   │   ├── responsive.css   # Mobile responsive
+│   │   │   └── ...              # Page-specific styles
+│   │   │
+│   │   ├── data/                # Data files
+│   │   │   └── policy-impact/   # Country policy data (67 countries)
+│   │   │
+│   │   ├── App.jsx              # Root component with routing
+│   │   └── main.jsx             # Application entry point
+│   │
+│   ├── public/                  # Static assets
+│   ├── package.json             # Dependencies & scripts
+│   └── vite.config.js           # Vite configuration
+│
+├── assets/                      # Built assets (CSS, JS bundles)
+├── index.html                   # Entry HTML (built from React)
+└── 404.html                     # GitHub Pages SPA fallback
+
+```
+
+### 🎨 Component Architecture
+
+**React-Based Design:**
+- **Component composition** - Small, focused, reusable components
+- **Hooks** - useState, useEffect, useRef for state management
+- **React Router** - Declarative routing with Routes and Route
+- **CSS Modules** - Scoped styling per component
 
 ---
 
@@ -94,121 +170,59 @@ Real-time atmospheric monitoring data via Open-Meteo API.
 **Data:** PM2.5, PM10, NO₂, SO₂, O₃, CO, AOD, Dust
 **Coverage:** Worldwide
 **Cost:** ✅ FREE - No API key needed
-**Used in:** Globe, Camera AI, All real-time features
 
 ### 🌍 Optional Enhancement APIs (All FREE)
-
-**WAQI (World Air Quality Index):**
-- 11,000+ government monitoring stations worldwide
-- Real-time PM2.5, AQI data
-- Free token: https://aqicn.org/data-platform/token
-
-**OpenWeather Air Pollution API:**
-- Global coordinate-based data
-- 1M free calls/month
-- Sign up: https://home.openweathermap.org/users/sign_up
-
-**OpenAQ API v3:**
-- Government official monitoring stations
-- Free API key
-- Register: https://explore.openaq.org/register
-
-### 📈 Historical PM2.5 Trends (8 Countries)
-
-**Sources:**
-- WHO Global Air Quality Database
-- OECD Air Quality Statistics
-- World Bank Air Pollution Data
-- National environmental agencies (Korea EPA, China MEE, US EPA, etc.)
-
-**Countries with trends:** South Korea, China, Japan, India, Bangladesh, USA, UK, Germany
+Configure in Settings page for enhanced coverage:
+- **WAQI** - 11,000+ government monitoring stations
+- **OpenWeather** - Global coordinate-based data
+- **OpenAQ** - Government official monitoring stations
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Development
 
-### View Live
-
-Visit: **[https://joymin5655.github.io/Finedust_proj](https://joymin5655.github.io/Finedust_proj)**
-
-### Run Locally
-
+### Development Server
 ```bash
-# Clone the repository
-git clone https://github.com/joymin5655/Finedust_proj.git
-cd Finedust_proj
-
-# Serve with any HTTP server
-python -m http.server 8000
-
-# Or use Node.js
-npx http-server -p 8000
+cd airlens-react
+npm run dev
 ```
+Runs at `http://localhost:5173` with hot module replacement.
 
-Then navigate to: `http://localhost:8000/globe.html`
+### Build
+```bash
+npm run build
+```
+Creates optimized production build in `dist/` directory.
+
+### Deploy
+```bash
+npm run deploy
+```
+Builds and deploys to GitHub Pages automatically.
 
 ---
 
-## 🛠️ Technology Stack
+## 🎨 Code Organization
 
-- **Three.js** - 3D graphics and WebGL rendering
-- **Vanilla JavaScript** - Fast and efficient
-- **CSS3** - Modern styling with glassmorphism
-- **Our World In Data API** - Verified global data
-
----
-
-## 📁 Project Structure
-
-```
-Finedust_proj/
-├── index.html               # Main landing page
-├── globe.html               # Interactive 3D globe visualization
-├── camera.html              # Camera AI PM2.5 predictor
-├── research.html            # Air quality research & policies
-├── about.html               # About page
-├── settings.html            # Settings and API configuration
-│
-├── js/
-│   ├── theme-toggle.js      # Dark/light mode management
-│   ├── main.js              # Common utilities & animations
-│   ├── hero-animation.js    # Landing page animations
-│   ├── globe.js             # Interactive globe logic
-│   ├── camera.js            # Camera AI functionality
-│   ├── data-service.js      # Data integration services
-│   ├── air-quality-api.js   # Air quality data API
-│   ├── satellite-api.js     # EU Copernicus CAMS integration
-│   ├── config.js            # Configuration management
-│   ├── message-utils.js     # UI message utilities
-│   └── settings.js          # Settings page logic
-│
-├── css/
-│   ├── main.css             # Global styles & theme system
-│   ├── globe.css            # Globe-specific styles
-│   ├── camera.css           # Camera AI styles
-│   ├── settings.css         # Settings page styles
-│   ├── accessibility.css    # Accessibility features
-│   ├── performance.css      # Performance optimizations
-│   └── responsive.css       # Mobile responsive styles
-│
-└── data/
-    └── policy-impact/              # Policy impact analysis data (67 countries)
-```
-
-### 🎨 Code Organization
-
-**Modular & Maintainable**
-
-- **Separated concerns** - Each feature in its own module
-- **Reusable components** - Theme system works across all pages
-- **Clear documentation** - JSDoc comments throughout
-- **Performance optimized** - Lazy loading and efficient rendering
+**Modern React Patterns:**
+- ✅ **Functional components** with Hooks
+- ✅ **React Router** for navigation
+- ✅ **Component-scoped CSS** for styling
+- ✅ **Three.js integration** via React Three Fiber
+- ✅ **Lazy loading** for optimized performance
 
 ---
 
 ## 🤝 Contributing
 
 Contributions welcome! Fork the repo and submit a PR.
+
+### Development Workflow
+1. Fork the repository
+2. Create feature branch: `git checkout -b feature/AmazingFeature`
+3. Commit changes: `git commit -m 'Add AmazingFeature'`
+4. Push to branch: `git push origin feature/AmazingFeature`
+5. Open a Pull Request
 
 ---
 
@@ -217,17 +231,19 @@ Contributions welcome! Fork the repo and submit a PR.
 MIT License - see [LICENSE](LICENSE) for details.
 
 ### Data Attribution
-
-- **Our World In Data**: PM2.5 data (CC BY 4.0)
+- **EU Copernicus CAMS** for atmospheric data
+- **Our World In Data** for historical PM2.5 data (CC BY 4.0)
 
 ---
 
 ## 🙏 Acknowledgments
 
-- **Our World In Data** for air quality data
+- **React Team** for the amazing framework
+- **Vite Team** for blazing fast tooling
+- **Three.js & R3F** for 3D visualization capabilities
+- **EU Copernicus CAMS** for atmospheric data
 - **Earth.Nullschool** for design inspiration
-- **Three.js** team for 3D library
 
 ---
 
-**Made with ❤️ for cleaner air**
+**Made with ❤️ and React for cleaner air**

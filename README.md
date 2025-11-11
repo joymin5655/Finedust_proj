@@ -204,6 +204,35 @@ npm run deploy
 Builds and deploys to GitHub Pages automatically.
 >>>>>>> restore-vanilla-version
 
+### 🔑 Optional: Configure API Keys (For Enhanced Data)
+
+**⚠️ IMPORTANT SECURITY NOTICE**
+
+The app **works perfectly without any API keys** using EU Copernicus CAMS data. API keys are only needed if you want additional ground station data.
+
+**If you want to add optional APIs:**
+
+```bash
+# 1. Copy the template file to create your config
+cp js/config.template.js js/config.js
+
+# 2. Edit js/config.js and add your API keys
+# (config.js is in .gitignore and will NOT be committed)
+
+# 3. Get free API keys (optional):
+# - WAQI: https://aqicn.org/data-platform/token
+# - OpenWeather: https://home.openweathermap.org/users/sign_up
+# - OpenAQ: https://explore.openaq.org/register
+```
+
+**🔒 Security Best Practices:**
+- ✅ `js/config.js` is in `.gitignore` - your keys will NOT be committed
+- ✅ Never commit API keys to GitHub
+- ✅ Use `config.template.js` for sharing code
+- ✅ Keep your actual keys only in `config.js` (local file only)
+
+For detailed API setup instructions, see [docs/API_SETUP.md](docs/API_SETUP.md)
+
 ---
 
 ## 🎨 Code Organization

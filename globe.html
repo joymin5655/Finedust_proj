@@ -1,10 +1,29 @@
 <!DOCTYPE html>
-<html class="dark" lang="ko">
+<html class="dark" lang="en">
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>AirLens Policy Globe - 세계 대기질 정책 지구본</title>
-    <meta name="description" content="전 세계 대기질 정책과 규제를 인터랙티브 3D 지구본에서 탐색하세요"/>
+    <meta name="description" content="Explore real-time PM2.5 levels on an interactive 3D globe. 174+ cities with official EU Copernicus CAMS data. Visualize country policy impacts on air quality.">
+    <meta name="keywords" content="3D globe, air quality map, PM2.5 visualization, global pollution, Three.js, environmental data">
+    <meta name="author" content="AirLens Team">
+    <meta name="theme-color" content="#25e2f4">
+    <title>Interactive Globe - Real-Time PM2.5 Visualization | AirLens</title>
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://joymin5655.github.io/Finedust_proj/globe.html">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://joymin5655.github.io/Finedust_proj/globe.html">
+    <meta property="og:title" content="Interactive 3D Globe - PM2.5 Visualization | AirLens">
+    <meta property="og:description" content="Explore air quality worldwide on an interactive 3D globe. Real-time PM2.5 data from 174+ cities with country policy impacts.">
+    <!-- <meta property="og:image" content="https://joymin5655.github.io/Finedust_proj/assets/images/globe-og.png"> -->
+
+    <!-- Resource Hints -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="https://api.open-meteo.com">
+    <link rel="dns-prefetch" href="https://aqicn.org">
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -235,7 +254,8 @@
         /* Mobile landscape and below */
         @media (max-width: 768px) {
             .control-panel {
-                max-width: calc(100vw - 2rem) !important;
+                max-width: calc(100% - 2rem) !important;
+                width: calc(100% - 2rem) !important;
                 top: 4.5rem !important;
                 left: 1rem !important;
                 right: 1rem !important;
@@ -243,7 +263,8 @@
             }
 
             #policy-card {
-                max-width: calc(100vw - 2rem) !important;
+                max-width: calc(100% - 2rem) !important;
+                width: calc(100% - 2rem) !important;
                 top: 4.5rem !important;
                 left: 1rem !important;
                 max-height: calc(50vh - 3rem) !important;
@@ -289,6 +310,62 @@
             -webkit-backdrop-filter: none;
             border-bottom: none;
             z-index: 1000 !important;
+        }
+
+        /* Transparent navbar menu for mobile */
+        @media (max-width: 768px) {
+            .navbar-transparent .navbar-menu {
+                background: rgba(16, 33, 34, 0.95) !important;
+                backdrop-filter: saturate(180%) blur(20px);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+        }
+
+        /* Mobile Policy Explorer Toggle */
+        @media (max-width: 768px) {
+            .control-panel {
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+            }
+
+            .control-panel.active {
+                transform: translateX(0);
+            }
+        }
+
+        /* Floating Toggle Button */
+        #policy-explorer-toggle {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: rgba(37, 226, 244, 0.9);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 40;
+            transition: all 0.3s ease;
+        }
+
+        #policy-explorer-toggle:hover {
+            background: rgba(37, 226, 244, 1);
+            transform: scale(1.1);
+        }
+
+        #policy-explorer-toggle .material-symbols-outlined {
+            font-size: 28px;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            #policy-explorer-toggle {
+                display: flex;
+            }
         }
     </style>
 </head>
@@ -487,7 +564,7 @@
             </aside>
 
             <!-- Right Control Panel -->
-            <aside class="pointer-events-auto fixed top-20 bottom-6 right-6 flex w-full max-w-[200px] flex-col gap-1.5 rounded-xl bg-gray-900/50 p-2.5 backdrop-blur-md border border-white/10 overflow-y-auto control-panel max-h-[calc(100vh-104px)] z-30">
+            <aside class="pointer-events-auto fixed top-20 bottom-6 right-6 flex w-full max-w-[200px] flex-col gap-1 rounded-xl bg-gray-900/50 p-2 backdrop-blur-md border border-white/10 overflow-y-auto control-panel max-h-[calc(100vh-104px)] z-30">
 
                 <!-- Header -->
                 <div class="flex flex-col">
@@ -496,9 +573,9 @@
                 </div>
 
                 <!-- Global Statistics -->
-                <div class="mt-1.5 p-2 bg-black/20 rounded-lg border border-white/10">
-                    <h4 class="text-[10px] font-bold text-white mb-1.5">Global Statistics</h4>
-                    <div class="grid grid-cols-2 gap-1.5">
+                <div class="mt-1 p-1.5 bg-black/20 rounded-lg border border-white/10">
+                    <h4 class="text-[10px] font-bold text-white mb-1">Global Statistics</h4>
+                    <div class="grid grid-cols-2 gap-1">
                         <div>
                             <p class="text-[10px] text-white/60">Countries</p>
                             <p id="stat-countries" class="text-sm font-bold text-primary">-</p>
@@ -519,7 +596,7 @@
                 </div>
 
                 <!-- Search & Filters -->
-                <div class="flex flex-col gap-1.5 mt-1.5">
+                <div class="flex flex-col gap-1 mt-1">
                     <label class="flex flex-col h-7 w-full">
                         <div class="flex w-full flex-1 items-stretch rounded-lg h-full">
                             <div class="text-white/60 flex border-none bg-black/20 items-center justify-center pl-1.5 rounded-l-lg border-r-0">
@@ -544,16 +621,16 @@
                     </div>
                 </div>
 
-                <div class="my-1 border-t border-white/10"></div>
+                <div class="my-0.5 border-t border-white/10"></div>
 
                 <!-- Visualization Layers -->
                 <div class="flex flex-col gap-0.5">
-                    <div class="flex flex-col mb-0.5">
+                    <div class="flex flex-col mb-0">
                         <h1 class="text-white text-xs font-semibold leading-tight">Layers</h1>
                     </div>
 
                     <!-- Country Borders -->
-                    <label class="flex items-center gap-1.5 bg-transparent px-1.5 min-h-[36px] py-0.5 justify-between cursor-pointer hover:bg-white/5 rounded-lg transition-colors">
+                    <label class="flex items-center gap-1.5 bg-transparent px-1.5 min-h-[32px] py-0.5 justify-between cursor-pointer hover:bg-white/5 rounded-lg transition-colors">
                         <div class="flex items-center gap-1.5">
                             <div class="text-white flex items-center justify-center rounded-lg bg-black/20 shrink-0 size-6">
                                 <span class="material-symbols-outlined !text-sm">flag</span>
@@ -571,7 +648,7 @@
                     </label>
 
                     <!-- PM2.5 Overlay -->
-                    <label class="flex items-center gap-1.5 bg-transparent px-1.5 min-h-[36px] py-0.5 justify-between cursor-pointer hover:bg-white/5 rounded-lg transition-colors">
+                    <label class="flex items-center gap-1.5 bg-transparent px-1.5 min-h-[32px] py-0.5 justify-between cursor-pointer hover:bg-white/5 rounded-lg transition-colors">
                         <div class="flex items-center gap-1.5">
                             <div class="text-white flex items-center justify-center rounded-lg bg-black/20 shrink-0 size-6">
                                 <span class="material-symbols-outlined !text-sm">location_on</span>
@@ -589,7 +666,7 @@
                     </label>
 
                     <!-- Atmospheric Flow -->
-                    <label class="flex items-center gap-1.5 bg-transparent px-1.5 min-h-[36px] py-0.5 justify-between cursor-pointer hover:bg-white/5 rounded-lg transition-colors">
+                    <label class="flex items-center gap-1.5 bg-transparent px-1.5 min-h-[32px] py-0.5 justify-between cursor-pointer hover:bg-white/5 rounded-lg transition-colors">
                         <div class="flex items-center gap-1.5">
                             <div class="text-white flex items-center justify-center rounded-lg bg-black/20 shrink-0 size-6">
                                 <span class="material-symbols-outlined !text-sm">air</span>
@@ -607,11 +684,11 @@
                     </label>
                 </div>
 
-                <div class="my-1 border-t border-white/10"></div>
+                <div class="my-0.5 border-t border-white/10"></div>
 
                 <!-- Globe Controls -->
                 <div class="flex flex-col gap-0.5">
-                    <div class="flex flex-col mb-0.5">
+                    <div class="flex flex-col mb-0">
                         <h1 class="text-white text-xs font-semibold leading-tight">Controls</h1>
                     </div>
 
@@ -630,7 +707,7 @@
                     </div>
 
                     <!-- Real-time Data Refresh -->
-                    <div class="mt-2">
+                    <div class="mt-1">
                         <button id="refresh-data" class="w-full flex items-center justify-center gap-1 rounded-lg h-8 bg-primary/20 hover:bg-primary/30 transition-colors">
                             <span class="material-symbols-outlined text-primary !text-base" id="refresh-icon">sync</span>
                             <span class="text-primary text-xs font-medium">Update Air Quality</span>
@@ -642,6 +719,11 @@
                 </div>
 
             </aside>
+
+            <!-- Floating Policy Explorer Toggle Button (Mobile Only) -->
+            <button id="policy-explorer-toggle" onclick="togglePolicyExplorer()" aria-label="Toggle Policy Explorer">
+                <span class="material-symbols-outlined">layers</span>
+            </button>
 
         </main>
 
@@ -665,9 +747,40 @@
                 card.style.display = 'none';
             }, 300); // Match the transition duration
         }
+
+        // Toggle Policy Explorer panel (mobile)
+        function togglePolicyExplorer() {
+            const panel = document.querySelector('.control-panel');
+            const button = document.getElementById('policy-explorer-toggle');
+
+            if (panel) {
+                panel.classList.toggle('active');
+
+                // Change icon based on state
+                const icon = button.querySelector('.material-symbols-outlined');
+                if (panel.classList.contains('active')) {
+                    icon.textContent = 'close';
+                } else {
+                    icon.textContent = 'layers';
+                }
+            }
+        }
+
+        // Close panel when clicking outside (mobile)
+        document.addEventListener('click', function(event) {
+            const panel = document.querySelector('.control-panel');
+            const button = document.getElementById('policy-explorer-toggle');
+
+            if (window.innerWidth <= 768 && panel && button) {
+                if (!panel.contains(event.target) && !button.contains(event.target) && panel.classList.contains('active')) {
+                    togglePolicyExplorer();
+                }
+            }
+        });
     </script>
     <script src="js/theme-toggle.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/message-utils.js"></script>
     <script src="js/air-quality-api.js"></script>
     <script type="module" src="js/globe.js"></script>
 

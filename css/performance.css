@@ -1,0 +1,505 @@
+/**
+ * AirLens - Performance Optimization CSS
+ * Improves loading speed and rendering performance
+ * Created: November 2025
+ */
+
+/* ========================================
+   CRITICAL CSS - Above the fold
+   ======================================== */
+
+/* Prevent layout shifts */
+html {
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* Reserve space for images to prevent layout shift */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ========================================
+   LOADING OPTIMIZATION
+   ======================================== */
+
+/* Lazy loading support */
+img[loading="lazy"] {
+  opacity: 0;
+  transition: opacity 0.3s ease-in;
+}
+
+img[loading="lazy"].loaded {
+  opacity: 1;
+}
+
+/* Skeleton loading screens */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+}
+
+html.dark .skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.1) 0%,
+    rgba(0, 0, 0, 0.2) 50%,
+    rgba(0, 0, 0, 0.1) 100%
+  );
+  background-size: 200% 100%;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Loading spinner - optimized */
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(37, 226, 244, 0.2);
+  border-top-color: #25e2f4;
+  border-radius: 50%;
+  animation: spinner-rotate 0.8s linear infinite;
+  will-change: transform;
+}
+
+@keyframes spinner-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Pulse loading effect */
+.pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* ========================================
+   PERFORMANCE OPTIMIZATIONS
+   ======================================== */
+
+/* GPU acceleration for animations */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Content visibility for off-screen content */
+.off-screen {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 500px;
+}
+
+/* ========================================
+   SMOOTH SCROLLING
+   ======================================== */
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Scroll padding for fixed headers */
+html {
+  scroll-padding-top: 60px;
+}
+
+/* ========================================
+   FONT LOADING OPTIMIZATION
+   ======================================== */
+
+/* Prevent FOIT (Flash of Invisible Text) */
+body {
+  font-display: swap;
+}
+
+/* Font loading states */
+.fonts-loading body {
+  visibility: hidden;
+}
+
+.fonts-loaded body {
+  visibility: visible;
+}
+
+/* ========================================
+   IMAGE OPTIMIZATION
+   ======================================== */
+
+/* Aspect ratio boxes to prevent layout shift */
+.aspect-16-9 {
+  aspect-ratio: 16 / 9;
+}
+
+.aspect-4-3 {
+  aspect-ratio: 4 / 3;
+}
+
+.aspect-1-1 {
+  aspect-ratio: 1 / 1;
+}
+
+/* Object fit for images */
+.cover {
+  object-fit: cover;
+  object-position: center;
+}
+
+.contain {
+  object-fit: contain;
+  object-position: center;
+}
+
+/* ========================================
+   TRANSITION PERFORMANCE
+   ======================================== */
+
+/* Only animate transform and opacity for best performance */
+.optimized-transition {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  will-change: transform, opacity;
+}
+
+/* Remove will-change after animation */
+.optimized-transition:not(:hover):not(:focus) {
+  will-change: auto;
+}
+
+/* ========================================
+   LOADING STATES
+   ======================================== */
+
+/* Page loading overlay */
+.page-loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--color-bg);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1rem;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+html.dark .page-loading {
+  background: var(--color-bg-dark);
+}
+
+.page-loading.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Loading text animation */
+.loading-text {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: var(--color-text);
+  animation: fade-in-out 1.5s ease-in-out infinite;
+}
+
+html.dark .loading-text {
+  color: var(--color-text-dark);
+}
+
+@keyframes fade-in-out {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* ========================================
+   ERROR STATES
+   ======================================== */
+
+/* Error message styling */
+.error-message {
+  padding: 1rem 1.5rem;
+  background: rgba(255, 59, 48, 0.1);
+  border: 1px solid rgba(255, 59, 48, 0.3);
+  border-radius: 12px;
+  color: #ff3b30;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1rem 0;
+  animation: slide-in-down 0.3s ease;
+}
+
+html.dark .error-message {
+  background: rgba(255, 59, 48, 0.15);
+  border-color: rgba(255, 59, 48, 0.4);
+}
+
+@keyframes slide-in-down {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Success message styling */
+.success-message {
+  padding: 1rem 1.5rem;
+  background: rgba(52, 199, 89, 0.1);
+  border: 1px solid rgba(52, 199, 89, 0.3);
+  border-radius: 12px;
+  color: #34c759;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1rem 0;
+  animation: slide-in-down 0.3s ease;
+}
+
+html.dark .success-message {
+  background: rgba(52, 199, 89, 0.15);
+  border-color: rgba(52, 199, 89, 0.4);
+}
+
+/* Info message styling */
+.info-message {
+  padding: 1rem 1.5rem;
+  background: rgba(37, 226, 244, 0.1);
+  border: 1px solid rgba(37, 226, 244, 0.3);
+  border-radius: 12px;
+  color: #25e2f4;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1rem 0;
+  animation: slide-in-down 0.3s ease;
+}
+
+html.dark .info-message {
+  background: rgba(37, 226, 244, 0.15);
+  border-color: rgba(37, 226, 244, 0.4);
+}
+
+/* ========================================
+   PROGRESSIVE ENHANCEMENT
+   ======================================== */
+
+/* Hide content until JS loads */
+.js-only {
+  display: none;
+}
+
+.js-loaded .js-only {
+  display: block;
+}
+
+/* Show fallback content when JS is disabled */
+.no-js-only {
+  display: block;
+}
+
+.js-loaded .no-js-only {
+  display: none;
+}
+
+/* ========================================
+   INTERSECTION OBSERVER ANIMATIONS
+   ======================================== */
+
+/* Fade in when scrolling into view */
+.fade-in-on-scroll {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.fade-in-on-scroll.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Slide in from left */
+.slide-in-left {
+  opacity: 0;
+  transform: translateX(-30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.slide-in-left.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Slide in from right */
+.slide-in-right {
+  opacity: 0;
+  transform: translateX(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.slide-in-right.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Scale in */
+.scale-in {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.scale-in.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ========================================
+   UTILITY CLASSES
+   ======================================== */
+
+/* Hidden but accessible */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Focus visible */
+.focus-visible:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Smooth appearance */
+.smooth-appear {
+  animation: smooth-appear 0.3s ease;
+}
+
+@keyframes smooth-appear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ========================================
+   PRINT OPTIMIZATION
+   ======================================== */
+
+@media print {
+  /* Hide unnecessary elements */
+  .no-print {
+    display: none !important;
+  }
+
+  /* Optimize for printing */
+  body {
+    background: white;
+    color: black;
+  }
+
+  /* Prevent page breaks inside elements */
+  .keep-together {
+    page-break-inside: avoid;
+  }
+
+  /* Force page breaks */
+  .page-break-before {
+    page-break-before: always;
+  }
+
+  .page-break-after {
+    page-break-after: always;
+  }
+}
+
+/* ========================================
+   DARK MODE OPTIMIZATION
+   ======================================== */
+
+/* Prevent flash of wrong theme */
+html:not(.dark):not(.light) {
+  visibility: hidden;
+}
+
+html.dark,
+html.light {
+  visibility: visible;
+}
+
+/* Smooth theme transition */
+html.transitioning,
+html.transitioning *,
+html.transitioning *::before,
+html.transitioning *::after {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease !important;
+}

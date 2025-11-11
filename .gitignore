@@ -31,3 +31,9 @@ app/js/config.js
 
 # Archives
 archive/
+
+# API tokens (never commit!)
+*.token
+
+# Data collection logs
+scripts/*.log

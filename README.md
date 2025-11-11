@@ -145,7 +145,7 @@ python -m http.server 8000
 npx http-server -p 8000
 ```
 
-Then navigate to: `http://localhost:8000/globe-enhanced.html`
+Then navigate to: `http://localhost:8000/globe.html`
 
 ---
 
@@ -163,28 +163,39 @@ Then navigate to: `http://localhost:8000/globe-enhanced.html`
 ```
 Finedust_proj/
 ├── index.html               # Main landing page
-├── globe-enhanced.html      # Enhanced 3D globe visualization
+├── globe.html               # Interactive 3D globe visualization
 ├── camera.html              # Camera AI PM2.5 predictor
 ├── research.html            # Air quality research & policies
 ├── about.html               # About page
+├── settings.html            # Settings and API configuration
 │
 ├── js/
 │   ├── theme-toggle.js      # Dark/light mode management
 │   ├── main.js              # Common utilities & animations
 │   ├── hero-animation.js    # Landing page animations
-│   ├── globe-enhanced.js    # Enhanced globe logic
+│   ├── globe.js             # Interactive globe logic
 │   ├── camera.js            # Camera AI functionality
-│   └── data-service.js      # OWID API integration
+│   ├── data-service.js      # Data integration services
+│   ├── air-quality-api.js   # Air quality data API
+│   ├── satellite-api.js     # EU Copernicus CAMS integration
+│   ├── config.js            # Configuration management
+│   ├── message-utils.js     # UI message utilities
+│   └── settings.js          # Settings page logic
 │
 ├── css/
 │   ├── main.css             # Global styles & theme system
-│   ├── globe-enhanced.css   # Globe-specific styles
-│   └── camera.css           # Camera AI styles
+│   ├── globe.css            # Globe-specific styles
+│   ├── camera.css           # Camera AI styles
+│   ├── settings.css         # Settings page styles
+│   ├── accessibility.css    # Accessibility features
+│   ├── performance.css      # Performance optimizations
+│   └── responsive.css       # Mobile responsive styles
 │
 └── data/
-    ├── pm25-data.json       # PM2.5 historical data
-    ├── stations.json        # Monitoring stations data
-    └── policies.json        # Air quality policies data
+    ├── pm25-data.json              # PM2.5 historical data
+    ├── air-pollution-deaths.json   # Air pollution death statistics
+    ├── policies.json               # Air quality policies data
+    └── policy-impact/              # Policy impact analysis data
 ```
 
 ### 🎨 Code Organization

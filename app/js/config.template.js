@@ -32,8 +32,8 @@ const API_CONFIG = {
    * 4. Paste token below
    */
   waqi: {
-    token: YOUR_WAQI_TOKEN_HERE, // Optional: 'your-token-here'
-    enabled: true // Optional: Set to true after adding token
+    token: null, // Optional: 'your-token-here' (DO NOT commit actual tokens!)
+    enabled: false // Optional: Set to true after adding token
   },
 
   /**

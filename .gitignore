@@ -37,3 +37,4 @@ archive/
 
 # Data collection logs
 scripts/*.log
+app/js/config.js

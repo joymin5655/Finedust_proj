@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Globe Data Test</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #0a0e1a;
+            color: #25e2f4;
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+        }
+        .success { color: #00ff00; }
+        .error { color: #ff0000; }
+        .info { color: #ffff00; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Globe Data Loading Test</h1>
+    <div id="results"></div>
+
+    <script>
+        const results = document.getElementById('results');
+
+        async function testDataLoading() {
+            results.innerHTML += '<div class="test-result">🔍 Testing data loading...</div>';
+
+            // Test 1: Load index.json
+            try {
+                const indexResponse = await fetch('app/data/policy-impact/index.json');
+                if (indexResponse.ok) {
+                    const index = await indexResponse.json();
+                    results.innerHTML += `<div class="test-result success">✅ Index loaded: ${index.countries.length} countries</div>`;
+                    
+                    // Test 2: Load a specific country (South Korea)
+                    const skResponse = await fetch('app/data/policy-impact/south-korea.json');
+                    if (skResponse.ok) {
+                        const skData = await skResponse.json();
+                        results.innerHTML += `<div class="test-result success">✅ South Korea data loaded</div>`;
+                        results.innerHTML += `<div class="test-result info">📊 Country: ${skData.country}</div>`;
+                        results.innerHTML += `<div class="test-result info">📊 Policies: ${skData.policies.length}</div>`;
+                        
+                        if (skData.policies[0].impact) {
+                            results.innerHTML += `<div class="test-result success">✅ Impact data exists:</div>`;
+                            results.innerHTML += `<div class="test-result info">   Before: ${skData.policies[0].impact.beforePeriod.meanPM25} µg/m³</div>`;
+                            results.innerHTML += `<div class="test-result info">   After: ${skData.policies[0].impact.afterPeriod.meanPM25} µg/m³</div>`;
+                            results.innerHTML += `<div class="test-result info">   Change: ${skData.policies[0].impact.analysis.percentChange}%</div>`;
+                        } else {
+                            results.innerHTML += `<div class="test-result error">❌ No impact data</div>`;
+                        }
+
+                        if (skData.policies[0].timeline) {
+                            results.innerHTML += `<div class="test-result success">✅ Timeline data exists: ${skData.policies[0].timeline.length} events</div>`;
+                        } else {
+                            results.innerHTML += `<div class="test-result error">❌ No timeline data</div>`;
+                        }
+                    } else {
+                        results.innerHTML += `<div class="test-result error">❌ Failed to load South Korea data</div>`;
+                    }
+
+                    // Test 3: Check country names in countryPolicies vs JSON files
+                    results.innerHTML += '<div class="test-result info">📋 Checking country name matching...</div>';
+                    const sampleCountries = ['South Korea', 'United States', 'China', 'Germany', 'Japan'];
+                    for (const country of sampleCountries) {
+                        const fileName = country.toLowerCase().replace(/\s+/g, '-');
+                        const response = await fetch(`app/data/policy-impact/${fileName}.json`);
+                        if (response.ok) {
+                            const data = await response.json();
+                            results.innerHTML += `<div class="test-result success">✅ ${country} → ${fileName}.json (Country in file: "${data.country}")</div>`;
+                        } else {
+                            results.innerHTML += `<div class="test-result error">❌ ${country} → ${fileName}.json not found</div>`;
+                        }
+                    }
+
+                } else {
+                    results.innerHTML += `<div class="test-result error">❌ Failed to load index.json</div>`;
+                }
+            } catch (error) {
+                results.innerHTML += `<div class="test-result error">❌ Error: ${error.message}</div>`;
+            }
+
+            results.innerHTML += '<div class="test-result">✨ Test complete!</div>';
+        }
+
+        // Run tests on load
+        testDataLoading();
+    </script>
+</body>
+</html>

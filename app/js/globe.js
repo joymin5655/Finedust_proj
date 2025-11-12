@@ -112,9 +112,14 @@ class PolicyGlobe {
       this.mergePolicyData();
 
       // Load real-time air quality data
+      // TEMPORARILY DISABLED: OpenAQ API v2 is deprecated (410 Gone)
+      // TODO: Upgrade to OpenAQ API v3 or use alternative data source
+      /*
       if (this.airQualityAPI) {
         this.loadRealTimeAirQuality();
       }
+      */
+      console.log('ℹ️ Real-time API disabled (OpenAQ v2 deprecated). Using static data from JSON files.');
 
       this.setupEventListeners();
       this.setupToggleSwitches();
@@ -2150,8 +2155,15 @@ class PolicyGlobe {
   }
 
   mergePolicyData() {
+    console.log('🔄 mergePolicyData: Starting merge...');
+    
     // Merge policy impact data with existing country policies
-    if (!this.policyImpactData) return;
+    if (!this.policyImpactData) {
+      console.error('❌ mergePolicyData: No policyImpactData to merge');
+      return;
+    }
+
+    console.log(`📦 mergePolicyData: Found ${Object.keys(this.policyImpactData).length} countries in policyImpactData`);
 
     Object.keys(this.policyImpactData).forEach(countryName => {
       const impactData = this.policyImpactData[countryName];
@@ -2301,11 +2313,22 @@ class PolicyGlobe {
     // Display policy impact analysis if available
     const impactSection = document.getElementById('policy-impact-section');
     const timelineSection = document.getElementById('policy-timeline-section');
+    
+    console.log('🔍 Checking policy impact data for:', countryName);
+    console.log('  - policyImpactData exists:', !!policy.policyImpactData);
+    
+    if (policy.policyImpactData) {
+      console.log('  - policies array:', policy.policyImpactData.policies?.length || 0);
+      console.log('  - First policy:', policy.policyImpactData.policies?.[0]?.name);
+    }
 
     if (policy.policyImpactData && policy.policyImpactData.policies && policy.policyImpactData.policies.length > 0) {
       const mainPolicy = policy.policyImpactData.policies[0];
+      console.log('✅ Main policy found:', mainPolicy.name);
+      console.log('  - Has impact data:', !!mainPolicy.impact);
 
       if (mainPolicy.impact) {
+        console.log('📊 Showing impact data section');
         impactSection.style.display = 'block';
         const impact = mainPolicy.impact;
 
@@ -2708,20 +2731,35 @@ class PolicyGlobe {
   }
 
   renderImpactComparisonChart(impact, policyName) {
+    console.log('📊 renderImpactComparisonChart called with:', { policyName, impact });
+    
     const canvas = document.getElementById('policy-impact-chart');
-    if (!canvas) return;
+    if (!canvas) {
+      console.error('❌ Canvas element "policy-impact-chart" not found in DOM');
+      return;
+    }
+    console.log('✅ Canvas found:', canvas);
 
     // Destroy existing chart if it exists
     if (this.impactChart) {
+      console.log('🗑️ Destroying existing chart');
       this.impactChart.destroy();
     }
 
     const ctx = canvas.getContext('2d');
+    console.log('✅ Canvas context obtained');
 
     // Prepare data
     const beforePM25 = impact.beforePeriod.meanPM25;
     const afterPM25 = impact.afterPeriod.meanPM25;
     const percentChange = impact.analysis.percentChange;
+    
+    console.log('📈 Chart data:', {
+      beforePM25,
+      afterPM25,
+      percentChange,
+      significant: impact.analysis.significant
+    });
 
     // Determine if improvement (green) or worsening (red)
     const beforeColor = 'rgba(239, 68, 68, 0.8)'; // Red for before

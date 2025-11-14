@@ -45,7 +45,7 @@ const CITIES = [
   'sydney', 'melbourne', 'auckland',
   
   // 중동
-  'dubai', 'doha', 'riyadh',
+  'dubai', 'riyadh',
   
   // 아프리카
   'cairo', 'johannesburg', 'nairobi'

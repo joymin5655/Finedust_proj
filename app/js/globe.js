@@ -7,7 +7,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { globalDataService } from './services/shared-data-service.js';
-import { GlobeMarkerSystem } from './services/globe-marker-system.js';
 import { EnhancedMarkerSystem } from './services/enhanced-marker-system.js';
 import { policyDataService } from './services/policy-data-service.js';
 
@@ -79,9 +78,8 @@ class PolicyGlobe {
     this.countryPolicies = this.loadCountryPolicies();
     this.pm25Data = new Map();
 
-    // 🆕 Data Services Integration
+    // 🆕 Enhanced Marker System (init()에서 초기화됨)
     this.markerSystem = null;
-    this.markerSystem = new EnhancedMarkerSystem(this.scene, this.earth);
     this.globalDataService = globalDataService;
     this.policyDataService = policyDataService;
     
@@ -112,20 +110,37 @@ class PolicyGlobe {
       this.createAtmosphere();
       this.createClouds();
       
-      // 🆕 마커 시스템 초기화 (지구본에 고정된 마커)
-      this.markerSystem = new GlobeMarkerSystem(this.earth, this.scene);
-      this.markerSystem.init();
+      // 🆕 Enhanced Marker System 초기화
+      this.markerSystem = new EnhancedMarkerSystem(this.scene, this.earth);
       
       this.createParticles();
       this.createCountryBorders();
 
       await this.loadPM25Data();
       
-      // 🆕 변경: 기존 createPM25Markers 대신 마커 시스템 사용
-      this.createMarkersWithSystem();
-
-      // Create country policy markers with PM2.5 trends visualization
-      this.createCountryPolicyMarkers();
+      // 🆕 PM2.5 마커 생성
+      for (const [id, station] of this.pm25Data) {
+        this.markerSystem.createPM25Marker({
+          id: station.id,
+          latitude: station.latitude,
+          longitude: station.longitude,
+          pm25: station.pm25,
+          country: station.country
+        });
+      }
+      
+      // 🆕 정책 마커 생성
+      const policyMap = await this.loadPoliciesData();
+      for (const [country, policy] of policyMap) {
+        this.markerSystem.createPolicyMarker({
+          country: country,
+          latitude: policy.latitude || 37.5,
+          longitude: policy.longitude || 126.9,
+          effectivenessScore: policy.effectivenessScore || 0.5,
+          title: policy.title,
+          description: policy.description
+        });
+      }
 
       // Load policy impact data from JSON files
       this.policyImpactData = await this.loadPolicyImpactData();
@@ -1055,201 +1070,13 @@ class PolicyGlobe {
     console.log(`🌍 Showing official WAQI data from ${this.pm25Data.size} locations worldwide`);
   }
 
-  createPM25Markers() {
-    if (!this.pm25Data || this.pm25Data.size === 0) return;
 
-    const markerGroup = new THREE.Group();
 
-    this.pm25Data.forEach((data, city) => {
-      const { lat, lon, aqi } = data;
-      const phi = (90 - lat) * (Math.PI / 180);
-      const theta = (lon + 180) * (Math.PI / 180);
-      const radius = 1.05;
 
-      const x = -radius * Math.sin(phi) * Math.cos(theta);
-      const z = radius * Math.sin(phi) * Math.sin(theta);
-      const y = radius * Math.cos(phi);
 
-      const markerGeometry = new THREE.SphereGeometry(0.02, 16, 16);
-      const markerMaterial = new THREE.MeshStandardMaterial({
-        color: this.getAQIColor(aqi),
-        transparent: true,
-        opacity: 0.9,
-        emissive: new THREE.Color(0x000000),
-        emissiveIntensity: 0,
-        metalness: 0.3,
-        roughness: 0.4
-      });
 
-      const marker = new THREE.Mesh(markerGeometry, markerMaterial);
-      marker.position.set(x, y, z);
-      marker.userData = { city, data };
 
-      const ringGeometry = new THREE.RingGeometry(0.025, 0.032, 32);
-      const ringMaterial = new THREE.MeshBasicMaterial({
-        color: this.getAQIColor(aqi),
-        transparent: true,
-        opacity: 0.5,
-        side: THREE.DoubleSide
-      });
 
-      const ring = new THREE.Mesh(ringGeometry, ringMaterial);
-      ring.lookAt(0, 0, 0);
-      ring.position.set(x, y, z);
-
-      markerGroup.add(marker);
-      markerGroup.add(ring);
-    });
-
-    this.pm25Markers = markerGroup;
-    this.pm25Markers.visible = this.showPM25;
-    this.scene.add(this.pm25Markers);
-  }
-
-  getAQIColor(aqi) {
-    if (aqi <= 50) return new THREE.Color(0x00e400);
-    if (aqi <= 100) return new THREE.Color(0xffff00);
-    if (aqi <= 150) return new THREE.Color(0xff7e00);
-    if (aqi <= 200) return new THREE.Color(0xff0000);
-    if (aqi <= 300) return new THREE.Color(0x8f3f97);
-    return new THREE.Color(0x7e1946);
-  }
-
-  /**
-   * Create special markers for countries with PM2.5 trends data
-   * These markers visualize policy impact at real geographic locations
-   */
-  createCountryPolicyMarkers() {
-    // Capital city coordinates for countries with PM2.5 trends data
-    const countryCapitals = {
-      'South Korea': { lat: 37.5665, lon: 126.9780 }, // Seoul
-      'China': { lat: 39.9042, lon: 116.4074 }, // Beijing
-      'Japan': { lat: 35.6762, lon: 139.6503 }, // Tokyo
-      'India': { lat: 28.6139, lon: 77.2090 }, // New Delhi
-      'Bangladesh': { lat: 23.8103, lon: 90.4125 }, // Dhaka
-      'United States': { lat: 38.9072, lon: -77.0369 }, // Washington DC
-      'United Kingdom': { lat: 51.5074, lon: -0.1278 }, // London
-      'Germany': { lat: 52.5200, lon: 13.4050 } // Berlin
-    };
-
-    // Color coding by policy effectiveness status
-    const statusColors = {
-      'Exemplary': 0x00ff88, // Bright green
-      'Highly Effective': 0x00dd66, // Green
-      'Effective': 0x44cc88, // Light green
-      'Partial Progress': 0xffaa00, // Orange
-      'Limited Progress': 0xff6600 // Red-orange
-    };
-
-    const markerGroup = new THREE.Group();
-
-    Object.entries(countryCapitals).forEach(([countryName, coords]) => {
-      const policyData = this.countryPolicies[countryName];
-      if (!policyData || !policyData.pm25Trends) return;
-
-      const { lat, lon } = coords;
-      const phi = (90 - lat) * (Math.PI / 180);
-      const theta = (lon + 180) * (Math.PI / 180);
-      const radius = 1.08; // Slightly higher than regular markers
-
-      const x = -radius * Math.sin(phi) * Math.cos(theta);
-      const z = radius * Math.sin(phi) * Math.sin(theta);
-      const y = radius * Math.cos(phi);
-
-      // Get status color
-      const status = policyData.policyImpact?.status || 'Partial Progress';
-      const color = new THREE.Color(statusColors[status] || 0xffaa00);
-
-      // Create marker (larger than regular PM2.5 markers)
-      const markerGeometry = new THREE.SphereGeometry(0.03, 32, 32);
-      const markerMaterial = new THREE.MeshStandardMaterial({
-        color: color,
-        transparent: true,
-        opacity: 0.95,
-        emissive: color,
-        emissiveIntensity: 0.3,
-        metalness: 0.5,
-        roughness: 0.2
-      });
-
-      const marker = new THREE.Mesh(markerGeometry, markerMaterial);
-      marker.position.set(x, y, z);
-      marker.userData = {
-        country: countryName,
-        policyData: policyData,
-        isCountryPolicy: true
-      };
-
-      // Create pulsing ring to indicate policy data availability
-      const ringGeometry = new THREE.RingGeometry(0.035, 0.045, 64);
-      const ringMaterial = new THREE.MeshBasicMaterial({
-        color: color,
-        transparent: true,
-        opacity: 0.6,
-        side: THREE.DoubleSide
-      });
-
-      const ring = new THREE.Mesh(ringGeometry, ringMaterial);
-      ring.lookAt(0, 0, 0);
-      ring.position.set(x, y, z);
-      ring.userData = { isPolicyRing: true, parentCountry: countryName };
-
-      // Create outer ring for enhanced visibility
-      const outerRingGeometry = new THREE.RingGeometry(0.048, 0.055, 64);
-      const outerRingMaterial = new THREE.MeshBasicMaterial({
-        color: color,
-        transparent: true,
-        opacity: 0.3,
-        side: THREE.DoubleSide
-      });
-
-      const outerRing = new THREE.Mesh(outerRingGeometry, outerRingMaterial);
-      outerRing.lookAt(0, 0, 0);
-      outerRing.position.set(x, y, z);
-      outerRing.userData = { isPolicyOuterRing: true, parentCountry: countryName };
-
-      markerGroup.add(marker);
-      markerGroup.add(ring);
-      markerGroup.add(outerRing);
-
-      console.log(`✅ Added policy marker for ${countryName} at (${lat}, ${lon})`);
-    });
-
-    this.countryPolicyMarkers = markerGroup;
-    this.scene.add(this.countryPolicyMarkers);
-
-    console.log(`✅ Created ${Object.keys(countryCapitals).length} country policy markers`);
-
-    // Animate rings (pulsing effect)
-    this.animatePolicyMarkers();
-  }
-
-  /**
-   * Animate country policy markers with pulsing effect
-   */
-  animatePolicyMarkers() {
-    if (!this.countryPolicyMarkers) return;
-
-    let time = 0;
-    const animateRings = () => {
-      time += 0.02;
-
-      this.countryPolicyMarkers.children.forEach((child) => {
-        if (child.userData.isPolicyRing) {
-          child.material.opacity = 0.4 + Math.sin(time) * 0.2;
-          child.scale.set(1 + Math.sin(time) * 0.1, 1 + Math.sin(time) * 0.1, 1);
-        }
-        if (child.userData.isPolicyOuterRing) {
-          child.material.opacity = 0.2 + Math.sin(time + Math.PI) * 0.1;
-          child.scale.set(1 + Math.sin(time + Math.PI) * 0.15, 1 + Math.sin(time + Math.PI) * 0.15, 1);
-        }
-      });
-
-      requestAnimationFrame(animateRings);
-    };
-
-    animateRings();
-  }
 
   /**
    * Get user's current GPS location and highlight their country on the globe
@@ -3240,7 +3067,16 @@ class PolicyGlobe {
 
     setupToggle('toggle-pm25-switch', 'toggle-pm25', (checked) => {
       this.showPM25 = checked;
-      if (this.pm25Markers) this.pm25Markers.visible = checked;
+      if (this.markerSystem) {
+        this.markerSystem.markerGroups.pm25.visible = checked;
+      }
+    });
+
+    // 🆕 정책 마커 토글
+    setupToggle('toggle-policies-switch', 'toggle-policies', (checked) => {
+      if (this.markerSystem) {
+        this.markerSystem.markerGroups.policies.visible = checked;
+      }
     });
 
     setupToggle('toggle-particles-switch', 'toggle-particles', (checked) => {
@@ -3443,9 +3279,9 @@ class PolicyGlobe {
 
     this.updateParticles();
     
-    // 🆕 마커 시스템 애니메이션 업데이트
+    // 🆕 Enhanced Marker System 애니메이션 업데이트
     if (this.markerSystem) {
-      this.markerSystem.update(delta);
+      this.markerSystem.updateAll(delta);
     }
 
     // Animate enhanced visualization
@@ -3498,43 +3334,6 @@ class PolicyGlobe {
   }
 
   // 🆕 마커 시스템으로 마커 생성
-  createMarkersWithSystem() {
-    if (!this.markerSystem || !this.pm25Data) return;
-
-    // PM2.5 마커 생성
-    this.pm25Data.forEach((data, city) => {
-      const { lat, lon, aqi } = data;
-      this.markerSystem.addPM25Marker(
-        city,
-        lat,
-        lon,
-        aqi,
-        data
-      );
-    });
-
-    console.log('✅ Created PM2.5 markers with marker system');
-  }
-
-  // 🆕 측정소 마커 업데이트
-  updateStationMarkers(stations) {
-    if (!this.markerSystem) return;
-
-    this.markerSystem.clearPM25Markers();
-
-    stations.forEach((station, id) => {
-      this.markerSystem.addPM25Marker(
-        id,
-        station.lat,
-        station.lon,
-        station.pm25 || station.aqi || 50,
-        station
-      );
-    });
-
-    console.log('✅ Updated station markers');
-  }
-
   // 🆕 Policy UI 업데이트
   updatePolicyUI() {
     try {

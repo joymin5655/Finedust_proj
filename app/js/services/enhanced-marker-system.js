@@ -25,9 +25,19 @@ export class EnhancedMarkerSystem {
       user: null                     // 사용자 위치
     };
     
+    // 🔍 마커 그룹 이름 설정 (디버깅용)
+    this.markerGroups.pm25.name = 'PM25-Markers';
+    this.markerGroups.policies.name = 'Policy-Markers';
+    
     // Scene 추가
     this.earth.add(this.markerGroups.pm25);
     this.earth.add(this.markerGroups.policies);
+    
+    // 🔍 디버깅: 마커 그룹이 씬에 추가되었는지 확인
+    console.log('✅ Marker groups created and added to earth');
+    console.log('  - PM25 group:', this.markerGroups.pm25);
+    console.log('  - Policy group:', this.markerGroups.policies);
+    console.log('  - Earth children count:', this.earth.children.length);
     
     // Animation tracking
     this.animationFrameIndex = 0;

@@ -113,34 +113,55 @@ class PolicyGlobe {
       // 🆕 Enhanced Marker System 초기화
       this.markerSystem = new EnhancedMarkerSystem(this.scene, this.earth);
       
+      // ✅ 마커 그룹 가시성 활성화
+      this.markerSystem.markerGroups.pm25.visible = true;
+      this.markerSystem.markerGroups.policies.visible = true;
+      console.log('✅ Marker groups visibility enabled');
+      
       this.createParticles();
       this.createCountryBorders();
 
       await this.loadPM25Data();
       
       // 🆕 PM2.5 마커 생성
+      console.log(`📍 Creating PM2.5 markers from ${this.pm25Data.size} stations...`);
+      let pm25Count = 0;
       for (const [id, station] of this.pm25Data) {
-        this.markerSystem.createPM25Marker({
-          id: station.id,
-          latitude: station.latitude,
-          longitude: station.longitude,
-          pm25: station.pm25,
-          country: station.country
-        });
+        try {
+          this.markerSystem.createPM25Marker({
+            id: station.id || id,
+            latitude: station.lat || station.latitude || 0,
+            longitude: station.lon || station.longitude || 0,
+            pm25: station.pm25 || station.aqi || 0,
+            country: station.country || 'Unknown'
+          });
+          pm25Count++;
+        } catch (error) {
+          console.error(`❌ Error creating PM2.5 marker for ${id}:`, error);
+        }
       }
+      console.log(`✅ Created ${pm25Count} PM2.5 markers`);
       
       // 🆕 정책 마커 생성
       const policyMap = await this.loadPoliciesData();
+      console.log(`📋 Creating policy markers from ${policyMap.size} policies...`);
+      let policyCount = 0;
       for (const [country, policy] of policyMap) {
-        this.markerSystem.createPolicyMarker({
-          country: country,
-          latitude: policy.latitude || 37.5,
-          longitude: policy.longitude || 126.9,
-          effectivenessScore: policy.effectivenessScore || 0.5,
-          title: policy.title,
-          description: policy.description
-        });
+        try {
+          this.markerSystem.createPolicyMarker({
+            country: country,
+            latitude: policy.latitude || 37.5,
+            longitude: policy.longitude || 126.9,
+            effectivenessScore: policy.effectivenessScore || 0.5,
+            title: policy.title || '',
+            description: policy.description || ''
+          });
+          policyCount++;
+        } catch (error) {
+          console.error(`❌ Error creating policy marker for ${country}:`, error);
+        }
       }
+      console.log(`✅ Created ${policyCount} policy markers`);
 
       // Load policy impact data from JSON files
       this.policyImpactData = await this.loadPolicyImpactData();

@@ -129,6 +129,20 @@ class PolicyGlobe {
 
       console.log('Policy Globe setup complete');
 
+      // Initialize enhanced visualization (1,188 WAQI stations + 68 country policies)
+      if (typeof window.GlobeIntegration !== 'undefined') {
+        try {
+          console.log('🎨 Initializing enhanced visualization...');
+          this.globeIntegration = new window.GlobeIntegration(this.scene, this.camera, this);
+          await this.globeIntegration.init();
+          console.log('✅ Enhanced visualization ready');
+        } catch (error) {
+          console.warn('⚠️  Enhanced visualization failed to initialize:', error);
+        }
+      } else {
+        console.warn('⚠️  GlobeIntegration not available');
+      }
+
       // Hide loading indicator
       const loadingIndicator = document.getElementById('loading-indicator');
       if (loadingIndicator) {
@@ -3408,6 +3422,11 @@ class PolicyGlobe {
     if (this.stars) this.stars.rotation.y += 0.00001;
 
     this.updateParticles();
+
+    // Animate enhanced visualization
+    if (this.globeIntegration) {
+      this.globeIntegration.animate(delta);
+    }
 
     if (this.pm25Markers && this.showPM25) {
       this.pm25Markers.children.forEach((child, index) => {

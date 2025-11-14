@@ -368,6 +368,21 @@
             }
         }
     </style>
+
+    <!-- Enhanced Globe Visualization Modules -->
+    <script type="module">
+        // Import enhanced visualization modules
+        import GlobeStationsVisualizer from './js/globe-stations-visualizer.js';
+        import PolicyImpactVisualizer from './js/policy-impact-visualizer.js';
+        import GlobeIntegration from './js/globe-integration.js';
+        
+        // Make globally available
+        window.GlobeStationsVisualizer = GlobeStationsVisualizer;
+        window.PolicyImpactVisualizer = PolicyImpactVisualizer;
+        window.GlobeIntegration = GlobeIntegration;
+        
+        console.log('✅ Enhanced visualization modules loaded');
+    </script>
 </head>
 
 <body class="bg-background-light dark:bg-background-dark">

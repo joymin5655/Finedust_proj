@@ -31,9 +31,7 @@ jobs:
           echo "✅ WAQI_TOKEN secret found"
       
       - name: Install dependencies
-        run: |
-          npm ci
-          npm install --no-save axios
+        run: npm install --no-save axios
       
       - name: Create data directory
         run: mkdir -p app/data/waqi

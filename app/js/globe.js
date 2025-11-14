@@ -148,7 +148,7 @@ class PolicyGlobe {
       let policyCount = 0;
       for (const [country, policy] of policyMap) {
         try {
-          this.markerSystem.createPolicyMarker({
+          const marker = this.markerSystem.createPolicyMarker({
             country: country,
             latitude: policy.latitude || 37.5,
             longitude: policy.longitude || 126.9,
@@ -157,11 +157,20 @@ class PolicyGlobe {
             description: policy.description || ''
           });
           policyCount++;
+          if (policyCount <= 3) {
+            console.log(`  ✓ Created marker for ${country}`);
+          }
         } catch (error) {
           console.error(`❌ Error creating policy marker for ${country}:`, error);
         }
       }
-      console.log(`✅ Created ${policyCount} policy markers`);
+      console.log(`✅ Created ${policyCount} policy markers in total`);
+      console.log(`📊 Marker system status:`, {
+        pm25Markers: this.markerSystem.pm25Markers.size,
+        policyMarkers: this.markerSystem.policyMarkers.size,
+        pm25GroupChildren: this.markerSystem.markerGroups.pm25.children.length,
+        policiesGroupChildren: this.markerSystem.markerGroups.policies.children.length
+      });
 
       // Load policy impact data from JSON files
       this.policyImpactData = await this.loadPolicyImpactData();
@@ -3072,14 +3081,20 @@ class PolicyGlobe {
       const switchEl = document.getElementById(switchId);
       const checkbox = document.getElementById(checkboxId);
 
+      console.log(`🔧 Setting up toggle: ${switchId}`, { switchEl: !!switchEl, checkbox: !!checkbox });
+
       if (switchEl && checkbox) {
         const toggle = () => {
           checkbox.checked = !checkbox.checked;
           switchEl.classList.toggle('checked', checkbox.checked);
+          console.log(`✅ Toggle ${switchId}: ${checkbox.checked}`);
           callback(checkbox.checked);
         };
 
         switchEl.addEventListener('click', toggle);
+        console.log(`✅ ${switchId} listener added`);
+      } else {
+        console.warn(`⚠️  ${switchId} or ${checkboxId} not found in DOM`);
       }
     };
 
@@ -3092,13 +3107,18 @@ class PolicyGlobe {
       this.showPM25 = checked;
       if (this.markerSystem) {
         this.markerSystem.markerGroups.pm25.visible = checked;
+        console.log(`📍 PM2.5 markers: ${checked ? 'shown' : 'hidden'}`);
       }
     });
 
     // 🆕 정책 마커 토글
     setupToggle('toggle-policies-switch', 'toggle-policies', (checked) => {
+      console.log(`📋 Policy toggle callback: ${checked}`, { markerSystem: !!this.markerSystem });
       if (this.markerSystem) {
         this.markerSystem.markerGroups.policies.visible = checked;
+        console.log(`📋 Policy markers: ${checked ? 'shown' : 'hidden'}`);
+      } else {
+        console.warn('⚠️  markerSystem not available');
       }
     });
 

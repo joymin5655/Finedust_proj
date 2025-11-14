@@ -1,61 +1,53 @@
 /**
- * Globe Marker System - 지구본에 고정된 마커 관리
- * 마커들이 지구표면에 완벽하게 고정됨
- * 지구본 회전 시 마커들도 함께 회전 (상대위치 유지)
+ * Enhanced Globe Marker System - 개선된 마커 시각화
+ * PM2.5 마커: 작고 간결 (보조 역할)
+ * 정책 마커: 크고 화려 (주요 포커스)
  */
 
 import * as THREE from 'three';
 
 export class GlobeMarkerSystem {
   constructor(globe, scene) {
-    this.globe = globe; // 지구 Mesh 객체 (회전하는 지구)
+    this.globe = globe;
     this.scene = scene;
     
     // 마커 그룹들
     this.markerGroups = {
-      pm25: null,        // PM2.5 측정소 마커
-      policies: null,    // 정책 마커
+      pm25: null,        // PM2.5 측정소 (작음, 간결)
+      policies: null,    // 정책 마커 (크고 화려)
       users: null        // 사용자 위치
     };
     
-    // 마커 데이터 저장
-    this.markerData = new Map(); // id -> { mesh, position, data }
-    
-    // 업데이트 상태
+    this.markerData = new Map();
     this.isUpdating = false;
+    
+    // 정책 마커 텍스트 라벨을 위한 캔버스
+    this.labelCanvas = null;
   }
 
   /**
    * 초기화
    */
   init() {
-    // 마커 그룹 생성
     this.markerGroups.pm25 = new THREE.Group();
     this.markerGroups.policies = new THREE.Group();
     this.markerGroups.users = new THREE.Group();
     
-    // 지구에 직접 추가 (중요!)
-    // 이렇게 하면 지구가 회전할 때 마커도 함께 회전함
+    // 계층 순서: PM2.5 → 정책 → 사용자 (정책이 위에 렌더링됨)
     this.globe.add(this.markerGroups.pm25);
     this.globe.add(this.markerGroups.policies);
     this.globe.add(this.markerGroups.users);
     
-    console.log('✅ Globe Marker System initialized');
+    console.log('✅ Enhanced Globe Marker System initialized');
   }
 
   /**
-   * 위도/경도를 3D 위치로 변환 (지구 표면)
-   * @param {number} lat - 위도 (-90 ~ 90)
-   * @param {number} lon - 경도 (-180 ~ 180)
-   * @param {number} radius - 지구 반지름 (기본값 1.0)
-   * @returns {THREE.Vector3} 3D 위치
+   * 위도/경도를 3D 위치로 변환
    */
   latLonToPosition(lat, lon, radius = 1.05) {
-    // 위도/경도를 라디안으로 변환
-    const phi = (90 - lat) * (Math.PI / 180);   // 극각 (pole angle)
-    const theta = (lon + 180) * (Math.PI / 180); // 방위각 (azimuth angle)
+    const phi = (90 - lat) * (Math.PI / 180);
+    const theta = (lon + 180) * (Math.PI / 180);
     
-    // 구면좌표 -> 직교좌표
     const x = -radius * Math.sin(phi) * Math.cos(theta);
     const z = radius * Math.sin(phi) * Math.sin(theta);
     const y = radius * Math.cos(phi);
@@ -64,50 +56,45 @@ export class GlobeMarkerSystem {
   }
 
   /**
-   * PM2.5 마커 추가
-   * @param {string} id - 고유 ID
-   * @param {number} lat - 위도
-   * @param {number} lon - 경도
-   * @param {number} value - PM2.5 값
-   * @param {Object} data - 추가 데이터
+   * PM2.5 마커 추가 - 작고 간결한 스타일
    */
   addPM25Marker(id, lat, lon, value, data = {}) {
-    const position = this.latLonToPosition(lat, lon, 1.05);
+    const position = this.latLonToPosition(lat, lon, 1.02);
     const color = this.getAQIColor(value);
     
-    // 메인 마커 (구)
-    const markerGeometry = new THREE.SphereGeometry(0.02, 16, 16);
+    // ▼ 메인 마커 (아주 작은 구, 반투명)
+    const markerGeometry = new THREE.SphereGeometry(0.01, 12, 12); // 더 작음
     const markerMaterial = new THREE.MeshStandardMaterial({
       color: color,
       transparent: true,
-      opacity: 0.9,
+      opacity: 0.6,  // 반투명
       emissive: color,
-      emissiveIntensity: 0.3,
-      metalness: 0.3,
-      roughness: 0.4
+      emissiveIntensity: 0.2,
+      metalness: 0.2,
+      roughness: 0.6,
+      depthWrite: false // 오버드로우 방지
     });
     const marker = new THREE.Mesh(markerGeometry, markerMaterial);
     marker.position.copy(position);
     marker.userData = { id, type: 'pm25', value, data };
     
-    // 링 (주변 효과)
-    const ringGeometry = new THREE.RingGeometry(0.025, 0.035, 32);
+    // ▼ 간단한 링 (가는 선)
+    const ringGeometry = new THREE.RingGeometry(0.012, 0.015, 24);
     const ringMaterial = new THREE.MeshBasicMaterial({
       color: color,
       transparent: true,
-      opacity: 0.4,
-      side: THREE.DoubleSide
+      opacity: 0.3,
+      side: THREE.DoubleSide,
+      depthWrite: false
     });
     const ring = new THREE.Mesh(ringGeometry, ringMaterial);
     ring.position.copy(position);
     ring.lookAt(position.clone().normalize().multiplyScalar(2));
     ring.userData = { id, type: 'pm25-ring' };
     
-    // 그룹에 추가
     this.markerGroups.pm25.add(marker);
     this.markerGroups.pm25.add(ring);
     
-    // 마커 데이터 저장
     this.markerData.set(id, {
       mesh: marker,
       ring: ring,
@@ -123,93 +110,208 @@ export class GlobeMarkerSystem {
   }
 
   /**
-   * 정책 마커 추가 (더 큰 마커)
-   * @param {string} countryCode - 국가 코드
-   * @param {number} lat - 위도
-   * @param {number} lon - 경도
-   * @param {string} status - 정책 상태 ('Exemplary', 'Effective', etc)
-   * @param {Object} data - 정책 데이터
+   * 정책 마커 추가 - 크고 화려한 스타일
+   * 이것이 주요 시각화 요소!
    */
   addPolicyMarker(countryCode, lat, lon, status = 'Effective', data = {}) {
-    const position = this.latLonToPosition(lat, lon, 1.08);
+    const position = this.latLonToPosition(lat, lon, 1.12); // 더 높게
     const color = this.getPolicyStatusColor(status);
     
-    // 메인 마커 (더 큼)
-    const markerGeometry = new THREE.SphereGeometry(0.03, 32, 32);
+    // ▼ 1️⃣ 메인 마커 (큰 팔각형 = 두드러짐)
+    const markerGeometry = new THREE.OctahedronGeometry(0.05, 1);
     const markerMaterial = new THREE.MeshStandardMaterial({
       color: color,
       transparent: true,
       opacity: 0.95,
       emissive: color,
-      emissiveIntensity: 0.4,
-      metalness: 0.5,
-      roughness: 0.2
+      emissiveIntensity: 0.6,  // 강한 빛남
+      metalness: 0.7,
+      roughness: 0.15,
+      wireframe: false
     });
     const marker = new THREE.Mesh(markerGeometry, markerMaterial);
     marker.position.copy(position);
-    marker.userData = { id: countryCode, type: 'policy', status, data };
+    marker.scale.set(1.5, 1.5, 1.5); // 시작부터 크게
+    marker.userData = { 
+      id: countryCode, 
+      type: 'policy', 
+      status, 
+      data,
+      rotationSpeed: Math.random() * 0.01 + 0.005 // 회전 속도 변화
+    };
     
-    // 펄싱 링 효과
-    const ringGeometry = new THREE.TorusGeometry(0.05, 0.008, 16, 100);
-    const ringMaterial = new THREE.MeshBasicMaterial({
+    // ▼ 2️⃣ 헤일로 효과 (주변 고리)
+    const haloGeometry = new THREE.TorusGeometry(0.08, 0.015, 32, 100);
+    const haloMaterial = new THREE.MeshBasicMaterial({
       color: color,
       transparent: true,
-      opacity: 0.6
+      opacity: 0.5,
+      side: THREE.DoubleSide,
+      depthWrite: false
     });
-    const ring = new THREE.Mesh(ringGeometry, ringMaterial);
-    ring.position.copy(position);
-    ring.userData = { id: countryCode, type: 'policy-ring' };
+    const halo = new THREE.Mesh(haloGeometry, haloMaterial);
+    halo.position.copy(position);
+    halo.userData = { id: countryCode, type: 'policy-halo' };
     
-    // 그룹에 추가
+    // ▼ 3️⃣ 펄싱 아우라 (더 큼, 맥박하는 효과)
+    const auraGeometry = new THREE.SphereGeometry(0.07, 32, 32);
+    const auraMaterial = new THREE.MeshBasicMaterial({
+      color: color,
+      transparent: true,
+      opacity: 0.2,
+      side: THREE.BackSide, // 내부에서 빛남
+      depthWrite: false
+    });
+    const aura = new THREE.Mesh(auraGeometry, auraMaterial);
+    aura.position.copy(position);
+    aura.scale.set(1, 1, 1);
+    aura.userData = { id: countryCode, type: 'policy-aura' };
+    
+    // ▼ 4️⃣ 텍스트 라벨 (국가 코드)
+    const labelTexture = this.createTextTexture(countryCode, color);
+    const labelGeometry = new THREE.PlaneGeometry(0.08, 0.04);
+    const labelMaterial = new THREE.MeshBasicMaterial({
+      map: labelTexture,
+      transparent: true,
+      side: THREE.DoubleSide,
+      depthWrite: false
+    });
+    const label = new THREE.Mesh(labelGeometry, labelMaterial);
+    label.position.copy(position.clone().normalize().multiplyScalar(1.18)); // 마커 위에 표시
+    label.lookAt(this.scene.position);
+    label.userData = { id: countryCode, type: 'policy-label' };
+    
+    // ▼ 5️⃣ 상태 표시 바 (정책 효과도)
+    const barGeometry = new THREE.BoxGeometry(0.12, 0.008, 0.001);
+    const effectiveness = this.getEffectiveness(status);
+    const barColor = this.getEffectivenessColor(effectiveness);
+    const barMaterial = new THREE.MeshBasicMaterial({
+      color: barColor,
+      transparent: true,
+      opacity: 0.8,
+      depthWrite: false
+    });
+    const bar = new THREE.Mesh(barGeometry, barMaterial);
+    bar.position.copy(position.clone().add(new THREE.Vector3(0, -0.08, 0)));
+    bar.userData = { id: countryCode, type: 'policy-bar' };
+    
+    // 그룹에 모두 추가
     this.markerGroups.policies.add(marker);
-    this.markerGroups.policies.add(ring);
+    this.markerGroups.policies.add(halo);
+    this.markerGroups.policies.add(aura);
+    this.markerGroups.policies.add(label);
+    this.markerGroups.policies.add(bar);
     
     // 마커 데이터 저장
     this.markerData.set(`policy-${countryCode}`, {
       mesh: marker,
-      ring: ring,
+      halo: halo,
+      aura: aura,
+      label: label,
+      bar: bar,
       position: position,
       lat: lat,
       lon: lon,
       status: status,
       data: data,
-      type: 'policy'
+      type: 'policy',
+      effectiveness: effectiveness
     });
     
-    return { marker, ring };
+    return { marker, halo, aura, label, bar };
   }
 
   /**
-   * 사용자 위치 마커 추가
+   * 텍스트 라벨 생성 (캔버스 텍스처)
+   */
+  createTextTexture(text, color) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 256;
+    canvas.height = 128;
+    
+    const ctx = canvas.getContext('2d');
+    
+    // 배경 (반투명 검정)
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    ctx.roundRect(10, 10, 236, 108, 8);
+    ctx.fill();
+    
+    // 테두리
+    const rgb = color.getHexString();
+    ctx.strokeStyle = `#${rgb}`;
+    ctx.lineWidth = 3;
+    ctx.roundRect(10, 10, 236, 108, 8);
+    ctx.stroke();
+    
+    // 텍스트
+    ctx.fillStyle = `#${rgb}`;
+    ctx.font = 'bold 40px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, 128, 64);
+    
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.needsUpdate = true;
+    
+    return texture;
+  }
+
+  /**
+   * 정책 효과도 (0-100)
+   */
+  getEffectiveness(status) {
+    const scores = {
+      'Exemplary': 95,
+      'Highly Effective': 85,
+      'Effective': 70,
+      'Partial Progress': 50,
+      'Limited Progress': 30,
+      'default': 50
+    };
+    return scores[status] || scores.default;
+  }
+
+  /**
+   * 효과도에 따른 색상
+   */
+  getEffectivenessColor(effectiveness) {
+    if (effectiveness >= 80) return new THREE.Color(0x00ff88); // 밝은 녹색
+    if (effectiveness >= 60) return new THREE.Color(0x00dd66);
+    if (effectiveness >= 40) return new THREE.Color(0xffaa00); // 주황
+    return new THREE.Color(0xff6600); // 빨강
+  }
+
+  /**
+   * 사용자 위치 마커
    */
   addUserLocationMarker(lat, lon) {
-    const position = this.latLonToPosition(lat, lon, 1.12);
+    const position = this.latLonToPosition(lat, lon, 1.15);
     
-    // 사용자 마커 (별 모양)
-    const starGeometry = new THREE.IcosahedronGeometry(0.025, 1);
+    // ▼ 별 모양 (노란색, 눈에 띔)
+    const starGeometry = new THREE.TetrahedronGeometry(0.035, 0);
     const starMaterial = new THREE.MeshStandardMaterial({
       color: 0xffeb3b,
       emissive: 0xffeb3b,
-      emissiveIntensity: 0.6,
+      emissiveIntensity: 0.8,
       metalness: 0.8,
-      roughness: 0.2
+      roughness: 0.1
     });
     const star = new THREE.Mesh(starGeometry, starMaterial);
     star.position.copy(position);
     star.userData = { type: 'user-location' };
     
-    // 펄싱 애니메이션용 링
-    const pulseGeometry = new THREE.SphereGeometry(0.04, 32, 32);
+    // ▼ 펄싱 큰 링
+    const pulseGeometry = new THREE.SphereGeometry(0.05, 32, 32);
     const pulseMaterial = new THREE.MeshBasicMaterial({
       color: 0xffeb3b,
       transparent: true,
       opacity: 0.3,
-      wireframe: false
+      wireframe: false,
+      depthWrite: false
     });
     const pulse = new THREE.Mesh(pulseGeometry, pulseMaterial);
     pulse.position.copy(position);
     pulse.userData = { type: 'user-pulse' };
-    pulse.scale.set(1, 1, 1);
     
     this.markerGroups.users.add(star);
     this.markerGroups.users.add(pulse);
@@ -227,16 +329,16 @@ export class GlobeMarkerSystem {
   }
 
   /**
-   * 모든 PM2.5 마커 제거
+   * 마커 제거
    */
   clearPM25Markers() {
     this.markerGroups.pm25.children.forEach(child => {
       child.geometry?.dispose();
       child.material?.dispose();
+      if (child.material?.map) child.material.map.dispose();
     });
     this.markerGroups.pm25.clear();
     
-    // 데이터맵에서 pm25 마커 제거
     for (let [key, value] of this.markerData) {
       if (value.type === 'pm25') {
         this.markerData.delete(key);
@@ -245,12 +347,13 @@ export class GlobeMarkerSystem {
   }
 
   /**
-   * 모든 정책 마커 제거
+   * 정책 마커 제거
    */
   clearPolicyMarkers() {
     this.markerGroups.policies.children.forEach(child => {
       child.geometry?.dispose();
       child.material?.dispose();
+      if (child.material?.map) child.material.map.dispose();
     });
     this.markerGroups.policies.clear();
     
@@ -262,7 +365,7 @@ export class GlobeMarkerSystem {
   }
 
   /**
-   * 마커 가시성 제어
+   * 마커 그룹 가시성
    */
   setMarkerGroupVisibility(groupName, visible) {
     if (this.markerGroups[groupName]) {
@@ -271,77 +374,75 @@ export class GlobeMarkerSystem {
   }
 
   /**
-   * PM2.5 값에 따른 색상 반환
+   * PM2.5 색상 (AQI 기준)
    */
   getAQIColor(value) {
-    if (value <= 50) return new THREE.Color(0x00e400);   // Green
-    if (value <= 100) return new THREE.Color(0xffff00);  // Yellow
-    if (value <= 150) return new THREE.Color(0xff7e00);  // Orange
-    if (value <= 200) return new THREE.Color(0xff0000);  // Red
-    if (value <= 300) return new THREE.Color(0x8f3f97);  // Purple
-    return new THREE.Color(0x7e1946);                     // Maroon
+    if (value <= 50) return new THREE.Color(0x00e400);   // 녹색
+    if (value <= 100) return new THREE.Color(0xffff00);  // 노랑
+    if (value <= 150) return new THREE.Color(0xff7e00);  // 주황
+    if (value <= 200) return new THREE.Color(0xff0000);  // 빨강
+    if (value <= 300) return new THREE.Color(0x8f3f97);  // 보라
+    return new THREE.Color(0x7e1946);                     // 검붉음
   }
 
   /**
-   * 정책 상태에 따른 색상
+   * 정책 상태 색상 (매우 구분되도록)
    */
   getPolicyStatusColor(status) {
     const colors = {
-      'Exemplary': 0x00ff88,      // Bright green
-      'Highly Effective': 0x00dd66,
-      'Effective': 0x44cc88,
-      'Partial Progress': 0xffaa00,
-      'Limited Progress': 0xff6600,
-      'default': 0xffaa00
+      'Exemplary': 0x00ff88,          // 매우 밝은 녹색
+      'Highly Effective': 0x00ff44,   // 밝은 녹색
+      'Effective': 0x44ff00,          // 노란 녹색
+      'Partial Progress': 0xffdd00,   // 밝은 노랑
+      'Limited Progress': 0xff8800,   // 주황
+      'default': 0xff4400             // 빨강
     };
     return new THREE.Color(colors[status] || colors.default);
   }
 
   /**
-   * 마커 애니메이션 업데이트 (매 프레임 호출)
-   * 펄싱 효과, 회전 효과 등을 적용
+   * 애니메이션 업데이트 (매 프레임)
    */
   update(deltaTime) {
-    // 펄싱 애니메이션 (사용자 마커)
     this.markerData.forEach((markerData, id) => {
       if (markerData.type === 'user' && markerData.pulse) {
-        const scale = 1 + Math.sin(Date.now() * 0.003) * 0.2;
+        // 사용자 마커 펄싱
+        const scale = 1 + Math.sin(Date.now() * 0.003) * 0.3;
         markerData.pulse.scale.set(scale, scale, scale);
       }
       
-      // 회전 애니메이션 (정책 마커)
-      if (markerData.type === 'policy' && markerData.ring) {
-        markerData.ring.rotation.z += 0.01;
+      if (markerData.type === 'policy') {
+        // 정책 마커 회전
+        if (markerData.mesh) {
+          markerData.mesh.rotation.x += markerData.mesh.userData.rotationSpeed;
+          markerData.mesh.rotation.y += markerData.mesh.userData.rotationSpeed * 0.7;
+          
+          // 크기 변화 (숨쉬는 효과)
+          const breathe = 1 + Math.sin(Date.now() * 0.002) * 0.15;
+          markerData.mesh.scale.set(breathe * 1.5, breathe * 1.5, breathe * 1.5);
+        }
+        
+        // 헤일로 회전
+        if (markerData.halo) {
+          markerData.halo.rotation.z += 0.005;
+        }
+        
+        // 아우라 펄싱
+        if (markerData.aura) {
+          const auraPulse = 0.9 + Math.sin(Date.now() * 0.004) * 0.2;
+          markerData.aura.scale.set(auraPulse, auraPulse, auraPulse);
+        }
+        
+        // 라벨 항상 카메라 보기
+        if (markerData.label && markerData.label.parent) {
+          markerData.label.lookAt(0, 0, 0);
+        }
       }
-    });
-  }
-
-  /**
-   * 마커 업데이트 (값 변경)
-   */
-  updateMarker(id, newValue) {
-    const markerData = this.markerData.get(id);
-    if (!markerData) return;
-    
-    if (markerData.type === 'pm25') {
-      const newColor = this.getAQIColor(newValue);
-      markerData.mesh.material.color.copy(newColor);
-      markerData.mesh.material.emissive.copy(newColor);
-      if (markerData.ring) {
-        markerData.ring.material.color.copy(newColor);
-      }
-      markerData.value = newValue;
-    }
-  }
-
-  /**
-   * 마커 선택 해제 모든 상태 초기화
-   */
-  deselectAll() {
-    this.markerData.forEach(markerData => {
-      if (markerData.mesh) {
-        markerData.mesh.material.emissiveIntensity = 
-          markerData.type === 'pm25' ? 0.3 : 0.4;
+      
+      // PM2.5 마커 가벼운 펄싱
+      if (markerData.type === 'pm25' && markerData.ring) {
+        const pulse = 1 + Math.sin(Date.now() * 0.001 + id.charCodeAt(0)) * 0.1;
+        markerData.ring.scale.set(pulse, pulse, pulse);
       }
     });
   }
@@ -350,10 +451,32 @@ export class GlobeMarkerSystem {
    * 마커 선택
    */
   selectMarker(id) {
-    this.deselectAll();
-    const markerData = this.markerData.get(id);
-    if (markerData && markerData.mesh) {
-      markerData.mesh.material.emissiveIntensity = 0.8;
+    this.markerData.forEach(markerData => {
+      if (markerData.mesh) {
+        if (markerData.type === 'pm25') {
+          markerData.mesh.material.emissiveIntensity = 0.2;
+        } else if (markerData.type === 'policy') {
+          markerData.mesh.material.emissiveIntensity = 0.6;
+        }
+      }
+    });
+    
+    const selected = this.markerData.get(id) || this.markerData.get(`policy-${id}`);
+    if (selected && selected.mesh) {
+      selected.mesh.material.emissiveIntensity = 
+        selected.type === 'pm25' ? 0.8 : 1.0;
     }
+  }
+
+  /**
+   * 모두 선택 해제
+   */
+  deselectAll() {
+    this.markerData.forEach(markerData => {
+      if (markerData.mesh) {
+        markerData.mesh.material.emissiveIntensity = 
+          markerData.type === 'pm25' ? 0.2 : 0.6;
+      }
+    });
   }
 }

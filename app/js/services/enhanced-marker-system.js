@@ -436,6 +436,48 @@ export class EnhancedMarkerSystem {
     this.markerGroups.pm25.clear();
     this.markerGroups.policies.clear();
   }
+
+  /**
+   * 위도/경도를 3D 위치로 변환
+   * @param {number} latitude - 위도 (-90 ~ 90)
+   * @param {number} longitude - 경도 (-180 ~ 180)
+   * @returns {THREE.Vector3} 3D 위치
+   */
+  latLonToPosition(latitude, longitude) {
+    const radius = 1.01; // 지구 표면에서 약간 떨어진 위치
+    const phi = (90 - latitude) * (Math.PI / 180); // 위도를 래디안으로
+    const theta = (longitude + 180) * (Math.PI / 180); // 경도를 래디안으로
+
+    const x = -radius * Math.sin(phi) * Math.cos(theta);
+    const z = radius * Math.sin(phi) * Math.sin(theta);
+    const y = radius * Math.cos(phi);
+
+    return new THREE.Vector3(x, y, z);
+  }
+
+  /**
+   * PM2.5 값을 색상으로 변환
+   */
+  getPM25Color(pm25) {
+    if (pm25 <= 12) return new THREE.Color(0x00e400); // 녹색
+    if (pm25 <= 35.5) return new THREE.Color(0xffff00); // 노랑
+    if (pm25 <= 55.5) return new THREE.Color(0xff7e00); // 주황
+    if (pm25 <= 150.5) return new THREE.Color(0xff0000); // 빨강
+    return new THREE.Color(0x8f3f97); // 자주색
+  }
+
+  /**
+   * 효과도 점수를 색상으로 변환
+   */
+  getPolicyColor(score) {
+    const clampedScore = Math.max(0, Math.min(1, score));
+    
+    if (clampedScore >= 0.8) return new THREE.Color(0x00ff88); // 밝은 녹색
+    if (clampedScore >= 0.6) return new THREE.Color(0x00dd66); // 녹색
+    if (clampedScore >= 0.4) return new THREE.Color(0x44cc88); // 연한 녹색
+    if (clampedScore >= 0.2) return new THREE.Color(0xffaa00); // 주황
+    return new THREE.Color(0xff6600); // 빨강
+  }
 }
 
 export default EnhancedMarkerSystem;

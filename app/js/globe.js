@@ -8,6 +8,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { globalDataService } from './services/shared-data-service.js';
 import { GlobeMarkerSystem } from './services/globe-marker-system.js';
+import { EnhancedMarkerSystem } from './services/enhanced-marker-system.js';
 import { policyDataService } from './services/policy-data-service.js';
 
 class PolicyGlobe {
@@ -80,6 +81,7 @@ class PolicyGlobe {
 
     // 🆕 Data Services Integration
     this.markerSystem = null;
+    this.markerSystem = new EnhancedMarkerSystem(this.scene, this.earth);
     this.globalDataService = globalDataService;
     this.policyDataService = policyDataService;
     

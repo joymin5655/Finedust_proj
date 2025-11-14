@@ -25,32 +25,42 @@ export class PolicyDataService {
     }
 
     try {
-      console.log('📋 Loading policy data...');
+      console.log('📋 Loading policy data from policies.json...');
       
-      // JSON 파일들에서 정책 데이터 로드
+      // 단일 policies.json 파일에서 정책 데이터 로드
+      const response = await fetch(`${this.baseURL}/policies.json`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: Failed to load policies.json`);
+      }
+      
+      const data = await response.json();
       const policies = new Map();
       
-      // 정책 파일 목록
-      const policyFiles = [
-        'south-korea-policies.json',
-        'china-policies.json',
-        'japan-policies.json',
-        'india-policies.json',
-        'usa-policies.json',
-        'europe-policies.json'
-      ];
-      
-      for (const file of policyFiles) {
-        try {
-          const response = await fetch(`${this.baseURL}/${file}`);
-          if (response.ok) {
-            const data = await response.json();
-            if (data.country) {
-              policies.set(data.country, data);
-            }
-          }
-        } catch (error) {
-          console.warn(`⚠️ Could not load ${file}:`, error.message);
+      if (data.policies && Array.isArray(data.policies)) {
+        const countryCoordinates = {
+          'South Korea': { lat: 37.5, lon: 126.9 },
+          'China': { lat: 39.9, lon: 116.4 },
+          'Japan': { lat: 35.6, lon: 139.6 },
+          'USA': { lat: 37.7, lon: -95.7 },
+          'European Union': { lat: 54.5, lon: 15.2 },
+          'India': { lat: 28.6, lon: 77.2 },
+          'Germany': { lat: 51.1, lon: 10.4 },
+          'France': { lat: 46.2, lon: 2.2 },
+          'United Kingdom': { lat: 55.3, lon: -3.4 },
+          'Canada': { lat: 56.1, lon: -106.3 }
+        };
+        
+        for (const policy of data.policies) {
+          const country = policy.country || 'Unknown';
+          const coords = countryCoordinates[country] || { lat: 37.5, lon: 126.9 };
+          
+          policies.set(country, {
+            ...policy,
+            latitude: coords.lat,
+            longitude: coords.lon,
+            effectivenessScore: policy.credibility || 0.5
+          });
         }
       }
       
@@ -60,7 +70,7 @@ export class PolicyDataService {
       // 전역 데이터 서비스에 업데이트
       globalDataService.setPolicies(policies);
       
-      console.log(`✅ Loaded ${policies.size} policies`);
+      console.log(`✅ Loaded ${policies.size} policies from policies.json`);
       return policies;
     } catch (error) {
       console.error('❌ Failed to load policies:', error);

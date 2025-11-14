@@ -720,16 +720,18 @@ class PolicyGlobe {
    * Mode 2 (Enhanced): WAQI Map Bounds API - Optional token - 1000+ stations
    */
   async loadPM25Data() {
-    // Check if WAQI token is available for enhanced mode
+    // 🔧 OPTIMIZED: Use Open-Meteo by default (faster + no token needed)
+    // To enable WAQI: set FORCE_WAQI = true
+    const FORCE_WAQI = false; // ⚡ Set to false for fast loading
+    
     const waqiToken = window.API_CONFIG?.waqi?.enabled ? window.API_CONFIG.waqi.token : null;
 
-    if (waqiToken) {
+    if (FORCE_WAQI && waqiToken) {
       console.log('🚀 Enhanced Mode: Using WAQI Map Bounds API for 1000+ stations!');
       await this.loadPM25Data_WAQI(waqiToken);
     } else {
-      console.log('🌍 Default Mode: Using Open-Meteo (EU Copernicus CAMS)');
-      console.log('✅ NO TOKEN REQUIRED - Loading 150+ major cities!');
-      console.log('💡 Tip: Add WAQI token in config.js for 1000+ real-time stations');
+      console.log('🌍 ⚡ Fast Mode: Using Open-Meteo (No token needed)');
+      console.log('✅ Loading 150+ major cities worldwide...');
       await this.loadPM25Data_OpenMeteo();
     }
   }

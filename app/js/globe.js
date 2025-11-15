@@ -3501,3 +3501,10 @@ if (document.readyState === 'loading') {
 } else {
   new PolicyGlobe();
 }
+// Globe 페이지 로드 시 개선사항 적용
+import('./globe-enhancement.js').then(module => {
+  module.enhanceGlobe(PolicyGlobe);
+  console.log('✅ Globe enhancements loaded');
+}).catch(error => {
+  console.error('Failed to load enhancements:', error);
+});

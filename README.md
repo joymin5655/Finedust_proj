@@ -6,8 +6,6 @@
 [![Deploy](https://github.com/joymin5655/Finedust_proj/actions/workflows/deploy.yml/badge.svg)](https://github.com/joymin5655/Finedust_proj/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-**✅ NO API KEYS NEEDED - Works immediately!**
-
 **Live Demo:** [https://joymin5655.github.io/Finedust_proj/app/](https://joymin5655.github.io/Finedust_proj/app/)
 
 ---
@@ -18,21 +16,14 @@ AirLens transforms complex air quality data into an intuitive, beautiful 3D visu
 
 ### 🌟 Key Highlights
 
-- **✅ NO TOKEN REQUIRED**: Works immediately - no API keys, no registration needed!
 - **🇪🇺 Official EU Data**: Real-time data from EU Copernicus CAMS (ECMWF)
 - **🌍 3D Globe Visualization**: 174+ cities worldwide with live PM2.5 data
 - **📸 Camera AI**: Upload sky photos to predict PM2.5 using multimodal AI
 - **🎨 Beautiful Interface**: Smooth animations, responsive design, dark mode
-- **📱 Fully Responsive**: Works seamlessly on desktop, tablet, and mobile
 
 ---
 
 ## ✨ Features
-
-### 🌙 Dark/Light Mode Toggle
-- **Persistent theme preference** using localStorage
-- **Dynamic UI adaptation** across all components
-- **Smooth transitions**
 
 ### 🌐 Interactive 3D Globe
 Built with **Three.js**:
@@ -162,28 +153,6 @@ Fully responsive dark mode for comfortable viewing.
 - Analyzes sky photo characteristics
 - Estimates PM2.5 from atmospheric opacity
 - Browser-based ML processing
-
----
-
-## 🔧 Configuration
-
-No configuration needed! The app works out of the box with:
-- ✅ No API keys
-- ✅ No registration
-- ✅ No build step required
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-### Development Setup
-1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Open a Pull Request
 
 ---
 

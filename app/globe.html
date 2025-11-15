@@ -754,7 +754,7 @@
                     </div>
 
                 <!-- View Full Details Button -->
-                <button id="view-more-btn" class="w-full flex items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-4 mt-3 bg-primary/20 text-primary text-base font-bold leading-normal tracking-[0.015em] hover:bg-primary/30 transition-colors">
+                <button id="view-more-btn" onclick="openPolicyLink()" class="w-full flex items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-4 mt-3 bg-primary/20 text-primary text-base font-bold leading-normal tracking-[0.015em] hover:bg-primary/30 transition-colors">
                     <span class="material-symbols-outlined !text-lg">open_in_new</span>
                     <span class="truncate">View Full Details</span>
                 </button>
@@ -955,6 +955,22 @@
 
     <!-- JavaScript -->
     <script>
+        // Global variable to store current policy
+        window.currentPolicy = null;
+
+        /**
+         * 정책 링크 열기
+         */
+        function openPolicyLink() {
+            if (window.currentPolicy && window.currentPolicy.url) {
+                const url = window.currentPolicy.url;
+                console.log('🔗 Opening policy link:', url);
+                window.open(url, '_blank');
+            } else {
+                console.warn('⚠️ Policy URL not available');
+            }
+        }
+
         // Close policy card with animation
         function closePolicyCard() {
             const card = document.getElementById('policy-card');
@@ -963,10 +979,13 @@
                 card.style.display = 'none';
             }, 300); // Match the transition duration
             
-            // Policy markers 선택 해제
+            // Policy markers 선택 해제 및 마커 컨테이너 정리
             if (window.policyMarkersManager) {
                 window.policyMarkersManager.deselectMarker();
             }
+            
+            // Current policy 초기화
+            window.currentPolicy = null;
         }
 
         // Toggle Policy Explorer panel (mobile)
@@ -1000,42 +1019,18 @@
         });
 
         /**
-         * Policy 마커 시스템 초기화
-         * globe.js가 로드된 후 호출
+         * Policy 마커 컨테이너 정리 (아이콘 날라다니는 문제 해결)
          */
-        function initializePolicyMarkers() {
-            // Policy Markers Manager 동적 로드
-            const script = document.createElement('script');
-            script.type = 'module';
-            script.textContent = `
-                import PolicyMarkersManager from './js/modules/policy-markers.js';
-                
-                // 글로브 로드 완료 시 마커 생성
-                const observer = new MutationObserver(() => {
-                    const canvas = document.getElementById('globe-canvas');
-                    if (canvas) {
-                        if (!window.policyMarkersManager) {
-                            window.policyMarkersManager = new PolicyMarkersManager(
-                                document.getElementById('globe-container'),
-                                canvas
-                            );
-                            console.log('✅ Policy Markers initialized');
-                        }
-                        observer.disconnect();
-                    }
-                });
-                
-                observer.observe(document.getElementById('globe-container'), {
-                    childList: true,
-                    subtree: true
-                });
-            `;
-            document.head.appendChild(script);
+        function cleanupMarkerContainer() {
+            const existingContainer = document.getElementById('policy-markers-container');
+            if (existingContainer) {
+                existingContainer.remove();
+            }
         }
 
-        // 페이지 로드 시 초기화
+        // 페이지 로드 시 마커 컨테이너 정리
         document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(initializePolicyMarkers, 1000);
+            cleanupMarkerContainer();
         });
     </script>
     <script src="js/theme-toggle.js"></script>

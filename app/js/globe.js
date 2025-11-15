@@ -3404,6 +3404,9 @@ class PolicyGlobe {
       const policyCard = document.getElementById('policy-card');
       if (!policyCard) return;
 
+      // ✨ 현재 정책을 전역 변수에 저장 (View Full Details 버튼에서 사용)
+      window.currentPolicy = policy;
+
       // 국기 매핑
       const flags = {
         'South Korea': '🇰🇷',
@@ -3426,8 +3429,22 @@ class PolicyGlobe {
 
       const date = policy.implementationYear 
         ? new Date(policy.implementationYear, 0).toLocaleDateString()
-        : 'Date not available';
+        : (policy.target_year ? `Target: ${policy.target_year}` : 'Date not available');
       document.getElementById('policy-date').textContent = date;
+
+      // ✨ View Full Details 버튼 활성화 여부 (URL이 있으면 활성화)
+      const viewMoreBtn = document.getElementById('view-more-btn');
+      if (viewMoreBtn) {
+        if (policy.url) {
+          viewMoreBtn.style.opacity = '1';
+          viewMoreBtn.style.pointerEvents = 'auto';
+          viewMoreBtn.title = `Visit: ${policy.url}`;
+        } else {
+          viewMoreBtn.style.opacity = '0.5';
+          viewMoreBtn.style.pointerEvents = 'none';
+          viewMoreBtn.title = 'No URL available';
+        }
+      }
 
       // PM2.5 데이터 표시
       const stations = Array.from(this.globalDataService.getStations().values())

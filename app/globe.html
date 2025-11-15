@@ -49,6 +49,80 @@
     <link rel="stylesheet" href="css/settings.css"/>
     <link rel="stylesheet" href="css/policy-panel-enhanced.css"/>
 
+    <!-- Enhanced Policy System Styles -->
+    <style>
+        /* 정책 툴팁 스타일 */
+        .policy-tooltip-content {
+            min-width: 200px;
+        }
+        
+        .tooltip-title {
+            font-weight: 600;
+            color: #25e2f4;
+            margin-bottom: 8px;
+        }
+        
+        .tooltip-country,
+        .tooltip-date {
+            font-size: 12px;
+            color: #8c9fa2;
+            margin-bottom: 4px;
+        }
+        
+        .tooltip-improvement {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(37, 226, 244, 0.2);
+            font-size: 14px;
+        }
+        
+        .tooltip-improvement .positive {
+            color: #51cf66;
+            font-weight: 600;
+        }
+        
+        .tooltip-improvement .negative {
+            color: #ff6b6b;
+            font-weight: 600;
+        }
+        
+        .tooltip-hint {
+            font-size: 11px;
+            color: rgba(37, 226, 244, 0.7);
+            margin-top: 8px;
+            text-align: center;
+        }
+        
+        /* 로딩 인디케이터 개선 */
+        #loading-indicator {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10000;
+            text-align: center;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(37, 226, 244, 0.3);
+            border-top-color: #25e2f4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            margin-top: 15px;
+            color: #25e2f4;
+            font-size: 14px;
+        }
+    </style>
+
     <script>
         tailwind.config = {
             darkMode: "class",

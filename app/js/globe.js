@@ -146,35 +146,35 @@ class PolicyGlobe {
 
   async init() {
     try {
-      // ⚡ PHASE 1: 즉시 글로브 표시 (1-2초)
+      // ⚡ PHASE 1: 글로브 기본 렌더링 (필수 요소만)
       this.createLights();
-      this.updateLoadingProgress(3, 'Init');
-      
       this.createStars();
-      this.updateLoadingProgress(8, 'Earth');
+      this.updateLoadingProgress(10, 'Earth');
       
       await this.createRealisticEarth();
-      this.updateLoadingProgress(20, 'Build');
+      this.updateLoadingProgress(30, 'Build');
       
       this.createAtmosphere();
       this.createClouds();
+      this.createCountryBorders();
+      this.updateLoadingProgress(50, 'Ready');
       
-      // ⚡ PHASE 2: 마커 시스템 준비 (300ms)
-      this.updateLoadingProgress(35, 'Ready');
+      // ⚡ PHASE 2: 마커 시스템 초기화
       this.markerSystem = new EnhancedMarkerSystem(this.scene, this.earth);
       this.policyChangeVisualizer = new PolicyChangeVisualizer(this.scene, this.earth);
       this.markerSystem.markerGroups.pm25.visible = true;
       this.markerSystem.markerGroups.policies.visible = true;
       
-      // ⚡ PHASE 3: 글로브 렌더링 시작 (즉시 보임!)
+      // ⚡ 글로브 렌더링 시작 (사용자에게 즉시 보임!)
+      this.updateLoadingProgress(60, 'Start');
       this.hideLoadingIndicator();
       this.animate();
       
-      // ⚡ PHASE 4: 백그라운드에서 데이터 로드 (동시 처리)
+      // ⚡ PHASE 3: 백그라운드에서 데이터 로드
       this.backgroundLoadData();
       
     } catch (error) {
-      console.error('Error initializing globe:', error);
+      console.error('❌ Error initializing globe:', error);
       
       const loadingIndicator = document.getElementById('loading-indicator');
       if (loadingIndicator) {
@@ -188,55 +188,75 @@ class PolicyGlobe {
             </button>
           </div>
         `;
+        console.error('Stack:', error.stack);
       }
     }
   }
 
-  // ✨ 백그라운드 데이터 로드 (NEW - 글로브 표시 후 실행)
+  // ✨ 백그라운드 데이터 로드 (안전한 버전)
   async backgroundLoadData() {
     try {
-      // 1. 데이터 병렬 로드
-      const [pm25Data, policyMap, impactData] = await Promise.all([
-        this.loadPM25Data().then(() => this.pm25Data),
-        this.loadPoliciesData(),
-        this.loadPolicyImpactData()
-      ]);
+      console.log('📊 Loading background data...');
       
-      // 2. 마커 생성 (분산 처리)
-      this.createCountryBorders(); // 경계선 그리기 (백그라운드)
+      // 1. PM2.5 데이터 로드
+      console.log('Loading PM2.5 data...');
+      await this.loadPM25Data();
+      console.log(`✅ Loaded ${this.pm25Data.size} stations`);
+      
+      // 2. 정책 데이터 로드
+      console.log('Loading policies...');
+      const policyMap = await this.loadPoliciesData();
+      console.log(`✅ Loaded ${policyMap.size} policies`);
+      
+      // 3. 정책 영향 데이터 로드
+      console.log('Loading policy impact...');
+      this.policyImpactData = await this.loadPolicyImpactData();
+      
+      // 4. 마커 생성 (비동기 분산)
+      console.log('Creating markers...');
       await this.createPM25MarkersAsync();
       await this.createPolicyMarkersAsync(policyMap);
       
-      // 3. 정책 데이터 병합
-      this.policyImpactData = impactData;
+      // 5. 정책 데이터 병합
+      console.log('Merging policy data...');
       this.mergePolicyData();
       
-      // 4. UI 설정
+      // 6. UI 설정
+      console.log('Setting up UI...');
       this.setupEventListeners();
       this.setupToggleSwitches();
       this.getUserLocationAndHighlight();
       
-      // 5. Enhanced visualization (선택사항)
+      // 7. Enhanced visualization (선택사항)
       if (typeof window.GlobeIntegration !== 'undefined') {
         try {
+          console.log('Initializing enhanced visualization...');
           this.globeIntegration = new window.GlobeIntegration(this.scene, this.camera, this);
           await this.globeIntegration.init();
+          console.log('✅ Enhanced visualization ready');
         } catch (error) {
-          console.warn('⚠️ Enhanced visualization failed');
+          console.warn('⚠️ Enhanced visualization:', error.message);
         }
       }
       
-      console.log('✅ Background data loaded');
+      console.log('✅ All background data loaded');
     } catch (error) {
-      console.warn('⚠️ Background load error:', error);
+      console.error('⚠️ Background load error:', error);
     }
   }
 
-  // ✨ 마커 생성을 비동기로 분산 (OPTIMIZED)
+  // ✨ PM2.5 마커 생성 (안전한 비동기 버전)
   async createPM25MarkersAsync() {
+    if (!this.pm25Data || this.pm25Data.size === 0) {
+      console.warn('⚠️ No PM2.5 data available');
+      return;
+    }
+    
     let count = 0;
     const total = this.pm25Data.size;
-    const batchSize = 200; // 200개씩 처리 (더 큰 배치 = 더 빠름)
+    const batchSize = 100; // 100개씩 처리
+    
+    console.log(`📍 Creating ${total} PM2.5 markers...`);
     
     for (const [id, station] of this.pm25Data) {
       try {
@@ -249,20 +269,28 @@ class PolicyGlobe {
         });
         count++;
         
-        // 200개마다만 업데이트 (업데이트 오버헤드 감소)
+        // 100개마다 브라우저에 양보
         if (count % batchSize === 0) {
-          await new Promise(resolve => setTimeout(resolve, 0)); // 브라우저 응답성 유지
+          await new Promise(resolve => setTimeout(resolve, 0));
         }
       } catch (error) {
-        console.error(`Error creating PM2.5 marker:`, error);
+        console.error(`Error creating PM2.5 marker ${id}:`, error);
       }
     }
+    console.log(`✅ Created ${count}/${total} PM2.5 markers`);
   }
 
-  // ✨ 정책 마커 생성을 비동기로 분산 (OPTIMIZED)
+  // ✨ 정책 마커 생성 (안전한 비동기 버전)
   async createPolicyMarkersAsync(policyMap) {
+    if (!policyMap || policyMap.size === 0) {
+      console.warn('⚠️ No policy data available');
+      return;
+    }
+    
     let count = 0;
     const total = policyMap.size;
+    
+    console.log(`📋 Creating ${total} policy markers...`);
     
     for (const [country, policy] of policyMap) {
       try {
@@ -276,13 +304,15 @@ class PolicyGlobe {
         });
         count++;
         
+        // 20개마다 브라우저에 양보
         if (count % 20 === 0) {
           await new Promise(resolve => setTimeout(resolve, 0));
         }
       } catch (error) {
-        console.error(`Error creating policy marker:`, error);
+        console.error(`Error creating policy marker ${country}:`, error);
       }
     }
+    console.log(`✅ Created ${count}/${total} policy markers`);
   }
 
   createLights() {

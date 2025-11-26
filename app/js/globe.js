@@ -3450,7 +3450,34 @@ class PolicyGlobe {
 
     this.raycaster.setFromCamera(this.mouse, this.camera);
 
-    // Check country policy markers first (priority for detailed data)
+    // 🆕 새로운 마커 시스템의 정책 마커 우선 체크
+    if (this.markerSystem && this.markerSystem.markerGroups.policies) {
+      const policyIntersects = this.raycaster.intersectObjects(
+        this.markerSystem.markerGroups.policies.children, true
+      );
+
+      if (policyIntersects.length > 0) {
+        // 가장 가까운 부모 그룹 찾기 (userData가 있는)
+        let clickedObject = policyIntersects[0].object;
+        while (clickedObject && !clickedObject.userData?.country) {
+          clickedObject = clickedObject.parent;
+        }
+        
+        if (clickedObject && clickedObject.userData?.country) {
+          const countryCode = clickedObject.userData.country;
+          console.log('🌍 Policy marker clicked:', countryCode);
+          
+          // 마커 하이라이트
+          this.markerSystem.highlightPolicyMarker(countryCode, true);
+          
+          // 정책 정보 표시
+          this.showPolicyInfoPanel(countryCode, clickedObject.userData);
+          return;
+        }
+      }
+    }
+
+    // Check country policy markers (legacy)
     if (this.countryPolicyMarkers) {
       const intersects = this.raycaster.intersectObjects(this.countryPolicyMarkers.children, true);
 
@@ -3465,7 +3492,28 @@ class PolicyGlobe {
       }
     }
 
-    // Check PM2.5 markers
+    // 🆕 새로운 마커 시스템의 PM2.5 마커 체크
+    if (this.markerSystem && this.markerSystem.markerGroups.pm25 && this.showPM25) {
+      const pm25Intersects = this.raycaster.intersectObjects(
+        this.markerSystem.markerGroups.pm25.children, true
+      );
+
+      if (pm25Intersects.length > 0) {
+        let clickedObject = pm25Intersects[0].object;
+        while (clickedObject && !clickedObject.userData?.id) {
+          clickedObject = clickedObject.parent;
+        }
+        
+        if (clickedObject && clickedObject.userData) {
+          const stationData = clickedObject.userData;
+          console.log('📍 PM2.5 marker clicked:', stationData);
+          this.showStationInfoPanel(stationData);
+          return;
+        }
+      }
+    }
+
+    // Check PM2.5 markers (legacy)
     if (this.pm25Markers && this.showPM25) {
       const intersects = this.raycaster.intersectObjects(this.pm25Markers.children, true);
 
@@ -3483,10 +3531,237 @@ class PolicyGlobe {
     if (this.earth) {
       const intersects = this.raycaster.intersectObject(this.earth);
       if (intersects.length > 0) {
-        // Show a general message or closest country
-        console.log('Clicked on Earth - implement country detection here');
+        console.log('Clicked on Earth');
       }
     }
+  }
+
+  /**
+   * 🆕 정책 정보 패널 표시
+   */
+  showPolicyInfoPanel(countryCode, policyData) {
+    // 기존 패널 제거
+    const existingPanel = document.getElementById('policy-info-panel');
+    if (existingPanel) existingPanel.remove();
+
+    // 국가별 상세 데이터 가져오기
+    const countryDetail = this.countryPolicies[countryCode] || null;
+    const effectivenessScore = policyData.effectivenessScore || 0.5;
+    const effectivenessPercent = Math.round(effectivenessScore * 100);
+    
+    // 효과도에 따른 색상
+    const getScoreColor = (score) => {
+      if (score >= 0.7) return '#00ff88';
+      if (score >= 0.5) return '#44dd66';
+      if (score >= 0.3) return '#ffcc00';
+      return '#ff6644';
+    };
+    const scoreColor = getScoreColor(effectivenessScore);
+
+    const panel = document.createElement('div');
+    panel.id = 'policy-info-panel';
+    panel.className = 'fixed z-50 bg-gray-900/95 backdrop-blur-lg border border-white/10 rounded-xl shadow-2xl';
+    panel.style.cssText = `
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 480px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      animation: slideInUp 0.3s ease-out;
+    `;
+
+    panel.innerHTML = `
+      <div class="p-6">
+        <!-- 헤더 -->
+        <div class="flex items-start justify-between mb-5">
+          <div class="flex items-center gap-3">
+            <span class="text-4xl">${countryDetail?.flag || '🌍'}</span>
+            <div>
+              <h2 class="text-2xl font-bold text-white">${countryCode}</h2>
+              <p class="text-sm text-white/60">${countryDetail?.region || policyData.region || 'Global'}</p>
+            </div>
+          </div>
+          <button id="close-policy-panel" class="text-white/60 hover:text-white transition-colors p-1">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+
+        <!-- 효과도 표시 -->
+        <div class="bg-black/30 rounded-xl p-4 mb-4">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-sm text-white/70">Policy Effectiveness</span>
+            <span class="text-lg font-bold" style="color: ${scoreColor}">${effectivenessPercent}%</span>
+          </div>
+          <div class="w-full h-2 bg-black/50 rounded-full overflow-hidden">
+            <div class="h-full rounded-full transition-all" style="width: ${effectivenessPercent}%; background: ${scoreColor}"></div>
+          </div>
+        </div>
+
+        <!-- 주요 정책 -->
+        ${countryDetail?.mainPolicy ? `
+        <div class="bg-black/30 rounded-xl p-4 mb-4">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="material-symbols-outlined text-primary">policy</span>
+            <h3 class="text-base font-semibold text-white">Main Policy</h3>
+          </div>
+          <h4 class="text-primary font-medium mb-2">${countryDetail.mainPolicy.name}</h4>
+          <p class="text-sm text-white/80 leading-relaxed">${countryDetail.mainPolicy.description}</p>
+          <div class="flex items-center gap-4 mt-3 text-xs text-white/60">
+            <span>📅 ${countryDetail.mainPolicy.implementationDate}</span>
+            <span>⭐ ${countryDetail.mainPolicy.effectivenessRating}/10</span>
+          </div>
+        </div>
+        ` : ''}
+
+        <!-- 현재 대기질 -->
+        ${countryDetail ? `
+        <div class="grid grid-cols-2 gap-3 mb-4">
+          <div class="bg-black/30 rounded-xl p-4 text-center">
+            <p class="text-xs text-white/60 mb-1">Air Quality Index</p>
+            <p class="text-2xl font-bold ${this.getAQIClass(countryDetail.currentAQI)}">${countryDetail.currentAQI}</p>
+            <p class="text-xs text-white/50 mt-1">${this.getAQILabel(countryDetail.currentAQI)}</p>
+          </div>
+          <div class="bg-black/30 rounded-xl p-4 text-center">
+            <p class="text-xs text-white/60 mb-1">PM2.5</p>
+            <p class="text-2xl font-bold text-primary">${countryDetail.currentPM25}</p>
+            <p class="text-xs text-white/50 mt-1">µg/m³</p>
+          </div>
+        </div>
+        ` : ''}
+
+        <!-- 최근 뉴스 -->
+        ${countryDetail?.news?.length ? `
+        <div class="bg-black/30 rounded-xl p-4">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="material-symbols-outlined text-primary">newspaper</span>
+            <h3 class="text-base font-semibold text-white">Recent News</h3>
+          </div>
+          <div class="space-y-2">
+            ${countryDetail.news.slice(0, 3).map(news => `
+              <div class="bg-black/20 rounded-lg p-3 hover:bg-black/30 transition-colors">
+                <p class="text-sm text-white/90 mb-1">${news.title}</p>
+                <div class="flex items-center justify-between text-xs text-white/50">
+                  <span>${news.source}</span>
+                  <span>${news.date}</span>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+        ` : ''}
+
+        <!-- 버튼 -->
+        <div class="mt-4 flex gap-3">
+          <button id="view-more-policy" class="flex-1 py-2 px-4 bg-primary/20 hover:bg-primary/30 border border-primary/30 rounded-lg text-primary text-sm font-medium transition-colors">
+            <span class="material-symbols-outlined text-sm align-middle mr-1">analytics</span>
+            View Details
+          </button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(panel);
+
+    // 이벤트 리스너
+    document.getElementById('close-policy-panel')?.addEventListener('click', () => {
+      panel.style.animation = 'fadeOut 0.2s ease-out';
+      setTimeout(() => panel.remove(), 200);
+      this.markerSystem?.highlightPolicyMarker(countryCode, false);
+    });
+
+    document.getElementById('view-more-policy')?.addEventListener('click', () => {
+      panel.remove();
+      if (countryDetail) {
+        this.showFullDetails(countryCode, countryDetail);
+      }
+    });
+
+    // 외부 클릭 시 닫기
+    panel.addEventListener('click', (e) => {
+      if (e.target === panel) {
+        panel.style.animation = 'fadeOut 0.2s ease-out';
+        setTimeout(() => panel.remove(), 200);
+        this.markerSystem?.highlightPolicyMarker(countryCode, false);
+      }
+    });
+  }
+
+  /**
+   * 🆕 측정소 정보 패널 표시
+   */
+  showStationInfoPanel(stationData) {
+    const existingPanel = document.getElementById('station-info-panel');
+    if (existingPanel) existingPanel.remove();
+
+    const pm25 = stationData.pm25 || 0;
+    const aqiColor = this.getPM25ColorString(pm25);
+    const aqiLabel = this.getPM25Label(pm25);
+
+    const panel = document.createElement('div');
+    panel.id = 'station-info-panel';
+    panel.className = 'fixed z-50 bg-gray-900/95 backdrop-blur-lg border border-white/10 rounded-xl shadow-2xl';
+    panel.style.cssText = `
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 320px;
+      width: 90%;
+      animation: slideInUp 0.3s ease-out;
+    `;
+
+    panel.innerHTML = `
+      <div class="p-4">
+        <div class="flex items-start justify-between mb-3">
+          <div>
+            <h3 class="text-lg font-bold text-white">${stationData.country || 'Station'}</h3>
+            <p class="text-xs text-white/60">${stationData.id || 'Unknown'}</p>
+          </div>
+          <button id="close-station-panel" class="text-white/60 hover:text-white transition-colors">
+            <span class="material-symbols-outlined text-sm">close</span>
+          </button>
+        </div>
+        
+        <div class="bg-black/30 rounded-lg p-4 text-center">
+          <p class="text-xs text-white/60 mb-1">PM2.5 Level</p>
+          <p class="text-3xl font-bold" style="color: ${aqiColor}">${pm25.toFixed(1)}</p>
+          <p class="text-xs mt-1" style="color: ${aqiColor}">${aqiLabel}</p>
+          <p class="text-xs text-white/50 mt-2">µg/m³</p>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(panel);
+
+    document.getElementById('close-station-panel')?.addEventListener('click', () => {
+      panel.style.animation = 'fadeOut 0.2s ease-out';
+      setTimeout(() => panel.remove(), 200);
+    });
+
+    // 3초 후 자동 닫기
+    setTimeout(() => {
+      if (document.getElementById('station-info-panel')) {
+        panel.style.animation = 'fadeOut 0.2s ease-out';
+        setTimeout(() => panel.remove(), 200);
+      }
+    }, 5000);
+  }
+
+  getPM25ColorString(pm25) {
+    if (pm25 <= 12) return '#00e400';
+    if (pm25 <= 35.5) return '#ffff00';
+    if (pm25 <= 55.5) return '#ff7e00';
+    if (pm25 <= 150.5) return '#ff0000';
+    return '#8f3f97';
+  }
+
+  getPM25Label(pm25) {
+    if (pm25 <= 12) return 'Good';
+    if (pm25 <= 35.5) return 'Moderate';
+    if (pm25 <= 55.5) return 'Unhealthy for Sensitive';
+    if (pm25 <= 150.5) return 'Unhealthy';
+    return 'Very Unhealthy';
   }
 
   onMouseMove(event) {
@@ -3495,7 +3770,29 @@ class PolicyGlobe {
 
     this.raycaster.setFromCamera(this.mouse, this.camera);
 
-    // Check country policy markers first
+    // 🆕 새로운 마커 시스템의 정책 마커 체크
+    if (this.markerSystem && this.markerSystem.markerGroups.policies) {
+      const policyIntersects = this.raycaster.intersectObjects(
+        this.markerSystem.markerGroups.policies.children, true
+      );
+      if (policyIntersects.length > 0) {
+        document.body.style.cursor = 'pointer';
+        return;
+      }
+    }
+
+    // 🆕 새로운 마커 시스템의 PM2.5 마커 체크
+    if (this.markerSystem && this.markerSystem.markerGroups.pm25 && this.showPM25) {
+      const pm25Intersects = this.raycaster.intersectObjects(
+        this.markerSystem.markerGroups.pm25.children, true
+      );
+      if (pm25Intersects.length > 0) {
+        document.body.style.cursor = 'pointer';
+        return;
+      }
+    }
+
+    // Legacy: Check country policy markers
     if (this.countryPolicyMarkers) {
       const policyIntersects = this.raycaster.intersectObjects(this.countryPolicyMarkers.children, true);
       if (policyIntersects.length > 0) {
@@ -3504,18 +3801,16 @@ class PolicyGlobe {
       }
     }
 
-    // Then check PM2.5 markers
+    // Legacy: Check PM2.5 markers
     if (this.pm25Markers && this.showPM25) {
       const intersects = this.raycaster.intersectObjects(this.pm25Markers.children, true);
-
       if (intersects.length > 0) {
         document.body.style.cursor = 'pointer';
-      } else {
-        document.body.style.cursor = 'default';
+        return;
       }
-    } else {
-      document.body.style.cursor = 'default';
     }
+
+    document.body.style.cursor = 'default';
   }
 
   onResize() {

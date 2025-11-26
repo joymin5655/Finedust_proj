@@ -1106,12 +1106,33 @@
             cleanupMarkerContainer();
         });
     </script>
-    <script src="js/theme-toggle.js"></script>
-    <script src="js/main.js"></script>
-    <script src="js/message-utils.js"></script>
-    <script src="js/config.js"></script>
-    <script src="js/air-quality-api.js"></script>
-    <script type="module" src="js/globe.js"></script>
+
+    <!-- 스크립트 로드 (안전한 순서) -->
+    <script src="js/theme-toggle.js" defer></script>
+    <script src="js/main.js" defer></script>
+    <script src="js/message-utils.js" defer></script>
+    <script src="js/config.js" defer></script>
+    <script src="js/air-quality-api.js" defer></script>
+    
+    <!-- ES6 모듈 (에러 처리 포함) -->
+    <script type="module">
+        import('./js/globe.js').catch(error => {
+            console.error('❌ Failed to load globe.js module:', error);
+            const loader = document.getElementById('loading-indicator');
+            if (loader) {
+                loader.innerHTML = `
+                    <div class="flex flex-col items-center gap-4">
+                        <span class="material-symbols-outlined text-red-500 !text-6xl">error</span>
+                        <p class="text-white text-lg font-medium">Failed to load</p>
+                        <p class="text-white/60 text-sm">${error.message}</p>
+                        <button onclick="location.reload()" class="mt-4 px-4 py-2 bg-primary text-white rounded">
+                            Reload
+                        </button>
+                    </div>
+                `;
+            }
+        });
+    </script>
 
 </body>
 </html>

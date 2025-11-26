@@ -16,7 +16,15 @@ Thumbs.db
 # Build outputs
 dist/
 build/
+_site/
 *.log
+
+# Symlinks (local development only)
+/assets
+/css
+/data
+/js
+/public
 
 # Environment
 .env

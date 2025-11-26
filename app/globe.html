@@ -101,6 +101,13 @@
             transform: translate(-50%, -50%);
             z-index: 10000;
             text-align: center;
+            /* 🎯 글로브 배경과 동일한 색상 */
+            background: linear-gradient(180deg, #000005 0%, #0a0e1a 100%) !important;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .loading-spinner {
@@ -671,7 +678,7 @@
             <canvas id="globe-canvas"></canvas>
 
             <!-- Loading Indicator -->
-            <div id="loading-indicator" class="absolute inset-0 flex items-center justify-center z-50" style="background: linear-gradient(180deg, #000005 0%, #0a0e1a 100%);">
+            <div id="loading-indicator">
                 <div class="flex flex-col items-center gap-4">
                     <div class="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
                     <p class="text-white text-lg font-medium">Loading Globe...</p>

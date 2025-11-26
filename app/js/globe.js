@@ -10,6 +10,7 @@ import { globalDataService } from './services/shared-data-service.js';
 import { EnhancedMarkerSystem } from './services/enhanced-marker-system.js';
 import { policyDataService } from './services/policy-data-service.js';
 import { waqiDataService } from './services/waqi-data-service.js';
+import { policyImpactAnalyzer } from './services/policy-impact-analyzer.js';
 
 class PolicyGlobe {
   constructor() {
@@ -2140,6 +2141,89 @@ class PolicyGlobe {
     return isSignificant ? 3 : 2;
   }
 
+  /**
+   * 🆕 WAQI 데이터로 정책 카드 업데이트
+   */
+  async updatePolicyCardWithWAQI(countryName, policy) {
+    try {
+      const stations = await waqiDataService.loadWAQIData();
+      const countryStations = [];
+      
+      stations.forEach((station, id) => {
+        const stationCountry = (station.country || '').toLowerCase();
+        if (stationCountry.includes(countryName.toLowerCase()) || 
+            countryName.toLowerCase().includes(stationCountry)) {
+          countryStations.push(station);
+        }
+      });
+      
+      if (countryStations.length > 0) {
+        const avgPM25 = countryStations.reduce((sum, s) => sum + (s.pm25 || 0), 0) / countryStations.length;
+        const avgAQI = countryStations.reduce((sum, s) => sum + (s.aqi || 0), 0) / countryStations.length;
+        
+        policy.currentPM25 = Math.round(avgPM25 * 10) / 10;
+        policy.currentAQI = Math.round(avgAQI);
+        
+        console.log(`✅ Updated ${countryName} with WAQI data: PM2.5=${policy.currentPM25}, AQI=${policy.currentAQI}`);
+      }
+    } catch (error) {
+      console.warn(`⚠️ WAQI data update failed for ${countryName}`);
+    }
+  }
+
+  /**
+   * 🆕 정책 효과도 표시 업데이트
+   */
+  updateEffectivenessDisplay(countryName, policy) {
+    const percentEl = document.getElementById('policy-effectiveness-percent');
+    const barEl = document.getElementById('policy-effectiveness-bar');
+    const statusEl = document.getElementById('policy-effectiveness-status');
+    
+    if (!percentEl || !barEl || !statusEl) return;
+    
+    // 효과도 계산
+    let effectivenessScore = 50;
+    let statusText = 'Analyzing policy impact...';
+    
+    if (policy.policyImpactData?.policies?.[0]?.impact) {
+      const impact = policy.policyImpactData.policies[0].impact;
+      const percentChange = impact.analysis?.percentChange || 0;
+      
+      // 점수 계산 (0-100%)
+      if (percentChange <= -30) effectivenessScore = 95;
+      else if (percentChange <= -20) effectivenessScore = 85;
+      else if (percentChange <= -15) effectivenessScore = 75;
+      else if (percentChange <= -10) effectivenessScore = 65;
+      else if (percentChange <= -5) effectivenessScore = 55;
+      else if (percentChange < 0) effectivenessScore = 50;
+      else if (percentChange < 10) effectivenessScore = 40;
+      else effectivenessScore = 30;
+      
+      // 상태 텍스트
+      if (effectivenessScore >= 80) statusText = '✨ Highly Effective - Significant PM2.5 reduction';
+      else if (effectivenessScore >= 60) statusText = '✓ Effective - Measurable improvement';
+      else if (effectivenessScore >= 40) statusText = '~ Moderate - Some progress observed';
+      else statusText = '⚠ Limited - Needs stronger measures';
+    }
+    
+    // UI 업데이트
+    percentEl.textContent = `${effectivenessScore}%`;
+    barEl.style.width = `${effectivenessScore}%`;
+    statusEl.textContent = statusText;
+    
+    // 색상 변경
+    if (effectivenessScore >= 70) {
+      barEl.style.background = 'linear-gradient(90deg, #00ff88, #00dd66)';
+      percentEl.style.color = '#00ff88';
+    } else if (effectivenessScore >= 50) {
+      barEl.style.background = 'linear-gradient(90deg, #ffdd00, #ffaa00)';
+      percentEl.style.color = '#ffdd00';
+    } else {
+      barEl.style.background = 'linear-gradient(90deg, #ff6600, #ff4400)';
+      percentEl.style.color = '#ff6600';
+    }
+  }
+
   async loadRealTimeAirQuality() {
     if (!this.airQualityAPI) {
       console.warn('AirQualityAPI not available');
@@ -2210,11 +2294,17 @@ class PolicyGlobe {
     document.getElementById('policy-desc').textContent = policy.mainPolicy.description;
     document.getElementById('policy-date').textContent = `Implemented: ${policy.mainPolicy.implementationDate}`;
 
+    // 🆕 WAQI 데이터 활용 - 실시간 AQI/PM2.5 업데이트
+    this.updatePolicyCardWithWAQI(countryName, policy);
+
     const aqiElement = document.getElementById('policy-aqi');
     aqiElement.textContent = policy.currentAQI;
     aqiElement.className = `text-2xl font-bold ${this.getAQIClass(policy.currentAQI)}`;
 
     document.getElementById('policy-pm25').textContent = `${policy.currentPM25} µg/m³`;
+
+    // 🆕 정책 효과도 시각화 (새로운 기능)
+    this.updateEffectivenessDisplay(countryName, policy);
 
     // Display policy impact analysis if available
     const impactSection = document.getElementById('policy-impact-section');

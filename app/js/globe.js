@@ -152,6 +152,12 @@ class PolicyGlobe {
       this.updateLoadingProgress(10, 'Earth');
       
       await this.createRealisticEarth();
+      
+      // ✅ 지구가 제대로 생성되었는지 확인
+      if (!this.earth) {
+        throw new Error('Earth object failed to initialize');
+      }
+      
       this.updateLoadingProgress(30, 'Build');
       
       this.createAtmosphere();
@@ -160,10 +166,22 @@ class PolicyGlobe {
       this.updateLoadingProgress(50, 'Ready');
       
       // ⚡ PHASE 2: 마커 시스템 초기화
-      this.markerSystem = new EnhancedMarkerSystem(this.scene, this.earth);
-      this.policyChangeVisualizer = new PolicyChangeVisualizer(this.scene, this.earth);
-      this.markerSystem.markerGroups.pm25.visible = true;
-      this.markerSystem.markerGroups.policies.visible = true;
+      try {
+        this.markerSystem = new EnhancedMarkerSystem(this.scene, this.earth);
+        this.policyChangeVisualizer = new PolicyChangeVisualizer(this.scene, this.earth);
+        
+        // ✅ 마커 시스템이 제대로 생성되었는지 확인
+        if (this.markerSystem && this.markerSystem.markerGroups) {
+          this.markerSystem.markerGroups.pm25.visible = true;
+          this.markerSystem.markerGroups.policies.visible = true;
+          console.log('✅ Marker system initialized successfully');
+        } else {
+          throw new Error('Marker system initialization failed');
+        }
+      } catch (markerError) {
+        console.error('❌ Marker system error:', markerError);
+        throw markerError;
+      }
       
       // ⚡ 글로브 렌더링 시작 (사용자에게 즉시 보임!)
       this.updateLoadingProgress(60, 'Start');

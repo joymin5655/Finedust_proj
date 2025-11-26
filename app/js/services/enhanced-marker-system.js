@@ -16,6 +16,14 @@ export class EnhancedMarkerSystem {
     this.scene = scene;
     this.earth = earth;
     
+    // ✅ Input validation
+    if (!scene) {
+      throw new Error('EnhancedMarkerSystem: scene is required');
+    }
+    if (!earth) {
+      throw new Error('EnhancedMarkerSystem: earth object is required');
+    }
+    
     // Marker storage
     this.pm25Markers = new Map(); // ID → Marker object
     this.policyMarkers = new Map(); // Country → Marker object
@@ -30,6 +38,13 @@ export class EnhancedMarkerSystem {
     this.markerGroups.policies.name = 'Policy-Markers';
     
     // Scene 추가
+    if (!this.markerGroups.pm25) {
+      throw new Error('Failed to create pm25 marker group');
+    }
+    if (!this.markerGroups.policies) {
+      throw new Error('Failed to create policies marker group');
+    }
+    
     this.earth.add(this.markerGroups.pm25);
     this.earth.add(this.markerGroups.policies);
     

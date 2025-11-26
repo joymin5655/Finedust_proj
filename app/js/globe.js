@@ -11,6 +11,7 @@ import { EnhancedMarkerSystem } from './services/enhanced-marker-system.js';
 import { policyDataService } from './services/policy-data-service.js';
 import { waqiDataService } from './services/waqi-data-service.js';
 import { policyImpactAnalyzer } from './services/policy-impact-analyzer.js';
+import { PolicyChangeVisualizer } from './services/policy-change-visualizer.js';
 
 class PolicyGlobe {
   constructor() {
@@ -85,6 +86,9 @@ class PolicyGlobe {
     this.globalDataService = globalDataService;
     this.policyDataService = policyDataService;
     
+    // 🆕 Policy Change Visualizer (init()에서 초기화됨)
+    this.policyChangeVisualizer = null;
+    
     // 🆕 데이터 변경 구독 설정
     this.setupDataSubscriptions();
 
@@ -114,6 +118,9 @@ class PolicyGlobe {
       
       // 🆕 Enhanced Marker System 초기화
       this.markerSystem = new EnhancedMarkerSystem(this.scene, this.earth);
+      
+      // 🆕 Policy Change Visualizer 초기화 (정책별 미세먼지 변화도)
+      this.policyChangeVisualizer = new PolicyChangeVisualizer(this.scene, this.earth);
       
       // ✅ 마커 그룹 가시성 활성화
       this.markerSystem.markerGroups.pm25.visible = true;

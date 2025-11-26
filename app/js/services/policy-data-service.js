@@ -7,10 +7,31 @@ import { globalDataService } from './shared-data-service.js';
 
 export class PolicyDataService {
   constructor() {
-    this.baseURL = '/Finedust_proj/app/data';
+    // GitHub Pages와 로컬 환경 모두 지원
+    this.baseURL = this.getBaseURL();
     this.cache = new Map();
     this.cacheExpiry = 10 * 60 * 1000; // 10분
     this.lastUpdateTime = new Map();
+  }
+
+  /**
+   * 환경에 맞는 기본 URL 반환
+   */
+  getBaseURL() {
+    const hostname = window.location.hostname;
+    
+    // GitHub Pages
+    if (hostname.includes('github.io')) {
+      return '/Finedust_proj/app/data';
+    }
+    
+    // 로컬 개발 환경
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return '/app/data';
+    }
+    
+    // 기타 (상대 경로)
+    return 'data';
   }
 
   /**

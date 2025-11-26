@@ -9,6 +9,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { globalDataService } from './services/shared-data-service.js';
 import { EnhancedMarkerSystem } from './services/enhanced-marker-system.js';
 import { policyDataService } from './services/policy-data-service.js';
+import { waqiDataService } from './services/waqi-data-service.js';
 
 class PolicyGlobe {
   constructor() {
@@ -745,25 +746,37 @@ class PolicyGlobe {
   }
 
   /**
-   * Load REAL PM2.5 data - DUAL MODE SYSTEM
-   * Mode 1 (Default): Open-Meteo (EU Copernicus CAMS) - NO TOKEN - 150+ cities
-   * Mode 2 (Enhanced): WAQI Map Bounds API - Optional token - 1000+ stations
+   * Load REAL PM2.5 data - OPTIMIZED SYSTEM
+   * Priority 1: Local WAQI JSON (pre-fetched by GitHub Actions)
+   * Priority 2: Open-Meteo (EU Copernicus CAMS) - NO TOKEN
+   * Priority 3: WAQI API (if token available)
    */
   async loadPM25Data() {
-    // 🔧 OPTIMIZED: Use Open-Meteo by default (faster + no token needed)
-    // To enable WAQI: set FORCE_WAQI = true
-    const FORCE_WAQI = false; // ⚡ Set to false for fast loading
+    console.log('🌍 Loading PM2.5 data...');
     
-    const waqiToken = window.API_CONFIG?.waqi?.enabled ? window.API_CONFIG.waqi.token : null;
-
-    if (FORCE_WAQI && waqiToken) {
-      console.log('🚀 Enhanced Mode: Using WAQI Map Bounds API for 1000+ stations!');
-      await this.loadPM25Data_WAQI(waqiToken);
-    } else {
-      console.log('🌍 ⚡ Fast Mode: Using Open-Meteo (No token needed)');
-      console.log('✅ Loading 150+ major cities worldwide...');
-      await this.loadPM25Data_OpenMeteo();
+    try {
+      // 1차 시도: 로컬 WAQI JSON 데이터 (GitHub Actions에서 수집된 데이터)
+      console.log('📊 Trying local WAQI JSON data first...');
+      const waqiData = await waqiDataService.loadWAQIData();
+      
+      if (waqiData && waqiData.size > 0) {
+        console.log(`✅ Loaded ${waqiData.size} cities from WAQI JSON!`);
+        this.pm25Data = waqiData;
+        
+        // 통계 출력
+        const stats = waqiDataService.getStats();
+        if (stats) {
+          console.log(`📈 Data Stats: Avg AQI: ${stats.averageAQI}, Max: ${stats.maxAQI}, Min: ${stats.minAQI}`);
+        }
+        return;
+      }
+    } catch (error) {
+      console.warn('⚠️ WAQI JSON load failed:', error.message);
     }
+
+    // 2차 시도: Open-Meteo (폴백)
+    console.log('🔄 Falling back to Open-Meteo...');
+    await this.loadPM25Data_OpenMeteo();
   }
 
   /**

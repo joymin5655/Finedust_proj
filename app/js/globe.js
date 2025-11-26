@@ -354,30 +354,44 @@ class PolicyGlobe {
 
     console.log('🌍 Loading Earth texture...');
 
-    // Load REAL Earth textures from NASA Blue Marble
+    // 📌 안정적인 텍스처 로드 (타임아웃 포함)
     const textureLoader = new THREE.TextureLoader();
+    let earthTexture = null;
 
     try {
-      // 🎯 최적화: 중간 해상도 텍스처 로드 (로딩 시간 단축)
-      const earthTexture = await new Promise((resolve, reject) => {
-        textureLoader.load(
-          // 2K 해상도로 다운그레이드 (8K → 2K, 로딩 90% 단축)
-          'https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg',
-          (texture) => {
-            console.log('✅ Earth texture loaded');
-            // 텍스처 최적화
-            texture.magFilter = THREE.LinearFilter;
-            texture.minFilter = THREE.LinearMipmapLinearFilter;
-            texture.generateMipmaps = true;
-            resolve(texture);
-          },
-          undefined,
-          (error) => {
-            console.warn('⚠️ Texture load failed, using procedural...');
-            resolve(this.createProceduralEarthTexture());
-          }
-        );
-      });
+      // 타임아웃을 포함한 텍스처 로드
+      earthTexture = await Promise.race([
+        new Promise((resolve, reject) => {
+          textureLoader.load(
+            'https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg',
+            (texture) => {
+              console.log('✅ Earth texture loaded from CDN');
+              texture.magFilter = THREE.LinearFilter;
+              texture.minFilter = THREE.LinearMipmapLinearFilter;
+              texture.generateMipmaps = true;
+              resolve(texture);
+            },
+            undefined,
+            (error) => {
+              console.warn('⚠️ CDN texture load failed:', error.message);
+              resolve(null); // null로 resolve해서 procedural로 진행
+            }
+          );
+        }),
+        // 5초 타임아웃
+        new Promise((resolve) => {
+          setTimeout(() => {
+            console.warn('⚠️ Texture load timeout - using procedural');
+            resolve(null);
+          }, 5000);
+        })
+      ]);
+
+      // 텍스처 로드 실패시 procedural 생성
+      if (!earthTexture) {
+        console.log('🎨 Creating procedural Earth texture...');
+        earthTexture = this.createProceduralEarthTexture();
+      }
 
       const material = new THREE.MeshPhongMaterial({
         map: earthTexture,
@@ -395,9 +409,21 @@ class PolicyGlobe {
       console.log('✅ Earth globe created');
 
     } catch (error) {
-      console.error('❌ Error loading Earth texture:', error);
-      // Fallback to procedural generation
-      this.createProceduralEarth(geometry);
+      console.error('❌ Error in createRealisticEarth:', error);
+      // 최종 fallback: procedural 텍스처 사용
+      console.log('🎨 Using fallback procedural Earth texture...');
+      const fallbackTexture = this.createProceduralEarthTexture();
+      const material = new THREE.MeshPhongMaterial({
+        map: fallbackTexture,
+        bumpScale: 0.02,
+        specular: new THREE.Color(0x222222),
+        shininess: 12,
+        emissive: new THREE.Color(0x0a0f1a),
+        emissiveIntensity: 0.15
+      });
+      this.earth = new THREE.Mesh(geometry, material);
+      this.scene.add(this.earth);
+      console.log('✅ Procedural Earth created (fallback)');
     }
   }
 

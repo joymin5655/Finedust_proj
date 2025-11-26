@@ -17,11 +17,17 @@ export class PolicyChangeVisualizer {
   constructor(scene, earth) {
     this.scene = scene;
     this.earth = earth;
+    this.initialized = false;
     
     // 시각화 그룹
     this.visualGroup = new THREE.Group();
     this.visualGroup.name = 'PolicyChangeVisualizations';
-    this.earth.add(this.visualGroup);
+    
+    // ✅ Null 체크 - earth가 있을 때만 추가
+    if (this.earth) {
+      this.earth.add(this.visualGroup);
+      this.initialized = true;
+    }
     
     // 데이터 저장
     this.policyChanges = new Map();
@@ -472,6 +478,22 @@ export class PolicyChangeVisualizer {
   }
 
   /**
+   * 지연 초기화 메서드
+   */
+  initialize(scene, earth) {
+    if (this.initialized) return;
+    
+    this.scene = scene;
+    this.earth = earth;
+    
+    if (this.earth && this.visualGroup) {
+      this.earth.add(this.visualGroup);
+      this.initialized = true;
+      console.log('📊 Policy Change Visualizer initialized with earth');
+    }
+  }
+
+  /**
    * 시각화 제거
    */
   clear() {
@@ -482,6 +504,16 @@ export class PolicyChangeVisualizer {
   }
 }
 
-// 싱글톤 인스턴스
-export const policyChangeVisualizer = new PolicyChangeVisualizer(null, null);
+// 싱글톤 인스턴스는 지연 초기화됨
+let _policyChangeVisualizerInstance = null;
+
+export function getPolicyChangeVisualizer(scene, earth) {
+  if (!_policyChangeVisualizerInstance) {
+    _policyChangeVisualizerInstance = new PolicyChangeVisualizer(scene, earth);
+  } else if (scene && earth && !_policyChangeVisualizerInstance.initialized) {
+    _policyChangeVisualizerInstance.initialize(scene, earth);
+  }
+  return _policyChangeVisualizerInstance;
+}
+
 export default PolicyChangeVisualizer;

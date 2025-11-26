@@ -11,7 +11,7 @@ import { EnhancedMarkerSystem } from './services/enhanced-marker-system.js';
 import { policyDataService } from './services/policy-data-service.js';
 import { waqiDataService } from './services/waqi-data-service.js';
 import { policyImpactAnalyzer } from './services/policy-impact-analyzer.js';
-import { PolicyChangeVisualizer } from './services/policy-change-visualizer.js';
+import { PolicyChangeVisualizer, getPolicyChangeVisualizer } from './services/policy-change-visualizer.js';
 
 class PolicyGlobe {
   constructor() {

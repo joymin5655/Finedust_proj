@@ -110,6 +110,10 @@
             justify-content: center;
         }
         
+        #loading-progress {
+            transition: width 0.2s ease !important;
+        }
+        
         .loading-spinner {
             width: 60px;
             height: 60px;
@@ -679,13 +683,12 @@
 
             <!-- Loading Indicator -->
             <div id="loading-indicator">
-                <div class="flex flex-col items-center gap-4">
-                    <div class="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
-                    <p class="text-white text-lg font-medium">Loading Globe...</p>
+                <div class="flex flex-col items-center gap-3">
+                    <div class="w-12 h-12 border-3 border-primary/30 border-t-primary rounded-full animate-spin"></div>
                     <div class="w-32 h-1 bg-gray-700 rounded-full overflow-hidden">
                         <div id="loading-progress" class="h-full bg-primary transition-all duration-300" style="width: 10%; box-shadow: 0 0 10px rgba(37, 226, 244, 0.6);"></div>
                     </div>
-                    <p class="text-primary text-xs" id="loading-status">Initializing...</p>
+                    <p class="text-primary text-xs" id="loading-status">Init</p>
                 </div>
             </div>
         </div>

@@ -118,7 +118,7 @@ class PolicyGlobe {
     this.init();
   }
 
-  // ✨ 로딩 진행상황 업데이트 (NEW)
+  // ✨ 로딩 진행상황 업데이트 (NEW) - 더 간단하게
   updateLoadingProgress(percent, status) {
     const progressBar = document.getElementById('loading-progress');
     const statusText = document.getElementById('loading-status');
@@ -135,93 +135,44 @@ class PolicyGlobe {
   hideLoadingIndicator() {
     const loadingIndicator = document.getElementById('loading-indicator');
     if (loadingIndicator) {
-      this.updateLoadingProgress(100, 'Ready!');
+      this.updateLoadingProgress(100, 'Ready');
       loadingIndicator.style.opacity = '0';
-      loadingIndicator.style.transition = 'opacity 0.5s ease-out';
+      loadingIndicator.style.transition = 'opacity 0.3s ease-out';
       setTimeout(() => {
         loadingIndicator.style.display = 'none';
-      }, 500);
+      }, 300);
     }
   }
 
   async init() {
     try {
-      // Phase 1: 글로브 기본 렌더링 (빠른 표시)
-      this.updateLoadingProgress(0, 'Initializing...');
-      
+      // ⚡ PHASE 1: 즉시 글로브 표시 (1-2초)
       this.createLights();
-      this.updateLoadingProgress(5, 'Loading stars...');
+      this.updateLoadingProgress(3, 'Init');
       
       this.createStars();
-      this.updateLoadingProgress(10, 'Loading Earth texture...');
+      this.updateLoadingProgress(8, 'Earth');
       
-      // 병렬 로드: 텍스처와 대기 동시 처리
-      await Promise.all([
-        this.createRealisticEarth(),
-        new Promise(resolve => {
-          setTimeout(resolve, 100); // 작은 지연으로 렌더링 우선
-        })
-      ]);
+      await this.createRealisticEarth();
+      this.updateLoadingProgress(20, 'Build');
       
-      this.updateLoadingProgress(40, 'Creating atmosphere...');
       this.createAtmosphere();
       this.createClouds();
-      this.updateLoadingProgress(50, 'Creating borders...');
-      this.createCountryBorders();
       
-      // Phase 2: 마커 시스템 초기화
-      this.updateLoadingProgress(55, 'Initializing markers...');
+      // ⚡ PHASE 2: 마커 시스템 준비 (300ms)
+      this.updateLoadingProgress(35, 'Ready');
       this.markerSystem = new EnhancedMarkerSystem(this.scene, this.earth);
       this.policyChangeVisualizer = new PolicyChangeVisualizer(this.scene, this.earth);
-      
       this.markerSystem.markerGroups.pm25.visible = true;
       this.markerSystem.markerGroups.policies.visible = true;
       
-      this.createParticles();
-      
-      // Phase 3: 데이터 로드 (백그라운드, 글로브는 이미 표시됨)
-      this.updateLoadingProgress(60, 'Loading air quality data...');
-      await this.loadPM25Data();
-      
-      // 마커 생성을 비동기로 분산처리
-      this.updateLoadingProgress(70, 'Creating PM2.5 markers...');
-      await this.createPM25MarkersAsync();
-      
-      this.updateLoadingProgress(75, 'Loading policies...');
-      const policyMap = await this.loadPoliciesData();
-      
-      this.updateLoadingProgress(80, 'Creating policy markers...');
-      await this.createPolicyMarkersAsync(policyMap);
-      
-      // Phase 4: 추가 데이터
-      this.updateLoadingProgress(85, 'Analyzing policies...');
-      this.policyImpactData = await this.loadPolicyImpactData();
-      this.mergePolicyData();
-      
-      // UI 및 이벤트 설정
-      this.updateLoadingProgress(90, 'Setting up controls...');
-      this.setupEventListeners();
-      this.setupToggleSwitches();
-      this.getUserLocationAndHighlight();
-      
-      // Enhanced visualization (선택사항)
-      if (typeof window.GlobeIntegration !== 'undefined') {
-        try {
-          this.updateLoadingProgress(95, 'Finalizing...');
-          this.globeIntegration = new window.GlobeIntegration(this.scene, this.camera, this);
-          await this.globeIntegration.init();
-        } catch (error) {
-          console.warn('⚠️  Enhanced visualization:', error);
-        }
-      }
-      
-      console.log('✅ Policy Globe fully loaded');
-      this.updateLoadingProgress(100, 'Ready!');
-      
-      // 로딩 인디케이터 숨기기
-      setTimeout(() => this.hideLoadingIndicator(), 300);
-      
+      // ⚡ PHASE 3: 글로브 렌더링 시작 (즉시 보임!)
+      this.hideLoadingIndicator();
       this.animate();
+      
+      // ⚡ PHASE 4: 백그라운드에서 데이터 로드 (동시 처리)
+      this.backgroundLoadData();
+      
     } catch (error) {
       console.error('Error initializing globe:', error);
       
@@ -230,10 +181,10 @@ class PolicyGlobe {
         loadingIndicator.innerHTML = `
           <div class="flex flex-col items-center gap-4">
             <span class="material-symbols-outlined text-red-500 !text-6xl">error</span>
-            <p class="text-white text-lg font-medium">Failed to load globe</p>
+            <p class="text-white text-lg font-medium">Failed to load</p>
             <p class="text-white/60 text-sm">${error.message}</p>
             <button onclick="location.reload()" class="mt-4 px-4 py-2 bg-primary text-white rounded">
-              Refresh Page
+              Reload
             </button>
           </div>
         `;
@@ -241,11 +192,51 @@ class PolicyGlobe {
     }
   }
 
-  // ✨ 마커 생성을 비동기로 분산 (NEW)
+  // ✨ 백그라운드 데이터 로드 (NEW - 글로브 표시 후 실행)
+  async backgroundLoadData() {
+    try {
+      // 1. 데이터 병렬 로드
+      const [pm25Data, policyMap, impactData] = await Promise.all([
+        this.loadPM25Data().then(() => this.pm25Data),
+        this.loadPoliciesData(),
+        this.loadPolicyImpactData()
+      ]);
+      
+      // 2. 마커 생성 (분산 처리)
+      this.createCountryBorders(); // 경계선 그리기 (백그라운드)
+      await this.createPM25MarkersAsync();
+      await this.createPolicyMarkersAsync(policyMap);
+      
+      // 3. 정책 데이터 병합
+      this.policyImpactData = impactData;
+      this.mergePolicyData();
+      
+      // 4. UI 설정
+      this.setupEventListeners();
+      this.setupToggleSwitches();
+      this.getUserLocationAndHighlight();
+      
+      // 5. Enhanced visualization (선택사항)
+      if (typeof window.GlobeIntegration !== 'undefined') {
+        try {
+          this.globeIntegration = new window.GlobeIntegration(this.scene, this.camera, this);
+          await this.globeIntegration.init();
+        } catch (error) {
+          console.warn('⚠️ Enhanced visualization failed');
+        }
+      }
+      
+      console.log('✅ Background data loaded');
+    } catch (error) {
+      console.warn('⚠️ Background load error:', error);
+    }
+  }
+
+  // ✨ 마커 생성을 비동기로 분산 (OPTIMIZED)
   async createPM25MarkersAsync() {
     let count = 0;
     const total = this.pm25Data.size;
-    const batchSize = 50; // 50개씩 처리
+    const batchSize = 200; // 200개씩 처리 (더 큰 배치 = 더 빠름)
     
     for (const [id, station] of this.pm25Data) {
       try {
@@ -258,24 +249,20 @@ class PolicyGlobe {
         });
         count++;
         
-        // 50개마다 진행상황 업데이트 및 브라우저 응답성 유지
+        // 200개마다만 업데이트 (업데이트 오버헤드 감소)
         if (count % batchSize === 0) {
-          const progress = 70 + ((count / total) * 5);
-          this.updateLoadingProgress(progress, `Loading markers... ${count}/${total}`);
-          await new Promise(resolve => setTimeout(resolve, 0)); // 다른 작업에 양보
+          await new Promise(resolve => setTimeout(resolve, 0)); // 브라우저 응답성 유지
         }
       } catch (error) {
         console.error(`Error creating PM2.5 marker:`, error);
       }
     }
-    console.log(`✅ Created ${count} PM2.5 markers`);
   }
 
-  // ✨ 정책 마커 생성을 비동기로 분산 (NEW)
+  // ✨ 정책 마커 생성을 비동기로 분산 (OPTIMIZED)
   async createPolicyMarkersAsync(policyMap) {
     let count = 0;
     const total = policyMap.size;
-    const batchSize = 10; // 정책은 적으므로 10개씩
     
     for (const [country, policy] of policyMap) {
       try {
@@ -289,16 +276,13 @@ class PolicyGlobe {
         });
         count++;
         
-        if (count % batchSize === 0) {
-          const progress = 80 + ((count / total) * 3);
-          this.updateLoadingProgress(progress, `Loading policies... ${count}/${total}`);
+        if (count % 20 === 0) {
           await new Promise(resolve => setTimeout(resolve, 0));
         }
       } catch (error) {
         console.error(`Error creating policy marker:`, error);
       }
     }
-    console.log(`✅ Created ${count} policy markers`);
   }
 
   createLights() {

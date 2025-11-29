@@ -1,5 +1,11 @@
 /**
- * API Configuration
+ * API Configuration Template
+ * 
+ * 🔐 SECURITY NOTE:
+ * 1. Copy this file to config.js
+ * 2. Add your API keys to config.js
+ * 3. config.js is excluded from Git (see .gitignore)
+ * 4. NEVER commit actual API keys!
  *
  * ✅ ALL DATA FROM OFFICIAL INTERNATIONAL AGENCIES ONLY
  * This application uses ONLY data from verified international organizations:

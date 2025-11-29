@@ -301,36 +301,78 @@ class PolicyGlobe {
   }
 
   /**
-   * 🆕 countryPolicies에서 정확한 통계 계산
+   * 🆕 통합 통계 업데이트 (countryPolicies + index.json + WAQI)
+   * 이 함수가 최종 통계를 결정함
    */
-  updateStatisticsFromCountryPolicies() {
-    if (!this.countryPolicies) return;
+  async updateStatisticsFromCountryPolicies() {
+    // 1. countryPolicies 기반 통계
+    const policyCountries = this.countryPolicies ? Object.keys(this.countryPolicies) : [];
+    const policyRegions = new Set();
+    let policyCount = 0;
     
-    const countries = Object.keys(this.countryPolicies);
-    const regions = new Set();
-    let totalPolicies = 0;
-    
-    countries.forEach(country => {
+    policyCountries.forEach(country => {
       const policy = this.countryPolicies[country];
-      if (policy?.region) {
-        regions.add(policy.region);
-      }
-      if (policy?.mainPolicy) {
-        totalPolicies++;
-      }
+      if (policy?.region) policyRegions.add(policy.region);
+      if (policy?.mainPolicy) policyCount++;
     });
+
+    // 2. index.json에서 추가 국가 로드 시도
+    let indexCountries = 0;
+    let indexPolicies = 0;
+    let indexRegions = [];
     
-    // DOM 업데이트
+    try {
+      const response = await fetch('data/policy-impact/index.json');
+      if (response.ok) {
+        const indexData = await response.json();
+        indexCountries = indexData.countries?.length || 0;
+        indexPolicies = indexData.statistics?.totalPolicies || 0;
+        indexRegions = indexData.statistics?.regionsRepresented || [];
+      }
+    } catch (e) {
+      console.warn('⚠️ Could not load index.json for stats');
+    }
+
+    // 3. WAQI 데이터 확인 (cities count)
+    let waqiCities = 0;
+    try {
+      const waqiResponse = await fetch('data/waqi/latest.json');
+      if (waqiResponse.ok) {
+        const waqiData = await waqiResponse.json();
+        waqiCities = waqiData.count || waqiData.cities?.length || 0;
+      }
+    } catch (e) {
+      console.warn('⚠️ Could not load WAQI data for stats');
+    }
+
+    // 4. 통합 통계 계산 (더 큰 값 사용)
+    const totalCountries = Math.max(policyCountries.length, indexCountries);
+    const totalPolicies = Math.max(policyCount, indexPolicies);
+    const allRegions = new Set([...policyRegions, ...indexRegions]);
+    const totalRegions = allRegions.size;
+    
+    // 5. 글로벌 통계 저장 (다른 곳에서 참조할 수 있도록)
+    this.globalStats = {
+      countries: totalCountries,
+      policies: totalPolicies,
+      regions: totalRegions,
+      cities: waqiCities,
+      regionList: Array.from(allRegions)
+    };
+    
+    // 6. DOM 업데이트
     const countriesEl = document.getElementById('stat-countries');
     const policiesEl = document.getElementById('stat-policies');
     const regionsEl = document.getElementById('stat-regions');
     
-    if (countriesEl) countriesEl.textContent = countries.length;
+    if (countriesEl) countriesEl.textContent = totalCountries;
     if (policiesEl) policiesEl.textContent = totalPolicies;
-    if (regionsEl) regionsEl.textContent = regions.size;
+    if (regionsEl) regionsEl.textContent = totalRegions;
     
-    console.log(`📊 Stats: ${countries.length} countries, ${totalPolicies} policies, ${regions.size} regions`);
-    console.log(`📍 Regions: ${Array.from(regions).join(', ')}`);
+    console.log(`📊 Unified Stats: ${totalCountries} countries, ${totalPolicies} policies, ${totalRegions} regions, ${waqiCities} WAQI cities`);
+    console.log(`📍 Regions: ${Array.from(allRegions).slice(0, 5).join(', ')}...`);
+    
+    return this.globalStats;
   }
 
   // ✨ PM2.5 마커 생성 (최적화 버전)
@@ -2239,6 +2281,12 @@ class PolicyGlobe {
   }
 
   updateGlobalStatistics(statistics) {
+    // 외부 통계가 들어와도 globalStats가 더 정확하면 무시
+    if (this.globalStats && this.globalStats.countries > 0) {
+      console.log('⏩ Skipping external stats, using globalStats');
+      return;
+    }
+    
     if (!statistics) return;
 
     // Update countries count
@@ -4128,20 +4176,25 @@ class PolicyGlobe {
   }
 
   // 🆕 마커 시스템으로 마커 생성
-  // 🆕 Policy UI 업데이트
+  // 🆕 Policy UI 업데이트 (통합 통계 사용)
   updatePolicyUI() {
     try {
-      const stats = this.policyDataService.generateStatistics();
+      // globalStats가 있으면 사용, 없으면 다시 계산
+      if (this.globalStats) {
+        const countriesEl = document.getElementById('stat-countries');
+        const policiesEl = document.getElementById('stat-policies');
+        const regionsEl = document.getElementById('stat-regions');
 
-      const countriesEl = document.getElementById('stat-countries');
-      const policiesEl = document.getElementById('stat-policies');
-      const regionsEl = document.getElementById('stat-regions');
-
-      if (countriesEl) countriesEl.textContent = stats.totalCountries;
-      if (policiesEl) policiesEl.textContent = stats.totalPolicies;
-      if (regionsEl) regionsEl.textContent = stats.totalRegions;
-
-      console.log('✅ Policy UI updated');
+        if (countriesEl) countriesEl.textContent = this.globalStats.countries;
+        if (policiesEl) policiesEl.textContent = this.globalStats.policies;
+        if (regionsEl) regionsEl.textContent = this.globalStats.regions;
+        
+        console.log('✅ Policy UI updated from globalStats');
+      } else {
+        // globalStats가 없으면 통계 다시 계산
+        this.updateStatisticsFromCountryPolicies();
+        console.log('✅ Policy UI updated (recalculated)');
+      }
     } catch (error) {
       console.error('❌ Error updating policy UI:', error);
     }

@@ -211,47 +211,40 @@ class PolicyGlobe {
     }
   }
 
-  // ✨ 백그라운드 데이터 로드 (안전한 버전)
+  // ✨ 백그라운드 데이터 로드 (병렬 최적화 버전)
   async backgroundLoadData() {
     try {
-      console.log('📊 Loading background data...');
+      console.log('📊 Loading background data (parallel)...');
       
-      // 1. PM2.5 데이터 로드
-      console.log('Loading PM2.5 data...');
-      await this.loadPM25Data();
-      console.log(`✅ Loaded ${this.pm25Data.size} stations`);
+      // 1️⃣ 즉시 국가별 정책 마커 생성 (countryPolicies 기반 - 빠름!)
+      console.log('Creating country policy markers...');
+      this.createCountryPolicyMarkers();
       
-      // 2. 정책 데이터 로드
-      console.log('Loading policies...');
-      const policyMap = await this.loadPoliciesData();
-      console.log(`✅ Loaded ${policyMap.size} policies`);
+      // 2️⃣ PM2.5 데이터와 정책 데이터 병렬 로드
+      const [pm25Result, policyResult] = await Promise.allSettled([
+        this.loadPM25Data(),
+        this.loadPoliciesData()
+      ]);
       
-      // 3. 정책 영향 데이터 로드
-      console.log('Loading policy impact...');
-      this.policyImpactData = await this.loadPolicyImpactData();
+      console.log(`✅ PM2.5: ${this.pm25Data.size} stations`);
       
-      // 4. 마커 생성 (비동기 분산)
-      console.log('Creating markers...');
-      await this.createPM25MarkersAsync();
-      await this.createPolicyMarkersAsync(policyMap);
+      // 3️⃣ PM2.5 마커 생성 (비동기)
+      if (this.pm25Data.size > 0) {
+        console.log('Creating PM2.5 markers...');
+        await this.createPM25MarkersAsync();
+      }
       
-      // 5. 정책 데이터 병합
-      console.log('Merging policy data...');
-      this.mergePolicyData();
-      
-      // 6. UI 설정
+      // 4️⃣ UI 설정
       console.log('Setting up UI...');
       this.setupEventListeners();
       this.setupToggleSwitches();
       this.getUserLocationAndHighlight();
       
-      // 7. Enhanced visualization (선택사항)
+      // 5️⃣ Enhanced visualization (선택사항)
       if (typeof window.GlobeIntegration !== 'undefined') {
         try {
-          console.log('Initializing enhanced visualization...');
           this.globeIntegration = new window.GlobeIntegration(this.scene, this.camera, this);
           await this.globeIntegration.init();
-          console.log('✅ Enhanced visualization ready');
         } catch (error) {
           console.warn('⚠️ Enhanced visualization:', error.message);
         }
@@ -263,74 +256,91 @@ class PolicyGlobe {
     }
   }
 
-  // ✨ PM2.5 마커 생성 (안전한 비동기 버전)
+  /**
+   * 🆕 국가별 정책 마커 생성 (countryPolicies 기반)
+   * 즉시 생성 - 외부 API 호출 없음
+   */
+  createCountryPolicyMarkers() {
+    if (!this.countryPolicies || !this.markerSystem) {
+      console.warn('⚠️ countryPolicies or markerSystem not available');
+      return;
+    }
+    
+    const countries = Object.keys(this.countryPolicies);
+    console.log(`📋 Creating ${countries.length} country policy markers...`);
+    
+    let created = 0;
+    for (const country of countries) {
+      const policy = this.countryPolicies[country];
+      if (!policy) continue;
+      
+      // effectivenessScore 계산 (effectivenessRating / 10)
+      const effectivenessScore = (policy.mainPolicy?.effectivenessRating || 5) / 10;
+      
+      const marker = this.markerSystem.createPolicyMarker({
+        country,
+        effectivenessScore,
+        flag: policy.flag,
+        region: policy.region,
+        policyType: policy.policyType,
+        mainPolicy: policy.mainPolicy,
+        pm25Trends: policy.pm25Trends,
+        policyImpact: policy.policyImpact,
+        news: policy.news,
+        currentAQI: policy.currentAQI,
+        currentPM25: policy.currentPM25
+      });
+      
+      if (marker) created++;
+    }
+    
+    console.log(`✅ Created ${created}/${countries.length} country policy markers`);
+  }
+
+  // ✨ PM2.5 마커 생성 (최적화 버전)
   async createPM25MarkersAsync() {
     if (!this.pm25Data || this.pm25Data.size === 0) {
       console.warn('⚠️ No PM2.5 data available');
       return;
     }
     
-    let count = 0;
     const total = this.pm25Data.size;
-    const batchSize = 100; // 100개씩 처리
+    const batchSize = 50; // 50개씩 빠르게 처리
+    let count = 0;
     
-    console.log(`📍 Creating ${total} PM2.5 markers...`);
+    console.log(`📍 Creating ${total} PM2.5 markers (batch: ${batchSize})...`);
     
-    for (const [id, station] of this.pm25Data) {
-      try {
-        this.markerSystem.createPM25Marker({
-          id: station.id || id,
-          latitude: station.lat || station.latitude || 0,
-          longitude: station.lon || station.longitude || 0,
-          pm25: station.pm25 || station.aqi || 0,
-          country: station.country || 'Unknown'
-        });
-        count++;
-        
-        // 100개마다 브라우저에 양보
-        if (count % batchSize === 0) {
-          await new Promise(resolve => setTimeout(resolve, 0));
+    const entries = Array.from(this.pm25Data.entries());
+    
+    for (let i = 0; i < entries.length; i += batchSize) {
+      const batch = entries.slice(i, i + batchSize);
+      
+      for (const [id, station] of batch) {
+        try {
+          this.markerSystem.createPM25Marker({
+            id: station.id || id,
+            latitude: station.lat || station.latitude || 0,
+            longitude: station.lon || station.longitude || 0,
+            pm25: station.pm25 || station.aqi || 0,
+            country: station.country || 'Unknown'
+          });
+          count++;
+        } catch (error) {
+          // 조용히 스킵
         }
-      } catch (error) {
-        console.error(`Error creating PM2.5 marker ${id}:`, error);
       }
+      
+      // 브라우저에 양보 (렌더링 유지)
+      await new Promise(resolve => setTimeout(resolve, 0));
     }
+    
     console.log(`✅ Created ${count}/${total} PM2.5 markers`);
   }
 
-  // ✨ 정책 마커 생성 (안전한 비동기 버전)
+  // ✨ 정책 마커 생성 (legacy - 외부 데이터용)
   async createPolicyMarkersAsync(policyMap) {
-    if (!policyMap || policyMap.size === 0) {
-      console.warn('⚠️ No policy data available');
-      return;
-    }
-    
-    let count = 0;
-    const total = policyMap.size;
-    
-    console.log(`📋 Creating ${total} policy markers...`);
-    
-    for (const [country, policy] of policyMap) {
-      try {
-        this.markerSystem.createPolicyMarker({
-          country: country,
-          latitude: policy.latitude || 37.5,
-          longitude: policy.longitude || 126.9,
-          effectivenessScore: policy.effectivenessScore || 0.5,
-          title: policy.title || '',
-          description: policy.description || ''
-        });
-        count++;
-        
-        // 20개마다 브라우저에 양보
-        if (count % 20 === 0) {
-          await new Promise(resolve => setTimeout(resolve, 0));
-        }
-      } catch (error) {
-        console.error(`Error creating policy marker ${country}:`, error);
-      }
-    }
-    console.log(`✅ Created ${count}/${total} policy markers`);
+    // 이제 createCountryPolicyMarkers()가 대신 처리
+    console.log('📋 Policy markers created via createCountryPolicyMarkers()');
   }
 
   createLights() {
@@ -3537,19 +3547,18 @@ class PolicyGlobe {
   }
 
   /**
-   * 🆕 정책 정보 패널 표시
+   * 🆕 정책 정보 패널 표시 (PM2.5 트렌드 + 정책 영향 포함)
    */
   showPolicyInfoPanel(countryCode, policyData) {
-    // 기존 패널 제거
     const existingPanel = document.getElementById('policy-info-panel');
     if (existingPanel) existingPanel.remove();
 
-    // 국가별 상세 데이터 가져오기
-    const countryDetail = this.countryPolicies[countryCode] || null;
-    const effectivenessScore = policyData.effectivenessScore || 0.5;
+    // countryPolicies에서 상세 데이터 가져오기
+    const countryDetail = this.countryPolicies[countryCode] || policyData || null;
+    const effectivenessScore = policyData.effectivenessScore || 
+      (countryDetail?.mainPolicy?.effectivenessRating || 5) / 10;
     const effectivenessPercent = Math.round(effectivenessScore * 100);
     
-    // 효과도에 따른 색상
     const getScoreColor = (score) => {
       if (score >= 0.7) return '#00ff88';
       if (score >= 0.5) return '#44dd66';
@@ -3558,6 +3567,13 @@ class PolicyGlobe {
     };
     const scoreColor = getScoreColor(effectivenessScore);
 
+    // PM2.5 트렌드 데이터 처리
+    const pm25Trends = countryDetail?.pm25Trends || [];
+    const hasTrends = pm25Trends.length > 0;
+    
+    // 정책 영향 데이터
+    const policyImpact = countryDetail?.policyImpact || null;
+
     const panel = document.createElement('div');
     panel.id = 'policy-info-panel';
     panel.className = 'fixed z-50 bg-gray-900/95 backdrop-blur-lg border border-white/10 rounded-xl shadow-2xl';
@@ -3565,22 +3581,22 @@ class PolicyGlobe {
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      max-width: 480px;
-      width: 90%;
-      max-height: 80vh;
+      max-width: 520px;
+      width: 92%;
+      max-height: 85vh;
       overflow-y: auto;
       animation: slideInUp 0.3s ease-out;
     `;
 
     panel.innerHTML = `
-      <div class="p-6">
+      <div class="p-5">
         <!-- 헤더 -->
-        <div class="flex items-start justify-between mb-5">
+        <div class="flex items-start justify-between mb-4">
           <div class="flex items-center gap-3">
             <span class="text-4xl">${countryDetail?.flag || '🌍'}</span>
             <div>
-              <h2 class="text-2xl font-bold text-white">${countryCode}</h2>
-              <p class="text-sm text-white/60">${countryDetail?.region || policyData.region || 'Global'}</p>
+              <h2 class="text-xl font-bold text-white">${countryCode}</h2>
+              <p class="text-sm text-white/60">${countryDetail?.region || policyData?.region || 'Global'}</p>
             </div>
           </div>
           <button id="close-policy-panel" class="text-white/60 hover:text-white transition-colors p-1">
@@ -3588,64 +3604,93 @@ class PolicyGlobe {
           </button>
         </div>
 
-        <!-- 효과도 표시 -->
-        <div class="bg-black/30 rounded-xl p-4 mb-4">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-sm text-white/70">Policy Effectiveness</span>
-            <span class="text-lg font-bold" style="color: ${scoreColor}">${effectivenessPercent}%</span>
+        <!-- 효과도 + 현재 대기질 -->
+        <div class="grid grid-cols-3 gap-3 mb-4">
+          <div class="bg-black/30 rounded-xl p-3 text-center col-span-1">
+            <p class="text-xs text-white/60 mb-1">Effectiveness</p>
+            <p class="text-xl font-bold" style="color: ${scoreColor}">${effectivenessPercent}%</p>
           </div>
-          <div class="w-full h-2 bg-black/50 rounded-full overflow-hidden">
-            <div class="h-full rounded-full transition-all" style="width: ${effectivenessPercent}%; background: ${scoreColor}"></div>
+          ${countryDetail ? `
+          <div class="bg-black/30 rounded-xl p-3 text-center">
+            <p class="text-xs text-white/60 mb-1">AQI</p>
+            <p class="text-xl font-bold ${this.getAQIClass(countryDetail.currentAQI)}">${countryDetail.currentAQI}</p>
+          </div>
+          <div class="bg-black/30 rounded-xl p-3 text-center">
+            <p class="text-xs text-white/60 mb-1">PM2.5</p>
+            <p class="text-xl font-bold text-primary">${countryDetail.currentPM25}</p>
+          </div>
+          ` : '<div class="col-span-2"></div>'}
+        </div>
+
+        <!-- 정책 영향 요약 -->
+        ${policyImpact ? `
+        <div class="bg-gradient-to-r from-green-900/30 to-blue-900/30 rounded-xl p-4 mb-4 border border-green-500/20">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="material-symbols-outlined text-green-400">trending_down</span>
+            <h3 class="text-base font-semibold text-white">Policy Impact</h3>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <p class="text-2xl font-bold text-green-400">${policyImpact.reductionRate}</p>
+              <p class="text-xs text-white/60">PM2.5 Reduction</p>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-white">${policyImpact.timeframe}</p>
+              <p class="text-xs text-white/60">Period</p>
+            </div>
+          </div>
+          <div class="mt-3 flex flex-wrap gap-1">
+            ${(policyImpact.keyMeasures || []).slice(0, 3).map(m => `
+              <span class="text-xs bg-white/10 px-2 py-1 rounded">${m}</span>
+            `).join('')}
           </div>
         </div>
+        ` : ''}
+
+        <!-- PM2.5 트렌드 차트 -->
+        ${hasTrends ? `
+        <div class="bg-black/30 rounded-xl p-4 mb-4">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="material-symbols-outlined text-primary">show_chart</span>
+            <h3 class="text-base font-semibold text-white">PM2.5 Trend</h3>
+          </div>
+          <div class="relative h-32">
+            <canvas id="pm25-trend-chart"></canvas>
+          </div>
+          <div class="mt-2 text-xs text-white/50 text-center">
+            Annual average PM2.5 (µg/m³)
+          </div>
+        </div>
+        ` : ''}
 
         <!-- 주요 정책 -->
         ${countryDetail?.mainPolicy ? `
         <div class="bg-black/30 rounded-xl p-4 mb-4">
-          <div class="flex items-center gap-2 mb-3">
+          <div class="flex items-center gap-2 mb-2">
             <span class="material-symbols-outlined text-primary">policy</span>
             <h3 class="text-base font-semibold text-white">Main Policy</h3>
           </div>
-          <h4 class="text-primary font-medium mb-2">${countryDetail.mainPolicy.name}</h4>
-          <p class="text-sm text-white/80 leading-relaxed">${countryDetail.mainPolicy.description}</p>
-          <div class="flex items-center gap-4 mt-3 text-xs text-white/60">
+          <h4 class="text-primary font-medium text-sm mb-2">${countryDetail.mainPolicy.name}</h4>
+          <p class="text-xs text-white/70 leading-relaxed line-clamp-3">${countryDetail.mainPolicy.description}</p>
+          <div class="flex items-center gap-3 mt-2 text-xs text-white/50">
             <span>📅 ${countryDetail.mainPolicy.implementationDate}</span>
             <span>⭐ ${countryDetail.mainPolicy.effectivenessRating}/10</span>
           </div>
         </div>
         ` : ''}
 
-        <!-- 현재 대기질 -->
-        ${countryDetail ? `
-        <div class="grid grid-cols-2 gap-3 mb-4">
-          <div class="bg-black/30 rounded-xl p-4 text-center">
-            <p class="text-xs text-white/60 mb-1">Air Quality Index</p>
-            <p class="text-2xl font-bold ${this.getAQIClass(countryDetail.currentAQI)}">${countryDetail.currentAQI}</p>
-            <p class="text-xs text-white/50 mt-1">${this.getAQILabel(countryDetail.currentAQI)}</p>
-          </div>
-          <div class="bg-black/30 rounded-xl p-4 text-center">
-            <p class="text-xs text-white/60 mb-1">PM2.5</p>
-            <p class="text-2xl font-bold text-primary">${countryDetail.currentPM25}</p>
-            <p class="text-xs text-white/50 mt-1">µg/m³</p>
-          </div>
-        </div>
-        ` : ''}
-
-        <!-- 최근 뉴스 -->
+        <!-- 최근 뉴스 (축소) -->
         ${countryDetail?.news?.length ? `
         <div class="bg-black/30 rounded-xl p-4">
-          <div class="flex items-center gap-2 mb-3">
+          <div class="flex items-center gap-2 mb-2">
             <span class="material-symbols-outlined text-primary">newspaper</span>
-            <h3 class="text-base font-semibold text-white">Recent News</h3>
+            <h3 class="text-sm font-semibold text-white">Recent News</h3>
           </div>
           <div class="space-y-2">
-            ${countryDetail.news.slice(0, 3).map(news => `
-              <div class="bg-black/20 rounded-lg p-3 hover:bg-black/30 transition-colors">
-                <p class="text-sm text-white/90 mb-1">${news.title}</p>
-                <div class="flex items-center justify-between text-xs text-white/50">
-                  <span>${news.source}</span>
-                  <span>${news.date}</span>
-                </div>
+            ${countryDetail.news.slice(0, 2).map(news => `
+              <div class="bg-black/20 rounded-lg p-2">
+                <p class="text-xs text-white/80 line-clamp-1">${news.title}</p>
+                <p class="text-xs text-white/40 mt-1">${news.source} · ${news.date}</p>
               </div>
             `).join('')}
           </div>
@@ -3653,16 +3698,20 @@ class PolicyGlobe {
         ` : ''}
 
         <!-- 버튼 -->
-        <div class="mt-4 flex gap-3">
-          <button id="view-more-policy" class="flex-1 py-2 px-4 bg-primary/20 hover:bg-primary/30 border border-primary/30 rounded-lg text-primary text-sm font-medium transition-colors">
-            <span class="material-symbols-outlined text-sm align-middle mr-1">analytics</span>
-            View Details
+        <div class="mt-4 flex gap-2">
+          <button id="view-more-policy" class="flex-1 py-2 px-3 bg-primary/20 hover:bg-primary/30 border border-primary/30 rounded-lg text-primary text-sm font-medium transition-colors">
+            View Full Details
           </button>
         </div>
       </div>
     `;
 
     document.body.appendChild(panel);
+
+    // PM2.5 트렌드 차트 렌더링
+    if (hasTrends && typeof Chart !== 'undefined') {
+      this.renderPM25TrendChart(pm25Trends, countryDetail?.mainPolicy?.implementationDate);
+    }
 
     // 이벤트 리스너
     document.getElementById('close-policy-panel')?.addEventListener('click', () => {
@@ -3678,12 +3727,89 @@ class PolicyGlobe {
       }
     });
 
-    // 외부 클릭 시 닫기
     panel.addEventListener('click', (e) => {
       if (e.target === panel) {
         panel.style.animation = 'fadeOut 0.2s ease-out';
         setTimeout(() => panel.remove(), 200);
         this.markerSystem?.highlightPolicyMarker(countryCode, false);
+      }
+    });
+  }
+
+  /**
+   * 🆕 PM2.5 트렌드 차트 렌더링
+   */
+  renderPM25TrendChart(trends, policyDate) {
+    const canvas = document.getElementById('pm25-trend-chart');
+    if (!canvas || !trends || trends.length === 0) return;
+
+    const ctx = canvas.getContext('2d');
+    const labels = trends.map(t => t.year);
+    const data = trends.map(t => t.value);
+    
+    // 정책 시작 연도 찾기
+    let policyYear = null;
+    if (policyDate) {
+      policyYear = parseInt(policyDate.substring(0, 4));
+    }
+
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'PM2.5',
+          data: data,
+          borderColor: '#25e2f4',
+          backgroundColor: 'rgba(37, 226, 244, 0.1)',
+          borderWidth: 2,
+          fill: true,
+          tension: 0.3,
+          pointRadius: 3,
+          pointBackgroundColor: data.map((v, i) => {
+            if (policyYear && labels[i] === policyYear) return '#ffcc00';
+            return '#25e2f4';
+          }),
+          pointBorderColor: data.map((v, i) => {
+            if (policyYear && labels[i] === policyYear) return '#ffcc00';
+            return '#25e2f4';
+          }),
+          pointRadius: data.map((v, i) => {
+            if (policyYear && labels[i] === policyYear) return 6;
+            return 3;
+          })
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: 'rgba(0,0,0,0.8)',
+            titleColor: '#fff',
+            bodyColor: '#25e2f4',
+            callbacks: {
+              label: (ctx) => {
+                const trend = trends[ctx.dataIndex];
+                return [
+                  `PM2.5: ${ctx.parsed.y} µg/m³`,
+                  trend.note ? `📌 ${trend.note}` : ''
+                ].filter(Boolean);
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: 'rgba(255,255,255,0.05)' },
+            ticks: { color: 'rgba(255,255,255,0.5)', font: { size: 9 } }
+          },
+          y: {
+            grid: { color: 'rgba(255,255,255,0.05)' },
+            ticks: { color: 'rgba(255,255,255,0.5)', font: { size: 9 } }
+          }
+        }
       }
     });
   }

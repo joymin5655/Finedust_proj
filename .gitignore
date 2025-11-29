@@ -31,6 +31,7 @@ _site/
 .env.local
 
 # API Configuration (contains sensitive API keys)
+# Copy config.template.js to config.js and add your keys
 app/js/config.js
 
 # Temporary files
@@ -45,4 +46,3 @@ archive/
 
 # Data collection logs
 scripts/*.log
-app/js/config.js

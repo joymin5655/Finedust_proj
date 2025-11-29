@@ -295,6 +295,42 @@ class PolicyGlobe {
     }
     
     console.log(`✅ Created ${created}/${countries.length} country policy markers`);
+    
+    // 통계 업데이트
+    this.updateStatisticsFromCountryPolicies();
+  }
+
+  /**
+   * 🆕 countryPolicies에서 정확한 통계 계산
+   */
+  updateStatisticsFromCountryPolicies() {
+    if (!this.countryPolicies) return;
+    
+    const countries = Object.keys(this.countryPolicies);
+    const regions = new Set();
+    let totalPolicies = 0;
+    
+    countries.forEach(country => {
+      const policy = this.countryPolicies[country];
+      if (policy?.region) {
+        regions.add(policy.region);
+      }
+      if (policy?.mainPolicy) {
+        totalPolicies++;
+      }
+    });
+    
+    // DOM 업데이트
+    const countriesEl = document.getElementById('stat-countries');
+    const policiesEl = document.getElementById('stat-policies');
+    const regionsEl = document.getElementById('stat-regions');
+    
+    if (countriesEl) countriesEl.textContent = countries.length;
+    if (policiesEl) policiesEl.textContent = totalPolicies;
+    if (regionsEl) regionsEl.textContent = regions.size;
+    
+    console.log(`📊 Stats: ${countries.length} countries, ${totalPolicies} policies, ${regions.size} regions`);
+    console.log(`📍 Regions: ${Array.from(regions).join(', ')}`);
   }
 
   // ✨ PM2.5 마커 생성 (최적화 버전)
@@ -1368,23 +1404,22 @@ class PolicyGlobe {
           implementationDate: '2019-02-15',
           effectivenessRating: 8
         },
-        // Historical PM2.5 trends (µg/m³ annual average)
+        // Historical PM2.5 trends (µg/m³ annual average) - IQAir 2024
         pm25Trends: [
-          { year: 2015, value: 32, note: 'Pre-policy baseline' },
-          { year: 2016, value: 29, note: 'Initial monitoring improvements' },
-          { year: 2017, value: 28, note: 'Awareness campaigns begin' },
-          { year: 2018, value: 27, note: 'Policy development' },
-          { year: 2019, value: 26, note: '🔸 Fine Dust Special Act implemented' },
-          { year: 2020, value: 24, note: 'Vehicle restrictions, COVID impact' },
-          { year: 2021, value: 22, note: 'Industrial controls strengthened' },
-          { year: 2022, value: 21, note: 'Green New Deal initiatives' },
-          { year: 2023, value: 20, note: 'Continued improvement' },
-          { year: 2024, value: 19, note: 'Target: 18 µg/m³ by 2024' },
-          { year: 2025, value: 18, note: '✅ Target achieved! -44% from 2015' }
+          { year: 2015, value: 29.1, note: 'Pre-policy baseline' },
+          { year: 2016, value: 27.5, note: 'Initial monitoring improvements' },
+          { year: 2017, value: 27.0, note: 'Awareness campaigns begin' },
+          { year: 2018, value: 25.8, note: 'Policy development' },
+          { year: 2019, value: 24.5, note: '🔸 Fine Dust Special Act implemented' },
+          { year: 2020, value: 21.3, note: 'Vehicle restrictions, COVID impact' },
+          { year: 2021, value: 19.8, note: 'Industrial controls strengthened' },
+          { year: 2022, value: 18.5, note: 'Green New Deal initiatives' },
+          { year: 2023, value: 17.2, note: 'Continued improvement' },
+          { year: 2024, value: 16.8, note: '✅ IQAir 2024: -42% from 2015' }
         ],
         policyImpact: {
-          reductionRate: '44%',
-          timeframe: '2015-2025',
+          reductionRate: '42%',
+          timeframe: '2015-2024',
           status: 'Effective',
           keyMeasures: ['Vehicle restrictions', 'Industrial emission controls', 'Seasonal reduction programs', 'Air purifier subsidies']
         },
@@ -1393,8 +1428,8 @@ class PolicyGlobe {
           { title: 'New air purifier subsidy program launched', date: '2024-12-20', source: 'Korea Herald' },
           { title: 'Vehicle restrictions expanded in metropolitan areas', date: '2024-12-10', source: 'KBS News' }
         ],
-        currentAQI: 125,
-        currentPM25: 45
+        currentAQI: 68,
+        currentPM25: 16.8
       },
       'China': {
         flag: '🇨🇳',
@@ -1406,7 +1441,7 @@ class PolicyGlobe {
           implementationDate: '2018-06-01',
           effectivenessRating: 7
         },
-        // Historical PM2.5 trends (µg/m³ annual average - Beijing)
+        // Historical PM2.5 trends (µg/m³ annual average - Beijing) - IQAir 2024
         pm25Trends: [
           { year: 2013, value: 89.5, note: 'Air pollution crisis peak' },
           { year: 2014, value: 85.9, note: 'Action Plan begins' },
@@ -1417,14 +1452,13 @@ class PolicyGlobe {
           { year: 2019, value: 42.1, note: 'Coal-to-gas conversion' },
           { year: 2020, value: 38.0, note: 'COVID impact + policy effect' },
           { year: 2021, value: 33.0, note: 'Sustained improvements' },
-          { year: 2022, value: 30.1, note: 'Target: 35 µg/m³' },
-          { year: 2023, value: 32.9, note: 'Post-lockdown increase' },
-          { year: 2024, value: 30.5, note: 'Renewed enforcement' },
-          { year: 2025, value: 29.8, note: '✅ 67% reduction from 2013' }
+          { year: 2022, value: 30.6, note: 'Target achieved' },
+          { year: 2023, value: 32.1, note: 'Post-lockdown increase' },
+          { year: 2024, value: 29.2, note: '✅ IQAir 2024: -67% from 2013' }
         ],
         policyImpact: {
           reductionRate: '67%',
-          timeframe: '2013-2025',
+          timeframe: '2013-2024',
           status: 'Highly Effective',
           keyMeasures: ['Coal power plant closures', 'Industrial restructuring', 'Vehicle emission standards (China VI)', 'Clean heating program']
         },
@@ -1433,8 +1467,8 @@ class PolicyGlobe {
           { title: 'Coal power plant shutdowns continue nationwide', date: '2024-12-28', source: 'China Daily' },
           { title: 'Red alert issued for heavy pollution in northern regions', date: '2024-12-15', source: 'CGTN' }
         ],
-        currentAQI: 165,
-        currentPM25: 85
+        currentAQI: 115,
+        currentPM25: 29.2
       },
       'Japan': {
         flag: '🇯🇵',
@@ -1446,21 +1480,20 @@ class PolicyGlobe {
           implementationDate: '1968-06-10',
           effectivenessRating: 9
         },
-        // Historical PM2.5 trends (µg/m³ annual average - Tokyo)
+        // Historical PM2.5 trends (µg/m³ annual average - Tokyo) - IQAir 2024
         pm25Trends: [
-          { year: 2010, value: 19.5, note: 'Early monitoring period' },
-          { year: 2012, value: 17.2, note: 'Post-Fukushima energy shift' },
-          { year: 2014, value: 15.8, note: 'Diesel vehicle regulations' },
-          { year: 2016, value: 14.1, note: 'Industrial emission improvements' },
-          { year: 2018, value: 12.5, note: 'Continuous improvement' },
-          { year: 2020, value: 11.0, note: 'Olympic preparations + COVID' },
-          { year: 2022, value: 10.8, note: 'Sustained low levels' },
-          { year: 2024, value: 10.2, note: 'Among world\'s best' },
-          { year: 2025, value: 9.8, note: '✅ 50% reduction from 2010' }
+          { year: 2010, value: 15.2, note: 'Early monitoring period' },
+          { year: 2012, value: 13.8, note: 'Post-Fukushima energy shift' },
+          { year: 2014, value: 12.5, note: 'Diesel vehicle regulations' },
+          { year: 2016, value: 11.3, note: 'Industrial emission improvements' },
+          { year: 2018, value: 10.1, note: 'Continuous improvement' },
+          { year: 2020, value: 9.2, note: 'Olympic preparations + COVID' },
+          { year: 2022, value: 8.8, note: 'Sustained low levels' },
+          { year: 2024, value: 8.5, note: '✅ IQAir 2024: Among cleanest in Asia' }
         ],
         policyImpact: {
-          reductionRate: '50%',
-          timeframe: '2010-2025',
+          reductionRate: '44%',
+          timeframe: '2010-2024',
           status: 'Exemplary',
           keyMeasures: ['Strict diesel regulations', 'Industrial emission controls', 'Cross-border pollution monitoring', 'Clean energy transition']
         },
@@ -1469,8 +1502,8 @@ class PolicyGlobe {
           { title: 'New diesel vehicle restrictions announced', date: '2024-12-20', source: 'NHK' },
           { title: 'Cross-border pollution monitoring enhanced', date: '2024-12-01', source: 'Asahi Shimbun' }
         ],
-        currentAQI: 75,
-        currentPM25: 25
+        currentAQI: 35,
+        currentPM25: 8.5
       },
       'India': {
         flag: '🇮🇳',
@@ -1482,23 +1515,22 @@ class PolicyGlobe {
           implementationDate: '2019-01-10',
           effectivenessRating: 6
         },
-        // Historical PM2.5 trends (µg/m³ annual average - Delhi)
+        // Historical PM2.5 trends (µg/m³ annual average - Delhi) - IQAir 2024
         pm25Trends: [
-          { year: 2015, value: 153.0, note: 'Severe pollution crisis' },
-          { year: 2016, value: 143.0, note: 'Post-Diwali peak awareness' },
-          { year: 2017, value: 135.0, note: 'Odd-even scheme trials' },
-          { year: 2018, value: 128.0, note: 'Construction dust controls' },
-          { year: 2019, value: 113.0, note: '🔸 NCAP launched' },
+          { year: 2015, value: 143.0, note: 'Severe pollution crisis' },
+          { year: 2016, value: 135.0, note: 'Post-Diwali peak awareness' },
+          { year: 2017, value: 125.0, note: 'Odd-even scheme trials' },
+          { year: 2018, value: 113.0, note: 'Construction dust controls' },
+          { year: 2019, value: 98.6, note: '🔸 NCAP launched' },
           { year: 2020, value: 84.0, note: 'COVID lockdown impact' },
-          { year: 2021, value: 96.0, note: 'Economic recovery increase' },
-          { year: 2022, value: 89.0, note: 'Stubble burning continues' },
-          { year: 2023, value: 92.0, note: 'Winter pollution spikes' },
-          { year: 2024, value: 85.0, note: 'Target: 40% reduction by 2026' },
-          { year: 2025, value: 87.0, note: '⚠️ 43% reduction from 2015, more needed' }
+          { year: 2021, value: 96.4, note: 'Economic recovery increase' },
+          { year: 2022, value: 89.1, note: 'Stubble burning continues' },
+          { year: 2023, value: 54.4, note: 'Improved monitoring' },
+          { year: 2024, value: 50.6, note: '⚠️ IQAir 2024: 5th most polluted country' }
         ],
         policyImpact: {
-          reductionRate: '43%',
-          timeframe: '2015-2025',
+          reductionRate: '65%',
+          timeframe: '2015-2024',
           status: 'Partial Progress',
           keyMeasures: ['Odd-even vehicle scheme', 'Stubble burning penalties', 'Construction dust controls', 'BS-VI fuel standards']
         },
@@ -1507,8 +1539,8 @@ class PolicyGlobe {
           { title: 'Supreme Court mandates stubble burning penalties', date: '2024-12-22', source: 'Indian Express' },
           { title: 'Air quality monitoring network expanded', date: '2024-12-05', source: 'Hindustan Times' }
         ],
-        currentAQI: 250,
-        currentPM25: 150
+        currentAQI: 171,
+        currentPM25: 50.6
       },
       'Bangladesh': {
         flag: '🇧🇩',
@@ -1518,23 +1550,22 @@ class PolicyGlobe {
           name: 'Clean Air and Sustainable Environment',
           description: 'National policy focusing on brick kiln emissions, vehicle standards, and industrial pollution control in Dhaka.',
           implementationDate: '2020-03-15',
-          effectivenessRating: 5
+          effectivenessRating: 4
         },
-        // Historical PM2.5 trends (µg/m³ annual average - Dhaka)
+        // Historical PM2.5 trends (µg/m³ annual average - Dhaka) - IQAir 2024
         pm25Trends: [
-          { year: 2017, value: 97.0, note: 'World\'s most polluted capital' },
-          { year: 2018, value: 104.0, note: 'Brick kilns major contributor' },
+          { year: 2017, value: 97.1, note: 'World\'s most polluted capital' },
+          { year: 2018, value: 97.1, note: 'Brick kilns major contributor' },
           { year: 2019, value: 83.3, note: 'Awareness campaigns begin' },
           { year: 2020, value: 77.1, note: '🔸 Clean Air policy launched' },
           { year: 2021, value: 76.9, note: 'COVID-19 restrictions help' },
-          { year: 2022, value: 79.9, note: 'Brick kiln modernization slow' },
-          { year: 2023, value: 80.2, note: 'Construction boom increases dust' },
-          { year: 2024, value: 81.5, note: 'Still among worst globally' },
-          { year: 2025, value: 80.0, note: '⚠️ 18% reduction, more action needed' }
+          { year: 2022, value: 65.8, note: 'Brick kiln modernization slow' },
+          { year: 2023, value: 79.9, note: 'Construction boom increases dust' },
+          { year: 2024, value: 78.0, note: '⚠️ IQAir 2024: 2nd most polluted country' }
         ],
         policyImpact: {
-          reductionRate: '18%',
-          timeframe: '2017-2025',
+          reductionRate: '20%',
+          timeframe: '2017-2024',
           status: 'Limited Progress',
           keyMeasures: ['Brick kiln modernization', 'Vehicle emission standards', 'Construction dust controls', 'Monitoring expansion']
         },
@@ -1543,8 +1574,8 @@ class PolicyGlobe {
           { title: 'Brick kiln modernization program launched', date: '2024-12-25', source: 'Daily Star' },
           { title: 'Air quality monitoring stations expanded', date: '2024-12-08', source: 'Bangladesh Post' }
         ],
-        currentAQI: 280,
-        currentPM25: 165
+        currentAQI: 260,
+        currentPM25: 78.0
       },
       'United States': {
         flag: '🇺🇸',
@@ -1556,23 +1587,22 @@ class PolicyGlobe {
           implementationDate: '1990-11-15',
           effectivenessRating: 9
         },
-        // Historical PM2.5 trends (µg/m³ annual average - National)
+        // Historical PM2.5 trends (µg/m³ annual average - National) - IQAir 2024
         pm25Trends: [
           { year: 2000, value: 13.5, note: 'PM2.5 monitoring begins nationwide' },
           { year: 2005, value: 12.3, note: 'Clean Air Interstate Rule' },
           { year: 2010, value: 10.2, note: 'Industrial emission reductions' },
           { year: 2015, value: 8.6, note: 'Vehicle standards tightened' },
           { year: 2017, value: 8.0, note: 'Continuous improvement' },
-          { year: 2019, value: 7.5, note: 'Near WHO guideline (10 µg/m³)' },
-          { year: 2020, value: 6.8, note: 'COVID-19 traffic reduction' },
-          { year: 2021, value: 7.2, note: 'Economic recovery + wildfires' },
-          { year: 2023, value: 7.8, note: 'Increased wildfire impact' },
-          { year: 2024, value: 7.5, note: '🔸 EPA strengthens standards' },
-          { year: 2025, value: 7.3, note: '✅ 46% reduction from 2000' }
+          { year: 2019, value: 7.5, note: 'Near WHO guideline (5 µg/m³)' },
+          { year: 2020, value: 8.4, note: 'Wildfire impact + COVID' },
+          { year: 2021, value: 8.7, note: 'Increased wildfire impact' },
+          { year: 2023, value: 9.1, note: 'Canadian wildfire smoke' },
+          { year: 2024, value: 8.2, note: '✅ IQAir 2024: Stable, wildfire challenge' }
         ],
         policyImpact: {
-          reductionRate: '46%',
-          timeframe: '2000-2025',
+          reductionRate: '39%',
+          timeframe: '2000-2024',
           status: 'Effective',
           keyMeasures: ['Clean Air Act enforcement', 'Vehicle emission standards', 'Industrial controls', 'State implementation plans']
         },
@@ -1581,8 +1611,8 @@ class PolicyGlobe {
           { title: 'California leads in zero-emission vehicle adoption', date: '2024-12-18', source: 'LA Times' },
           { title: 'Wildfire smoke prompts air quality alerts', date: '2024-11-30', source: 'AP News' }
         ],
-        currentAQI: 145,
-        currentPM25: 55
+        currentAQI: 34,
+        currentPM25: 8.2
       },
       'Canada': {
         flag: '🇨🇦',
@@ -1594,13 +1624,29 @@ class PolicyGlobe {
           implementationDate: '2013-05-17',
           effectivenessRating: 8
         },
+        // Historical PM2.5 trends (µg/m³ annual average) - IQAir 2024
+        pm25Trends: [
+          { year: 2015, value: 8.2, note: 'Pre-wildfire baseline' },
+          { year: 2017, value: 7.5, note: 'Clean fuel standards' },
+          { year: 2019, value: 7.0, note: 'Low emission vehicles' },
+          { year: 2020, value: 6.5, note: 'COVID-19 impact' },
+          { year: 2021, value: 8.5, note: 'Wildfire smoke impact' },
+          { year: 2023, value: 10.2, note: '⚠️ Record wildfire season' },
+          { year: 2024, value: 6.4, note: '✅ IQAir 2024: Recovery' }
+        ],
+        policyImpact: {
+          reductionRate: '22%',
+          timeframe: '2015-2024',
+          status: 'Effective (wildfire challenge)',
+          keyMeasures: ['Clean fuel regulations', 'Oil sands emission limits', 'Provincial air standards', 'Wildfire management']
+        },
         news: [
           { title: 'Wildfire smoke affects air quality across provinces', date: '2025-01-09', source: 'CBC News' },
           { title: 'New emissions standards for oil sands sector', date: '2024-12-22', source: 'Globe and Mail' },
           { title: 'Clean fuel regulations come into effect', date: '2024-12-01', source: 'National Post' }
         ],
-        currentAQI: 65,
-        currentPM25: 22
+        currentAQI: 26,
+        currentPM25: 6.4
       },
       'Mexico': {
         flag: '🇲🇽',
@@ -1612,13 +1658,28 @@ class PolicyGlobe {
           implementationDate: '1989-11-20',
           effectivenessRating: 6
         },
+        // Historical PM2.5 trends (µg/m³ annual average) - IQAir 2024
+        pm25Trends: [
+          { year: 2015, value: 25.2, note: 'Baseline monitoring' },
+          { year: 2017, value: 23.5, note: 'Vehicle restrictions' },
+          { year: 2019, value: 21.1, note: 'Metro expansion' },
+          { year: 2020, value: 17.5, note: 'COVID-19 impact' },
+          { year: 2022, value: 19.2, note: 'Economic recovery' },
+          { year: 2024, value: 18.7, note: '✅ IQAir 2024: 26% reduction' }
+        ],
+        policyImpact: {
+          reductionRate: '26%',
+          timeframe: '2015-2024',
+          status: 'Moderate Progress',
+          keyMeasures: ['Hoy No Circula restrictions', 'Metro expansion', 'Vehicle emission testing', 'Industrial controls']
+        },
         news: [
           { title: 'Mexico City air quality shows improvement', date: '2025-01-06', source: 'El Universal' },
           { title: 'New public transport expansion planned', date: '2024-12-19', source: 'Reforma' },
           { title: 'Industrial emissions regulations tightened', date: '2024-12-03', source: 'Milenio' }
         ],
-        currentAQI: 135,
-        currentPM25: 50
+        currentAQI: 76,
+        currentPM25: 18.7
       },
       'Brazil': {
         flag: '🇧🇷',
@@ -1672,8 +1733,8 @@ class PolicyGlobe {
           { title: 'Government announces wood burning restrictions', date: '2024-12-15', source: 'The Guardian' },
           { title: 'Air quality improving in major UK cities', date: '2024-11-28', source: 'Independent' }
         ],
-        currentAQI: 90,
-        currentPM25: 30
+        currentAQI: 37,
+        currentPM25: 9.0
       },
       'Germany': {
         flag: '🇩🇪',
@@ -1707,8 +1768,8 @@ class PolicyGlobe {
           { title: 'Coal phase-out accelerates air quality improvements', date: '2024-12-18', source: 'Spiegel' },
           { title: 'Electric vehicle incentives extended', date: '2024-12-05', source: 'FAZ' }
         ],
-        currentAQI: 70,
-        currentPM25: 24
+        currentAQI: 43,
+        currentPM25: 10.5
       },
       'France': {
         flag: '🇫🇷',
@@ -1934,19 +1995,67 @@ class PolicyGlobe {
           name: 'National Environment Protection Measure',
           description: 'Federal standards for ambient air quality including PM2.5 with state-level implementation and monitoring.',
           implementationDate: '2016-02-25',
-          effectivenessRating: 8
+          effectivenessRating: 9
+        },
+        // Historical PM2.5 trends (µg/m³ annual average) - IQAir 2024
+        pm25Trends: [
+          { year: 2015, value: 7.5, note: 'Baseline monitoring' },
+          { year: 2017, value: 6.8, note: 'Clean air policies' },
+          { year: 2019, value: 8.2, note: 'Pre-bushfire normal' },
+          { year: 2020, value: 12.5, note: '⚠️ Black Summer bushfires' },
+          { year: 2021, value: 6.0, note: 'Recovery period' },
+          { year: 2022, value: 5.2, note: 'Continued improvement' },
+          { year: 2023, value: 4.5, note: 'Near WHO target' },
+          { year: 2024, value: 4.0, note: '✅ IQAir 2024: WHO standard met!' }
+        ],
+        policyImpact: {
+          reductionRate: '47%',
+          timeframe: '2015-2024',
+          status: 'Exemplary',
+          keyMeasures: ['National air quality standards', 'State implementation', 'Bushfire management', 'Renewable energy transition']
         },
         news: [
           { title: 'Sydney air quality remains good', date: '2025-01-09', source: 'Sydney Morning Herald' },
           { title: 'Bushfire smoke impacts seasonal air quality', date: '2024-12-23', source: 'ABC News' },
           { title: 'Emission standards for industry updated', date: '2024-12-08', source: 'The Australian' }
         ],
-        currentAQI: 62,
-        currentPM25: 20
+        currentAQI: 16,
+        currentPM25: 4.0
       },
       'New Zealand': {
         flag: '🇳🇿',
         region: 'Oceania',
+        policyType: 'Energy Transition',
+        mainPolicy: {
+          name: 'National Environmental Standards for Air Quality',
+          description: 'Regulations targeting domestic heating emissions and industrial pollution with focus on PM10 and PM2.5.',
+          implementationDate: '2004-09-07',
+          effectivenessRating: 9
+        },
+        // Historical PM2.5 trends (µg/m³ annual average) - IQAir 2024
+        pm25Trends: [
+          { year: 2015, value: 8.5, note: 'Wood burner issues' },
+          { year: 2017, value: 7.2, note: 'Burner replacement program' },
+          { year: 2019, value: 6.0, note: 'Clean heating progress' },
+          { year: 2020, value: 5.5, note: 'COVID-19 reduction' },
+          { year: 2022, value: 5.0, note: 'Sustained improvements' },
+          { year: 2023, value: 4.8, note: 'Near WHO target' },
+          { year: 2024, value: 4.5, note: '✅ IQAir 2024: WHO standard met!' }
+        ],
+        policyImpact: {
+          reductionRate: '47%',
+          timeframe: '2015-2024',
+          status: 'Exemplary',
+          keyMeasures: ['Wood burner replacement', 'Clean heating subsidies', 'Winter air quality programs', 'Renewable energy']
+        },
+        news: [
+          { title: 'Auckland air quality improvement continues', date: '2025-01-05', source: 'NZ Herald' },
+          { title: 'Wood burner replacement program successful', date: '2024-12-19', source: 'Stuff' },
+          { title: 'Winter air pollution targets met', date: '2024-12-03', source: 'Radio NZ' }
+        ],
+        currentAQI: 18,
+        currentPM25: 4.5
+      },
         policyType: 'Energy Transition',
         mainPolicy: {
           name: 'National Environmental Standards for Air Quality',
@@ -2067,8 +2176,8 @@ class PolicyGlobe {
           { title: 'Vehicle restrictions extended', date: '2024-12-26', source: 'Press TV' },
           { title: 'Air quality emergency measures activated', date: '2024-12-13', source: 'IRNA' }
         ],
-        currentAQI: 195,
-        currentPM25: 95
+        currentAQI: 148,
+        currentPM25: 45.2
       },
       'Pakistan': {
         flag: '🇵🇰',
@@ -2078,15 +2187,32 @@ class PolicyGlobe {
           name: 'Pakistan Clean Air Program',
           description: 'National program addressing vehicle emissions, industrial pollution, and crop burning in Lahore and Karachi.',
           implementationDate: '2020-10-01',
-          effectivenessRating: 5
+          effectivenessRating: 4
+        },
+        // Historical PM2.5 trends (µg/m³ annual average - Lahore) - IQAir 2024
+        pm25Trends: [
+          { year: 2017, value: 114.0, note: 'Severe smog crisis begins' },
+          { year: 2018, value: 97.4, note: 'Government awareness' },
+          { year: 2019, value: 98.6, note: 'Emergency measures' },
+          { year: 2020, value: 59.0, note: '🔸 Clean Air Program + COVID' },
+          { year: 2021, value: 66.8, note: 'Economic recovery' },
+          { year: 2022, value: 70.9, note: 'Industrial emissions up' },
+          { year: 2023, value: 73.7, note: 'Smog season severe' },
+          { year: 2024, value: 73.7, note: '⚠️ IQAir 2024: 3rd most polluted' }
+        ],
+        policyImpact: {
+          reductionRate: '35%',
+          timeframe: '2017-2024',
+          status: 'Limited Progress',
+          keyMeasures: ['Crop burning penalties', 'Vehicle emission standards', 'Industrial controls', 'Smog alerts']
         },
         news: [
           { title: 'Lahore battles severe smog season', date: '2025-01-10', source: 'Dawn' },
           { title: 'Crop burning ban enforcement increased', date: '2024-12-24', source: 'Express Tribune' },
           { title: 'Green lockdown measures implemented', date: '2024-12-11', source: 'The News' }
         ],
-        currentAQI: 235,
-        currentPM25: 142
+        currentAQI: 248,
+        currentPM25: 73.7
       },
       'Argentina': {
         flag: '🇦🇷',

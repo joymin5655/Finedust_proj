@@ -2056,21 +2056,6 @@ class PolicyGlobe {
         currentAQI: 18,
         currentPM25: 4.5
       },
-        policyType: 'Energy Transition',
-        mainPolicy: {
-          name: 'National Environmental Standards for Air Quality',
-          description: 'Regulations targeting domestic heating emissions and industrial pollution with focus on PM10 and PM2.5.',
-          implementationDate: '2004-09-07',
-          effectivenessRating: 8
-        },
-        news: [
-          { title: 'Auckland air quality improvement continues', date: '2025-01-05', source: 'NZ Herald' },
-          { title: 'Wood burner replacement program successful', date: '2024-12-19', source: 'Stuff' },
-          { title: 'Winter air pollution targets met', date: '2024-12-03', source: 'Radio NZ' }
-        ],
-        currentAQI: 48,
-        currentPM25: 15
-      },
       'South Africa': {
         flag: '🇿🇦',
         region: 'Africa',

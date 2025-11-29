@@ -1,181 +1,92 @@
-# 🌍 AirLens - See the Air
+# 🌍 AirLens - Global Air Quality Visualization
 
-> **Interactive global air quality visualization**
-> Real-time PM2.5 monitoring • AI-powered predictions • Advanced 3D visualization
+> 실시간 PM2.5 모니터링 • 66개국 정책 분석 • 3D 지구본 시각화
 
 [![Deploy](https://github.com/joymin5655/Finedust_proj/actions/workflows/deploy.yml/badge.svg)](https://github.com/joymin5655/Finedust_proj/actions)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![WAQI Data](https://github.com/joymin5655/Finedust_proj/actions/workflows/update-waqi-data.yml/badge.svg)](https://github.com/joymin5655/Finedust_proj/actions)
 
-**Live Demo:** [https://joymin5655.github.io/Finedust_proj/app/](https://joymin5655.github.io/Finedust_proj/app/)
-
----
-
-## 🎯 What is AirLens?
-
-AirLens transforms complex air quality data into an intuitive, beautiful 3D visualization. Using **official EU Copernicus CAMS data** (no API keys required), explore global PM2.5 levels in real-time, predict air quality from sky photos using AI, and discover pollution patterns across the globe - all on an interactive Earth globe.
-
-### 🌟 Key Highlights
-
-- **🇪🇺 Official EU Data**: Real-time data from EU Copernicus CAMS (ECMWF)
-- **🌍 3D Globe Visualization**: 174+ cities worldwide with live PM2.5 data
-- **📸 Camera AI**: Upload sky photos to predict PM2.5 using multimodal AI
-- **🎨 Beautiful Interface**: Smooth animations, responsive design, dark mode
+**🔗 Live Demo:** [https://joymin5655.github.io/Finedust_proj/app/](https://joymin5655.github.io/Finedust_proj/app/)
 
 ---
 
-## ✨ Features
+## ✨ 주요 기능
 
-### 🌐 Interactive 3D Globe
-Built with **Three.js**:
-- **Realistic 3D Earth** with NASA Blue Marble texture
-- **Color-coded PM2.5 markers** for 174+ cities
-- **Country policy visualization** with historical trends
-- **Smooth OrbitControls** for intuitive navigation
-- **60 FPS rendering** using WebGL
-
-### 📸 Camera AI - PM2.5 Predictor
-**Sky Image Analysis with Machine Learning**:
-- Upload sky photos to estimate PM2.5 levels
-- Browser-based processing (no server uploads)
-- Drag & drop support
-
-### 📊 Data Analysis Tools
-- **Global Statistics Dashboard**
-- **Historical Timeline** (1990-2021)
-- **WHO Air Quality Guidelines**
-- **Interactive Charts**
+| 기능 | 설명 |
+|------|------|
+| 🌐 **3D Globe** | Three.js 기반 인터랙티브 지구본, 실시간 PM2.5 마커 |
+| 📊 **66개국 정책** | 국가별 대기질 정책, PM2.5 트렌드 차트, 효과 분석 |
+| 📸 **Camera AI** | 하늘 사진으로 PM2.5 예측 (브라우저 기반 ML) |
+| 🔄 **자동 업데이트** | GitHub Actions로 매일 WAQI 데이터 갱신 |
 
 ---
 
-## 🚀 Quick Start
-
-### View Live
-Visit: **[https://joymin5655.github.io/Finedust_proj/app/](https://joymin5655.github.io/Finedust_proj/app/)**
-
-### Run Locally
+## 🚀 빠른 시작
 
 ```bash
-# Clone the repository
+# 저장소 클론
 git clone https://github.com/joymin5655/Finedust_proj.git
 cd Finedust_proj
 
-# Serve with any static server
+# 로컬 서버 실행
 python3 -m http.server 8000
-# or
+# 또는
 npx serve app
 
-# Then open: http://localhost:8000/app/
+# 브라우저에서 열기
+open http://localhost:8000/app/
 ```
 
 ---
 
-## 🛠️ Technology Stack
-
-### Frontend
-- **Vanilla JavaScript** - Pure ES6+ JavaScript
-- **Three.js** - 3D graphics and WebGL rendering
-- **Chart.js** - Data visualization
-
-### Visualization
-- **Three.js Globe** - Interactive 3D Earth
-- **WebGL** - Hardware-accelerated graphics
-- **Custom shaders** - Realistic atmospheric effects
-
-### Data Sources
-- **EU Copernicus CAMS** - Official PM2.5 data (174+ cities)
-- **WHO Guidelines** - Air quality standards
-- **Historical Data** - Pollution trends (1990-2021)
-
----
-
-## 📁 Project Structure
+## 📁 프로젝트 구조
 
 ```
 Finedust_proj/
-├── app/                     # Main application
-│   ├── index.html          # Home page
-│   ├── globe.html          # 3D Globe view
-│   ├── camera.html         # Camera AI predictor
-│   ├── settings.html       # Settings
-│   ├── about.html          # About page
-│   ├── research.html       # Research data
-│   ├── 404.html            # Error page
-│   ├── css/                # Stylesheets
-│   ├── js/                 # JavaScript modules
-│   ├── data/               # Data files
-│   ├── assets/             # Images & textures
-│   └── public/             # Static assets
-├── archive/                # Archived versions
-└── README.md              # This file
+├── app/
+│   ├── index.html          # 홈페이지
+│   ├── globe.html          # 3D 지구본
+│   ├── camera.html         # Camera AI
+│   ├── css/                # 스타일시트
+│   ├── js/
+│   │   ├── globe.js        # 메인 지구본 로직
+│   │   ├── camera.js       # 카메라 AI
+│   │   ├── config.template.js  # API 설정 템플릿
+│   │   └── services/       # 데이터 서비스 모듈
+│   └── data/
+│       ├── policy-impact/  # 66개국 정책 데이터
+│       └── waqi/           # 53개 도시 실시간 데이터
+├── scripts/
+│   └── fetch-waqi-data.js  # WAQI 데이터 수집
+└── .github/workflows/
+    ├── deploy.yml          # GitHub Pages 배포
+    └── update-waqi-data.yml # 매일 데이터 업데이트
 ```
 
 ---
 
-## 🌍 Data Coverage
+## 📊 데이터 소스
 
-### Air Quality Monitoring
-- **174+ Cities** worldwide
-- **Real-time PM2.5 data** from EU Copernicus CAMS
-- **Historical trends** from 1990-2021
-- **WHO guideline comparisons**
-
-### Countries Covered
-Europe, North America, Asia, South America, Africa, Oceania
+| 소스 | 데이터 | API 키 |
+|------|--------|--------|
+| **EU Copernicus CAMS** | PM2.5 실시간 (Open-Meteo) | ❌ 불필요 |
+| **WAQI** | 53개 도시 상세 데이터 | ✅ GitHub Secrets |
+| **정책 데이터** | 66개국 133개 정책 | ❌ 로컬 JSON |
 
 ---
 
-## 🎨 Screenshots
+## 🛠️ 기술 스택
 
-### 3D Globe View
-Interactive Earth with real-time PM2.5 markers for 174+ cities.
-
-### Camera AI Predictor
-Upload sky photos to predict PM2.5 levels using machine learning.
-
-### Dark Mode
-Fully responsive dark mode for comfortable viewing.
+- **Frontend**: Vanilla JS (ES6+), Tailwind CSS
+- **3D**: Three.js, WebGL
+- **Charts**: Chart.js
+- **CI/CD**: GitHub Actions, GitHub Pages
 
 ---
 
-## 📊 How It Works
+## 📄 라이선스
 
-### 1. Data Collection
-- Fetches official EU Copernicus CAMS PM2.5 data
-- No API keys required - public data source
-- Updates automatically
-
-### 2. 3D Visualization
-- Renders Earth using NASA Blue Marble texture
-- Maps PM2.5 data to 3D coordinates
-- Color-codes markers by pollution level
-
-### 3. Camera AI Prediction
-- Analyzes sky photo characteristics
-- Estimates PM2.5 from atmospheric opacity
-- Browser-based ML processing
+MIT License
 
 ---
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🙏 Acknowledgments
-
-- **EU Copernicus CAMS** - Official PM2.5 data
-- **NASA** - Earth textures
-- **Three.js** - 3D rendering
-- **Chart.js** - Data visualization
-
----
-
-## 📧 Contact
-
-- **GitHub**: [@joymin5655](https://github.com/joymin5655)
-- **Project**: [AirLens](https://github.com/joymin5655/Finedust_proj)
-
----
-
-**Made with ❤️ for a cleaner planet**
+**Made with ❤️ by [@joymin5655](https://github.com/joymin5655)**

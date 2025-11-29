@@ -9,14 +9,19 @@
 
 ---
 
-## 🎯 Purpose
+## 🎯 Why I Built This
 
-Air pollution kills **7 million people annually** (WHO), yet remains invisible to the naked eye. AirLens aims to:
+**The Problem:**  
+Air quality monitoring stations are severely lacking in many regions. People often have no way to know the air quality in their area, especially in developing countries and rural areas where stations are sparse or non-existent.
 
-1. **Visualize** real-time PM2.5 data on an interactive 3D globe
-2. **Analyze** air quality policies across 66 countries and their effectiveness
-3. **Predict** PM2.5 levels from sky photos using browser-based AI
-4. **Raise awareness** about global air pollution through intuitive data visualization
+**The Solution:**  
+AirLens addresses this gap through two approaches:
+
+1. **📸 Camera-Based PM2.5 Prediction**  
+   Use your smartphone camera to capture the sky and estimate PM2.5 levels — no expensive monitoring equipment needed.
+
+2. **📊 Policy Impact Visualization**  
+   Explore how air quality policies across 66 countries have actually changed PM2.5 levels over time. See which policies work and which don't.
 
 ---
 
@@ -88,12 +93,6 @@ Finedust_proj/
 - **3D**: Three.js, WebGL
 - **Charts**: Chart.js
 - **CI/CD**: GitHub Actions, GitHub Pages
-
----
-
-## 📄 License
-
-MIT License
 
 ---
 

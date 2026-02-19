@@ -114,10 +114,11 @@
     const imageQuality = (avgContrast + skyVisibility) / 2;
     const confidence = 0.55 + imageQuality * 0.20;
 
-    // UI 업데이트
+    // UI update
     if (camPmValue) camPmValue.textContent = cameraPM25.toFixed(1);
     if (camConfidenceBar) camConfidenceBar.style.width = `${(confidence * 100).toFixed(0)}%`;
-    if (camConfidenceText) camConfidenceText.textContent = `모델 신뢰도 ${(confidence * 100).toFixed(0)}%`;
+    const confLabel = window.t ? window.t('today.camera.confidence') : 'Model confidence';
+    if (camConfidenceText) camConfidenceText.textContent = `${confLabel} ${(confidence * 100).toFixed(0)}%`;
 
     // today.js 콜백으로 통합 계산 트리거
     if (typeof window.onCameraPM25 === 'function') {

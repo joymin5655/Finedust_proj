@@ -62,10 +62,11 @@
                 <span></span>
             </button>
             <ul class="navbar-menu">
-                <li><a href="index.html" class="navbar-link">Home</a></li>
-                <li><a href="globe.html" class="navbar-link">Globe</a></li>
-                <li><a href="camera.html" class="navbar-link">Camera AI</a></li>
-                <li><a href="about.html" class="navbar-link">About & Research</a></li>
+                <li><a href="index.html" class="navbar-link" data-i18n="nav.home">Home</a></li>
+                <li><a href="today.html" class="navbar-link" data-i18n="nav.today">Today</a></li>
+                <li><a href="globe.html" class="navbar-link" data-i18n="nav.globe">Globe</a></li>
+                <li><a href="camera.html" class="navbar-link" data-i18n="nav.camera">Camera AI</a></li>
+                <li><a href="about.html" class="navbar-link" data-i18n="nav.about">About & Research</a></li>
                 <li><a href="settings.html" class="navbar-link navbar-link-active">
                     <div class="settings-icon">
                         <div class="loader-icon"></div>
@@ -78,30 +79,29 @@
     <!-- Settings Content -->
     <section class="settings-section">
         <div class="settings-container">
-            <h1 class="settings-title">Settings</h1>
-            <p class="settings-subtitle">Customize your AirLens experience</p>
+            <h1 class="settings-title" data-i18n="settings.title">Settings</h1>
+            <p class="settings-subtitle" data-i18n="settings.subtitle">Customize your AirLens experience</p>
 
             <!-- Appearance Settings -->
             <div class="settings-card">
                 <div class="settings-card-header">
-                    <h2>🎨 Appearance</h2>
-                    <p>Customize how AirLens looks</p>
+                    <h2 data-i18n="settings.appearance.title">🎨 Appearance</h2>
+                    <p data-i18n="settings.appearance.sub">Customize how AirLens looks</p>
                 </div>
-
                 <div class="settings-option">
                     <div class="settings-option-info">
-                        <h3>Theme</h3>
-                        <p>Choose between light and dark mode</p>
+                        <h3 data-i18n="settings.theme.label">Theme</h3>
+                        <p data-i18n="settings.theme.sub">Choose between light and dark mode</p>
                     </div>
                     <div class="settings-option-control">
                         <div class="theme-selector">
                             <button class="theme-btn" data-theme="light">
                                 <span class="theme-icon">☀️</span>
-                                <span>Light</span>
+                                <span data-i18n="settings.theme.light">Light</span>
                             </button>
                             <button class="theme-btn" data-theme="dark">
                                 <span class="theme-icon">🌙</span>
-                                <span>Dark</span>
+                                <span data-i18n="settings.theme.dark">Dark</span>
                             </button>
                         </div>
                     </div>
@@ -111,14 +111,13 @@
             <!-- Language Settings -->
             <div class="settings-card">
                 <div class="settings-card-header">
-                    <h2>🌍 Language</h2>
-                    <p>Select your preferred language</p>
+                    <h2 data-i18n="settings.lang.title">🌍 Language</h2>
+                    <p data-i18n="settings.lang.sub">Select your preferred language</p>
                 </div>
-
                 <div class="settings-option">
                     <div class="settings-option-info">
-                        <h3>Display Language</h3>
-                        <p>Choose the language for the interface</p>
+                        <h3 data-i18n="settings.lang.label">Display Language</h3>
+                        <p data-i18n="settings.lang.hint">Choose the language for the interface</p>
                     </div>
                     <div class="settings-option-control">
                         <select id="language-select" class="language-dropdown">
@@ -238,6 +237,7 @@
     </footer>
 
     <!-- Scripts -->
+    <script src="js/i18n.js"></script>
     <script src="js/theme-toggle.js"></script>
     <script src="js/message-utils.js"></script>
     <script src="js/main.js"></script>

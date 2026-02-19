@@ -1,109 +1,142 @@
 /**
- * today.js
- * Today 뷰 메인 로직
- * 위치 → 측정소 → 카메라(선택) → 통합 PM2.5 → 결과 표시
+ * today.js  — Today view main logic
+ * Uses window.t() from i18n.js for all user-facing strings.
+ * Flow: location → WAQI stations → camera (optional) → merged PM2.5 → render
  */
 
 (async function () {
   const locationService = new LocationService();
-  const pmService = new PMService();
+  const pmService       = new PMService();
 
-  let stationPM25 = null;
-  let cameraPM25 = null;
-  let nearestStation = null;
-  let waqiCities = [];
+  let stationPM25  = null;
+  let cameraPM25   = null;
+  let waqiCities   = [];
 
-  // ── DOM refs ──
-  const locationCard = document.getElementById('location-card');
-  const locationText = document.getElementById('location-text');
-  const citySelect = document.getElementById('city-select');
-  const citySelectWrap = document.getElementById('city-select-wrap');
-  const resultCard = document.getElementById('result-card');
-  const pmValueEl = document.getElementById('pm-value');
-  const pmGradeEl = document.getElementById('pm-grade');
-  const pmUnitEl = document.getElementById('pm-unit');
-  const confidenceEl = document.getElementById('confidence-info');
-  const actionGuideEl = document.getElementById('action-guide');
-  const loadingOverlay = document.getElementById('loading-overlay');
-  const loadingText = document.getElementById('loading-text');
-  const cameraSection = document.getElementById('camera-section');
+  // ── DOM refs ──────────────────────────────────────────────────
+  const locationText    = document.getElementById('location-text');
+  const citySelectWrap  = document.getElementById('city-select-wrap');
+  const citySelect      = document.getElementById('city-select');
+  const resultCard      = document.getElementById('result-card');
+  const pmValueEl       = document.getElementById('pm-value');
+  const pmGradeEl       = document.getElementById('pm-grade');
+  const confidenceEl    = document.getElementById('confidence-info');
+  const actionGuideEl   = document.getElementById('action-guide');
+  const loadingOverlay  = document.getElementById('loading-overlay');
+  const loadingText     = document.getElementById('loading-text');
+  const cameraSection   = document.getElementById('camera-section');
 
-  // ── 유틸 ──
+  // ── Helpers ───────────────────────────────────────────────────
+  const t = (key, vars) => (window.I18n ? window.I18n.t(key, vars) : key);
+
   function setLoading(msg) {
     if (loadingOverlay) loadingOverlay.style.display = 'flex';
-    if (loadingText) loadingText.textContent = msg;
+    if (loadingText)    loadingText.textContent = msg;
   }
   function hideLoading() {
     if (loadingOverlay) loadingOverlay.style.display = 'none';
   }
 
-  // ── latest.json 로드 ──
+  // ── Fetch WAQI latest.json ────────────────────────────────────
   async function loadWaqiData() {
     try {
-      const basePath = location.pathname.includes('/Finedust_proj/')
+      const base = location.pathname.includes('/Finedust_proj/')
         ? '/Finedust_proj/app/data/waqi/latest.json'
         : '/app/data/waqi/latest.json';
-      const res = await fetch(basePath);
+      const res = await fetch(base);
       if (!res.ok) throw new Error('fetch failed');
       const data = await res.json();
       return data.cities || [];
     } catch (e) {
-      console.warn('WAQI latest.json load failed:', e);
+      console.warn('WAQI data load failed:', e);
       return [];
     }
   }
 
-  // ── 결과 카드 렌더링 ──
+  // ── Grade key mapping ─────────────────────────────────────────
+  function gradeKey(pm25) {
+    if (pm25 <= 15) return 'grade.good';
+    if (pm25 <= 35) return 'grade.moderate';
+    if (pm25 <= 55) return 'grade.unhealthy';
+    return 'grade.very';
+  }
+  function guideKey(pm25) {
+    if (pm25 <= 15) return 'guide.good';
+    if (pm25 <= 35) return 'guide.moderate';
+    if (pm25 <= 55) return 'guide.unhealthy';
+    return 'guide.very';
+  }
+
+  // ── Render result card ────────────────────────────────────────
   function renderResult(integrated) {
     if (!integrated) return;
+    const { value, confidence, stationPM25: sp, cameraPM25: cp } = integrated;
 
-    const { value, confidence, stationPM25: sp, cameraPM25: cp, source } = integrated;
     const grade = pmService.getGrade(value);
-    const guide = pmService.getActionGuide(value);
-    const confLabel = pmService.getConfidenceLabel(confidence);
 
-    // 수치 + 등급
+    // Numbers + grade
     pmValueEl.textContent = value.toFixed(1);
-    pmGradeEl.textContent = grade.label;
+    pmGradeEl.textContent = t(gradeKey(value));
     pmGradeEl.style.color = grade.color;
-    pmUnitEl && (pmUnitEl.style.display = 'inline');
 
-    // 결과 카드 배경 색상
-    resultCard.className = 'result-card ' + grade.bgClass;
+    // Card background
+    resultCard.className = 'result-card rounded-2xl border-2 shadow-md text-center p-6 ' + grade.bgClass;
 
-    // 신뢰도 상세
-    let confDetail = `신뢰도: ${confLabel}`;
+    // Confidence detail
+    let confDetail = `${t('conf.' + confidence.toLowerCase())} `;
     if (sp != null && cp != null) {
-      confDetail += ` &nbsp;(측정소 ${sp.toFixed(0)} / 사진 ${cp.toFixed(0)} µg/m³)`;
+      confDetail += t('conf.fused', { s: sp.toFixed(0), c: cp.toFixed(0) });
     } else if (sp != null) {
-      confDetail += ` &nbsp;(측정소 데이터만 사용)`;
+      confDetail += t('conf.station.only');
     } else {
-      confDetail += ` &nbsp;(카메라 분석만 사용)`;
+      confDetail += t('conf.camera.only');
     }
     confidenceEl.innerHTML = confDetail;
 
-    // 행동 가이드
-    actionGuideEl.textContent = guide;
+    // Action guide
+    actionGuideEl.textContent = t(guideKey(value));
     actionGuideEl.style.borderLeftColor = grade.color;
 
-    // 카메라 섹션 표시
+    // Reveal camera section
     if (cameraSection) cameraSection.style.display = 'block';
   }
 
-  // ── 측정소 기반 초기 렌더 ──
+  // ── Populate city select on GPS failure ──────────────────────
+  function populateCitySelect(cities) {
+    if (!citySelect) return;
+    const placeholder = t('today.city.placeholder');
+    citySelect.innerHTML = `<option value="">${placeholder}</option>`;
+    cities.forEach((city, idx) => {
+      const name = city.location?.name || city.city;
+      const opt  = document.createElement('option');
+      opt.value  = idx;
+      opt.textContent = name;
+      citySelect.appendChild(opt);
+    });
+    if (citySelectWrap) citySelectWrap.style.display = 'block';
+
+    citySelect.addEventListener('change', () => {
+      const idx = citySelect.value;
+      if (idx === '') return;
+      const city = cities[idx];
+      const lat  = city.location?.geo[0];
+      const lon  = city.location?.geo[1];
+      if (lat && lon) renderStationResult(cities, lat, lon);
+    });
+  }
+
+  // ── Station-based result ──────────────────────────────────────
   function renderStationResult(cities, lat, lon) {
     const nearby = locationService.findNearbyStations(cities, lat, lon, 3);
-    if (nearby.length === 0) return null;
+    if (!nearby.length) return null;
 
-    nearestStation = nearby[0];
     stationPM25 = pmService.calcStationPM25(nearby);
+    const stLabel = locationService.getLocationLabel(nearby[0]);
 
-    const stLabel = locationService.getLocationLabel(nearestStation);
     if (locationText) {
-      const now = new Date();
-      const dateStr = now.toLocaleDateString('ko-KR', { month: 'long', day: 'numeric' });
-      const timeStr = now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
-      locationText.textContent = `${stLabel} · ${dateStr} ${timeStr} · 인근 ${nearby.length}개 측정소`;
+      const now     = new Date();
+      const dateStr = now.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+      const timeStr = now.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+      locationText.textContent = `${stLabel} · ${dateStr} ${timeStr} · ${nearby.length} nearby stations`;
     }
 
     const integrated = pmService.integrate(stationPM25, cameraPM25);
@@ -111,61 +144,38 @@
     return integrated;
   }
 
-  // ── 도시 셀렉트 박스 채우기 ──
-  function populateCitySelect(cities) {
-    if (!citySelect) return;
-    citySelect.innerHTML = '<option value="">-- 도시를 선택하세요 --</option>';
-    cities.forEach((city, idx) => {
-      const name = city.location?.name || city.city;
-      const opt = document.createElement('option');
-      opt.value = idx;
-      opt.textContent = name;
-      citySelect.appendChild(opt);
-    });
-    citySelectWrap && (citySelectWrap.style.display = 'block');
-
-    citySelect.addEventListener('change', () => {
-      const idx = citySelect.value;
-      if (idx === '') return;
-      const city = cities[idx];
-      const lat = city.location?.geo[0];
-      const lon = city.location?.geo[1];
-      if (lat && lon) renderStationResult(cities, lat, lon);
-    });
-  }
-
-  // ── 카메라 결과 수신 콜백 (camera.js에서 호출) ──
+  // ── Camera PM2.5 callback (called by camera-today.js) ────────
   window.onCameraPM25 = function (camPM25) {
     cameraPM25 = camPM25;
-    const integrated = pmService.integrate(stationPM25, cameraPM25);
-    renderResult(integrated);
+    renderResult(pmService.integrate(stationPM25, cameraPM25));
   };
 
-  // ── 메인 플로우 ──
-  setLoading('📡 WAQI 데이터 로딩 중...');
+  // ── Main flow ─────────────────────────────────────────────────
+  setLoading(t('today.loading.waqi'));
   waqiCities = await loadWaqiData();
 
-  // URL 파라미터 (Globe에서 넘어온 경우)
-  const params = new URLSearchParams(location.search);
+  // Globe passthrough: ?lat=&lon=
+  const params   = new URLSearchParams(location.search);
   const paramLat = params.get('lat');
   const paramLon = params.get('lon');
 
   if (paramLat && paramLon) {
     hideLoading();
     renderStationResult(waqiCities, parseFloat(paramLat), parseFloat(paramLon));
+    if (cameraSection) cameraSection.style.display = 'block';
     return;
   }
 
-  // GPS 시도
-  setLoading('📍 위치 확인 중...');
+  // GPS
+  setLoading(t('today.loading.gps'));
   const loc = await locationService.getLocation();
   hideLoading();
 
   if (loc) {
     renderStationResult(waqiCities, loc.lat, loc.lon);
   } else {
-    // GPS 실패 → 도시 선택 UI
-    if (locationText) locationText.textContent = '위치를 선택해 주세요';
+    // GPS denied → show city picker
+    if (locationText) locationText.textContent = t('today.location.select');
     populateCitySelect(waqiCities);
     if (cameraSection) cameraSection.style.display = 'block';
   }

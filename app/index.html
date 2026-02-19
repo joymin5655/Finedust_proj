@@ -149,11 +149,11 @@
                 <span></span>
             </button>
             <ul class="navbar-menu">
-                <li><a href="index.html" class="navbar-link navbar-link-active">Home</a></li>
-                <li><a href="today.html" class="navbar-link">Today</a></li>
-                <li><a href="globe.html" class="navbar-link">Globe</a></li>
-                <li><a href="camera.html" class="navbar-link">Camera AI</a></li>
-                <li><a href="about.html" class="navbar-link">About & Research</a></li>
+                <li><a href="index.html" class="navbar-link navbar-link-active" data-i18n="nav.home">Home</a></li>
+                <li><a href="today.html" class="navbar-link" data-i18n="nav.today">Today</a></li>
+                <li><a href="globe.html" class="navbar-link" data-i18n="nav.globe">Globe</a></li>
+                <li><a href="camera.html" class="navbar-link" data-i18n="nav.camera">Camera AI</a></li>
+                <li><a href="about.html" class="navbar-link" data-i18n="nav.about">About & Research</a></li>
                 <li><a href="settings.html" class="navbar-link">
                     <div class="settings-icon">
                         <div class="loader-icon"></div>
@@ -176,14 +176,14 @@
     -->
     <section class="hero" id="main-content" role="main">
         <div class="hero-content fade-in">
-            <h1 class="hero-title">See the air.<br>Understand the world.</h1>
-            <p class="hero-subtitle">
+            <h1 class="hero-title" data-i18n="hero.title">See the air.<br>Understand the world.</h1>
+            <p class="hero-subtitle" data-i18n="hero.subtitle">
                 Global air quality visualization powered by AI.<br>
                 Historical data from official sources. One beautiful interface.
             </p>
             <div class="hero-cta">
-                <a href="today.html" class="btn btn-primary">오늘 내 공기 확인 →</a>
-                <a href="globe.html" class="btn btn-secondary">세계 지도 보기</a>
+                <a href="today.html" class="btn btn-primary" data-i18n="hero.cta.today">Check Today's Air →</a>
+                <a href="globe.html" class="btn btn-secondary" data-i18n="hero.cta.globe">Explore Globe</a>
             </div>
         </div>
         
@@ -204,33 +204,32 @@
     -->
     <section class="section">
         <div class="container">
-            <h2 class="section-title">Three ways to see air quality</h2>
+            <h2 class="section-title" data-i18n="features.title">Three ways to see air quality</h2>
             
             <div class="grid grid-3">
-                <!-- Globe Feature -->                <div class="card card-glass fade-in">
+                <!-- Globe Feature -->
+                <div class="card card-glass fade-in">
                     <div class="feature-icon">🌍</div>
-                    <h3>Interactive Globe</h3>
-                    <p>Explore air quality data from official international sources on a stunning 3D Earth.
+                    <h3 data-i18n="feature.globe.title">Interactive Globe</h3>
+                    <p data-i18n="feature.globe.desc">Explore air quality data from official international sources on a stunning 3D Earth.
                        Rotate, zoom, and discover PM2.5 trends based on verified historical data.</p>
-                    <a href="globe.html" class="btn btn-secondary">Launch Globe →</a>
+                    <a href="globe.html" class="btn btn-secondary" data-i18n="feature.globe.btn">Launch Globe →</a>
                 </div>
-
                 <!-- Camera Feature -->
                 <div class="card card-glass fade-in">
                     <div class="feature-icon">📸</div>
-                    <h3>Camera AI</h3>
-                    <p>Upload a photo of the sky and our AI instantly predicts PM2.5 levels. 
+                    <h3 data-i18n="feature.camera.title">Camera AI</h3>
+                    <p data-i18n="feature.camera.desc">Upload a photo of the sky and our AI instantly predicts PM2.5 levels.
                        Advanced computer vision meets environmental science.</p>
-                    <a href="camera.html" class="btn btn-secondary">Try It Now →</a>
+                    <a href="camera.html" class="btn btn-secondary" data-i18n="feature.camera.btn">Try It Now →</a>
                 </div>
-
                 <!-- Research Feature -->
                 <div class="card card-glass fade-in">
                     <div class="feature-icon">📊</div>
-                    <h3>Policy Research</h3>
-                    <p>Comprehensive analysis of global air quality policies and their effectiveness. 
+                    <h3 data-i18n="feature.policy.title">Policy Research</h3>
+                    <p data-i18n="feature.policy.desc">Comprehensive analysis of global air quality policies and their effectiveness.
                        Data-driven insights for a cleaner future.</p>
-                    <a href="about.html" class="btn btn-secondary">Read More →</a>
+                    <a href="about.html" class="btn btn-secondary" data-i18n="feature.policy.btn">Read More →</a>
                 </div>
             </div>
         </div>
@@ -248,31 +247,23 @@
     -->
     <section class="section" style="background: var(--color-bg-secondary);">
         <div class="container">
-            <h2 class="section-title">The numbers speak</h2>
+            <h2 class="section-title" data-i18n="stats.title">The numbers speak</h2>
 
             <div class="grid grid-3">
                 <div class="stat-card text-center fade-in">
                     <div class="stat-number">🌍</div>
-                    <div class="stat-label">Global Coverage</div>
-                    <div style="font-size: 0.8rem; color: var(--color-text-secondary); margin-top: 0.5rem;">
-                        Historical data worldwide
-                    </div>
+                    <div class="stat-label" data-i18n="stats.global">Global Coverage</div>
+                    <div style="font-size: 0.8rem; color: var(--color-text-secondary); margin-top: 0.5rem;" data-i18n="stats.global.sub">Historical data worldwide</div>
                 </div>
-
                 <div class="stat-card text-center fade-in">
                     <div class="stat-number">🇪🇺</div>
-                    <div class="stat-label">EU Copernicus CAMS</div>
-                    <div style="font-size: 0.8rem; color: var(--color-text-secondary); margin-top: 0.5rem;">
-                        Official European Union data
-                    </div>
+                    <div class="stat-label" data-i18n="stats.eu">EU Copernicus CAMS</div>
+                    <div style="font-size: 0.8rem; color: var(--color-text-secondary); margin-top: 0.5rem;" data-i18n="stats.eu.sub">Official European Union data</div>
                 </div>
-
                 <div class="stat-card text-center fade-in">
                     <div class="stat-number">📊</div>
-                    <div class="stat-label">Our World in Data</div>
-                    <div style="font-size: 0.8rem; color: var(--color-text-secondary); margin-top: 0.5rem;">
-                        IHME verified statistics
-                    </div>
+                    <div class="stat-label" data-i18n="stats.owid">Our World in Data</div>
+                    <div style="font-size: 0.8rem; color: var(--color-text-secondary); margin-top: 0.5rem;" data-i18n="stats.owid.sub">IHME verified statistics</div>
                 </div>
             </div>
         </div>
@@ -286,9 +277,9 @@
     -->
     <section class="section">
         <div class="container text-center">
-            <h2 class="hero-title" style="font-size: var(--text-5xl);">Ready to see the air?</h2>
-            <p class="hero-subtitle">Start exploring global air quality data in seconds.</p>
-            <a href="globe.html" class="btn btn-primary" style="font-size: var(--text-lg); padding: var(--space-4) var(--space-8);">
+            <h2 class="hero-title" style="font-size: var(--text-5xl);" data-i18n="cta.title">Ready to see the air?</h2>
+            <p class="hero-subtitle" data-i18n="cta.sub">Start exploring global air quality data in seconds.</p>
+            <a href="globe.html" class="btn btn-primary" style="font-size: var(--text-lg); padding: var(--space-4) var(--space-8);" data-i18n="cta.btn">
                 Explore Now →
             </a>
         </div>
@@ -303,11 +294,11 @@
     -->
     <footer style="background: var(--color-bg-dark); color: var(--color-text-dark); padding: var(--space-5) 0;">
         <div class="container text-center">
-            <p style="color: var(--color-text-dark-secondary);">
+            <p style="color: var(--color-text-dark-secondary);" data-i18n="footer.copy">
                 © 2025 AirLens. Built with ❤️ for a cleaner planet.
             </p>
             <p style="color: var(--color-text-dark-secondary); font-size: var(--text-sm); margin-top: var(--space-4);">
-                <a href="https://github.com/joymin5655/Finedust_proj" style="color: var(--color-primary);" target="_blank">
+                <a href="https://github.com/joymin5655/Finedust_proj" style="color: var(--color-primary);" target="_blank" data-i18n="footer.github">
                     View on GitHub
                 </a>
             </p>
@@ -323,6 +314,7 @@
       2. hero-animation.js - Canvas particle animations
       3. main.js - Fade-in animations and utilities
     -->
+    <script src="js/i18n.js"></script>
     <script src="js/theme-toggle.js"></script>
     <script src="js/message-utils.js"></script>
     <script src="js/hero-animation.js"></script>

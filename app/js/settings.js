@@ -1,6 +1,7 @@
 /**
- * Settings Page JavaScript
- * Handles theme and language preferences
+ * settings.js - AirLens Settings Page
+ * Handles theme switching and language selection.
+ * Language changes are applied site-wide via I18n (i18n.js).
  */
 
 class SettingsManager {
@@ -9,148 +10,104 @@ class SettingsManager {
     this.initLanguageSelect();
   }
 
-  /**
-   * Initialize theme selection buttons
-   */
+  // ── Theme ────────────────────────────────────────────────────
   initThemeButtons() {
     const themeButtons = document.querySelectorAll('.theme-btn');
     const currentTheme = localStorage.getItem('theme') || 'light';
 
-    // Set active button based on current theme
     themeButtons.forEach(btn => {
-      if (btn.dataset.theme === currentTheme) {
-        btn.classList.add('active');
-      }
+      if (btn.dataset.theme === currentTheme) btn.classList.add('active');
 
       btn.addEventListener('click', () => {
-        const selectedTheme = btn.dataset.theme;
-
-        // Update active state
         themeButtons.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
 
-        // Apply theme
-        if (selectedTheme === 'dark') {
+        const selected = btn.dataset.theme;
+        if (selected === 'dark') {
           document.body.classList.add('dark-mode');
+          document.documentElement.classList.add('dark');
           localStorage.setItem('theme', 'dark');
-          if (window.themeToggle) {
-            window.themeToggle.toggle.checked = true;
-          }
+          if (window.themeToggle) window.themeToggle.toggle.checked = true;
         } else {
           document.body.classList.remove('dark-mode');
+          document.documentElement.classList.remove('dark');
           localStorage.setItem('theme', 'light');
-          if (window.themeToggle) {
-            window.themeToggle.toggle.checked = false;
-          }
+          if (window.themeToggle) window.themeToggle.toggle.checked = false;
         }
       });
     });
   }
 
-  /**
-   * Initialize language selection dropdown
-   */
+  // ── Language ─────────────────────────────────────────────────
   initLanguageSelect() {
-    const languageSelect = document.getElementById('language-select');
-    const savedLanguage = localStorage.getItem('language') || 'en';
+    const sel = document.getElementById('language-select');
+    if (!sel) return;
 
-    // Set saved language
-    languageSelect.value = savedLanguage;
+    // Reflect saved language
+    sel.value = localStorage.getItem('language') || 'en';
 
-    // Handle language change
-    languageSelect.addEventListener('change', (e) => {
-      const selectedLanguage = e.target.value;
-      localStorage.setItem('language', selectedLanguage);
+    sel.addEventListener('change', (e) => {
+      const lang = e.target.value;
 
-      // Show notification
-      this.showNotification(`Language set to ${this.getLanguageName(selectedLanguage)}`);
+      // Apply immediately via I18n engine
+      if (window.I18n) {
+        window.I18n.setLang(lang);
+      } else {
+        localStorage.setItem('language', lang);
+      }
 
-      // In a real application, you would reload content in the selected language
-      // For now, we just save the preference
+      // Show toast notification
+      const name = this.getLanguageName(lang);
+      const savedLabel = window.t ? window.t('settings.saved') : 'Language updated to';
+      this.showNotification(`${savedLabel} ${name}`);
     });
   }
 
-  /**
-   * Get language display name
-   */
   getLanguageName(code) {
-    const languages = {
-      'en': 'English',
-      'ko': '한국어',
-      'ja': '日本語',
-      'zh': '中文',
-      'es': 'Español',
-      'fr': 'Français'
-    };
-    return languages[code] || code;
+    return {
+      en: 'English', ko: '한국어', ja: '日本語',
+      zh: '中文', es: 'Español', fr: 'Français'
+    }[code] || code;
   }
 
-  /**
-   * Show notification message
-   */
+  // ── Toast notification ────────────────────────────────────────
   showNotification(message) {
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = 'settings-notification';
-    notification.textContent = message;
-    notification.style.cssText = `
-      position: fixed;
-      bottom: 80px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--color-primary);
-      color: white;
-      padding: 1rem 2rem;
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-lg);
-      z-index: 10001;
-      animation: slideUp 0.3s ease-out;
+    // Remove any existing toast
+    document.querySelectorAll('.settings-notification').forEach(n => n.remove());
+
+    const n = document.createElement('div');
+    n.className = 'settings-notification';
+    n.textContent = message;
+    n.style.cssText = `
+      position:fixed; bottom:80px; left:50%;
+      transform:translateX(-50%);
+      background:var(--color-primary); color:#111;
+      padding:.75rem 2rem; border-radius:999px;
+      box-shadow:0 4px 24px rgba(0,0,0,.25);
+      z-index:10001; font-weight:600; font-size:.9rem;
+      animation:toast-in .3s ease-out;
+      white-space:nowrap;
     `;
+    document.body.appendChild(n);
 
-    document.body.appendChild(notification);
-
-    // Remove after 3 seconds
     setTimeout(() => {
-      notification.style.animation = 'slideDown 0.3s ease-out';
-      setTimeout(() => {
-        notification.remove();
-      }, 300);
-    }, 3000);
+      n.style.animation = 'toast-out .3s ease-out forwards';
+      setTimeout(() => n.remove(), 300);
+    }, 2800);
   }
 }
 
-// Add notification animations
-const style = document.createElement('style');
-style.textContent = `
-  @keyframes slideUp {
-    from {
-      opacity: 0;
-      transform: translate(-50%, 20px);
-    }
-    to {
-      opacity: 1;
-      transform: translate(-50%, 0);
-    }
-  }
-
-  @keyframes slideDown {
-    from {
-      opacity: 1;
-      transform: translate(-50%, 0);
-    }
-    to {
-      opacity: 0;
-      transform: translate(-50%, 20px);
-    }
-  }
+// Toast animation styles
+const toastStyle = document.createElement('style');
+toastStyle.textContent = `
+  @keyframes toast-in  { from { opacity:0; transform:translate(-50%,16px) } to { opacity:1; transform:translate(-50%,0) } }
+  @keyframes toast-out { from { opacity:1; transform:translate(-50%,0) } to { opacity:0; transform:translate(-50%,16px) } }
 `;
-document.head.appendChild(style);
+document.head.appendChild(toastStyle);
 
-// Initialize settings when DOM is ready
+// Init
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
-    window.settingsManager = new SettingsManager();
-  });
+  document.addEventListener('DOMContentLoaded', () => { window.settingsManager = new SettingsManager(); });
 } else {
   window.settingsManager = new SettingsManager();
 }

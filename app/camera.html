@@ -110,11 +110,11 @@
                 <span></span>
             </button>
             <ul class="navbar-menu">
-                <li><a href="index.html" class="navbar-link">Home</a></li>
-                <li><a href="today.html" class="navbar-link">Today</a></li>
-                <li><a href="globe.html" class="navbar-link">Globe</a></li>
-                <li><a href="camera.html" class="navbar-link navbar-link-active">Camera AI</a></li>
-                <li><a href="about.html" class="navbar-link">About & Research</a></li>
+                <li><a href="index.html" class="navbar-link" data-i18n="nav.home">Home</a></li>
+                <li><a href="today.html" class="navbar-link" data-i18n="nav.today">Today</a></li>
+                <li><a href="globe.html" class="navbar-link" data-i18n="nav.globe">Globe</a></li>
+                <li><a href="camera.html" class="navbar-link navbar-link-active" data-i18n="nav.camera">Camera AI</a></li>
+                <li><a href="about.html" class="navbar-link" data-i18n="nav.about">About & Research</a></li>
                 <li><a href="settings.html" class="navbar-link">
                     <div class="settings-icon">
                         <div class="loader-icon"></div>
@@ -131,8 +131,8 @@
 <main class="flex-grow">
 <div class="flex flex-wrap justify-between gap-3 p-4 pt-8 md:pt-12">
 <div class="flex min-w-72 flex-col gap-3">
-<h1 class="text-gray-900 dark:text-white text-4xl font-black leading-tight tracking-[-0.033em]">AirLens PM2.5 Predictor</h1>
-<p class="text-gray-600 dark:text-gray-400 text-base font-normal leading-normal">
+<h1 class="text-gray-900 dark:text-white text-4xl font-black leading-tight tracking-[-0.033em]" data-i18n="camera.title">AirLens PM2.5 Predictor</h1>
+<p class="text-gray-600 dark:text-gray-400 text-base font-normal leading-normal" data-i18n="camera.subtitle">
                                     Upload a clear image of the sky to estimate PM2.5 using multimodal AI fusion (Image + Satellite + Ground Data).
                                 </p>
 <div id="location-status" class="flex items-center gap-2 mt-2 text-sm text-gray-500 dark:text-gray-400">
@@ -142,7 +142,7 @@
 </div>
 <div class="p-4 grid grid-cols-1 md:grid-cols-3 gap-8">
 <div class="flex flex-col gap-4 md:col-span-1">
-<h2 class="text-gray-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em]">1. Upload Your Image</h2>
+<h2 class="text-gray-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em]" data-i18n="camera.step1">1. Upload Your Image</h2>
 <div id="drop-zone" class="flex flex-col items-center gap-6 rounded-xl border-2 border-dashed border-gray-300 dark:border-white/20 bg-background-light dark:bg-black/20 px-6 py-14 text-center cursor-pointer hover:border-primary transition-colors">
 <span class="material-symbols-outlined text-4xl text-primary">upload_file</span>
 <div class="flex max-w-[480px] flex-col items-center gap-2">
@@ -398,6 +398,7 @@ CNN-LSTM architecture analyzing sky conditions with TensorFlow.js
 }
 </style>
 
+<script src="js/i18n.js"></script>
 <script src="js/theme-toggle.js"></script>
 <script src="js/main.js"></script>
 <script src="js/message-utils.js"></script>

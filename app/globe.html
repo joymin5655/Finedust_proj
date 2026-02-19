@@ -662,6 +662,7 @@
             </button>
             <ul class="navbar-menu">
                 <li><a href="index.html" class="navbar-link">Home</a></li>
+                <li><a href="today.html" class="navbar-link">Today</a></li>
                 <li><a href="globe.html" class="navbar-link navbar-link-active">Globe</a></li>
                 <li><a href="camera.html" class="navbar-link">Camera AI</a></li>
                 <li><a href="about.html" class="navbar-link">About & Research</a></li>
@@ -825,8 +826,15 @@
                         </div>
                     </div>
 
+                <!-- ★ Today 뷰로 이동 버튼 -->
+                <a id="goto-today-btn" href="today.html"
+                   class="w-full flex items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-4 mt-3 bg-primary text-gray-900 text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity">
+                    <span class="material-symbols-outlined !text-base">wb_sunny</span>
+                    <span class="truncate">이 지역 Today 보기</span>
+                </a>
+
                 <!-- View Full Details Button -->
-                <button id="view-more-btn" onclick="openPolicyLink()" class="w-full flex items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-4 mt-3 bg-primary/20 text-primary text-base font-bold leading-normal tracking-[0.015em] hover:bg-primary/30 transition-colors">
+                <button id="view-more-btn" onclick="openPolicyLink()" class="w-full flex items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-4 mt-1 bg-primary/20 text-primary text-base font-bold leading-normal tracking-[0.015em] hover:bg-primary/30 transition-colors">
                     <span class="material-symbols-outlined !text-lg">open_in_new</span>
                     <span class="truncate">View Full Details</span>
                 </button>

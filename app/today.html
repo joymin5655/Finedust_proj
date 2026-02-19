@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="오늘 내 위치의 실시간 대기질 확인. 측정소 데이터 + 하늘 사진 AI 분석으로 PM2.5를 통합 측정합니다.">
+  <title>오늘의 공기 - AirLens Today</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#25e2f4',
+            'bg-dark': '#102122',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+
+  <!-- 기존 공통 스타일 -->
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/settings.css">
+
+  <!-- TensorFlow (카메라 AI용) -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0"></script>
+
+  <style>
+    /* ── 결과 카드 배경 등급별 ── */
+    .result-card { transition: background 0.5s, border-color 0.5s; }
+    .grade-good         { background: linear-gradient(135deg, #d1fae5, #a7f3d0); border-color: #10b981; }
+    .grade-moderate     { background: linear-gradient(135deg, #fef3c7, #fde68a); border-color: #f59e0b; }
+    .grade-unhealthy    { background: linear-gradient(135deg, #ffedd5, #fed7aa); border-color: #f97316; }
+    .grade-very-unhealthy{ background: linear-gradient(135deg, #fee2e2, #fecaca); border-color: #ef4444; }
+    .dark .grade-good         { background: linear-gradient(135deg, #064e3b, #065f46); }
+    .dark .grade-moderate     { background: linear-gradient(135deg, #451a03, #78350f); }
+    .dark .grade-unhealthy    { background: linear-gradient(135deg, #431407, #7c2d12); }
+    .dark .grade-very-unhealthy{ background: linear-gradient(135deg, #450a0a, #7f1d1d); }
+
+    /* ── 행동 가이드 ── */
+    #action-guide {
+      border-left: 4px solid #25e2f4;
+      transition: border-color 0.5s;
+    }
+
+    /* ── 로딩 오버레이 ── */
+    #loading-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9999; flex-direction: column; gap: 1rem;
+    }
+    .spinner {
+      width: 48px; height: 48px;
+      border: 4px solid rgba(37,226,244,0.3);
+      border-top-color: #25e2f4;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── 드래그앤드롭 ── */
+    .drag-over {
+      border-color: #25e2f4 !important;
+      background-color: rgba(37, 226, 244, 0.08) !important;
+    }
+
+    /* Quality badge */
+    .quality-good    { background:#10b981; color:#fff; }
+    .quality-moderate{ background:#f59e0b; color:#fff; }
+    .quality-unhealthy{ background:#ef4444; color:#fff; }
+  </style>
+</head>
+<body class="bg-gray-50 dark:bg-bg-dark min-h-screen">
+
+  <!-- ── 다크모드 토글 ── -->
+  <div class="theme-toggle-container">
+    <div class="toggle-cont">
+      <input class="toggle-input" id="theme-toggle" name="toggle" type="checkbox" />
+      <label class="toggle-label" for="theme-toggle">
+        <div class="cont-icon">
+          <span style="--sparkle-width:2;--sparkle-deg:25;--sparkle-duration:11" class="sparkle"></span>
+          <span style="--sparkle-width:1;--sparkle-deg:100;--sparkle-duration:18" class="sparkle"></span>
+          <span style="--sparkle-width:2;--sparkle-deg:200;--sparkle-duration:3" class="sparkle"></span>
+          <span style="--sparkle-width:2;--sparkle-deg:300;--sparkle-duration:9" class="sparkle"></span>
+          <span style="--sparkle-width:1;--sparkle-deg:250;--sparkle-duration:4" class="sparkle"></span>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 30 30" class="icon">
+            <path d="M0.96233 28.61C1.36043 29.0081 1.96007 29.1255 2.47555 28.8971L10.4256 25.3552C13.2236 24.11 16.4254 24.1425 19.2107 25.4401L27.4152 29.2747C27.476 29.3044 27.5418 29.3023 27.6047 29.32C27.6563 29.3348 27.7079 29.3497 27.761 29.3574C27.843 29.3687 27.9194 29.3758 28 29.3688C28.1273 29.3617 28.2531 29.3405 28.3726 29.2945C28.4447 29.262 28.5162 29.2287 28.5749 29.1842C28.6399 29.1446 28.6993 29.0994 28.7509 29.0477L28.9008 28.8582C28.9468 28.7995 28.9793 28.7274 29.0112 28.656C29.0599 28.5322 29.0811 28.4036 29.0882 28.2734C29.0939 28.1957 29.0868 28.1207 29.0769 28.0415C29.0705 27.9955 29.0585 27.9524 29.0472 27.9072C29.0295 27.8343 29.0302 27.7601 28.9984 27.6901L25.1638 19.4855C23.8592 16.7073 23.8273 13.5048 25.0726 10.7068L28.6145 2.75679C28.8429 2.24131 28.7318 1.63531 28.3337 1.2372C27.9165 0.820011 27.271 0.721743 26.7491 0.9961L19.8357 4.59596C16.8418 6.15442 13.2879 6.18696 10.2615 4.70062L1.80308 0.520214C1.7055 0.474959 1.60722 0.441742 1.50964 0.421943C1.44459 0.409215 1.37882 0.395769 1.3074 0.402133C1.14406 0.395769 0.981436 0.428275 0.818095 0.499692C0.77284 0.519491 0.719805 0.545671 0.67455 0.578198C0.596061 0.617088 0.524653 0.675786 0.4596 0.74084C0.394546 0.805894 0.335843 0.877306 0.296245 0.956502C0.263718 1.00176 0.237561 1.05477 0.217762 1.10003C0.152708 1.24286 0.126545 1.40058 0.120181 1.54978C0.120181 1.61483 0.126527 1.6735 0.132891 1.73219C0.15269 1.85664 0.178881 1.97332 0.237571 2.08434L4.41798 10.5427C5.91139 13.5621 5.8725 17.1238 4.3204 20.1099L0.720514 27.0233C0.440499 27.5536 0.545137 28.1928 0.96233 28.61Z"/>
+          </svg>
+        </div>
+      </label>
+    </div>
+  </div>
+
+  <!-- ── 네비게이션 ── -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a href="index.html" class="navbar-logo">AirLens</a>
+      <button class="navbar-toggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="navbar-menu">
+        <li><a href="index.html" class="navbar-link">Home</a></li>
+        <li><a href="today.html" class="navbar-link navbar-link-active">Today</a></li>
+        <li><a href="globe.html" class="navbar-link">Globe</a></li>
+        <li><a href="camera.html" class="navbar-link">Camera AI</a></li>
+        <li><a href="about.html" class="navbar-link">About & Research</a></li>
+        <li><a href="settings.html" class="navbar-link">
+          <div class="settings-icon"><div class="loader-icon"></div></div>
+        </a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ── 로딩 오버레이 ── -->
+  <div id="loading-overlay" style="display:none;">
+    <div class="spinner"></div>
+    <p id="loading-text" class="text-white text-lg font-semibold">로딩 중...</p>
+  </div>
+
+  <!-- ── 메인 컨텐츠 ── -->
+  <main class="max-w-2xl mx-auto px-4 pt-24 pb-16 flex flex-col gap-6">
+
+    <!-- 페이지 타이틀 -->
+    <div class="text-center">
+      <h1 class="text-3xl font-black text-gray-900 dark:text-white tracking-tight">
+        오늘 내 공기는? 🌤️
+      </h1>
+      <p class="text-gray-500 dark:text-gray-400 mt-1 text-sm">
+        측정소 + 하늘 사진을 통합해 PM2.5를 분석합니다
+      </p>
+    </div>
+
+    <!-- ① 위치/시간 카드 -->
+    <div id="location-card"
+         class="rounded-2xl border border-gray-200 dark:border-white/10
+                bg-white dark:bg-black/20 p-4 flex items-center gap-3 shadow-sm">
+      <span class="material-symbols-outlined text-primary text-2xl">location_on</span>
+      <div class="flex-1 min-w-0">
+        <p id="location-text"
+           class="text-gray-700 dark:text-gray-200 font-semibold text-sm truncate">
+          위치 확인 중...
+        </p>
+        <!-- GPS 실패 시 도시 선택 -->
+        <div id="city-select-wrap" style="display:none;" class="mt-2">
+          <select id="city-select"
+                  class="w-full rounded-lg border border-gray-300 dark:border-white/20
+                         bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200
+                         text-sm px-3 py-2 focus:outline-none focus:border-primary">
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- ② 결과 카드 -->
+    <div id="result-card"
+         class="result-card rounded-2xl border-2 border-gray-200 dark:border-white/10
+                bg-white dark:bg-black/20 p-6 shadow-md text-center">
+      <p class="text-xs uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-2 font-semibold">
+        통합 PM2.5
+      </p>
+      <div class="flex items-end justify-center gap-2">
+        <span id="pm-value" class="text-7xl font-black text-gray-900 dark:text-white tracking-tighter">
+          --
+        </span>
+        <span id="pm-unit" class="text-gray-500 dark:text-gray-400 text-xl pb-2">µg/m³</span>
+      </div>
+      <div id="pm-grade"
+           class="text-2xl font-bold mt-2 text-gray-500 dark:text-gray-400 transition-colors">
+        --
+      </div>
+      <p id="confidence-info"
+         class="text-xs text-gray-500 dark:text-gray-400 mt-3">
+        데이터를 불러오는 중입니다...
+      </p>
+    </div>
+
+    <!-- ③ 행동 가이드 -->
+    <div id="action-guide"
+         class="rounded-xl bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10
+                pl-4 pr-4 py-3 text-gray-700 dark:text-gray-200 text-sm leading-relaxed shadow-sm">
+      분석 결과를 기다리는 중입니다...
+    </div>
+
+    <!-- ④ 카메라 섹션 -->
+    <div id="camera-section" style="display:none;"
+         class="rounded-2xl border border-gray-200 dark:border-white/10
+                bg-white dark:bg-black/20 p-5 shadow-sm flex flex-col gap-4">
+      <h2 class="text-gray-900 dark:text-white font-bold text-lg flex items-center gap-2">
+        <span class="material-symbols-outlined text-primary">photo_camera</span>
+        하늘 사진으로 정확도 높이기
+      </h2>
+      <p class="text-gray-500 dark:text-gray-400 text-xs leading-relaxed">
+        야외에서 하늘을 중앙에 두고 찍어주세요.<br>
+        건물·나무가 너무 많이 나오면 정확도가 떨어집니다.
+      </p>
+
+      <!-- 드래그앤드롭 / 파일 업로드 -->
+      <div id="drop-zone"
+           class="flex flex-col items-center gap-3 rounded-xl border-2 border-dashed
+                  border-gray-300 dark:border-white/20 px-6 py-10 text-center
+                  cursor-pointer hover:border-primary transition-colors">
+        <span class="material-symbols-outlined text-4xl text-primary">upload_file</span>
+        <p class="text-gray-700 dark:text-gray-300 font-semibold text-sm">
+          사진 업로드 / 드래그
+        </p>
+        <p class="text-gray-400 text-xs">JPG, PNG 지원</p>
+        <input type="file" id="file-input" accept="image/*" hidden>
+      </div>
+
+      <!-- 미리보기 -->
+      <div id="preview-container" style="display:none;"
+           class="flex flex-col items-center gap-3">
+        <div class="w-full rounded-xl overflow-hidden max-h-64 bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+          <img id="preview-image" alt="하늘 미리보기"
+               class="w-full h-full object-cover max-h-64" />
+        </div>
+        <button id="clear-btn"
+                class="text-xs text-gray-500 dark:text-gray-400 underline hover:text-primary">
+          다른 사진 업로드
+        </button>
+      </div>
+
+      <!-- 카메라 분석 결과 -->
+      <div id="camera-result" style="display:none;"
+           class="rounded-xl bg-gray-100 dark:bg-gray-800/40 p-4 flex flex-col gap-2">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-base">analytics</span>
+          <span class="text-gray-700 dark:text-gray-300 font-semibold text-sm">사진 분석 결과</span>
+        </div>
+        <div class="flex items-end gap-1">
+          <span id="cam-pm-value" class="text-3xl font-black text-primary">--</span>
+          <span class="text-gray-500 text-sm pb-1">µg/m³</span>
+        </div>
+        <div class="h-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+          <div id="cam-confidence-bar"
+               class="h-2 bg-primary rounded-full transition-all duration-500"
+               style="width:0%"></div>
+        </div>
+        <p id="cam-confidence-text"
+           class="text-xs text-gray-500 dark:text-gray-400">모델 신뢰도 --%</p>
+      </div>
+    </div>
+
+    <!-- ⑤ 하단 CTA -->
+    <div class="flex flex-col sm:flex-row gap-3">
+      <a href="globe.html"
+         class="flex-1 flex items-center justify-center gap-2 rounded-xl
+                bg-primary text-gray-900 font-bold py-3 text-sm
+                hover:opacity-90 transition-opacity shadow-sm">
+        <span class="material-symbols-outlined text-base">public</span>
+        세계 지도에서 비교하기
+      </a>
+      <a href="camera.html"
+         class="flex-1 flex items-center justify-center gap-2 rounded-xl
+                border border-primary text-primary font-bold py-3 text-sm
+                hover:bg-primary hover:text-gray-900 transition-all">
+        <span class="material-symbols-outlined text-base">photo_camera</span>
+        Camera AI 전체 기능
+      </a>
+    </div>
+
+  </main>
+
+  <!-- ── 푸터 ── -->
+  <footer style="background:var(--color-bg-dark);color:var(--color-text-dark);padding:var(--space-5) 0;">
+    <div class="container text-center">
+      <p style="color:var(--color-text-dark-secondary);">
+        © 2025 AirLens. Built with ❤️ for a cleaner planet.
+      </p>
+    </div>
+  </footer>
+
+  <!-- ── JS 로드 순서 ── -->
+  <script src="js/theme-toggle.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/message-utils.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/satellite-api.js"></script>
+  <!-- 서비스 클래스 먼저 -->
+  <script src="js/services/locationService.js"></script>
+  <script src="js/services/pmService.js"></script>
+  <!-- 카메라 AI (Today 뷰용 경량 래퍼) -->
+  <script src="js/camera-today.js"></script>
+  <!-- Today 메인 로직 -->
+  <script src="js/today.js"></script>
+
+  <script>
+    // 다크모드 자동 적용
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    if (currentTheme === 'dark') document.documentElement.classList.add('dark');
+  </script>
+</body>
+</html>

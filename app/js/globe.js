@@ -2567,6 +2567,14 @@ class PolicyGlobe {
     const card = document.getElementById('policy-card');
     card.style.display = 'block';
 
+    // ★ Today 버튼 href 업데이트 (국가 대표 좌표 사용)
+    const gotoTodayBtn = document.getElementById('goto-today-btn');
+    if (gotoTodayBtn && policy.coordinates) {
+      gotoTodayBtn.href = `today.html?lat=${policy.coordinates.lat}&lon=${policy.coordinates.lon}`;
+    } else if (gotoTodayBtn) {
+      gotoTodayBtn.href = 'today.html';
+    }
+
     // Trigger animation after a brief delay to ensure display change is applied
     setTimeout(() => {
       card.classList.add('show');
@@ -3676,6 +3684,11 @@ class PolicyGlobe {
         if (clickedObject && clickedObject.userData) {
           const stationData = clickedObject.userData;
           console.log('📍 PM2.5 marker clicked:', stationData);
+          // ★ Today 버튼 href 업데이트
+          const gotoTodayBtn = document.getElementById('goto-today-btn');
+          if (gotoTodayBtn && stationData.lat != null && stationData.lon != null) {
+            gotoTodayBtn.href = `today.html?lat=${stationData.lat}&lon=${stationData.lon}`;
+          }
           this.showStationInfoPanel(stationData);
           return;
         }

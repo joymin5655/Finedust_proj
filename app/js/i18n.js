@@ -87,7 +87,7 @@ const TRANSLATIONS = {
     'conf.fused':        'Station {s} / Photo {c} µg/m³',
 
     // Footer
-    'footer.copy': '© 2026 AirLens. Built with ❤️ for a cleaner planet.',
+    'footer.copy': '© 2025 AirLens. Built with ❤️ for a cleaner planet.',
     'footer.github': 'View on GitHub',
 
     // Settings
@@ -216,7 +216,7 @@ const TRANSLATIONS = {
     'conf.camera.only':  '(카메라 분석만 사용)',
     'conf.fused':        '측정소 {s} / 사진 {c} µg/m³',
 
-    'footer.copy':   '© 2026 AirLens. 더 깨끗한 지구를 위해 ❤️',
+    'footer.copy':   '© 2025 AirLens. 더 깨끗한 지구를 위해 ❤️',
     'footer.github': 'GitHub에서 보기',
 
     'settings.title':    '설정',
@@ -296,7 +296,7 @@ const TRANSLATIONS = {
     'conf.high': '高 ✅', 'conf.medium': '中 ⚠️', 'conf.low': '低 ❗',
     'settings.title': '設定', 'settings.subtitle': 'AirLensをカスタマイズ',
     'settings.lang.title': '🌍 言語', 'settings.saved': '言語を変更しました:',
-    'footer.copy': '© 2026 AirLens. より清潔な地球のために ❤️', 'footer.github': 'GitHubで見る',
+    'footer.copy': '© 2025 AirLens. より清潔な地球のために ❤️', 'footer.github': 'GitHubで見る',
   },
 
   zh: {
@@ -325,7 +325,7 @@ const TRANSLATIONS = {
     'conf.high': '高 ✅', 'conf.medium': '中 ⚠️', 'conf.low': '低 ❗',
     'settings.title': '设置', 'settings.subtitle': '自定义您的AirLens体验',
     'settings.lang.title': '🌍 语言', 'settings.saved': '语言已更新为:',
-    'footer.copy': '© 2026 AirLens. 为更清洁的地球而建 ❤️', 'footer.github': '在GitHub查看',
+    'footer.copy': '© 2025 AirLens. 为更清洁的地球而建 ❤️', 'footer.github': '在GitHub查看',
   },
 
   es: {
@@ -355,7 +355,7 @@ const TRANSLATIONS = {
     'conf.high': 'Alta ✅', 'conf.medium': 'Media ⚠️', 'conf.low': 'Baja ❗',
     'settings.title': 'Configuración', 'settings.subtitle': 'Personaliza tu experiencia en AirLens',
     'settings.lang.title': '🌍 Idioma', 'settings.saved': 'Idioma actualizado a:',
-    'footer.copy': '© 2026 AirLens. Construido con ❤️ por un planeta más limpio.', 'footer.github': 'Ver en GitHub',
+    'footer.copy': '© 2025 AirLens. Construido con ❤️ por un planeta más limpio.', 'footer.github': 'Ver en GitHub',
   },
 
   fr: {
@@ -385,7 +385,7 @@ const TRANSLATIONS = {
     'conf.high': 'Élevée ✅', 'conf.medium': 'Moyenne ⚠️', 'conf.low': 'Faible ❗',
     'settings.title': 'Paramètres', 'settings.subtitle': 'Personnalisez votre expérience AirLens',
     'settings.lang.title': '🌍 Langue', 'settings.saved': 'Langue mise à jour :',
-    'footer.copy': '© 2026 AirLens. Construit avec ❤️ pour une planète plus propre.', 'footer.github': 'Voir sur GitHub',
+    'footer.copy': '© 2025 AirLens. Construit avec ❤️ pour une planète plus propre.', 'footer.github': 'Voir sur GitHub',
   }
 };
 

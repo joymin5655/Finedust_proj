@@ -1,60 +1,11 @@
 # 🌍 AirLens — Global Air Quality Intelligence
 
-> **Making invisible air pollution visible through AI-powered multi-source data fusion**
+> **Making invisible air pollution visible through AI-powered multi-source fusion**
 
 [![Deploy](https://github.com/joymin5655/Finedust_proj/actions/workflows/deploy.yml/badge.svg)](https://github.com/joymin5655/Finedust_proj/actions/workflows/deploy.yml)
 [![WAQI Data](https://github.com/joymin5655/Finedust_proj/actions/workflows/update-waqi-data.yml/badge.svg)](https://github.com/joymin5655/Finedust_proj/actions/workflows/update-waqi-data.yml)
-![Version](https://img.shields.io/badge/version-1.1.0-25e2f4)
-![License](https://img.shields.io/badge/license-MIT-green)
 
 **🔗 Live Demo:** [https://joymin5655.github.io/Finedust_proj/app/](https://joymin5655.github.io/Finedust_proj/app/)
-
-<details>
-<summary>🇰🇷 한국어로 읽기 (Read in Korean)</summary>
-
-## AirLens — 글로벌 공기질 인텔리전스
-
-> AI 기반 다중 소스 데이터 퓨전으로 눈에 보이지 않는 대기오염을 시각화합니다
-
-### 왜 만들었나요?
-
-많은 지역에서 공기질 측정소가 부족합니다. 특히 개발도상국이나 농촌 지역 주민들은 자신이 마시는 공기의 질을 알 방법이 없어요. AirLens는 세 가지 접근법으로 이 문제를 해결합니다:
-
-| 기능 | 설명 |
-|------|------|
-| 📊 **Today** | GPS + 가장 가까운 WAQI 측정소 → 현재 위치 실시간 PM2.5 |
-| 📸 **Camera AI** | 하늘 사진 → 브라우저 픽셀 분석 → PM2.5 예측 (서버 불필요) |
-| 🌐 **Globe** | 3D 지구본으로 전 세계 도시 공기질 한눈에 보기 |
-| 🌿 **Policy** | 68개국 × 역사적 PM2.5 추세 × 정책 타임라인 분석 |
-
-### 빠른 시작
-
-```bash
-git clone https://github.com/joymin5655/Finedust_proj.git
-cd Finedust_proj
-python3 -m http.server 8000
-# http://localhost:8000/app/ 에서 확인
-```
-
-### 플랜
-
-| | Free | Plus ($4.99/월) |
-|-|------|-----------------|
-| 실시간 PM2.5 | ✅ | ✅ |
-| Camera AI | ✅ | ✅ (고급 CNN) |
-| AI 리포트 | 1회/일 | 무제한 |
-| Watchlist | ❌ | ✅ 최대 6개 도시 |
-| CSV 내보내기 | ❌ | ✅ |
-| Globe AOD 레이어 | ❌ | ✅ |
-| PM2.5 알림 | ❌ | ✅ |
-
-### 보안 원칙
-
-- API 키는 저장소에 절대 없음 (`.gitignore` + CI Secrets)
-- 샘플 데이터 (policy-impact, earthdata 등)는 git에서 제외
-- 모든 AI 분석은 클라이언트 사이드 실행 (개인 정보 보호)
-
-</details>
 
 ---
 
@@ -62,32 +13,13 @@ python3 -m http.server 8000
 
 Air quality monitoring stations are severely lacking in many regions. People often have no way to know the air quality in their area — especially in developing countries and rural areas where stations are sparse or non-existent.
 
-**AirLens addresses this gap through four core features:**
+**AirLens addresses this gap through three approaches:**
 
-| Feature | Description |
-|---------|-------------|
-| 📊 **Today** | GPS + nearest WAQI station → real-time PM2.5 at your location |
-| 📸 **Camera AI** | Sky photo → browser-side pixel analysis → PM2.5 estimate (no server) |
-| 🌐 **Globe** | 3D interactive globe — city markers, AOD layer, time slider |
-| 🌿 **Policy** | 68 countries × historical PM2.5 trends × policy timeline analysis |
-
----
-
-## ✨ Plans
-
-| Feature | Free | Plus ($4.99/mo) |
-|---------|------|-----------------|
-| Real-time PM2.5 | ✅ | ✅ |
-| Camera AI | ✅ Basic | ✅ Advanced CNN |
-| AI Reports | 1×/day | Unlimited |
-| Watchlist (multi-city) | ❌ | ✅ Up to 6 cities |
-| CSV Export | ❌ | ✅ |
-| Globe AOD Layer | ❌ | ✅ Satellite overlay |
-| Globe Time Slider | ❌ | ✅ 24-hour playback |
-| PM2.5 Alerts | ❌ | ✅ Custom threshold |
-| Monthly AI Report | ❌ | ✅ |
-
-> Payment via PayPal. Upgrade in [Settings](https://joymin5655.github.io/Finedust_proj/app/settings.html).
+| Approach | Description |
+|----------|-------------|
+| 📊 **Today (index)** | GPS + nearest WAQI station data → real-time PM2.5 at your location |
+| 📸 **Camera AI** | Sky photo → browser-side image analysis → PM2.5 prediction (no server) |
+| 🌿 **Policy Research** | 66 countries × historical PM2.5 trends × policy timeline analysis |
 
 ---
 
@@ -95,21 +27,22 @@ Air quality monitoring stations are severely lacking in many regions. People oft
 
 ```
 Frontend:   Static web app (HTML/JS/CSS) under app/
-            Deployed via GitHub Pages — no build step required
+            Deployed via GitHub Pages
+            No build step required — plain ES5/ES6 modules
 
-Data:       WAQI live data updated daily via GitHub Actions
-            Policy/historical data: pre-processed JSON (NOT tracked in git)
-            ⚠️  Sample data files are gitignored — see app/data/ notes below
+Data:       WAQI + policy JSON files under app/data/
+            Updated daily via GitHub Actions (no manual work)
 
 AI:         Browser-side pixel analysis for camera prediction (no model download)
-            OpenAI narrative reports via serverless proxy
+            OpenAI narrative reports via external serverless proxy
             ⚠️  API keys are NEVER stored in this repository
 
-Pro:        Feature flags in config.js (IS_PRO = true/false)
-            v2: PayPal webhook → backend plan verification
+Automation: GitHub Actions
+            - update-waqi-data.yml  → runs daily, commits fresh JSON
+            - deploy.yml            → runs on push to main, deploys app/
 ```
 
-### Data Flow
+### Data Flow Diagram
 
 ```
 User opens index.html
@@ -120,8 +53,8 @@ User opens index.html
         │   StationService.findNearest(lat, lon)
         │         │
         │         ▼
-        │   WAQI latest.json  ← updated daily by GitHub Actions
-        │         │
+        │   DataService.loadStations()  ← app/data/waqi/latest.json
+        │         │                       (refreshed daily by GitHub Actions)
         │         ▼
         │   weighted PM2.5 (1/distance)
         │
@@ -132,11 +65,9 @@ User opens index.html
         │         │
         │         ▼
         │   CameraService.fuse(camera, station)
-        │
-        └─► AI Report button
-                  │
-                  ▼
-            openaiService → proxy → OpenAI API
+        │         │
+        ▼         ▼
+        Result card + Grade + Action guide
 ```
 
 ---
@@ -145,69 +76,64 @@ User opens index.html
 
 ```
 Finedust_proj/
-├── app/                          ← GitHub Pages root
-│   ├── index.html                ← Today (main entry)
-│   ├── globe.html                ← 3D Globe
-│   ├── camera.html               ← Camera AI
-│   ├── policy.html               ← Policy Research
-│   ├── about.html                ← About & Methodology
-│   ├── settings.html             ← Plan, Language, Theme
-│   ├── css/
+├── app/                         ← GitHub Pages root
+│   ├── index.html               ← Today (main entry point)
+│   ├── globe.html               ← 3D Globe
+│   ├── camera.html              ← Camera AI (full page)
+│   ├── policy.html              ← Policy Research
+│   ├── about.html               ← About & Research methodology
+│   ├── settings.html            ← Language / theme settings
+│   ├── css/                     ← Stylesheets
 │   ├── js/
-│   │   ├── config.js             ← ⚠️ gitignored (copy from config.template.js)
-│   │   ├── config.template.js    ← Safe template (no keys)
-│   │   ├── pro-features.js       ← Plus feature implementations
-│   │   ├── today.js / globe.js / camera.js / policy.js
-│   │   ├── i18n.js               ← Multi-language support
+│   │   ├── today.js             ← Today view entrypoint
+│   │   ├── globe.js             ← Globe logic
+│   │   ├── camera.js            ← Full camera AI page
+│   │   ├── policy.js            ← Policy page entrypoint
+│   │   ├── i18n.js              ← 6-language translation engine
 │   │   └── services/
-│   │       ├── dataService.js
-│   │       ├── stationService.js
-│   │       ├── cameraService.js
-│   │       ├── openaiService.js  ← Calls proxy only, no key inside
-│   │       ├── uiService.js
-│   │       └── locationService.js
+│   │       ├── dataService.js   ← Static JSON loader (cache + path resolution)
+│   │       ├── stationService.js← WAQI station helpers (nearest, weighted PM2.5)
+│   │       ├── cameraService.js ← Sky image pixel analysis + fusion
+│   │       ├── openaiService.js ← Serverless proxy wrapper (NO API key inside)
+│   │       ├── uiService.js     ← Grade colours, toast, loading overlay
+│   │       ├── pmService.js     ← PM2.5 integration logic
+│   │       └── locationService.js← GPS / geolocation helpers
 │   └── data/
-│       └── waqi/                 ← ✅ Live data, updated by GitHub Actions
-│           ├── latest.json       ← 53-city real-time PM2.5
-│           ├── stats.json
-│           └── history/          ← Daily snapshots
-│
-│   ⚠️  The following data dirs are gitignored (generated locally / not sample):
-│       app/data/earthdata/       ← AOD samples
-│       app/data/openaq/          ← PM25 days/years/stations
-│       app/data/pm25/            ← Latest PM25
-│       app/data/policy-impact/   ← 68-country policy JSON
-│       app/data/policies.json
-│       app/data/policy-analytics.json
-│
+│       ├── waqi/
+│       │   ├── latest.json      ← 53-city PM2.5 (updated daily ↓)
+│       │   ├── global-stations.json
+│       │   ├── stats.json
+│       │   └── history/         ← Per-day snapshots
+│       └── policy-impact/
+│           ├── index.json       ← 66-country index
+│           └── <country>.json   ← Per-country PM2.5 trend + policy detail
 ├── scripts/
-│   └── fetch-waqi-data.js        ← Node.js data collector (runs in CI)
+│   └── fetch-waqi-data.js       ← Node.js data collector (runs in CI)
 ├── .github/
 │   └── workflows/
-│       ├── update-waqi-data.yml  ← Daily WAQI fetch + auto-commit
-│       └── deploy.yml            ← Push to main → GitHub Pages
-├── index.html                    ← Root redirect → app/index.html
+│       ├── update-waqi-data.yml ← Cron: daily WAQI fetch + auto-commit
+│       └── deploy.yml           ← Push to main → GitHub Pages deploy
+├── index.html                   ← Root redirect → app/index.html
 └── README.md
 ```
 
 ---
 
-## 🔒 Security
+## 🔒 Security Principles
 
-| Rule | Enforcement |
-|------|-------------|
-| No API keys in repo | `.gitignore` + code review |
-| WAQI token | GitHub Actions Secret (`WAQI_TOKEN`) only |
-| OpenAI key | Vercel/Cloudflare env var — never in repo |
-| Sample data | Gitignored — not pushed to GitHub |
-| Client ↔ OpenAI | Always via proxy URL, never direct |
+| Rule | Where enforced |
+|------|---------------|
+| No API keys in repository | `.gitignore` + code review |
+| WAQI token in CI only | GitHub Actions Secret (`WAQI_TOKEN`) |
+| OpenAI key in proxy only | Vercel / Cloudflare env var — never in repo |
+| Client never calls OpenAI directly | `openaiService.js` only calls the proxy URL |
 
 ```javascript
-// app/js/services/openaiService.js — proxy only, zero keys
+// app/js/services/openaiService.js — no key, just the proxy URL
 const API_BASE = 'https://airlens-api.vercel.app';
 
 export async function todayReport(payload) {
-  return fetch(`${API_BASE}/api/today-report`, { method: 'POST', body: ... });
+  return fetch(`${API_BASE}/api/today-report`, { method: 'POST', ... });
 }
 ```
 
@@ -215,24 +141,56 @@ export async function todayReport(payload) {
 
 ## 📊 Data Sources
 
-| Source | Data | Cadence | Key |
-|--------|------|---------|-----|
-| **WAQI API** | 53-city real-time PM2.5 | Daily (GitHub Actions) | `WAQI_TOKEN` in Secrets |
-| **EU Copernicus CAMS** | Satellite PM2.5 / AOD | On demand via Open-Meteo | ❌ None |
-| **OpenAQ** | Government station data | Pre-processed | ❌ None |
-| **Policy Index** | 68 countries, 133+ policies | Pre-processed | ❌ None |
+| Source | Data | Update cadence | Key required |
+|--------|------|---------------|-------------|
+| **WAQI API** | 53-city real-time PM2.5 | Daily (GitHub Actions) | ✅ `WAQI_TOKEN` in Secrets |
+| **Our World in Data / IHME** | Historical PM2.5 by country | Manual (pre-processed) | ❌ |
+| **Policy Index** | 66 countries, 133 policies | Manual (pre-processed) | ❌ |
+| **EU Copernicus CAMS** | Satellite PM2.5 (camera fusion) | On demand via Open-Meteo | ❌ |
+
+### Data JSON Schema (quick reference)
+
+**`app/data/waqi/latest.json`**
+```json
+{
+  "updated_at": "ISO-8601",
+  "count": 53,
+  "cities": [
+    {
+      "city": "seoul",
+      "aqi": 42,
+      "pollutants": { "pm25": 18, "pm10": 32 },
+      "location": { "name": "Seoul", "geo": [37.56, 126.97] },
+      "time": { "s": "2025-11-08 12:00:00" }
+    }
+  ]
+}
+```
+
+**`app/data/policy-impact/index.json`**
+```json
+{
+  "countries": [
+    {
+      "country": "South Korea", "countryCode": "KR",
+      "region": "East Asia", "flag": "🇰🇷",
+      "dataFile": "south-korea.json", "policyCount": 2
+    }
+  ]
+}
+```
 
 ---
 
-## 🔄 GitHub Actions
+## 🔄 Automation (GitHub Actions)
 
 ### `update-waqi-data.yml` — daily data refresh
 ```
-Schedule: 0 0 * * * (midnight UTC)
+Schedule: 0 0 * * *  (midnight UTC)
   1. Checkout repo
-  2. node scripts/fetch-waqi-data.js  (uses WAQI_TOKEN secret)
+  2. node scripts/fetch-waqi-data.js   (uses WAQI_TOKEN secret)
   3. git add app/data/waqi/
-  4. git commit & push if data changed
+  4. git commit & push if changed      (skips if no new data)
 ```
 
 ### `deploy.yml` — continuous deployment
@@ -245,7 +203,7 @@ Trigger: push to main
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Quick Start (local development)
 
 ```bash
 git clone https://github.com/joymin5655/Finedust_proj.git
@@ -259,12 +217,11 @@ python3 -m http.server 8000
 open http://localhost:8000/app/
 ```
 
-### Enable live WAQI data locally
-
+To enable WAQI live data locally:
 ```bash
-# Copy template and add your free token from aqicn.org/api/
+# Copy template and add your token
 cp app/js/config.template.js app/js/config.js
-# Edit config.js → set WAQI.token and WAQI.enabled = true
+# Edit config.js → set waqi.token and waqi.enabled = true
 ```
 
 > ⚠️ Never commit `app/js/config.js` — it is in `.gitignore`
@@ -278,10 +235,9 @@ cp app/js/config.template.js app/js/config.js
 | Frontend | Vanilla JS (ES6+), Tailwind CSS CDN |
 | 3D Globe | Three.js (r128), WebGL |
 | Charts | Chart.js |
-| Camera AI | Browser canvas pixel analysis |
-| Internationalization | Custom i18n.js (6 languages) |
+| Camera AI | Browser canvas pixel analysis (no TF.js weight download) |
 | CI/CD | GitHub Actions, GitHub Pages |
-| AI Reports | OpenAI GPT-4o via serverless proxy (Vercel) |
+| AI Reports | OpenAI via serverless proxy (Vercel) |
 
 ---
 
@@ -290,26 +246,10 @@ cp app/js/config.template.js app/js/config.js
 | URL | File | Description |
 |-----|------|-------------|
 | `/app/` | `index.html` | **Today** — GPS PM2.5 + Camera fusion |
-| `/app/globe.html` | `globe.html` | 3D interactive globe with AOD layer |
+| `/app/globe.html` | `globe.html` | 3D interactive globe with station markers |
 | `/app/camera.html` | `camera.html` | Full Camera AI analysis page |
-| `/app/policy.html` | `policy.html` | 68-country policy research & trends |
-| `/app/about.html` | `about.html` | Methodology, data sources & changelog |
-| `/app/settings.html` | `settings.html` | Plan, language & theme |
-
----
-
-## 🗂️ Changelog
-
-### v1.1.0 — February 2026
-- ✨ **Plus plan** — Watchlist, CSV export, Globe AOD layer, time slider, PM2.5 alerts
-- 🔒 Sample data removed from git (policy-impact, earthdata, openaq)
-- 🐛 Fixed globe.html config.js duplicate load
-- 📝 README rewritten (English default + Korean toggle)
-
-### v1.0.0 — November 2025
-- 🚀 Initial release — Today, Globe, Camera AI, Policy, About, Settings
-- 🤖 OpenAI report integration via serverless proxy
-- 🔄 GitHub Actions daily WAQI data refresh
+| `/app/policy.html` | `policy.html` | 66-country policy research |
+| `/app/about.html` | `about.html` | Methodology & data sources |
 
 ---
 

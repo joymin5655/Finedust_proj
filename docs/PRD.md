@@ -267,3 +267,99 @@ open http://localhost:8000
 | v1.2 | WAQI bbox 호출로 글로벌 스테이션 밀도 증가 | 1일 |
 | v1.3 | Earthdata AppEEARS 실제 AOD 타일 생성 | 2일 |
 | v2.0 | 경량 ONNX 모델 (선택사항, 브라우저 내 PM 예측) | 추후 |
+
+
+---
+
+## 11. 비즈니스 전략 & 요금제
+
+### 11.1 제품 포지셔닝
+
+| 구분 | AirLens Free | AirLens Pro (v2 이후) |
+|------|-------------|----------------------|
+| 타겟 | 개인 사용자·학생·환경 관심층 | 스타트업·지자체·ESG팀·연구자 |
+| 호스팅 | GitHub Pages (무료) | 별도 도메인 + SaaS 백엔드 |
+| 인프라 비용 | ~$0 (GitHub Actions 무료 쿼터) | Supabase/Postgres + 서버 |
+| 결제 | 없음 | PayPal (PayPal.me/joymin5655) |
+
+---
+
+### 11.2 Free 버전 — 기능 범위 (현재 v1)
+
+**데이터 범위**
+- WAQI: 주요 도시 60개 (국가별 2~5개)
+- OpenAQ: 동일 주요 도시 + 일부 국가 단위 시계열
+- 갱신 주기: 하루 4회 배치 (GitHub Actions cron)
+
+**사용자 기능 제약**
+- 로그인/계정 없음 → 개인 Watchlist/알림/CSV 다운로드 없음
+- 임베드 위젯·API 엔드포인트 없음 (웹 UI 전용)
+- AI 리포트: 하루 1회 제한 (OpenAI 쿼터 보호)
+
+**기술 전제**
+- 전부 정적 사이트 + GitHub Actions → 인프라 비용 $0 목표
+- 외부 API 호출은 무료/기본 쿼터 내에서 유지
+
+---
+
+### 11.3 Pro 버전 — 기능 컨셉 (v2 이후)
+
+**결제 수단**: PayPal (PayPal.me 링크)
+
+**추가 기능 목표**
+- **계정/워크스페이스**: 이메일 로그인 + 팀 공유
+- **Watchlist**: 10~N개 도시 즐겨찾기 + 통합 대시보드
+- **고빈도 업데이트**: 10~15분 단위 WAQI/OpenAQ 동기화
+- **알림**: AQI/PM2.5 임계값 초과 시 이메일·웹훅·슬랙
+- **다운로드**: 과거 N년 PM 시계열 CSV/엑셀
+- **AI 리포트**: 무제한 + 월간 건강 요약 PDF
+- **API**: 내부 대시보드 연동용 read-only REST API
+- **AOD 고급**: 계절·연도별 AOD 지도 + PM 상관 분석
+- **Globe Pro**: 수천 개 측정소 레이어 + 시간 슬라이더 + 임베드
+
+---
+
+### 11.4 페이지별 Free ↔ Pro 경계
+
+#### Today
+| Free | Pro |
+|------|-----|
+| 현 위치 단일 AQI 카드 | Watchlist 멀티 카드 뷰 |
+| 연도별 PM 차트 1개 | 여러 도시 비교 |
+| AI 리포트 1회/일 | 무제한 AI 리포트 + 알림 설정 |
+
+#### Globe
+| Free | Pro |
+|------|-----|
+| 주요 도시 100~200개 마커 | 수천 개 측정소 레이어 + 필터 |
+| AOD 텍스처 1~2개 | 시간 슬라이더 + 동적 AOD |
+| - | Embeddable iframe 모드 |
+
+#### Policy
+| Free | Pro |
+|------|-----|
+| 연도별 PM 시계열 + 기본 효과 지표 | 정책 유형별 오버레이 + 커스텀 그룹 |
+| - | CSV/엑셀/PDF 리포트 export |
+
+---
+
+### 11.5 v1 UI 처리 원칙
+
+- **지금은 Pro 기능 노출하지 않음** — `Coming Soon` 배지 또는 잠금 아이콘으로만 표시
+- **Settings 요금제 카드**: Free(현재 플랜) + Plus(PayPal 결제 버튼)
+- **PayPal 버튼**: `https://www.paypal.me/{ID}` 링크로 연결 (v1에서는 "관심 표명" 레벨)
+- 실제 구독 관리 시스템은 v2에서 구현
+
+---
+
+### 11.6 로드맵 (업데이트)
+
+| Phase | 목표 |
+|-------|------|
+| **v1.0** (완료) | 3 API 통합 + Actions 파이프라인 + 샘플 데이터 |
+| **v1.1** (진행중) | waqiService.js + 로컬 테스트 완성 + 커밋 |
+| **v1.2** | Settings 요금제 카드 + PayPal 연결 |
+| **v1.3** | WAQI bbox 호출 → 글로벌 스테이션 밀도 증가 |
+| **v1.4** | Earthdata AppEEARS 실제 AOD 타일 |
+| **v2.0** | Pro SaaS: 계정 + Watchlist + 알림 + API (Supabase 기반) |
+| **v2.1** | 결제 자동화 (PayPal Subscription API) |

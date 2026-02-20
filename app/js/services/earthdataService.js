@@ -9,7 +9,7 @@ const BASE = (() => {
   if (window.location.hostname.includes('github.io')) {
     return '/Finedust_proj/app/data/earthdata';
   }
-  return '/app/data/earthdata';
+  return window.location.origin + '/data/earthdata';
 })();
 
 let _cache = {};

@@ -113,16 +113,24 @@ def fetch_sensor_years(sensor_id):
     data = get_json(url, params)
     if not data:
         return []
-    return [
-        {
-            "year": r.get("period", {}).get("datetimeFrom", {}).get("local", "")[:4],
-            "avg":  round(r.get("summary", {}).get("mean", 0), 2),
-            "min":  round(r.get("summary", {}).get("min", 0), 2),
-            "max":  round(r.get("summary", {}).get("max", 0), 2),
-        }
-        for r in data.get("results", [])
-        if r.get("summary", {}).get("mean")
-    ]
+    results = []
+    for r in data.get("results", []):
+        mean_val = r.get("summary", {}).get("mean")
+        if not mean_val:
+            continue
+        # year를 int로 통일 (프론트의 parseInt 처리와 일치)
+        year_str = r.get("period", {}).get("datetimeFrom", {}).get("local", "")[:4]
+        try:
+            year_int = int(year_str)
+        except (ValueError, TypeError):
+            continue
+        results.append({
+            "year": year_int,
+            "avg":  round(float(mean_val), 2),
+            "min":  round(r.get("summary", {}).get("min",  0), 2),
+            "max":  round(r.get("summary", {}).get("max",  0), 2),
+        })
+    return results
 
 
 def fetch_sensor_days(sensor_id, days=90):

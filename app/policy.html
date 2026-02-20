@@ -135,52 +135,6 @@
         <option value="Africa">Africa</option>
         <option value="Oceania">Oceania</option>
       </select>
-      <!-- Pro: CSV 다운로드 버튼 -->
-      <button id="csv-export-btn" onclick="exportPolicyCSV()"
-              class="flex items-center gap-1.5 px-3 py-2 rounded-xl
-                     bg-primary/10 border border-primary/30 text-primary
-                     text-sm font-bold hover:bg-primary/20 transition-colors">
-        <span class="material-symbols-outlined text-base">download</span>
-        <span>Export CSV</span>
-        <span class="text-xs bg-primary text-gray-900 px-1.5 py-0.5 rounded-full font-black">Plus</span>
-      </button>
-      <!-- Pro: 그룹 비교 버튼 -->
-      <button id="group-compare-btn" onclick="toggleGroupCompare()"
-              class="flex items-center gap-1.5 px-3 py-2 rounded-xl
-                     border border-gray-300 dark:border-white/20
-                     text-gray-600 dark:text-gray-300 text-sm font-semibold
-                     hover:border-primary hover:text-primary transition-all">
-        <span class="material-symbols-outlined text-base">compare_arrows</span>
-        <span>Compare Groups</span>
-      </button>
-    </div>
-
-    <!-- Pro: 그룹 비교 패널 (토글) -->
-    <div id="group-compare-panel" style="display:none;"
-         class="mb-6 rounded-2xl border border-primary/30 bg-primary/5 dark:bg-primary/10 p-5">
-      <h3 class="text-sm font-bold text-gray-800 dark:text-white mb-3 flex items-center gap-2">
-        <span class="material-symbols-outlined text-primary text-base">compare_arrows</span>
-        Policy Group Comparison
-        <span class="text-xs text-primary bg-primary/20 px-2 py-0.5 rounded-full">Plus</span>
-      </h3>
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
-        <div class="rounded-xl bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 p-3 text-center">
-          <p class="text-xs text-gray-500 mb-1">Transport Policies</p>
-          <p class="text-2xl font-black text-blue-500">-18.4%</p>
-          <p class="text-xs text-gray-400">avg PM2.5 reduction</p>
-        </div>
-        <div class="rounded-xl bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 p-3 text-center">
-          <p class="text-xs text-gray-500 mb-1">Industrial Policies</p>
-          <p class="text-2xl font-black text-orange-500">-22.1%</p>
-          <p class="text-xs text-gray-400">avg PM2.5 reduction</p>
-        </div>
-        <div class="rounded-xl bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 p-3 text-center">
-          <p class="text-xs text-gray-500 mb-1">Energy Policies</p>
-          <p class="text-2xl font-black text-green-500">-31.7%</p>
-          <p class="text-xs text-gray-400">avg PM2.5 reduction</p>
-        </div>
-      </div>
-      <canvas id="group-compare-chart" style="max-height:180px;"></canvas>
     </div>
 
     <!-- Two-column layout: list + detail -->
@@ -321,10 +275,8 @@
   <script src="js/services/dataService.js"></script>
   <script src="js/services/pmService.js"></script>
   <script src="js/services/uiService.js"></script>
-  <script src="js/config.js"></script>
   <script src="js/policy.js"></script>
   <!-- ⭐ Policy Enhancement: OpenAQ + Earthdata + Policy Effect -->
   <script type="module" src="js/policy-enhanced.js"></script>
-  <script src="js/pro-features.js"></script>
 </body>
 </html>

@@ -139,13 +139,30 @@
       ? window.StationService.weightedPM25(nearby)
       : window.PMService.calcStationPM25(nearby);
 
-    // 위성 PM 추정 (PRD §5.1 — AOD MLR 시뮬레이션)
-    const satResult = window.PMService.estimateSatPM25(stationPM25, {
-      lat,
-      month: new Date().getMonth() + 1,
-      hour:  new Date().getHours()
-    });
-    satPM25 = satResult ? satResult.pm25 : null;
+    // ── 위성 PM: Open-Meteo CAMS 실시간 우선, 없으면 AOD MLR 시뮬레이션 ──
+    satPM25 = null;
+    try {
+      if (window.SatelliteDataAPI) {
+        const camsAPI = new window.SatelliteDataAPI({});
+        const cams = await camsAPI.getCAMS_AtmosphericData(lat, lon);
+        if (cams?.data?.pm25 != null) {
+          satPM25 = Math.round(cams.data.pm25 * 10) / 10;
+          console.log('[today] CAMS PM2.5 (live):', satPM25);
+        }
+      }
+    } catch (e) {
+      console.warn('[today] CAMS fetch failed, falling back to MLR:', e.message);
+    }
+
+    // CAMS 실패 시 → AOD MLR 시뮬레이션 (PRD §5.1)
+    if (satPM25 == null) {
+      const satResult = window.PMService.estimateSatPM25(stationPM25, {
+        lat,
+        month: new Date().getMonth() + 1,
+        hour:  new Date().getHours()
+      });
+      satPM25 = satResult ? satResult.pm25 : null;
+    }
 
     // Location label
     if (locationText) {
@@ -217,16 +234,32 @@
       locationText.textContent = `📍 ${decodeURIComponent(paramCity)}`;
     await renderFromLocation(paramLat, paramLon);
     if (cameraSection) cameraSection.style.display = 'block';
+    // today-enhanced.js에 위치 전달
+    document.dispatchEvent(new CustomEvent('today:locationReady', {
+      detail: {
+        lat: paramLat, lon: paramLon,
+        cityName: decodeURIComponent(paramCity)
+      }
+    }));
     return;
   }
 
   if (locationText) locationText.textContent = t('today.loading.gps');
   const loc = await getGPS();
   if (loc) {
+    userLocation = loc;
     await renderFromLocation(loc.lat, loc.lon);
+    // today-enhanced.js에 위치 정보 전달 (커스텀 이벤트)
+    document.dispatchEvent(new CustomEvent('today:locationReady', {
+      detail: { lat: loc.lat, lon: loc.lon, cityName: '' }
+    }));
   } else {
     if (locationText) locationText.textContent = t('today.location.select');
     await showCitySelect();
     if (cameraSection) cameraSection.style.display = 'block';
+    // GPS 실패 시 Seoul 기본값으로 enhanced 초기화
+    document.dispatchEvent(new CustomEvent('today:locationReady', {
+      detail: { lat: 37.5665, lon: 126.9780, cityName: 'Seoul' }
+    }));
   }
 })();

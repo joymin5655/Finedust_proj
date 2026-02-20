@@ -11,7 +11,7 @@ const BASE = (() => {
   if (window.location.hostname.includes('github.io')) {
     return '/Finedust_proj/app/data/waqi';
   }
-  return '/app/data/waqi';
+  return window.location.origin + '/data/waqi';
 })();
 
 let _cache = {};

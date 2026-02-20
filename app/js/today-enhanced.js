@@ -214,37 +214,9 @@ export async function initTodayEnhanced({ lat, lon, cityName }) {
   }
 }
 
-// ── 자동 실행 (GPS 또는 URL params 기반) ─────────────────────────────
-document.addEventListener('DOMContentLoaded', async () => {
-  // URL params에서 lat/lon/city 읽기
-  const params = new URLSearchParams(location.search);
-  const paramLat  = parseFloat(params.get('lat'));
-  const paramLon  = parseFloat(params.get('lon'));
-  const paramCity = params.get('city') || '';
-
-  if (!isNaN(paramLat) && !isNaN(paramLon)) {
-    await initTodayEnhanced({
-      lat: paramLat, lon: paramLon,
-      cityName: decodeURIComponent(paramCity)
-    });
-    return;
-  }
-
-  // GPS
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      async pos => {
-        await initTodayEnhanced({
-          lat: pos.coords.latitude,
-          lon: pos.coords.longitude,
-          cityName: ''   // 도시명 미확정
-        });
-      },
-      () => {
-        // GPS 실패 — Seoul 기본값
-        initTodayEnhanced({ lat: 37.5665, lon: 126.9780, cityName: 'Seoul' });
-      },
-      { timeout: 8000 }
-    );
-  }
+// ── 자동 실행 (today.js가 발행하는 today:locationReady 이벤트 수신) ──
+// GPS 중복 요청을 피하기 위해 today.js에서 위치를 받아 초기화
+document.addEventListener('today:locationReady', async (e) => {
+  const { lat, lon, cityName } = e.detail;
+  await initTodayEnhanced({ lat, lon, cityName });
 });

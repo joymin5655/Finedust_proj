@@ -100,11 +100,12 @@ def main():
             country_map[cc] = []
         for yr in entry.get("data", []):
             try:
-                y = int(yr.get("year", 0))
+                y = int(yr.get("year", 0))   # int 보장 (fetch_openaq.py 와 일치)
                 a = float(yr.get("avg", 0))
             except (ValueError, TypeError):
                 continue
-            country_map[cc].append({"year": y, "avg": a, "city": entry["city"]})
+            if y > 0 and a > 0:
+                country_map[cc].append({"year": y, "avg": a, "city": entry["city"]})
 
     # 정책별 효과 계산
     effects = []

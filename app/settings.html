@@ -1,251 +1,315 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- ── 보안 헤더 ─────────────────────────────────────────── -->
-    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
-    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
-    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
-    <!-- ── ──────────────────────────────────────────────────── -->
-    <meta name="description" content="AirLens Settings - Customize your experience">
-    <title>Settings - AirLens</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+  <meta name="description" content="AirLens Settings - Customize your experience">
+  <title>Settings - AirLens</title>
 
-    <!-- Styles -->
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/settings.css">
+  <!-- Tailwind — 다른 페이지와 완전히 동일한 설정 -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: { colors: { primary: '#25e2f4', 'bg-dark': '#102122' } } }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/settings.css">
 
-    <!-- Favicon (optional - remove if not available) -->
-    <!-- <link rel="icon" type="image/png" href="assets/images/favicon.png"> -->
+  <!-- 다크모드 플래시 방지 (다른 페이지와 동일) -->
+  <script>if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark');</script>
+
+  <style>
+    /* ── settings.css 'body.dark-mode' 규칙을 'html.dark' 방식으로 브릿지 ── */
+    html.dark body { background-color: #102122; }
+    html.dark .settings-section { background: #102122 !important; }
+    html.dark .settings-card {
+      background: rgba(255,255,255,0.04) !important;
+      border-color: rgba(255,255,255,0.1) !important;
+    }
+    html.dark .settings-card-header { border-bottom-color: rgba(255,255,255,0.08) !important; }
+    html.dark .settings-title    { color: #f1f5f9 !important; }
+    html.dark .settings-subtitle { color: #94a3b8 !important; }
+    html.dark .theme-selector {
+      background: rgba(255,255,255,0.06) !important;
+      border-color: rgba(255,255,255,0.1) !important;
+    }
+    html.dark .theme-btn         { color: #94a3b8; }
+    html.dark .theme-btn:hover   { background: rgba(37,226,244,0.12); color: #25e2f4; }
+    html.dark .language-dropdown {
+      background: #1a3438 !important;
+      color: #e2e8f0 !important;
+      border-color: rgba(255,255,255,0.15) !important;
+    }
+    html.dark .model-info-item  { border-color: rgba(255,255,255,0.08) !important; }
+    html.dark .model-details p  { color: #94a3b8; }
+    html.dark .about-info p     { color: #94a3b8; }
+
+    /* theme-btn.active — primary(밝은 색) 배경 + 어두운 텍스트로 가독성 확보 */
+    .theme-btn.active {
+      background: #25e2f4 !important;
+      color: #0c2224 !important;
+      border-color: #25e2f4 !important;
+      font-weight: 700;
+    }
+    html.dark .theme-btn.active {
+      background: #25e2f4 !important;
+      color: #0c2224 !important;
+    }
+
+    /* ── 플랜 카드 ─────────────────────────────────────── */
+    .plan-card {
+      border-radius: 1rem; border: 2px solid #e5e7eb;
+      padding: 1.5rem; background: #fff;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .plan-card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,.1); }
+    .plan-card.featured { border-color: #25e2f4; background: rgba(37,226,244,.04); }
+    html.dark .plan-card         { background: rgba(255,255,255,.03); border-color: rgba(255,255,255,.1); }
+    html.dark .plan-card.featured{ background: rgba(37,226,244,.07); border-color: rgba(37,226,244,.4); }
+
+    .plan-badge {
+      display: inline-block; font-size: .68rem; font-weight: 800;
+      padding: .2rem .65rem; border-radius: 999px;
+      background: #25e2f4; color: #0c2224; letter-spacing: .04em;
+    }
+    .feat-row {
+      display: flex; align-items: flex-start; gap: .5rem;
+      padding: .28rem 0; font-size: .84rem; color: #374151;
+    }
+    html.dark .feat-row { color: #cbd5e1; }
+    .feat-row .ck  { color: #10b981; flex-shrink:0; font-size:.85rem; margin-top:.12rem; }
+    .feat-row .lk  { color: #d1d5db; flex-shrink:0; font-size:.8rem;  margin-top:.12rem; }
+    html.dark .feat-row .lk { color: #4b5563; }
+    .feat-row.dimmed { color: #9ca3af; }
+    html.dark .feat-row.dimmed { color: #4b5563; }
+
+    /* ── 동기화 펄스 ────────────────────────────────────── */
+    #sync-pulse {
+      display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+      background: #10b981; margin-left: 5px; vertical-align: middle;
+      opacity: 0; transition: opacity .2s;
+    }
+    #sync-pulse.show { opacity: 1; animation: sync-anim .8s ease-out forwards; }
+    @keyframes sync-anim {
+      0%   { transform: scale(1);   opacity: 1; }
+      60%  { transform: scale(1.8); opacity: .5; }
+      100% { transform: scale(1);   opacity: 0; }
+    }
+  </style>
 </head>
-<body class="flex flex-col min-h-screen">
-    <!-- Dark Mode Toggle Button -->
-    <div class="theme-toggle-container">
-        <div class="toggle-cont">
-            <input class="toggle-input" id="theme-toggle" name="toggle" type="checkbox" />
-            <label class="toggle-label" for="theme-toggle">
-                <div class="cont-icon">
-                    <span style="--sparkle-width: 2; --sparkle-deg: 25; --sparkle-duration: 11" class="sparkle"></span>
-                    <span style="--sparkle-width: 1; --sparkle-deg: 100; --sparkle-duration: 18" class="sparkle"></span>
-                    <span style="--sparkle-width: 1; --sparkle-deg: 280; --sparkle-duration: 5" class="sparkle"></span>
-                    <span style="--sparkle-width: 2; --sparkle-deg: 200; --sparkle-duration: 3" class="sparkle"></span>
-                    <span style="--sparkle-width: 2; --sparkle-deg: 30; --sparkle-duration: 20" class="sparkle"></span>
-                    <span style="--sparkle-width: 2; --sparkle-deg: 300; --sparkle-duration: 9" class="sparkle"></span>
-                    <span style="--sparkle-width: 1; --sparkle-deg: 250; --sparkle-duration: 4" class="sparkle"></span>
-                    <span style="--sparkle-width: 2; --sparkle-deg: 210; --sparkle-duration: 8" class="sparkle"></span>
-                    <span style="--sparkle-width: 2; --sparkle-deg: 100; --sparkle-duration: 9" class="sparkle"></span>
-                    <span style="--sparkle-width: 1; --sparkle-deg: 15; --sparkle-duration: 13" class="sparkle"></span>
-                    <span style="--sparkle-width: 1; --sparkle-deg: 75; --sparkle-duration: 18" class="sparkle"></span>
-                    <span style="--sparkle-width: 2; --sparkle-deg: 65; --sparkle-duration: 6" class="sparkle"></span>
-                    <span style="--sparkle-width: 2; --sparkle-deg: 50; --sparkle-duration: 7" class="sparkle"></span>
-                    <span style="--sparkle-width: 1; --sparkle-deg: 320; --sparkle-duration: 5" class="sparkle"></span>
-                    <span style="--sparkle-width: 1; --sparkle-deg: 220; --sparkle-duration: 5" class="sparkle"></span>
-                    <span style="--sparkle-width: 1; --sparkle-deg: 215; --sparkle-duration: 2" class="sparkle"></span>
-                    <span style="--sparkle-width: 2; --sparkle-deg: 135; --sparkle-duration: 9" class="sparkle"></span>
-                    <span style="--sparkle-width: 2; --sparkle-deg: 45; --sparkle-duration: 4" class="sparkle"></span>
-                    <span style="--sparkle-width: 1; --sparkle-deg: 78; --sparkle-duration: 16" class="sparkle"></span>
-                    <span style="--sparkle-width: 1; --sparkle-deg: 89; --sparkle-duration: 19" class="sparkle"></span>
-                    <span style="--sparkle-width: 2; --sparkle-deg: 65; --sparkle-duration: 14" class="sparkle"></span>
-                    <span style="--sparkle-width: 2; --sparkle-deg: 97; --sparkle-duration: 1" class="sparkle"></span>
-                    <span style="--sparkle-width: 1; --sparkle-deg: 174; --sparkle-duration: 10" class="sparkle"></span>
-                    <span style="--sparkle-width: 1; --sparkle-deg: 236; --sparkle-duration: 5" class="sparkle"></span>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 30 30" class="icon">
-                        <path d="M0.96233 28.61C1.36043 29.0081 1.96007 29.1255 2.47555 28.8971L10.4256 25.3552C13.2236 24.11 16.4254 24.1425 19.2107 25.4401L27.4152 29.2747C27.476 29.3044 27.5418 29.3023 27.6047 29.32C27.6563 29.3348 27.7079 29.3497 27.761 29.3574C27.843 29.3687 27.9194 29.3758 28 29.3688C28.1273 29.3617 28.2531 29.3405 28.3726 29.2945C28.4447 29.262 28.5162 29.2287 28.5749 29.1842C28.6399 29.1446 28.6993 29.0994 28.7509 29.0477L28.9008 28.8582C28.9468 28.7995 28.9793 28.7274 29.0112 28.656C29.0599 28.5322 29.0811 28.4036 29.0882 28.2734C29.0939 28.1957 29.0868 28.1207 29.0769 28.0415C29.0705 27.9955 29.0585 27.9524 29.0472 27.9072C29.0295 27.8343 29.0302 27.7601 28.9984 27.6901L25.1638 19.4855C23.8592 16.7073 23.8273 13.5048 25.0726 10.7068L28.6145 2.75679C28.8429 2.24131 28.7318 1.63531 28.3337 1.2372C27.9165 0.820011 27.271 0.721743 26.7491 0.9961L19.8357 4.59596C16.8418 6.15442 13.2879 6.18696 10.2615 4.70062L1.80308 0.520214C1.7055 0.474959 1.60722 0.441742 1.50964 0.421943C1.44459 0.409215 1.37882 0.395769 1.3074 0.402133C1.14406 0.395769 0.981436 0.428275 0.818095 0.499692C0.77284 0.519491 0.719805 0.545671 0.67455 0.578198C0.596061 0.617088 0.524653 0.675786 0.4596 0.74084C0.394546 0.805894 0.335843 0.877306 0.296245 0.956502C0.263718 1.00176 0.237561 1.05477 0.217762 1.10003C0.152708 1.24286 0.126545 1.40058 0.120181 1.54978C0.120181 1.61483 0.126527 1.6735 0.132891 1.73219C0.15269 1.85664 0.178881 1.97332 0.237571 2.08434L4.41798 10.5427C5.91139 13.5621 5.8725 17.1238 4.3204 20.1099L0.720514 27.0233C0.440499 27.5536 0.545137 28.1928 0.96233 28.61Z" />
-                    </svg>
-                </div>
-            </label>
+<body class="bg-gray-50 dark:bg-bg-dark min-h-screen flex flex-col">
+
+  <!-- ── Dark Mode Toggle (좌하단 — 다른 페이지와 완전 동일) ── -->
+  <div class="theme-toggle-container">
+    <div class="toggle-cont">
+      <input class="toggle-input" id="theme-toggle" name="toggle" type="checkbox" />
+      <label class="toggle-label" for="theme-toggle">
+        <div class="cont-icon">
+          <span style="--sparkle-width:2;--sparkle-deg:25;--sparkle-duration:11"  class="sparkle"></span>
+          <span style="--sparkle-width:1;--sparkle-deg:100;--sparkle-duration:18" class="sparkle"></span>
+          <span style="--sparkle-width:2;--sparkle-deg:200;--sparkle-duration:3"  class="sparkle"></span>
+          <span style="--sparkle-width:2;--sparkle-deg:300;--sparkle-duration:9"  class="sparkle"></span>
+          <span style="--sparkle-width:1;--sparkle-deg:250;--sparkle-duration:4"  class="sparkle"></span>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 30 30" class="icon">
+            <path d="M0.96233 28.61C1.36043 29.0081 1.96007 29.1255 2.47555 28.8971L10.4256 25.3552C13.2236 24.11 16.4254 24.1425 19.2107 25.4401L27.4152 29.2747C27.476 29.3044 27.5418 29.3023 27.6047 29.32C27.6563 29.3348 27.7079 29.3497 27.761 29.3574C27.843 29.3687 27.9194 29.3758 28 29.3688C28.1273 29.3617 28.2531 29.3405 28.3726 29.2945C28.4447 29.262 28.5162 29.2287 28.5749 29.1842C28.6399 29.1446 28.6993 29.0994 28.7509 29.0477L28.9008 28.8582C28.9468 28.7995 28.9793 28.7274 29.0112 28.656C29.0599 28.5322 29.0811 28.4036 29.0882 28.2734C29.0939 28.1957 29.0868 28.1207 29.0769 28.0415C29.0705 27.9955 29.0585 27.9524 29.0472 27.9072C29.0295 27.8343 29.0302 27.7601 28.9984 27.6901L25.1638 19.4855C23.8592 16.7073 23.8273 13.5048 25.0726 10.7068L28.6145 2.75679C28.8429 2.24131 28.7318 1.63531 28.3337 1.2372C27.9165 0.820011 27.271 0.721743 26.7491 0.9961L19.8357 4.59596C16.8418 6.15442 13.2879 6.18696 10.2615 4.70062L1.80308 0.520214C1.7055 0.474959 1.60722 0.441742 1.50964 0.421943C1.44459 0.409215 1.37882 0.395769 1.3074 0.402133C1.14406 0.395769 0.981436 0.428275 0.818095 0.499692C0.77284 0.519491 0.719805 0.545671 0.67455 0.578198C0.596061 0.617088 0.524653 0.675786 0.4596 0.74084C0.394546 0.805894 0.335843 0.877306 0.296245 0.956502C0.263718 1.00176 0.237561 1.05477 0.217762 1.10003C0.152708 1.24286 0.126545 1.40058 0.120181 1.54978C0.120181 1.61483 0.126527 1.6735 0.132891 1.73219C0.15269 1.85664 0.178881 1.97332 0.237571 2.08434L4.41798 10.5427C5.91139 13.5621 5.8725 17.1238 4.3204 20.1099L0.720514 27.0233C0.440499 27.5536 0.545137 28.1928 0.96233 28.61Z"/>
+          </svg>
         </div>
+      </label>
+    </div>
+  </div>
+
+  <!-- ── Navigation ─────────────────────────────────────── -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a href="index.html" class="navbar-logo">AirLens</a>
+      <button class="navbar-toggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="navbar-menu">
+        <li><a href="index.html"    class="navbar-link" data-i18n="nav.today">Today</a></li>
+        <li><a href="globe.html"    class="navbar-link" data-i18n="nav.globe">Globe</a></li>
+        <li><a href="camera.html"   class="navbar-link" data-i18n="nav.camera">Camera AI</a></li>
+        <li><a href="policy.html"   class="navbar-link" data-i18n="nav.policy">Policy</a></li>
+        <li><a href="about.html"    class="navbar-link" data-i18n="nav.about">About</a></li>
+        <li><a href="settings.html" class="navbar-link navbar-link-active">
+          <div class="settings-icon"><div class="loader-icon"></div></div>
+        </a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ── Main Content ──────────────────────────────────── -->
+  <main class="flex-1 max-w-2xl mx-auto w-full px-4 pt-24 pb-16 flex flex-col gap-6">
+
+    <!-- 페이지 제목 -->
+    <div>
+      <h1 class="text-3xl font-black text-gray-900 dark:text-white tracking-tight settings-title">
+        ⚙️ <span data-i18n="settings.title">Settings</span>
+      </h1>
+      <p class="text-gray-500 dark:text-gray-400 mt-1 text-sm settings-subtitle"
+         data-i18n="settings.subtitle">Customize your AirLens experience</p>
     </div>
 
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="navbar-container">
-            <a href="index.html" class="navbar-logo">AirLens</a>
-            <button class="navbar-toggle" aria-label="Toggle menu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-            <ul class="navbar-menu">
-                <li><a href="index.html"  class="navbar-link" data-i18n="nav.today">Today</a></li>
-                <li><a href="globe.html"  class="navbar-link" data-i18n="nav.globe">Globe</a></li>
-                <li><a href="camera.html" class="navbar-link" data-i18n="nav.camera">Camera AI</a></li>
-                <li><a href="policy.html" class="navbar-link" data-i18n="nav.policy">Policy</a></li>
-                <li><a href="about.html"  class="navbar-link" data-i18n="nav.about">About</a></li>
-                <li><a href="settings.html" class="navbar-link navbar-link-active">
-                    <div class="settings-icon">
-                        <div class="loader-icon"></div>
-                    </div>
-                </a></li>
-            </ul>
+    <!-- ① Appearance ──────────────────────────────────── -->
+    <div class="settings-card rounded-2xl border border-gray-200 dark:border-white/10
+                bg-white dark:bg-black/20 p-6 shadow-sm">
+      <div class="mb-5">
+        <h2 class="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary" style="font-size:1.1rem;">palette</span>
+          <span data-i18n="settings.appearance.title">Appearance</span>
+        </h2>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1"
+           data-i18n="settings.appearance.sub">Customize how AirLens looks</p>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-200"
+              data-i18n="settings.theme.label">Theme</h3>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 flex items-center gap-1">
+            <span data-i18n="settings.theme.sub">Choose between light and dark mode</span>
+            <span id="sync-pulse"></span>
+          </p>
         </div>
-    </nav>
 
-    <!-- Settings Content -->
-    <section class="settings-section">
-        <div class="settings-container">
-            <h1 class="settings-title" data-i18n="settings.title">Settings</h1>
-            <p class="settings-subtitle" data-i18n="settings.subtitle">Customize your AirLens experience</p>
-
-            <!-- Appearance Settings -->
-            <div class="settings-card">
-                <div class="settings-card-header">
-                    <h2 data-i18n="settings.appearance.title">🎨 Appearance</h2>
-                    <p data-i18n="settings.appearance.sub">Customize how AirLens looks</p>
-                </div>
-                <div class="settings-option">
-                    <div class="settings-option-info">
-                        <h3 data-i18n="settings.theme.label">Theme</h3>
-                        <p data-i18n="settings.theme.sub">Choose between light and dark mode</p>
-                    </div>
-                    <div class="settings-option-control">
-                        <div class="theme-selector">
-                            <button class="theme-btn" data-theme="light">
-                                <span class="theme-icon">☀️</span>
-                                <span data-i18n="settings.theme.light">Light</span>
-                            </button>
-                            <button class="theme-btn" data-theme="dark">
-                                <span class="theme-icon">🌙</span>
-                                <span data-i18n="settings.theme.dark">Dark</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Language Settings -->
-            <div class="settings-card">
-                <div class="settings-card-header">
-                    <h2 data-i18n="settings.lang.title">🌍 Language</h2>
-                    <p data-i18n="settings.lang.sub">Select your preferred language</p>
-                </div>
-                <div class="settings-option">
-                    <div class="settings-option-info">
-                        <h3 data-i18n="settings.lang.label">Display Language</h3>
-                        <p data-i18n="settings.lang.hint">Choose the language for the interface</p>
-                    </div>
-                    <div class="settings-option-control">
-                        <select id="language-select" class="language-dropdown">
-                            <option value="en">English</option>
-                            <option value="ko">한국어 (Korean)</option>
-                            <option value="ja">日本語 (Japanese)</option>
-                            <option value="zh">中文 (Chinese)</option>
-                            <option value="es">Español (Spanish)</option>
-                            <option value="fr">Français (French)</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Model Information -->
-            <div class="settings-card">
-                <div class="settings-card-header">
-                    <h2>🤖 AI Model Information</h2>
-                    <p>Learn about the technology behind AirLens</p>
-                </div>
-
-                <div class="model-info">
-                    <div class="model-info-item">
-                        <h3>📸 Camera AI Model</h3>
-                        <div class="model-details">
-                            <p><strong>Architecture:</strong> CNN-LSTM Hybrid</p>
-                            <p><strong>Input:</strong> Sky images (RGB)</p>
-                            <p><strong>Output:</strong> PM2.5 concentration (µg/m³)</p>
-                            <p><strong>Accuracy:</strong> MAE 8.2 µg/m³</p>
-                            <p><strong>Technology:</strong> TensorFlow.js (browser-based)</p>
-                            <p class="model-description">
-                                Our Camera AI uses a deep learning model that combines Convolutional Neural Networks (CNN)
-                                for image feature extraction with Long Short-Term Memory (LSTM) layers for temporal analysis.
-                                The model analyzes actual pixel data from images (brightness, haze, contrast, saturation)
-                                and combines it with real satellite data from EU Copernicus CAMS.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="model-info-item">
-                        <h3>🌍 Data Sources</h3>
-                        <div class="model-details">
-                            <p><strong>✅ ALL DATA FROM OFFICIAL INTERNATIONAL AGENCIES</strong></p>
-                            <p><strong>✅ NO API KEYS REQUIRED - WORKS IMMEDIATELY!</strong></p>
-                            <p style="margin-top: 12px;"><strong>🇪🇺 EU Copernicus CAMS (Primary):</strong> European Union atmospheric monitoring</p>
-                            <p style="margin-left: 20px; color: #25e2f4;">→ NO TOKEN NEEDED - Active by default via Open-Meteo</p>
-                            <p style="margin-left: 20px; color: #25e2f4;">→ Provides: PM2.5, PM10, NO₂, SO₂, O₃, CO, AOD, Dust</p>
-                            <p style="margin-left: 20px; color: #25e2f4;">→ Coverage: Worldwide</p>
-                            <p style="margin-top: 12px;"><strong>Optional Enhancement APIs:</strong></p>
-                            <p style="margin-left: 20px;">🌍 WAQI: 11,000+ ground stations (optional token)</p>
-                            <p style="margin-left: 20px;">☁️ OpenWeather: Global coordinates (optional key)</p>
-                            <p style="margin-left: 20px;">🏛️ OpenAQ: Government stations (optional key)</p>
-                            <p><strong>Update Frequency:</strong> Real-time</p>
-                            <p class="model-description">
-                                ✅ <strong>The application works perfectly without any API keys!</strong><br>
-                                All pages use EU Copernicus CAMS data via Open-Meteo (free, no registration needed).
-                                Optional APIs above can be configured in js/config.js to add ground station data
-                                for enhanced accuracy. NO fake or estimated data - all measurements from official
-                                European Union and government agencies.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="model-info-item">
-                        <h3>📊 Performance Metrics</h3>
-                        <div class="model-details">
-                            <p><strong>Validation Dataset:</strong> 50 representative samples</p>
-                            <p><strong>Validation Accuracy:</strong> 92.3%</p>
-                            <p><strong>Mean Absolute Error:</strong> 8.2 µg/m³</p>
-                            <p><strong>R² Score:</strong> 0.89</p>
-                            <p><strong>Inference Time:</strong> < 500ms (browser)</p>
-                            <p class="model-description">
-                                The model performs particularly well in clear weather conditions and
-                                achieves best results when sky visibility is good. Performance is based on
-                                real image pixel analysis combined with EU Copernicus CAMS satellite data.
-                                Accuracy may vary in extreme weather conditions or at night.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- About Section -->
-            <div class="settings-card">
-                <div class="settings-card-header">
-                    <h2>ℹ️ About AirLens</h2>
-                </div>
-
-                <div class="about-info">
-                    <p><strong>Version:</strong> 1.0.0</p>
-                    <p><strong>Last Updated:</strong> November 2025</p>
-                    <p><strong>License:</strong> MIT License</p>
-                    <p><strong>GitHub:</strong> <a href="https://github.com/joymin5655/Finedust_proj" target="_blank">joymin5655/Finedust_proj</a></p>
-                    <p class="about-description">
-                        AirLens is an open-source project dedicated to making air quality data
-                        accessible and understandable to everyone. Built with modern web technologies
-                        and powered by AI, we aim to raise awareness about air pollution and
-                        contribute to a cleaner, healthier planet.
-                    </p>
-                </div>
-            </div>
+        <!-- 테마 버튼 — theme-selector 클래스 유지 (settings.css 스타일 적용됨) -->
+        <div class="theme-selector flex gap-1 rounded-xl p-1
+                    bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10">
+          <button class="theme-btn flex items-center gap-1.5 px-4 py-2 rounded-lg
+                         text-sm font-semibold transition-all"
+                  data-theme="light" id="btn-light">
+            <span aria-hidden="true">☀️</span>
+            <span data-i18n="settings.theme.light">Light</span>
+          </button>
+          <button class="theme-btn flex items-center gap-1.5 px-4 py-2 rounded-lg
+                         text-sm font-semibold transition-all"
+                  data-theme="dark" id="btn-dark">
+            <span aria-hidden="true">🌙</span>
+            <span data-i18n="settings.theme.dark">Dark</span>
+          </button>
         </div>
-    </section>
+      </div>
+    </div>
 
-    <!-- Footer -->
-    <footer style="background: var(--color-bg-dark); color: var(--color-text-dark); padding: var(--space-5) 0; margin-top: auto;">
-        <div class="container text-center">
-            <p style="color: var(--color-text-dark-secondary);">
-                © 2025 AirLens. Built with ❤️ for a cleaner planet.
-            </p>
-            <p style="color: var(--color-text-dark-secondary); font-size: var(--text-sm); margin-top: var(--space-4);">
-                <a href="https://github.com/joymin5655/Finedust_proj" style="color: var(--color-primary);" target="_blank">
-                    View on GitHub
-                </a>
-            </p>
+    <!-- ② Language ─────────────────────────────────────── -->
+    <div class="settings-card rounded-2xl border border-gray-200 dark:border-white/10
+                bg-white dark:bg-black/20 p-6 shadow-sm">
+      <div class="mb-5">
+        <h2 class="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary" style="font-size:1.1rem;">language</span>
+          <span data-i18n="settings.lang.title">Language</span>
+        </h2>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1"
+           data-i18n="settings.lang.sub">Select your preferred language</p>
+      </div>
+      <div class="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-200"
+              data-i18n="settings.lang.label">Display Language</h3>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5"
+             data-i18n="settings.lang.hint">Choose the language for the interface</p>
         </div>
-    </footer>
+        <select id="language-select"
+                class="language-dropdown rounded-xl border border-gray-200 dark:border-white/15
+                       bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200
+                       text-sm px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/40
+                       min-w-[180px] cursor-pointer">
+          <option value="en">English</option>
+          <option value="ko">한국어 (Korean)</option>
+          <option value="ja">日本語 (Japanese)</option>
+          <option value="zh">中文 (Chinese)</option>
+          <option value="es">Español (Spanish)</option>
+          <option value="fr">Français (French)</option>
+        </select>
+      </div>
+    </div>
 
-    <!-- Scripts -->
-    <script src="js/i18n.js"></script>
-    <script src="js/theme-toggle.js"></script>
-    <script src="js/message-utils.js"></script>
-    <script src="js/main.js"></script>
-    <script src="js/settings.js"></script>
-</body>
-</html>
+    <!-- ③ Plan & Pricing ──────────────────────────────── -->
+    <div class="settings-card rounded-2xl border border-gray-200 dark:border-white/10
+                bg-white dark:bg-black/20 p-6 shadow-sm">
+      <div class="mb-5">
+        <h2 class="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary" style="font-size:1.1rem;">workspace_premium</span>
+          Plan &amp; Pricing
+        </h2>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+          Upgrade to Plus for AI-powered reports and advanced features
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <!-- Free Plan -->
+        <div class="plan-card">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-base font-black text-gray-900 dark:text-white">Free</span>
+            <span class="text-xl font-black text-gray-600 dark:text-gray-300">$0</span>
+          </div>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">Essential air quality monitoring</p>
+          <div class="flex flex-col">
+            <div class="feat-row"><span class="ck">✓</span>Real-time station PM2.5 &amp; grade</div>
+            <div class="feat-row"><span class="ck">✓</span>Globe — city markers &amp; policy titles</div>
+            <div class="feat-row"><span class="ck">✓</span>Satellite PM estimate (basic)</div>
+            <div class="feat-row"><span class="ck">✓</span>Camera AI (pixel-based model)</div>
+            <div class="feat-row"><span class="ck">✓</span>Policy list &amp; PM trend charts</div>
+            <div class="feat-row dimmed"><span class="lk">🔒</span>AI report — 1×/day only</div>
+            <div class="feat-row dimmed"><span class="lk">🔒</span>Policy ΔPM effect analysis</div>
+            <div class="feat-row dimmed"><span class="lk">🔒</span>Personal 30-day exposure history</div>
+          </div>
+          <button disabled
+                  class="mt-5 w-full py-2.5 rounded-xl border-2 border-primary/40
+                         text-primary/60 font-bold text-sm cursor-default">
+            Current Plan
+          </button>
+        </div>
+
+        <!-- Plus Plan -->
+        <div class="plan-card featured relative pt-8">
+          <div class="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap">
+            <span class="plan-badge">✨ RECOMMENDED</span>
+          </div>
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-base font-black text-gray-900 dark:text-white">Plus</span>
+            <div class="text-right leading-tight">
+              <span class="text-xl font-black text-primary">$4.99</span>
+              <span class="text-xs text-gray-400">/mo</span>
+            </div>
+          </div>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">Full AI-powered precision</p>
+          <div class="flex flex-col">
+            <div class="feat-row"><span class="ck">✓</span>Everything in Free</div>
+            <div class="feat-row font-semibold"><span class="ck">✓</span>OpenAI reports — unlimited</div>
+            <div class="feat-row"><span class="ck">✓</span>Advanced Camera CNN (ResNet/MobileNet)</div>
+            <div class="feat-row"><span class="ck">✓</span>3-source fusion + confidence %</div>
+            <div class="feat-row"><span class="ck">✓</span>Policy ΔPM &amp; group comparison</div>
+            <div class="feat-row"><span class="ck">✓</span>30-day personal exposure history</div>
+            <div class="feat-row"><span class="ck">✓</span>Monthly AI health report</div>
+            <div class="feat-row"><span class="ck">✓</span>Sensitive-group alerts (asthma etc.)</div>
+          </div>
+          <button class="mt-5 w-full py-2.5 rounded-xl bg-primary text-gray-900
+                         font-bold text-sm hover:opacity-90 transition-opacity">
+            Upgrade to Plus →
+          </button>
+        </div>
+      </div>
+
+      <!-- 쿼터 안내 -->
+      <div class="mt-4 rounded-xl bg-gray-50 dark:bg-white/5
+                  border border-gray-100 dark:border-white/8 p-3 flex items-start gap-2">
+        <span class="material-symbols-outlined text-primary flex-shrink-0 mt-0.5"
+              style="font-size:.9rem;">info</span>
+        <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+          Free plan includes <strong class="text-gray-700 dark:text-gray-300">1 AI report/day</strong>.
+          AI reports use OpenAI to generate personalized 3-line summaries based on your
+          current PM2.5, location, and weather data.
+          Plus users get unlimited reports + monthly health summary.
+        </p>
+      </div>
+    </div>
+

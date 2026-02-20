@@ -58,11 +58,12 @@ class ThemeToggle {
    */
   enableDarkMode() {
     this.body.classList.add('dark-mode');
-    if (this.toggle) {
-      this.toggle.checked = true;
-    }
+    document.documentElement.classList.add('dark');
+    if (this.toggle) this.toggle.checked = true;
     localStorage.setItem('theme', 'dark');
     this.updateNavbarStyle();
+    // Settings 페이지의 theme-btn과 동기화
+    this._syncSettingsButtons('dark');
   }
 
   /**
@@ -70,11 +71,20 @@ class ThemeToggle {
    */
   enableLightMode() {
     this.body.classList.remove('dark-mode');
-    if (this.toggle) {
-      this.toggle.checked = false;
-    }
+    document.documentElement.classList.remove('dark');
+    if (this.toggle) this.toggle.checked = false;
     localStorage.setItem('theme', 'light');
     this.updateNavbarStyle();
+    this._syncSettingsButtons('light');
+  }
+
+  /**
+   * Settings 페이지 theme-btn 동기화
+   */
+  _syncSettingsButtons(theme) {
+    document.querySelectorAll('.theme-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.theme === theme);
+    });
   }
 
   /**

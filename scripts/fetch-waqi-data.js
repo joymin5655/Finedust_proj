@@ -1,7 +1,17 @@
 /**
- * WAQI Data Fetcher for AirLens
- * Fetches real-time air quality data from WAQI API
- * Saves to app/data/waqi/ directory
+ * fetch-waqi-data.js — WAQI city data collector
+ * ───────────────────────────────────────────────
+ * Runs inside GitHub Actions (update-waqi-data.yml).
+ * Reads:  WAQI_TOKEN  environment variable (GitHub Secret)
+ * Writes: app/data/waqi/latest.json
+ *         app/data/waqi/global-stations.json
+ *         app/data/waqi/stats.json
+ *         app/data/waqi/history/YYYY-MM-DD.json
+ *
+ * Usage:
+ *   WAQI_TOKEN=<token> node scripts/fetch-waqi-data.js
+ *
+ * ⚠️  Never hardcode the token here — use env var only.
  */
 
 const axios = require('axios');

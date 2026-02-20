@@ -1,31 +1,24 @@
 /**
- * LocationService
- * 위치 취득 + 가장 가까운 WAQI 측정소 찾기
+ * locationService.js — GPS location helper
+ * ─────────────────────────────────────────
+ * Exposes a singleton window.LocationService with:
+ *   getLocation()  → Promise<{lat, lon} | null>
+ *
+ * today.js uses this; StationService handles nearest-station logic.
  */
 
-class LocationService {
-  constructor() {
-    this.currentLocation = null;
-  }
+const LocationService = (() => {
+  let _cached = null;
 
-  /**
-   * 브라우저 GPS 요청
-   * @returns {Promise<{lat, lon}|null>}
-   */
-  async getLocation() {
-    return new Promise((resolve) => {
-      if (!navigator.geolocation) {
-        resolve(null);
-        return;
-      }
+  /** Request browser GPS. Returns {lat,lon} or null if denied/unavailable. */
+  async function getLocation() {
+    if (_cached) return _cached;
+    return new Promise(resolve => {
+      if (!navigator.geolocation) return resolve(null);
       navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          this.currentLocation = {
-            lat: pos.coords.latitude,
-            lon: pos.coords.longitude,
-            accuracy: pos.coords.accuracy
-          };
-          resolve(this.currentLocation);
+        pos => {
+          _cached = { lat: pos.coords.latitude, lon: pos.coords.longitude };
+          resolve(_cached);
         },
         () => resolve(null),
         { timeout: 8000, enableHighAccuracy: true }
@@ -33,46 +26,7 @@ class LocationService {
     });
   }
 
-  /**
-   * Haversine 거리 계산 (km)
-   */
-  calcDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371;
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a =
-      Math.sin(dLat / 2) ** 2 +
-      Math.cos(lat1 * Math.PI / 180) *
-      Math.cos(lat2 * Math.PI / 180) *
-      Math.sin(dLon / 2) ** 2;
-    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  }
-
-  /**
-   * latest.json의 cities 배열에서 가장 가까운 N개 측정소 반환
-   * @param {Array} cities - latest.json의 cities 배열
-   * @param {number} lat
-   * @param {number} lon
-   * @param {number} topN
-   * @returns {Array}
-   */
-  findNearbyStations(cities, lat, lon, topN = 3) {
-    return cities
-      .filter(city => city.location?.geo?.[0] != null && city.location?.geo?.[1] != null)
-      .map(city => ({
-        ...city,
-        distance: this.calcDistance(lat, lon, city.location.geo[0], city.location.geo[1])
-      }))
-      .sort((a, b) => a.distance - b.distance)
-      .slice(0, topN);
-  }
-
-  /**
-   * 도시명/위치명 추출 (표시용)
-   */
-  getLocationLabel(station) {
-    return station?.location?.name || station?.city || '알 수 없는 위치';
-  }
-}
+  return { getLocation };
+})();
 
 window.LocationService = LocationService;

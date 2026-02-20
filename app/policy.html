@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AirLens Policy Research — 66 countries, 133 air quality policies with PM2.5 trend charts and effectiveness analysis.">
+  <title>AirLens - Policy Research</title>
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: { colors: { primary: '#25e2f4', 'bg-dark': '#102122' } } }
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/settings.css">
+
+  <style>
+    .policy-card {
+      transition: transform .2s, box-shadow .2s;
+      cursor: pointer;
+    }
+    .policy-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(37,226,244,.15);
+    }
+    .policy-card.selected {
+      border-color: #25e2f4 !important;
+      box-shadow: 0 0 0 2px rgba(37,226,244,.3);
+    }
+    .cred-bar { transition: width .6s ease; }
+    #detail-panel { transition: opacity .3s; }
+  </style>
+</head>
+<body class="bg-gray-50 dark:bg-bg-dark min-h-screen">
+
+  <!-- Apply saved theme immediately -->
+  <script>if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark');</script>
+
+  <!-- ── Dark Mode Toggle ─────────────────────────────────── -->
+  <div class="theme-toggle-container">
+    <div class="toggle-cont">
+      <input class="toggle-input" id="theme-toggle" name="toggle" type="checkbox" />
+      <label class="toggle-label" for="theme-toggle">
+        <div class="cont-icon">
+          <span style="--sparkle-width:2;--sparkle-deg:25;--sparkle-duration:11"  class="sparkle"></span>
+          <span style="--sparkle-width:1;--sparkle-deg:100;--sparkle-duration:18" class="sparkle"></span>
+          <span style="--sparkle-width:2;--sparkle-deg:200;--sparkle-duration:3"  class="sparkle"></span>
+          <span style="--sparkle-width:2;--sparkle-deg:300;--sparkle-duration:9"  class="sparkle"></span>
+          <span style="--sparkle-width:1;--sparkle-deg:250;--sparkle-duration:4"  class="sparkle"></span>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 30 30" class="icon">
+            <path d="M0.96233 28.61C1.36043 29.0081 1.96007 29.1255 2.47555 28.8971L10.4256 25.3552C13.2236 24.11 16.4254 24.1425 19.2107 25.4401L27.4152 29.2747C27.476 29.3044 27.5418 29.3023 27.6047 29.32C27.6563 29.3348 27.7079 29.3497 27.761 29.3574C27.843 29.3687 27.9194 29.3758 28 29.3688C28.1273 29.3617 28.2531 29.3405 28.3726 29.2945C28.4447 29.262 28.5162 29.2287 28.5749 29.1842C28.6399 29.1446 28.6993 29.0994 28.7509 29.0477L28.9008 28.8582C28.9468 28.7995 28.9793 28.7274 29.0112 28.656C29.0599 28.5322 29.0811 28.4036 29.0882 28.2734C29.0939 28.1957 29.0868 28.1207 29.0769 28.0415C29.0705 27.9955 29.0585 27.9524 29.0472 27.9072C29.0295 27.8343 29.0302 27.7601 28.9984 27.6901L25.1638 19.4855C23.8592 16.7073 23.8273 13.5048 25.0726 10.7068L28.6145 2.75679C28.8429 2.24131 28.7318 1.63531 28.3337 1.2372C27.9165 0.820011 27.271 0.721743 26.7491 0.9961L19.8357 4.59596C16.8418 6.15442 13.2879 6.18696 10.2615 4.70062L1.80308 0.520214C1.7055 0.474959 1.60722 0.441742 1.50964 0.421943C1.44459 0.409215 1.37882 0.395769 1.3074 0.402133C1.14406 0.395769 0.981436 0.428275 0.818095 0.499692C0.77284 0.519491 0.719805 0.545671 0.67455 0.578198C0.596061 0.617088 0.524653 0.675786 0.4596 0.74084C0.394546 0.805894 0.335843 0.877306 0.296245 0.956502C0.263718 1.00176 0.237561 1.05477 0.217762 1.10003C0.152708 1.24286 0.126545 1.40058 0.120181 1.54978C0.120181 1.61483 0.126527 1.6735 0.132891 1.73219C0.15269 1.85664 0.178881 1.97332 0.237571 2.08434L4.41798 10.5427C5.91139 13.5621 5.8725 17.1238 4.3204 20.1099L0.720514 27.0233C0.440499 27.5536 0.545137 28.1928 0.96233 28.61Z"/>
+          </svg>
+        </div>
+      </label>
+    </div>
+  </div>
+
+  <!-- ── Navigation ──────────────────────────────────────── -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a href="index.html" class="navbar-logo">AirLens</a>
+      <button class="navbar-toggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="navbar-menu">
+        <li><a href="index.html"  class="navbar-link" data-i18n="nav.today">Today</a></li>
+        <li><a href="globe.html"  class="navbar-link" data-i18n="nav.globe">Globe</a></li>
+        <li><a href="camera.html" class="navbar-link" data-i18n="nav.camera">Camera AI</a></li>
+        <li><a href="policy.html" class="navbar-link navbar-link-active" data-i18n="nav.policy">Policy</a></li>
+        <li><a href="about.html"  class="navbar-link" data-i18n="nav.about">About</a></li>
+        <li><a href="settings.html" class="navbar-link">
+          <div class="settings-icon"><div class="loader-icon"></div></div>
+        </a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ── Main ────────────────────────────────────────────── -->
+  <main class="max-w-5xl mx-auto px-4 pt-24 pb-16">
+
+    <!-- Header -->
+    <div class="text-center mb-10">
+      <h1 class="text-4xl font-black text-gray-900 dark:text-white tracking-tight mb-2"
+          data-i18n="policy.title">🌿 Policy Research</h1>
+      <p class="text-gray-500 dark:text-gray-400 text-sm max-w-xl mx-auto"
+         data-i18n="policy.subtitle">How do government policies actually affect PM2.5?
+         Explore 66 countries with real historical data.</p>
+
+      <!-- Stats row -->
+      <div class="flex justify-center gap-8 mt-6">
+        <div class="text-center">
+          <p class="text-3xl font-black text-primary" id="stat-countries">66</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400" data-i18n="policy.stat.countries">Countries</p>
+        </div>
+        <div class="text-center">
+          <p class="text-3xl font-black text-primary" id="stat-policies">133</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400" data-i18n="policy.stat.policies">Policies</p>
+        </div>
+        <div class="text-center">
+          <p class="text-3xl font-black text-primary">📊</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400" data-i18n="policy.stat.source">OWID · IHME data</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="flex flex-wrap gap-2 mb-6 items-center">
+      <input id="policy-search" type="text" placeholder="Search country or policy…"
+             data-i18n-placeholder="policy.search.placeholder"
+             class="flex-1 min-w-[200px] rounded-xl border border-gray-300 dark:border-white/20
+                    bg-white dark:bg-gray-800/60 text-gray-800 dark:text-gray-200
+                    text-sm px-4 py-2 focus:outline-none focus:border-primary" />
+      <select id="policy-region"
+              class="rounded-xl border border-gray-300 dark:border-white/20
+                     bg-white dark:bg-gray-800/60 text-gray-800 dark:text-gray-200
+                     text-sm px-3 py-2 focus:outline-none focus:border-primary">
+        <option value="">All Regions</option>
+        <option value="East Asia">East Asia</option>
+        <option value="South Asia">South Asia</option>
+        <option value="Southeast Asia">Southeast Asia</option>
+        <option value="Europe">Europe</option>
+        <option value="North America">North America</option>
+        <option value="South America">South America</option>
+        <option value="Middle East">Middle East</option>
+        <option value="Africa">Africa</option>
+        <option value="Oceania">Oceania</option>
+      </select>
+    </div>
+
+    <!-- Two-column layout: list + detail -->
+    <div class="flex flex-col lg:flex-row gap-6">
+
+      <!-- Policy List -->
+      <div class="flex-1 min-w-0">
+        <div id="policy-list"
+             class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[70vh] overflow-y-auto pr-1">
+          <!-- Populated by policy.js -->
+          <div class="text-center py-12 text-gray-400 col-span-2">
+            <span class="material-symbols-outlined text-4xl block mb-2">hourglass_empty</span>
+            Loading policies...
+          </div>
+        </div>
+      </div>
+
+      <!-- Detail Panel -->
+      <div id="detail-panel"
+           class="lg:w-80 rounded-2xl border border-gray-200 dark:border-white/10
+                  bg-white dark:bg-black/20 p-5 shadow-sm self-start sticky top-24
+                  opacity-0 pointer-events-none">
+        <div id="detail-placeholder" class="text-center text-gray-400 py-8">
+          <span class="material-symbols-outlined text-4xl block mb-2">touch_app</span>
+          <p class="text-sm" data-i18n="policy.detail.hint">Click a policy to see details</p>
+        </div>
+        <div id="detail-content" style="display:none;">
+          <div class="flex items-center gap-2 mb-4">
+            <span id="detail-flag" class="text-3xl">🌍</span>
+            <div>
+              <h2 id="detail-country" class="text-gray-900 dark:text-white font-bold text-lg leading-tight"></h2>
+              <p id="detail-region"  class="text-gray-400 text-xs"></p>
+            </div>
+          </div>
+          <h3 id="detail-title" class="text-primary font-bold text-sm mb-1"></h3>
+          <p  id="detail-authority" class="text-gray-500 dark:text-gray-400 text-xs mb-3"></p>
+          <p  id="detail-desc" class="text-gray-700 dark:text-gray-300 text-sm leading-relaxed mb-4"></p>
+
+          <!-- Credibility bar -->
+          <div class="mb-4">
+            <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
+              <span data-i18n="policy.detail.credibility">Data Credibility</span>
+              <span id="detail-cred-pct">--%</span>
+            </div>
+            <div class="h-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+              <div id="detail-cred-bar" class="cred-bar h-2 bg-primary rounded-full" style="width:0%"></div>
+            </div>
+          </div>
+
+          <!-- Target -->
+          <div class="rounded-xl bg-gray-100 dark:bg-gray-800/40 p-3 text-center mb-4">
+            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1" data-i18n="policy.detail.target">PM2.5 Target</p>
+            <p class="text-2xl font-black text-primary"><span id="detail-target">--</span> µg/m³</p>
+            <p class="text-xs text-gray-400 mt-1">by <span id="detail-year">----</span></p>
+          </div>
+
+          <!-- PM2.5 trend chart -->
+          <div id="detail-chart-wrap" style="display:none;">
+            <p class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2"
+               data-i18n="policy.detail.trend">PM2.5 Trend</p>
+            <canvas id="detail-chart" style="max-height:140px;"></canvas>
+          </div>
+
+          <!-- External link -->
+          <a id="detail-link" href="#" target="_blank" rel="noopener"
+             class="mt-4 flex items-center justify-center gap-2 w-full rounded-xl
+                    bg-primary text-gray-900 font-bold py-2.5 text-sm
+                    hover:opacity-90 transition-opacity">
+            <span class="material-symbols-outlined text-base">open_in_new</span>
+            <span data-i18n="policy.detail.source">Official Source</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ── Footer ──────────────────────────────────────────── -->
+  <footer style="background:var(--color-bg-dark);color:var(--color-text-dark);padding:var(--space-5) 0;margin-top:2rem;">
+    <div class="container text-center">
+      <p style="color:var(--color-text-dark-secondary);" data-i18n="footer.copy">
+        © 2025 AirLens. Built with ❤️ for a cleaner planet.
+      </p>
+    </div>
+  </footer>
+
+  <!--
+    Script load order:
+    1. i18n.js      — translations
+    2. theme-toggle — theme
+    3. services     — dataService (static JSON reader)
+    4. policy.js    — Policy page entrypoint
+  -->
+  <script src="js/i18n.js"></script>
+  <script src="js/theme-toggle.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/services/dataService.js"></script>
+  <script src="js/services/uiService.js"></script>
+  <script src="js/policy.js"></script>
+</body>
+</html>

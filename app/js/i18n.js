@@ -9,12 +9,13 @@
 
 const TRANSLATIONS = {
   en: {
-    // Navigation
-    'nav.home':     'Home',
+    // Navigation (nav.home kept for backward compat but nav.today is primary)
+    'nav.home':     'Today',
     'nav.today':    'Today',
     'nav.globe':    'Globe',
     'nav.camera':   'Camera AI',
-    'nav.about':    'About & Research',
+    'nav.policy':   'Policy',
+    'nav.about':    'About',
 
     // Index / Hero
     'hero.title':    'See the air.<br>Understand the world.',
@@ -126,14 +127,30 @@ const TRANSLATIONS = {
 
     // About
     'about.title': 'About & Research',
+
+    // Policy page
+    'nav.policy':                'Policy',
+    'today.cta.policy':          'Policy Research',
+    'policy.title':              '🌿 Policy Research',
+    'policy.subtitle':           'How do government policies actually affect PM2.5? Explore 66 countries with real historical data.',
+    'policy.stat.countries':     'Countries',
+    'policy.stat.policies':      'Policies',
+    'policy.stat.source':        'OWID · IHME data',
+    'policy.search.placeholder': 'Search country or policy…',
+    'policy.detail.hint':        'Click a policy to see details',
+    'policy.detail.credibility': 'Data Credibility',
+    'policy.detail.target':      'PM2.5 Target',
+    'policy.detail.trend':       'PM2.5 Trend',
+    'policy.detail.source':      'Official Source',
   },
 
   ko: {
-    'nav.home':     '홈',
+    'nav.home':     '오늘',
     'nav.today':    '오늘',
     'nav.globe':    '지구본',
     'nav.camera':   '카메라 AI',
-    'nav.about':    '소개 & 연구',
+    'nav.policy':   '정책',
+    'nav.about':    '소개',
 
     'hero.title':    '공기를 보세요.<br>세상을 이해하세요.',
     'hero.subtitle': 'AI로 구동되는 전 세계 대기질 시각화.<br>공식 출처의 역사 데이터. 아름다운 인터페이스.',
@@ -236,11 +253,26 @@ const TRANSLATIONS = {
     'camera.view.satellite':   '위성 데이터 보기',
 
     'about.title': '소개 & 연구',
+
+    // Policy page (Korean)
+    'nav.policy':                '정책',
+    'today.cta.policy':          '정책 연구',
+    'policy.title':              '🌿 정책 연구',
+    'policy.subtitle':           '정부 정책이 PM2.5에 실제로 어떤 영향을 미쳤나요? 66개국 실제 데이터로 확인하세요.',
+    'policy.stat.countries':     '국가',
+    'policy.stat.policies':      '정책',
+    'policy.stat.source':        'OWID · IHME 데이터',
+    'policy.search.placeholder': '국가 또는 정책 검색…',
+    'policy.detail.hint':        '정책을 클릭하면 상세 정보를 볼 수 있습니다',
+    'policy.detail.credibility': '데이터 신뢰도',
+    'policy.detail.target':      'PM2.5 목표',
+    'policy.detail.trend':       'PM2.5 추세',
+    'policy.detail.source':      '공식 출처',
   },
 
   ja: {
-    'nav.home':  'ホーム', 'nav.today': '今日', 'nav.globe': '地球儀',
-    'nav.camera': 'カメラAI', 'nav.about': '概要・研究',
+    'nav.home':  '今日', 'nav.today': '今日', 'nav.globe': '地球儀',
+    'nav.camera': 'カメラAI', 'nav.policy': '政策', 'nav.about': '概要',
     'hero.title': '空気を見る。<br>世界を理解する。',
     'hero.subtitle': 'AIが駆動するグローバル大気質の可視化。',
     'hero.cta.today': '今日の空気を確認 →', 'hero.cta.globe': '地球儀を探索',
@@ -268,8 +300,8 @@ const TRANSLATIONS = {
   },
 
   zh: {
-    'nav.home': '首页', 'nav.today': '今天', 'nav.globe': '地球仪',
-    'nav.camera': '相机AI', 'nav.about': '关于与研究',
+    'nav.home': '今天', 'nav.today': '今天', 'nav.globe': '地球仪',
+    'nav.camera': '相机AI', 'nav.policy': '政策', 'nav.about': '关于',
     'hero.title': '看见空气。<br>理解世界。',
     'hero.subtitle': 'AI驱动的全球空气质量可视化。',
     'hero.cta.today': '查看今天的空气 →', 'hero.cta.globe': '探索地球仪',
@@ -297,8 +329,8 @@ const TRANSLATIONS = {
   },
 
   es: {
-    'nav.home': 'Inicio', 'nav.today': 'Hoy', 'nav.globe': 'Globo',
-    'nav.camera': 'Cámara IA', 'nav.about': 'Acerca e Investigación',
+    'nav.home': 'Hoy', 'nav.today': 'Hoy', 'nav.globe': 'Globo',
+    'nav.camera': 'Cámara IA', 'nav.policy': 'Política', 'nav.about': 'Acerca',
     'hero.title': 'Ver el aire.<br>Entender el mundo.',
     'hero.subtitle': 'Visualización global de calidad del aire con IA.',
     'hero.cta.today': 'Ver mi aire hoy →', 'hero.cta.globe': 'Explorar globo',
@@ -327,8 +359,8 @@ const TRANSLATIONS = {
   },
 
   fr: {
-    'nav.home': 'Accueil', 'nav.today': "Aujourd'hui", 'nav.globe': 'Globe',
-    'nav.camera': 'Caméra IA', 'nav.about': 'À propos & Recherche',
+    'nav.home': "Aujourd'hui", 'nav.today': "Aujourd'hui", 'nav.globe': 'Globe',
+    'nav.camera': 'Caméra IA', 'nav.policy': 'Politique', 'nav.about': 'À propos',
     'hero.title': "Voir l'air.<br>Comprendre le monde.",
     'hero.subtitle': "Visualisation mondiale de la qualité de l'air par l'IA.",
     'hero.cta.today': "Vérifier l'air aujourd'hui →", 'hero.cta.globe': 'Explorer le globe',

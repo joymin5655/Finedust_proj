@@ -9,7 +9,7 @@ const BASE = (() => {
   if (window.location.hostname.includes('github.io')) {
     return '/Finedust_proj/app/data/openaq';
   }
-  return '/app/data/openaq';
+  return window.location.origin + '/data/openaq';
 })();
 
 let _cache = {};

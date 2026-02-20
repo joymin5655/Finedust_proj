@@ -25,13 +25,8 @@ export class PolicyDataService {
       return '/Finedust_proj/app/data';
     }
     
-    // 로컬 개발 환경
-    if (hostname === 'localhost' || hostname === '127.0.0.1') {
-      return '/app/data';
-    }
-    
-    // 기타 (상대 경로)
-    return 'data';
+    // 로컬 개발 환경: origin 포함 (포트 지원)
+    return window.location.origin + '/data';
   }
 
   /**

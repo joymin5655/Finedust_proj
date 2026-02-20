@@ -37,7 +37,10 @@ function _esc(str) {
   // ── Load data ───────────────────────────────────────────────
   async function loadAnalytics() {
     try {
-      const res = await fetch('data/policy-analytics.json');
+      // dataService와 동일한 BASE 경로 사용
+      const isGHPages = window.location.hostname.includes('github.io');
+      const base = isGHPages ? '/Finedust_proj/app/data' : window.location.origin + '/data';
+      const res = await fetch(`${base}/policy-analytics.json`);
       if (res.ok) analyticsData = await res.json();
     } catch (_) { /* 선택적 - 없어도 기본 표시 유지 */ }
   }

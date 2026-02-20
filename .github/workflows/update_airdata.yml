@@ -66,7 +66,10 @@ jobs:
   update-openaq:
     name: 'OpenAQ PM2.5 Timeseries'
     runs-on: ubuntu-latest
-    # 매주 일요일에만 실행 (스케줄 구분 없이 manual dispatch면 항상 실행)
+    # 매주 일요일 02:00 UTC 스케줄 혹은 수동 dispatch 시만 실행
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'schedule' && startsWith(github.event.schedule, '0 2'))
     steps:
       - uses: actions/checkout@v4
         with:

@@ -121,11 +121,6 @@
           data-i18n="today.title">Today's Air Quality 🌤️</h1>
       <p class="text-gray-500 dark:text-gray-400 mt-1 text-sm"
          data-i18n="today.subtitle">Combining station data + sky photo AI to measure PM2.5</p>
-      <!-- Pro badge -->
-      <span class="inline-flex items-center gap-1 mt-2 px-2.5 py-0.5 rounded-full
-                   bg-primary/15 border border-primary/30 text-primary text-xs font-bold">
-        ✨ Plus Active
-      </span>
     </div>
 
     <!-- ① Location Card -->
@@ -144,32 +139,6 @@
                          text-sm px-3 py-2 focus:outline-none focus:border-primary">
           </select>
         </div>
-      </div>
-      <!-- Pro: Watchlist 버튼 -->
-      <button id="watchlist-btn" onclick="toggleWatchlist(this)"
-              title="Add to Watchlist"
-              class="flex-shrink-0 flex items-center gap-1 px-2.5 py-1.5 rounded-lg
-                     border border-gray-200 dark:border-white/15
-                     text-gray-500 dark:text-gray-400 text-xs font-semibold
-                     hover:border-primary hover:text-primary transition-all">
-        <span class="material-symbols-outlined text-sm">bookmark_add</span>
-        <span class="hidden sm:inline">Watch</span>
-      </button>
-    </div>
-
-    <!-- Pro: Watchlist 도시 멀티 카드 -->
-    <div id="watchlist-panel" style="display:none;"
-         class="rounded-2xl border border-primary/30 bg-primary/5 dark:bg-primary/10 p-4 shadow-sm">
-      <div class="flex items-center justify-between mb-3">
-        <h3 class="text-sm font-bold text-gray-800 dark:text-white flex items-center gap-1.5">
-          <span class="material-symbols-outlined text-primary text-base">bookmarks</span>
-          My Watchlist
-        </h3>
-        <button onclick="document.getElementById('watchlist-panel').style.display='none'"
-                class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-xs">✕</button>
-      </div>
-      <div id="watchlist-cards" class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-        <!-- populated by pro-features.js -->
       </div>
     </div>
 
@@ -297,38 +266,6 @@
       </div>
     </div>
 
-    <!-- Pro: 알림 임계값 카드 -->
-    <div id="alert-card"
-         class="rounded-2xl border border-amber-200 dark:border-amber-500/30
-                bg-amber-50 dark:bg-amber-900/10 p-4 shadow-sm">
-      <div class="flex items-center justify-between mb-3">
-        <h3 class="text-sm font-bold text-gray-800 dark:text-white flex items-center gap-1.5">
-          <span class="material-symbols-outlined text-amber-500 text-base">notifications_active</span>
-          PM2.5 Alert Threshold
-          <span class="text-xs font-normal text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/40
-                       px-1.5 py-0.5 rounded-full">Plus</span>
-        </h3>
-      </div>
-      <div class="flex items-center gap-3">
-        <input type="range" id="alert-slider" min="10" max="150" value="75" step="5"
-               oninput="document.getElementById('alert-val').textContent=this.value"
-               class="flex-1 accent-amber-500 cursor-pointer">
-        <div class="flex items-center gap-1 min-w-[80px]">
-          <span id="alert-val" class="text-2xl font-black text-amber-600 dark:text-amber-400">75</span>
-          <span class="text-xs text-gray-400">µg/m³</span>
-        </div>
-      </div>
-      <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
-        Alert will trigger when PM2.5 exceeds this value.
-        <span class="text-amber-600 dark:text-amber-400 font-semibold">Email alerts in v2.</span>
-      </p>
-      <button onclick="saveAlertThreshold()"
-              class="mt-3 w-full py-2 rounded-xl bg-amber-500 text-white font-bold text-sm
-                     hover:bg-amber-600 transition-colors">
-        Save Alert
-      </button>
-    </div>
-
     <!-- ⑤ CTA Buttons -->
     <div class="flex flex-col sm:flex-row gap-3">
       <a href="globe.html"
@@ -380,6 +317,7 @@
   <script src="js/main.js"></script>
   <script src="js/message-utils.js"></script>
   <script src="js/config.js"></script>
+  <script src="js/satellite-api.js"></script>
   <script src="js/services/dataService.js"></script>
   <script src="js/services/stationService.js"></script>
   <script src="js/services/locationService.js"></script>
@@ -389,6 +327,5 @@
   <script src="js/camera-today.js"></script>
   <script src="js/today.js"></script>
   <script type="module" src="js/today-enhanced.js"></script>
-  <script src="js/pro-features.js"></script>
 </body>
 </html>

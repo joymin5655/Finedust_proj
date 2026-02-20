@@ -15,7 +15,9 @@ const DataService = (() => {
   const BASE = (() => {
     const h = window.location.hostname;
     if (h.includes('github.io')) return '/Finedust_proj/app/data';
-    return '/app/data';
+    // 로컬 개발: window.location.origin 으로 포트 포함 (e.g. http://localhost:8000)
+    // 실행 위치가 /app/ 이면 ./data, 루트면 ./app/data 를 상대경로로 사용
+    return window.location.origin + '/data';
   })();
 
   const CACHE_TTL = 10 * 60 * 1000; // 10 min

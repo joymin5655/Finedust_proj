@@ -41,7 +41,7 @@ export class WAQIDataService {
   async _fetchDirect() {
     const base = window.location.hostname.includes('github.io')
       ? '/Finedust_proj/app/data'
-      : '/app/data';
+      : window.location.origin + '/data';
     const res = await fetch(`${base}/waqi/latest.json`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return res.json();

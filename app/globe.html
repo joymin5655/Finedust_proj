@@ -1029,41 +1029,6 @@
                     </div>
                 </div>
 
-                <!-- Pro: AOD 위성 레이어 + 타임슬라이더 -->
-                <div class="my-0.5 border-t border-white/10"></div>
-                <div class="flex flex-col gap-1 p-1.5 bg-primary/5 rounded-lg border border-primary/20">
-                    <div class="flex items-center justify-between">
-                        <span class="text-primary text-[10px] font-bold uppercase tracking-wider flex items-center gap-0.5">
-                            <span class="material-symbols-outlined !text-xs">satellite_alt</span>
-                            AOD Layer
-                        </span>
-                        <span class="text-[8px] bg-primary text-gray-900 px-1 py-0.5 rounded font-black">Plus</span>
-                    </div>
-                    <!-- AOD 토글 -->
-                    <label class="flex items-center justify-between px-0.5 cursor-pointer">
-                        <span class="text-white/70 text-[10px]">Satellite AOD</span>
-                        <div class="toggle-switch" id="toggle-aod-switch" style="width: 32px; height: 18px;"
-                             onclick="this.classList.toggle('checked'); window.toggleAodLayer && window.toggleAodLayer(this.classList.contains('checked'))">
-                            <input type="checkbox" id="toggle-aod">
-                            <div class="toggle-knob" style="width: 14px; height: 14px;"></div>
-                        </div>
-                    </label>
-                    <!-- 타임슬라이더 -->
-                    <div>
-                        <div class="flex justify-between text-[9px] text-white/40 mb-0.5">
-                            <span>Time</span>
-                            <span id="globe-time-label" class="text-primary font-bold">Now</span>
-                        </div>
-                        <input type="range" id="globe-time-slider"
-                               min="0" max="23" value="23" step="1"
-                               oninput="window.onGlobeTimeSlide && window.onGlobeTimeSlide(this.value)"
-                               class="w-full accent-primary cursor-pointer" style="height:3px;">
-                        <div class="flex justify-between text-[8px] text-white/20 mt-0.5">
-                            <span>00:00</span><span>12:00</span><span>Now</span>
-                        </div>
-                    </div>
-                </div>
-
             </aside>
 
             <!-- Floating Policy Explorer Toggle Button (Mobile Only) -->
@@ -1324,6 +1289,9 @@
 
     <!-- ⭐ Data Integration: OpenAQ + Earthdata AOD -->
     <script type="module" src="js/globe-data-integration.js"></script>
+<<<<<<< HEAD
     <script src="js/pro-features.js"></script>
+=======
+>>>>>>> parent of 4a58049 (✨ Pro 버전 적용 — Watchlist/Alert/CSV Export/Group Compare/AOD Layer/Time Slider)
 </body>
 </html>

@@ -1,182 +1,197 @@
 /**
- * today.js  — Today view main logic
- * Uses window.t() from i18n.js for all user-facing strings.
- * Flow: location → WAQI stations → camera (optional) → merged PM2.5 → render
+ * today.js — Today view entrypoint (index.html)
+ * ──────────────────────────────────────────────
+ * Flow:
+ *   1. Check URL params ?lat=&lon= (passed from Globe)
+ *   2. If not present → request GPS via browser
+ *   3. If GPS denied  → show city selector from WAQI data
+ *   4. Find nearest stations → weighted PM2.5 (StationService)
+ *   5. Render result card + action guide
+ *   6. Optional: camera photo upload → CameraService.fuse()
+ *
+ * Depends on (window globals):
+ *   DataService, StationService, CameraService, PMService, UIService, I18n
  */
 
-(async function () {
-  const locationService = new LocationService();
-  const pmService       = new PMService();
+(async function TodayPage() {
+  'use strict';
 
-  let stationPM25  = null;
-  let cameraPM25   = null;
-  let waqiCities   = [];
+  // ── DOM refs ─────────────────────────────────────────────────
+  const locationText   = document.getElementById('location-text');
+  const citySelectWrap = document.getElementById('city-select-wrap');
+  const citySelect     = document.getElementById('city-select');
+  const resultCard     = document.getElementById('result-card');
+  const pmValueEl      = document.getElementById('pm-value');
+  const pmGradeEl      = document.getElementById('pm-grade');
+  const confidenceEl   = document.getElementById('confidence-info');
+  const actionGuideEl  = document.getElementById('action-guide');
+  const cameraSection  = document.getElementById('camera-section');
 
-  // ── DOM refs ──────────────────────────────────────────────────
-  const locationText    = document.getElementById('location-text');
-  const citySelectWrap  = document.getElementById('city-select-wrap');
-  const citySelect      = document.getElementById('city-select');
-  const resultCard      = document.getElementById('result-card');
-  const pmValueEl       = document.getElementById('pm-value');
-  const pmGradeEl       = document.getElementById('pm-grade');
-  const confidenceEl    = document.getElementById('confidence-info');
-  const actionGuideEl   = document.getElementById('action-guide');
-  const loadingOverlay  = document.getElementById('loading-overlay');
-  const loadingText     = document.getElementById('loading-text');
-  const cameraSection   = document.getElementById('camera-section');
+  // ── State ─────────────────────────────────────────────────────
+  let stationPM25 = null;
+  let cameraPM25  = null;
 
-  // ── Helpers ───────────────────────────────────────────────────
-  const t = (key, vars) => (window.I18n ? window.I18n.t(key, vars) : key);
+  // ── i18n helper ───────────────────────────────────────────────
+  const t = (key, vars) => window.I18n ? window.I18n.t(key, vars) : key;
 
-  function setLoading(msg) {
-    if (loadingOverlay) loadingOverlay.style.display = 'flex';
-    if (loadingText)    loadingText.textContent = msg;
-  }
-  function hideLoading() {
-    if (loadingOverlay) loadingOverlay.style.display = 'none';
-  }
-
-  // ── Fetch WAQI latest.json ────────────────────────────────────
-  async function loadWaqiData() {
-    try {
-      const base = location.pathname.includes('/Finedust_proj/')
-        ? '/Finedust_proj/app/data/waqi/latest.json'
-        : '/app/data/waqi/latest.json';
-      const res = await fetch(base);
-      if (!res.ok) throw new Error('fetch failed');
-      const data = await res.json();
-      return data.cities || [];
-    } catch (e) {
-      console.warn('WAQI data load failed:', e);
-      return [];
-    }
-  }
-
-  // ── Grade key mapping ─────────────────────────────────────────
-  function gradeKey(pm25) {
-    if (pm25 <= 15) return 'grade.good';
-    if (pm25 <= 35) return 'grade.moderate';
-    if (pm25 <= 55) return 'grade.unhealthy';
+  // ── PM2.5 grade / guide key helpers ──────────────────────────
+  function gradeKey(v) {
+    if (v <= 15) return 'grade.good';
+    if (v <= 35) return 'grade.moderate';
+    if (v <= 55) return 'grade.unhealthy';
     return 'grade.very';
   }
-  function guideKey(pm25) {
-    if (pm25 <= 15) return 'guide.good';
-    if (pm25 <= 35) return 'guide.moderate';
-    if (pm25 <= 55) return 'guide.unhealthy';
+  function guideKey(v) {
+    if (v <= 15) return 'guide.good';
+    if (v <= 35) return 'guide.moderate';
+    if (v <= 55) return 'guide.unhealthy';
     return 'guide.very';
   }
 
   // ── Render result card ────────────────────────────────────────
-  function renderResult(integrated) {
-    if (!integrated) return;
-    const { value, confidence, stationPM25: sp, cameraPM25: cp } = integrated;
+  function renderResult(fusedResult) {
+    if (!fusedResult) return;
+    const { value, confidence, stationVal, cameraVal } = fusedResult;
 
-    const grade = pmService.getGrade(value);
+    const g = window.UIService ? window.UIService.grade(value) : { label: '—', color: '#888', bg: '' };
 
-    // Numbers + grade
     pmValueEl.textContent = value.toFixed(1);
-    pmGradeEl.textContent = t(gradeKey(value));
-    pmGradeEl.style.color = grade.color;
+    pmGradeEl.textContent  = g.label;
+    pmGradeEl.style.color  = g.color;
 
     // Card background
-    resultCard.className = 'result-card rounded-2xl border-2 shadow-md text-center p-6 ' + grade.bgClass;
+    resultCard.className = `result-card rounded-2xl border-2 shadow-md text-center p-6 ${g.bg}`;
 
     // Confidence detail
-    let confDetail = `${t('conf.' + confidence.toLowerCase())} `;
-    if (sp != null && cp != null) {
-      confDetail += t('conf.fused', { s: sp.toFixed(0), c: cp.toFixed(0) });
-    } else if (sp != null) {
-      confDetail += t('conf.station.only');
+    let confParts = t('conf.' + confidence.toLowerCase()) + ' ';
+    if (stationVal != null && cameraVal != null) {
+      confParts += t('conf.fused', { s: stationVal.toFixed(0), c: cameraVal.toFixed(0) });
+    } else if (stationVal != null) {
+      confParts += t('conf.station.only');
     } else {
-      confDetail += t('conf.camera.only');
+      confParts += t('conf.camera.only');
     }
-    confidenceEl.innerHTML = confDetail;
+    confidenceEl.textContent = confParts;
 
     // Action guide
-    actionGuideEl.textContent = t(guideKey(value));
-    actionGuideEl.style.borderLeftColor = grade.color;
+    actionGuideEl.textContent  = t(guideKey(value));
+    actionGuideEl.style.borderLeftColor = g.color;
 
     // Reveal camera section
     if (cameraSection) cameraSection.style.display = 'block';
   }
 
-  // ── Populate city select on GPS failure ──────────────────────
-  function populateCitySelect(cities) {
-    if (!citySelect) return;
+  // ── Station-based render ──────────────────────────────────────
+  async function renderFromLocation(lat, lon) {
+    const nearby = await window.StationService.findNearest(lat, lon, 3);
+    if (!nearby.length) {
+      locationText && (locationText.textContent = 'No nearby stations found.');
+      return;
+    }
+
+    stationPM25 = window.StationService.weightedPM25(nearby);
+
+    // Location label
+    if (locationText) {
+      const label   = nearby[0].name || nearby[0].id;
+      const dateStr = new Date().toLocaleString(undefined, {
+        month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+      });
+      locationText.textContent = `${label} · ${dateStr} · ${nearby.length} station${nearby.length > 1 ? 's' : ''}`;
+    }
+
+    // Use PMService for fusing if available, otherwise direct fuse
+    let fused;
+    if (window.PMService) {
+      fused = window.PMService.integrate(stationPM25, cameraPM25);
+    } else if (window.CameraService) {
+      fused = window.CameraService.fuse(cameraPM25, stationPM25);
+    } else {
+      fused = { value: stationPM25, confidence: 'Medium', stationVal: stationPM25, cameraVal: null };
+    }
+    renderResult(fused);
+  }
+
+  // ── Camera PM2.5 callback (from camera-today.js) ──────────────
+  window.onCameraPM25 = function(camVal) {
+    cameraPM25 = camVal;
+    let fused;
+    if (window.PMService) {
+      fused = window.PMService.integrate(stationPM25, cameraPM25);
+    } else if (window.CameraService) {
+      fused = window.CameraService.fuse(camVal, stationPM25);
+    } else {
+      fused = { value: camVal, confidence: 'Low', stationVal: stationPM25, cameraVal: camVal };
+    }
+    renderResult(fused);
+  };
+
+  // ── City select fallback ──────────────────────────────────────
+  async function showCitySelect() {
+    if (!citySelectWrap || !citySelect) return;
+    citySelectWrap.style.display = 'block';
+
+    const stations = await window.StationService.getAll();
     const placeholder = t('today.city.placeholder');
     citySelect.innerHTML = `<option value="">${placeholder}</option>`;
-    cities.forEach((city, idx) => {
-      const name = city.location?.name || city.city;
-      const opt  = document.createElement('option');
-      opt.value  = idx;
-      opt.textContent = name;
+    stations.forEach((s, i) => {
+      const opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = s.name;
       citySelect.appendChild(opt);
     });
-    if (citySelectWrap) citySelectWrap.style.display = 'block';
+
+    // Store stations array for index lookup
+    citySelect._stations = stations;
 
     citySelect.addEventListener('change', () => {
       const idx = citySelect.value;
       if (idx === '') return;
-      const city = cities[idx];
-      const lat  = city.location?.geo[0];
-      const lon  = city.location?.geo[1];
-      if (lat && lon) renderStationResult(cities, lat, lon);
+      const s = citySelect._stations[parseInt(idx)];
+      if (s?.lat != null) renderFromLocation(s.lat, s.lon);
     });
   }
 
-  // ── Station-based result ──────────────────────────────────────
-  function renderStationResult(cities, lat, lon) {
-    const nearby = locationService.findNearbyStations(cities, lat, lon, 3);
-    if (!nearby.length) return null;
-
-    stationPM25 = pmService.calcStationPM25(nearby);
-    const stLabel = locationService.getLocationLabel(nearby[0]);
-
-    if (locationText) {
-      const now     = new Date();
-      const dateStr = now.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-      const timeStr = now.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
-      locationText.textContent = `${stLabel} · ${dateStr} ${timeStr} · ${nearby.length} nearby stations`;
-    }
-
-    const integrated = pmService.integrate(stationPM25, cameraPM25);
-    renderResult(integrated);
-    return integrated;
+  // ── GPS location ──────────────────────────────────────────────
+  function getGPS() {
+    return new Promise(resolve => {
+      if (!navigator.geolocation) return resolve(null);
+      navigator.geolocation.getCurrentPosition(
+        pos => resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
+        ()  => resolve(null),
+        { timeout: 8000, enableHighAccuracy: true }
+      );
+    });
   }
 
-  // ── Camera PM2.5 callback (called by camera-today.js) ────────
-  window.onCameraPM25 = function (camPM25) {
-    cameraPM25 = camPM25;
-    renderResult(pmService.integrate(stationPM25, cameraPM25));
-  };
-
   // ── Main flow ─────────────────────────────────────────────────
-  setLoading(t('today.loading.waqi'));
-  waqiCities = await loadWaqiData();
+  window.UIService?.showLoading(t('today.loading.waqi'));
 
-  // Globe passthrough: ?lat=&lon=
+  // Allow StationService to pre-warm cache
+  try { await window.DataService.loadStations(); } catch (_) {}
+
+  window.UIService?.hideLoading();
+
+  // Globe passthrough: index.html?lat=xx&lon=yy
   const params   = new URLSearchParams(location.search);
-  const paramLat = params.get('lat');
-  const paramLon = params.get('lon');
+  const paramLat = parseFloat(params.get('lat'));
+  const paramLon = parseFloat(params.get('lon'));
 
-  if (paramLat && paramLon) {
-    hideLoading();
-    renderStationResult(waqiCities, parseFloat(paramLat), parseFloat(paramLon));
+  if (!isNaN(paramLat) && !isNaN(paramLon)) {
+    await renderFromLocation(paramLat, paramLon);
     if (cameraSection) cameraSection.style.display = 'block';
     return;
   }
 
   // GPS
-  setLoading(t('today.loading.gps'));
-  const loc = await locationService.getLocation();
-  hideLoading();
+  if (locationText) locationText.textContent = t('today.loading.gps');
+  const loc = await getGPS();
 
   if (loc) {
-    renderStationResult(waqiCities, loc.lat, loc.lon);
+    await renderFromLocation(loc.lat, loc.lon);
   } else {
-    // GPS denied → show city picker
     if (locationText) locationText.textContent = t('today.location.select');
-    populateCitySelect(waqiCities);
+    await showCitySelect();
     if (cameraSection) cameraSection.style.display = 'block';
   }
 })();

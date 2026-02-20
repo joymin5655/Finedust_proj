@@ -204,6 +204,15 @@
                 pl-4 pr-4 py-3 text-gray-700 dark:text-gray-200 text-sm leading-relaxed shadow-sm"
          data-i18n="today.guide.loading">Waiting for analysis results...</div>
 
+    <!-- ③-a WAQI Realtime Card (injected by today-enhanced.js) -->
+    <div id="waqi-realtime-card" style="display:none;"></div>
+
+    <!-- ③-b OpenAQ Annual Trend Chart -->
+    <div id="openaq-trend-container" style="display:none;"></div>
+
+    <!-- ③-c NASA Earthdata AOD -->
+    <div id="earthdata-aod-container" style="display:none;"></div>
+
     <!-- ④ Camera Section -->
     <div id="camera-section" style="display:none;"
          class="rounded-2xl border border-gray-200 dark:border-white/10
@@ -316,5 +325,6 @@
   <script src="js/services/uiService.js"></script>
   <script src="js/camera-today.js"></script>
   <script src="js/today.js"></script>
+  <script type="module" src="js/today-enhanced.js"></script>
 </body>
 </html>

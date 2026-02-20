@@ -4193,18 +4193,6 @@ function _esc(str) {
 }
 
 /**
- * URL 안전성 검증 — javascript:, data: scheme 차단
- * @param {string} url
- * @returns {string} 안전한 URL 또는 빈 문자열
- */
-function _safeUrl(url) {
-  if (!url || typeof url !== 'string') return '';
-  const trimmed = url.trim().toLowerCase();
-  if (trimmed.startsWith('javascript:') || trimmed.startsWith('data:') || trimmed.startsWith('vbscript:')) return '';
-  return url;
-}
-
-/**
  * URL 안전성 검증 — javascript: / data: scheme 차단
  * window.open / href에 사용할 URL만 허용
  */

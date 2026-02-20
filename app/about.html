@@ -3,6 +3,11 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<!-- ── 보안 헤더 ───────────────────────────────────────────── -->
+<meta http-equiv="X-Content-Type-Options" content="nosniff" />
+<meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
+<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+<!-- ── ────────────────────────────────────────────────────── -->
 <title>AirLens - About & Research</title>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
 <link rel="stylesheet" href="css/main.css"/>
@@ -35,7 +40,7 @@
         }
     </style>
 </head>
-<body class="bg-background-light dark:bg-background-dark">
+<body class="bg-background-light dark:bg-background-dark flex flex-col min-h-screen">
     <!-- Dark Mode Toggle Button -->
     <div class="theme-toggle-container">
         <div class="toggle-cont">
@@ -382,7 +387,7 @@ Our approach combines satellite imagery, ground-level sensor data, and historica
 </div>
 
 <!-- Footer -->
-<footer style="background: var(--color-bg-dark); color: var(--color-text-dark); padding: var(--space-5) 0;">
+<footer style="background: var(--color-bg-dark); color: var(--color-text-dark); padding: var(--space-5) 0; margin-top: auto;">
     <div class="container text-center">
         <p style="color: var(--color-text-dark-secondary);">
             © 2025 AirLens. Built with ❤️ for a cleaner planet.

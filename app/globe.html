@@ -695,151 +695,166 @@
 
         <main class="relative z-20 flex flex-1 pointer-events-none">
 
-            <!-- Left Side - Country Policy Card -->
-            <aside id="policy-card" class="pointer-events-auto fixed top-20 bottom-6 left-6 flex w-full max-w-[480px] flex-col gap-2 rounded-xl bg-gray-900/50 p-5 backdrop-blur-md border border-white/10 overflow-y-auto control-panel max-h-[calc(100vh-104px)] z-30" style="display: none;">
+            <!-- ═══════════════════════════════════════════════════════
+                 Left Panel — Globe Detail Panel
+                 States:
+                   [idle]    → hint screen (도시를 클릭하세요)
+                   [station] → PM2.5 측정소 클릭 시
+                   [policy]  → 정책 마커 / 국가 클릭 시
+                 ═══════════════════════════════════════════════════════ -->
+            <aside id="globe-detail-panel"
+                   class="pointer-events-auto fixed top-20 bottom-6 left-6
+                          flex w-full max-w-[340px] flex-col
+                          rounded-xl bg-gray-900/60 backdrop-blur-md
+                          border border-white/10 overflow-y-auto
+                          control-panel max-h-[calc(100vh-104px)] z-30
+                          transition-all duration-300"
+                   style="display:none;">
 
-                <!-- Header -->
-                <div class="flex items-start justify-between">
-                    <div class="flex-1">
-                        <div class="flex items-center gap-2">
-                            <span id="policy-flag" class="text-lg leading-none hover:scale-110 transition-transform cursor-pointer">🌍</span>
-                            <div class="flex-1 min-w-0">
-                                <h3 class="text-sm font-semibold text-white leading-tight truncate" id="policy-country">Country</h3>
-                                <p class="text-xs text-white/60 font-normal leading-tight truncate" id="policy-region">Region</p>
-                            </div>
+                <!-- ── CLOSE ─────────────────────────────────────── -->
+                <div class="flex items-center justify-between px-4 pt-4 pb-2">
+                    <div class="flex items-center gap-2 min-w-0">
+                        <span id="gdp-flag" class="text-2xl flex-shrink-0">🌍</span>
+                        <div class="min-w-0">
+                            <h3 id="gdp-name"  class="text-white font-bold text-sm truncate">—</h3>
+                            <p  id="gdp-region" class="text-white/50 text-xs truncate">Click a marker</p>
                         </div>
                     </div>
-                    <button onclick="closePolicyCard()"
-                            class="flex-shrink-0 text-white/60 hover:text-white transition-colors ml-2">
-                        <span class="material-symbols-outlined !text-xl">close</span>
+                    <button onclick="window.globeClosePanel()"
+                            class="flex-shrink-0 text-white/50 hover:text-white transition-colors p-1">
+                        <span class="material-symbols-outlined !text-lg">close</span>
                     </button>
                 </div>
 
-                <!-- Content -->
+                <!-- ── PM2.5 CARD ─────────────────────────────────── -->
+                <div class="px-4 pb-2">
+                    <div id="gdp-pm-card"
+                         class="rounded-xl bg-black/30 border border-white/10 p-4 text-center">
+                        <p class="text-xs text-white/60 mb-1 uppercase tracking-widest">PM2.5</p>
+                        <div class="flex items-end justify-center gap-1">
+                            <span id="gdp-pm-value" class="text-5xl font-black text-primary">--</span>
+                            <span class="text-white/50 text-base pb-1">µg/m³</span>
+                        </div>
+                        <p id="gdp-pm-grade" class="text-sm font-bold mt-1 text-white/60">—</p>
+                    </div>
+                </div>
 
-                    <!-- Tab System (🆕) -->
-                    <div id="policy-tabs" class="policy-tabs-container"></div>
+                <!-- ── POLICY SUMMARY (hidden for station-only clicks) ── -->
+                <div id="gdp-policy-block" class="px-4 pb-3" style="display:none;">
+                    <div class="rounded-xl bg-black/20 border border-white/10 p-3">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="material-symbols-outlined text-primary !text-base">policy</span>
+                            <span class="text-white/70 text-xs font-bold uppercase tracking-wider">Main Policy</span>
+                        </div>
+                        <p id="gdp-policy-title"  class="text-primary text-sm font-bold mb-1 leading-tight">—</p>
+                        <p id="gdp-policy-desc"   class="text-white/70 text-xs leading-relaxed mb-2 line-clamp-3">—</p>
+                        <div class="flex items-center gap-3 text-xs text-white/40">
+                            <span>📅 <span id="gdp-policy-date">—</span></span>
+                            <span>⭐ <span id="gdp-policy-rating">—</span>/10</span>
+                        </div>
+                    </div>
+                </div>
 
-                    <!-- Tab Content Area (🆕) -->
-                    <div id="policy-content" class="policy-content-area"></div>
-                    <div class="mt-3 p-4 bg-black/20 rounded-lg border border-white/10 hover:border-white/20 hover:bg-black/30 transition-all cursor-pointer">
+                <!-- ── POLICY IMPACT (hidden when no data) ─────────── -->
+                <div id="gdp-impact-block" class="px-4 pb-3" style="display:none;">
+                    <div class="rounded-xl bg-gradient-to-br from-green-900/30 to-teal-900/30
+                                border border-green-500/20 p-3">
                         <div class="flex items-center gap-2 mb-3">
-                            <span class="material-symbols-outlined text-primary !text-lg">policy</span>
-                            <h4 class="text-xs font-bold text-white uppercase tracking-wider">Main Policy</h4>
+                            <span class="material-symbols-outlined text-green-400 !text-base">trending_down</span>
+                            <span class="text-white/70 text-xs font-bold uppercase tracking-wider">Policy Impact</span>
                         </div>
-                        <h5 class="text-sm font-bold text-primary mb-2" id="policy-name">Policy Name</h5>
-                        <p class="text-xs text-white/80 mb-3 leading-relaxed" id="policy-desc">Policy description...</p>
-                        <div class="flex items-center gap-2 text-xs text-white/60 hover:text-white/80 transition-colors">
-                            <span class="material-symbols-outlined !text-sm">calendar_today</span>
-                            <span id="policy-date">Implementation date</span>
+                        <div class="flex items-center gap-4">
+                            <div>
+                                <p id="gdp-impact-rate" class="text-3xl font-black text-green-400">—</p>
+                                <p class="text-xs text-white/50">PM2.5 Reduction</p>
+                            </div>
+                            <div>
+                                <p id="gdp-impact-period" class="text-sm text-white font-semibold">—</p>
+                                <p class="text-xs text-white/50">Period</p>
+                            </div>
                         </div>
+                        <!-- Key measures -->
+                        <div id="gdp-impact-tags" class="flex flex-wrap gap-1 mt-3"></div>
                     </div>
+                </div>
 
-                    <!-- AQI Status -->
-                    <div class="mt-3 grid grid-cols-2 gap-2">
-                        <div class="bg-black/20 rounded-lg p-2.5 text-center border border-white/10 hover:border-white/20 hover:bg-black/30 transition-all cursor-pointer">
-                            <p class="text-xs text-white/60 mb-0.5 font-medium">Current AQI</p>
-                            <p class="text-xl font-bold" id="policy-aqi">-</p>
+                <!-- ── PM2.5 TREND MINI CHART ───────────────────────── -->
+                <div id="gdp-chart-block" class="px-4 pb-3" style="display:none;">
+                    <div class="rounded-xl bg-black/20 border border-white/10 p-3">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="material-symbols-outlined text-primary !text-base">show_chart</span>
+                            <span class="text-white/70 text-xs font-bold uppercase tracking-wider">PM2.5 Trend</span>
                         </div>
-                        <div class="bg-black/20 rounded-lg p-2.5 text-center border border-white/10 hover:border-white/20 hover:bg-black/30 transition-all cursor-pointer">
-                            <p class="text-xs text-white/60 mb-0.5 font-medium">PM2.5</p>
-                            <p class="text-xl font-bold" id="policy-pm25">-</p>
+                        <div class="relative" style="height:90px;">
+                            <canvas id="gdp-trend-canvas"></canvas>
                         </div>
+                        <p class="text-xs text-white/30 text-center mt-1">Annual average µg/m³</p>
                     </div>
+                </div>
 
-                    <!-- 🆕 Policy Effectiveness -->
-                    <div class="mt-3 p-4 bg-black/20 rounded-lg border border-white/10 hover:border-white/20 hover:bg-black/30 transition-all">
-                        <div class="flex items-center justify-between mb-3">
-                            <div class="flex items-center gap-2">
-                                <span class="material-symbols-outlined text-primary !text-base">trending_up</span>
-                                <h4 class="text-xs font-bold text-white uppercase tracking-wider">Effectiveness</h4>
-                            </div>
-                            <span class="text-xs font-bold" id="policy-effectiveness-percent" style="color: #00ff88;">-</span>
+                <!-- ── TOP POLICIES LIST ────────────────────────────── -->
+                <div id="gdp-policies-list-block" class="px-4 pb-3" style="display:none;">
+                    <div class="rounded-xl bg-black/20 border border-white/10 p-3">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="material-symbols-outlined text-primary !text-base">format_list_bulleted</span>
+                            <span class="text-white/70 text-xs font-bold uppercase tracking-wider">Other Policies</span>
                         </div>
-                        
-                        <!-- Effectiveness Bar -->
-                        <div class="w-full h-2 bg-black/40 rounded-full overflow-hidden border border-white/10">
-                            <div id="policy-effectiveness-bar" class="h-full rounded-full transition-all duration-500" 
-                                 style="width: 0%; background: linear-gradient(90deg, #00ff88, #00dd66);"></div>
-                        </div>
-                        
-                        <!-- Status Text -->
-                        <div class="mt-2 text-xs text-white/60 text-center">
-                            <p id="policy-effectiveness-status">Analyzing policy impact...</p>
-                        </div>
+                        <ul id="gdp-policies-list" class="space-y-1.5"></ul>
                     </div>
+                </div>
 
-                    <!-- Policy Impact Analysis -->
-                    <div class="mt-3" id="policy-impact-section" style="display: none;">
-                        <div class="p-4 bg-black/20 rounded-lg border border-white/10">
-                            <div class="flex items-center gap-2 mb-3">
-                                <span class="material-symbols-outlined text-primary !text-lg">analytics</span>
-                                <h4 class="text-sm font-bold text-white">Policy Impact</h4>
-                            </div>
-                            <!-- Visual Comparison Chart -->
-                            <div class="mb-3">
-                                <canvas id="policy-impact-chart" style="max-height: 80px;"></canvas>
-                            </div>
-
-                            <!-- Numeric Summary -->
-                            <div class="grid grid-cols-3 gap-3 mb-3">
-                                <div class="text-center">
-                                    <p class="text-sm text-white/60 mb-1">Before</p>
-                                    <p class="text-base font-bold text-white/90" id="impact-before">-</p>
-                                </div>
-                                <div class="text-center">
-                                    <p class="text-sm text-white/60 mb-1">After</p>
-                                    <p class="text-base font-bold text-white/90" id="impact-after">-</p>
-                                </div>
-                                <div class="text-center">
-                                    <p class="text-sm text-white/60 mb-1">Change</p>
-                                    <p class="text-base font-bold" id="impact-change">-</p>
-                                </div>
-                            </div>
-                            <div class="text-sm text-white/60 text-center" id="impact-significance">
-                                Statistical analysis loading...
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Policy Timeline -->
-                    <div class="mt-3" id="policy-timeline-section" style="display: none;">
-                        <div class="p-4 bg-black/20 rounded-lg border border-white/10">
-                            <div class="flex items-center gap-2 mb-3">
-                                <span class="material-symbols-outlined text-primary !text-lg">timeline</span>
-                                <h4 class="text-sm font-bold text-white">Timeline</h4>
-                            </div>
-                            <canvas id="policy-timeline-chart" style="max-height: 80px;"></canvas>
-                        </div>
-                    </div>
-
-                    <!-- Recent News -->
-                    <div class="mt-3">
-                        <div class="p-4 bg-black/20 rounded-lg border border-white/10">
-                            <div class="flex items-center gap-2 mb-3">
-                                <span class="material-symbols-outlined text-primary !text-lg">newspaper</span>
-                                <h4 class="text-sm font-bold text-white">Recent News</h4>
-                            </div>
-                            <div id="policy-news" class="space-y-2">
-                                <!-- News items will be inserted here -->
-                            </div>
-                        </div>
-                    </div>
-
-                <!-- ★ Today view link -->
-                <a id="goto-today-btn" href="index.html"
-                   class="w-full flex items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-4 mt-3 bg-primary text-gray-900 text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity">
-                    <span class="material-symbols-outlined !text-base">wb_sunny</span>
-                    <span class="truncate" data-i18n="nav.today">Today</span>
-                </a>
-
-                <!-- View Full Details Button -->
-                <button id="view-more-btn" onclick="openPolicyLink()" class="w-full flex items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-4 mt-1 bg-primary/20 text-primary text-base font-bold leading-normal tracking-[0.015em] hover:bg-primary/30 transition-colors">
-                    <span class="material-symbols-outlined !text-lg">open_in_new</span>
-                    <span class="truncate">View Full Details</span>
-                </button>
+                <!-- ── CTA BUTTONS ────────────────────────────────────
+                     "Today에서 보기" : index.html?lat=&lon=&city=
+                     "Policy 더 보기" : policy.html?country=KR
+                ─────────────────────────────────────────────────────── -->
+                <div class="px-4 pt-1 pb-5 mt-auto flex flex-col gap-2">
+                    <a id="gdp-today-btn" href="index.html"
+                       class="flex items-center justify-center gap-2 w-full
+                              rounded-xl bg-primary text-gray-900 font-bold
+                              py-2.5 text-sm hover:opacity-90 transition-opacity">
+                        <span class="material-symbols-outlined !text-base">wb_sunny</span>
+                        <span>View in Today</span>
+                    </a>
+                    <a id="gdp-policy-btn" href="policy.html"
+                       class="flex items-center justify-center gap-2 w-full
+                              rounded-xl border border-primary/50 text-primary font-bold
+                              py-2.5 text-sm hover:bg-primary/10 transition-colors"
+                       style="display:none;">
+                        <span class="material-symbols-outlined !text-base">policy</span>
+                        <span>See All Policies →</span>
+                    </a>
+                </div>
 
             </aside>
+
+            <!-- ── LEGACY aside#policy-card (kept for JS compat, hidden) ── -->
+            <aside id="policy-card" style="display:none;" aria-hidden="true">
+                <span id="policy-flag"></span>
+                <span id="policy-country"></span>
+                <span id="policy-region"></span>
+                <span id="policy-name"></span>
+                <span id="policy-desc"></span>
+                <span id="policy-date"></span>
+                <span id="policy-aqi"></span>
+                <span id="policy-pm25"></span>
+                <span id="policy-effectiveness-percent"></span>
+                <div id="policy-effectiveness-bar"></div>
+                <span id="policy-effectiveness-status"></span>
+                <div id="policy-impact-section"></div>
+                <span id="impact-before"></span>
+                <span id="impact-after"></span>
+                <span id="impact-change"></span>
+                <span id="impact-significance"></span>
+                <div id="policy-timeline-section"></div>
+                <canvas id="policy-impact-chart"></canvas>
+                <canvas id="policy-timeline-chart"></canvas>
+                <div id="policy-news"></div>
+                <div id="policy-tabs"></div>
+                <div id="policy-content"></div>
+                <a id="goto-today-btn" href="index.html"></a>
+                <button id="view-more-btn"></button>
+            </aside>
+
 
             <!-- Right Control Panel -->
             <aside class="pointer-events-auto fixed top-20 bottom-6 right-6 flex w-full max-w-[200px] flex-col gap-1 rounded-xl bg-gray-900/50 p-2 backdrop-blur-md border border-white/10 overflow-y-auto control-panel max-h-[calc(100vh-104px)] z-30">
@@ -1023,11 +1038,18 @@
 
         </main>
 
-        <!-- Help Tooltip -->
-        <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-30 pointer-events-none">
-            <div class="bg-gray-900/90 backdrop-blur-md border border-white/10 rounded-lg px-4 py-2 text-sm text-white/80">
-                <span class="material-symbols-outlined !text-base inline-block align-middle mr-2">touch_app</span>
-                Click on markers to explore air quality policies by country
+        <!-- Help Tooltip — 패널이 열리면 자동으로 숨김 -->
+        <div id="globe-hint"
+             class="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-30 pointer-events-none
+                    transition-opacity duration-500">
+            <div class="bg-gray-900/90 backdrop-blur-md border border-white/10 rounded-lg px-4 py-2.5
+                        text-sm text-white/80 flex items-center gap-2">
+                <span class="material-symbols-outlined !text-base text-primary">touch_app</span>
+                <span>
+                    마커 클릭 →
+                    <span class="text-primary font-semibold">PM2.5</span> 확인 +
+                    <span class="text-green-400 font-semibold">Policy</span> 페이지로 이동
+                </span>
             </div>
         </div>
 
@@ -1035,82 +1057,205 @@
 
     <!-- JavaScript -->
     <script>
-        // Global variable to store current policy
+        // ── 전역 상태 ──────────────────────────────────────────────
         window.currentPolicy = null;
 
-        /**
-         * 정책 링크 열기
-         */
-        function openPolicyLink() {
-            if (window.currentPolicy && window.currentPolicy.url) {
-                const url = window.currentPolicy.url;
-                console.log('🔗 Opening policy link:', url);
-                window.open(url, '_blank');
-            } else {
-                console.warn('⚠️ Policy URL not available');
-            }
-        }
-
-        // Close policy card with animation
-        function closePolicyCard() {
-            const card = document.getElementById('policy-card');
-            card.classList.remove('show');
-            setTimeout(() => {
-                card.style.display = 'none';
-            }, 300); // Match the transition duration
-            
-            // Policy markers 선택 해제 및 마커 컨테이너 정리
-            if (window.policyMarkersManager) {
-                window.policyMarkersManager.deselectMarker();
-            }
-            
-            // Current policy 초기화
+        // ── 패널 닫기 (전역 노출 — globe.js 에서 호출) ────────────
+        window.globeClosePanel = function() {
+            const panel = document.getElementById('globe-detail-panel');
+            if (panel) panel.style.display = 'none';
+            // legacy compat
+            const legacy = document.getElementById('policy-card');
+            if (legacy) { legacy.classList.remove('show'); legacy.style.display = 'none'; }
+            if (window.policyMarkersManager) window.policyMarkersManager.deselectMarker();
             window.currentPolicy = null;
+            // hint 복원
+            const hint = document.getElementById('globe-hint');
+            if (hint) hint.style.opacity = '1';
+        };
+
+        // ── 기존 코드 호환 (일부 globe.js 코드가 이 함수를 씀) ───
+        window.closePolicyCard = window.globeClosePanel;
+
+        // ── 글로브 상세 패널 업데이트 ─────────────────────────────
+        // globe.js 의 showCountryPolicy / showPolicyInfoPanel /
+        // showStationInfoPanel 에서 모두 이 함수를 호출하도록 교체됨.
+        //
+        // data = {
+        //   type       : 'country' | 'station'
+        //   name       : string            (도시/국가명)
+        //   flag       : string emoji
+        //   region     : string
+        //   lat        : number
+        //   lon        : number
+        //   pm25       : number
+        //   countryCode: string (ISO)      — country type only
+        //   policy     : { title, description, date, rating }
+        //   impact     : { rate, period, measures[] }
+        //   trends     : [{ year, value, note }]
+        //   otherPolicies: [{ year, title }]
+        // }
+        window.globeUpdatePanel = function(data) {
+            const panel = document.getElementById('globe-detail-panel');
+            if (!panel) return;
+
+            // ── 헤더 ──────────────────────────────────────────────
+            document.getElementById('gdp-flag').textContent   = data.flag   || '🌍';
+            document.getElementById('gdp-name').textContent   = data.name   || '—';
+            document.getElementById('gdp-region').textContent = data.region || '';
+
+            // ── PM2.5 카드 ────────────────────────────────────────
+            const pm = data.pm25 || 0;
+            document.getElementById('gdp-pm-value').textContent = pm.toFixed(1);
+            const gradeInfo = _pmGrade(pm);
+            document.getElementById('gdp-pm-value').style.color = gradeInfo.color;
+            document.getElementById('gdp-pm-grade').textContent  = gradeInfo.label;
+            document.getElementById('gdp-pm-grade').style.color  = gradeInfo.color;
+
+            // ── 정책 요약 ─────────────────────────────────────────
+            const pb = document.getElementById('gdp-policy-block');
+            if (data.policy) {
+                document.getElementById('gdp-policy-title').textContent  = data.policy.title || '—';
+                document.getElementById('gdp-policy-desc').textContent   = data.policy.description || '—';
+                document.getElementById('gdp-policy-date').textContent   = data.policy.date || '—';
+                document.getElementById('gdp-policy-rating').textContent = data.policy.rating || '—';
+                pb.style.display = 'block';
+            } else { pb.style.display = 'none'; }
+
+            // ── Impact ────────────────────────────────────────────
+            const ib = document.getElementById('gdp-impact-block');
+            if (data.impact) {
+                document.getElementById('gdp-impact-rate').textContent   = data.impact.rate || '—';
+                document.getElementById('gdp-impact-period').textContent = data.impact.period || '—';
+                const tagsEl = document.getElementById('gdp-impact-tags');
+                tagsEl.innerHTML = (data.impact.measures || []).slice(0,4).map(m =>
+                    `<span class="text-xs bg-white/10 px-2 py-0.5 rounded-full text-white/60">${m}</span>`
+                ).join('');
+                ib.style.display = 'block';
+            } else { ib.style.display = 'none'; }
+
+            // ── Trend chart ───────────────────────────────────────
+            const cb = document.getElementById('gdp-chart-block');
+            if (data.trends && data.trends.length) {
+                cb.style.display = 'block';
+                _renderTrendChart(data.trends, data.policy?.date);
+            } else { cb.style.display = 'none'; }
+
+            // ── Other policies list ───────────────────────────────
+            const lb = document.getElementById('gdp-policies-list-block');
+            if (data.otherPolicies && data.otherPolicies.length) {
+                lb.style.display = 'block';
+                document.getElementById('gdp-policies-list').innerHTML =
+                    data.otherPolicies.slice(0,4).map(p =>
+                        `<li class="text-xs text-white/60 flex items-start gap-1">
+                            <span class="text-primary mt-0.5">·</span>
+                            <span>${p.year ? p.year + ' · ' : ''}${p.title}</span>
+                        </li>`
+                    ).join('');
+            } else { lb.style.display = 'none'; }
+
+            // ── CTA 버튼 ──────────────────────────────────────────
+            // Today 버튼: 좌표 있으면 설정
+            const todayBtn = document.getElementById('gdp-today-btn');
+            if (data.lat != null && data.lon != null) {
+                const city = encodeURIComponent(data.name || '');
+                todayBtn.href = `index.html?lat=${data.lat}&lon=${data.lon}&city=${city}`;
+            } else {
+                todayBtn.href = 'index.html';
+            }
+
+            // Policy 버튼: countryCode 있을 때만 노출
+            const policyBtn = document.getElementById('gdp-policy-btn');
+            if (data.countryCode) {
+                policyBtn.href = `policy.html?country=${data.countryCode}`;
+                policyBtn.style.display = 'flex';
+            } else {
+                policyBtn.style.display = 'none';
+            }
+
+            // ── 패널 표시 ─────────────────────────────────────────
+            panel.style.display = 'flex';
+            panel.style.flexDirection = 'column';
+
+            // hint 숨기기
+            const hint = document.getElementById('globe-hint');
+            if (hint) hint.style.opacity = '0';
+        };
+
+        // ── PM2.5 등급 헬퍼 ──────────────────────────────────────
+        function _pmGrade(v) {
+            if (v <= 15) return { label: '😊 Good',              color: '#22c55e' };
+            if (v <= 35) return { label: '🙂 Moderate',          color: '#eab308' };
+            if (v <= 55) return { label: '😷 Unhealthy',         color: '#f97316' };
+            return              { label: '⚠️ Very Unhealthy',    color: '#ef4444' };
         }
 
-        // Toggle Policy Explorer panel (mobile)
+        // ── 미니 트렌드 차트 ──────────────────────────────────────
+        let _trendChartInstance = null;
+        function _renderTrendChart(trends, policyDate) {
+            const canvas = document.getElementById('gdp-trend-canvas');
+            if (!canvas || typeof Chart === 'undefined') return;
+            if (_trendChartInstance) { _trendChartInstance.destroy(); _trendChartInstance = null; }
+
+            const policyYear = policyDate ? parseInt(policyDate) : null;
+            const labels = trends.map(t => t.year);
+            const values = trends.map(t => t.value);
+
+            _trendChartInstance = new Chart(canvas.getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [{
+                        data: values,
+                        borderColor: '#25e2f4',
+                        backgroundColor: 'rgba(37,226,244,.12)',
+                        fill: true, tension: 0.35, borderWidth: 2,
+                        pointRadius: values.map((_, i) => labels[i] === policyYear ? 5 : 2),
+                        pointBackgroundColor: values.map((_, i) =>
+                            labels[i] === policyYear ? '#facc15' : '#25e2f4')
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    animation: { duration: 500 },
+                    plugins: { legend: { display: false },
+                        tooltip: { backgroundColor:'rgba(0,0,0,.8)',
+                            callbacks: { label: ctx => `${ctx.parsed.y} µg/m³` } }
+                    },
+                    scales: {
+                        x: { ticks: { color:'rgba(255,255,255,.4)', font:{size:8}, maxTicksLimit:6 },
+                             grid: { color:'rgba(255,255,255,.05)' } },
+                        y: { ticks: { color:'rgba(255,255,255,.4)', font:{size:8} },
+                             grid: { color:'rgba(255,255,255,.05)' }, beginAtZero: false }
+                    }
+                }
+            });
+        }
+
+        // ── 기존 mobile panel 토글 ────────────────────────────────
         function togglePolicyExplorer() {
             const panel = document.querySelector('.control-panel');
             const button = document.getElementById('policy-explorer-toggle');
-
-            if (panel) {
-                panel.classList.toggle('active');
-
-                // Change icon based on state
-                const icon = button.querySelector('.material-symbols-outlined');
-                if (panel.classList.contains('active')) {
-                    icon.textContent = 'close';
-                } else {
-                    icon.textContent = 'layers';
-                }
-            }
+            if (!panel) return;
+            panel.classList.toggle('active');
+            const icon = button?.querySelector('.material-symbols-outlined');
+            if (icon) icon.textContent = panel.classList.contains('active') ? 'close' : 'layers';
         }
 
-        // Close panel when clicking outside (mobile)
         document.addEventListener('click', function(event) {
             const panel = document.querySelector('.control-panel');
             const button = document.getElementById('policy-explorer-toggle');
-
             if (window.innerWidth <= 768 && panel && button) {
-                if (!panel.contains(event.target) && !button.contains(event.target) && panel.classList.contains('active')) {
+                if (!panel.contains(event.target) && !button.contains(event.target)
+                    && panel.classList.contains('active')) {
                     togglePolicyExplorer();
                 }
             }
         });
 
-        /**
-         * Policy 마커 컨테이너 정리 (아이콘 날라다니는 문제 해결)
-         */
-        function cleanupMarkerContainer() {
-            const existingContainer = document.getElementById('policy-markers-container');
-            if (existingContainer) {
-                existingContainer.remove();
-            }
-        }
-
-        // 페이지 로드 시 마커 컨테이너 정리
         document.addEventListener('DOMContentLoaded', () => {
-            cleanupMarkerContainer();
+            const c = document.getElementById('policy-markers-container');
+            if (c) c.remove();
         });
     </script>
 

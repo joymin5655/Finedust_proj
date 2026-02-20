@@ -198,6 +198,47 @@
             <canvas id="detail-chart" style="max-height:140px;"></canvas>
           </div>
 
+          <!-- ── 정책 효과 분석 패널 (PRD §6) ───────────────── -->
+          <div id="detail-effect-wrap" style="display:none;"
+               class="mt-4 rounded-xl border border-primary/30 bg-primary/5 dark:bg-primary/10 p-4">
+            <p class="text-xs font-bold uppercase tracking-widest text-primary mb-3 flex items-center gap-1">
+              <span class="material-symbols-outlined text-sm">bar_chart</span>
+              Policy Effect Analysis
+            </p>
+
+            <!-- Before / After 비교 -->
+            <div class="grid grid-cols-2 gap-2 mb-3">
+              <div class="rounded-lg bg-white dark:bg-gray-800/50 p-2 text-center">
+                <p class="text-xs text-gray-400 mb-1">Before</p>
+                <p id="eff-before" class="text-base font-black text-gray-700 dark:text-gray-200">--</p>
+              </div>
+              <div class="rounded-lg bg-white dark:bg-gray-800/50 p-2 text-center">
+                <p class="text-xs text-gray-400 mb-1">After</p>
+                <p id="eff-after" class="text-base font-black text-gray-700 dark:text-gray-200">--</p>
+              </div>
+            </div>
+
+            <!-- 변화율 칩 + 유의성 -->
+            <div class="flex items-center justify-between mb-2">
+              <span id="eff-pct" class="text-sm font-black rounded-full px-3 py-1 bg-emerald-100 text-emerald-700">--</span>
+              <span id="eff-sig" class="text-xs text-gray-500 dark:text-gray-400"></span>
+            </div>
+
+            <!-- 지역 그룹 비교 (PRD §6.2) -->
+            <p id="eff-group" style="display:none;"
+               class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed mb-3 p-2
+                      rounded-lg bg-gray-50 dark:bg-gray-800/40"></p>
+
+            <!-- 정책 타임라인 미니 차트 -->
+            <div id="eff-timeline" style="display:none;">
+              <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                📌 <span class="text-red-500 font-semibold">Red dot</span> = policy enacted
+              </p>
+              <canvas id="eff-timeline-chart" style="max-height:120px;"></canvas>
+            </div>
+          </div>
+          <!-- ───────────────────────────────────────────────── -->
+
           <!-- External link -->
           <a id="detail-link" href="#" target="_blank" rel="noopener"
              class="mt-4 flex items-center justify-center gap-2 w-full rounded-xl
@@ -232,6 +273,7 @@
   <script src="js/theme-toggle.js"></script>
   <script src="js/main.js"></script>
   <script src="js/services/dataService.js"></script>
+  <script src="js/services/pmService.js"></script>
   <script src="js/services/uiService.js"></script>
   <script src="js/policy.js"></script>
 </body>

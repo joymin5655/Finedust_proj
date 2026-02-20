@@ -208,6 +208,39 @@
   searchEl?.addEventListener('input',  applyFilters);
   regionEl?.addEventListener('change', applyFilters);
 
+  // ── URL 파라미터 처리 (?country=KR) ────────────────────────
+  // Globe에서 "See All Policies →" 버튼을 클릭하면
+  // policy.html?country=KR 형식으로 넘어옴.
+  // 데이터 로드 후 해당 국가를 자동 선택함.
+  function handleUrlCountry() {
+    const params = new URLSearchParams(window.location.search);
+    const code   = (params.get('country') || '').toUpperCase();
+    if (!code) return;
+
+    // ISO code → 국가 이름 매핑 (index.json의 countryCode 필드 기준)
+    const target = allCountries.find(c =>
+      (c.countryCode || '').toUpperCase() === code ||
+      c.country.toUpperCase() === code
+    );
+    if (!target) return;
+
+    // 검색창에 국가명 입력하여 필터 적용
+    if (searchEl) {
+      searchEl.value = target.country;
+      applyFilters();
+    }
+
+    // 첫 번째 카드 자동 클릭 (DOM 업데이트 후)
+    setTimeout(() => {
+      const firstCard = listEl.querySelector('.policy-card');
+      if (firstCard) {
+        firstCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        selectCountry(firstCard);
+      }
+    }, 150);
+  }
+
   // ── Init ────────────────────────────────────────────────────
   await loadData();
+  handleUrlCountry();
 })();

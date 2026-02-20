@@ -172,12 +172,17 @@
 
   window.UIService?.hideLoading();
 
-  // Globe passthrough: index.html?lat=xx&lon=yy
+  // Globe passthrough: index.html?lat=xx&lon=yy&city=Seoul
   const params   = new URLSearchParams(location.search);
   const paramLat = parseFloat(params.get('lat'));
   const paramLon = parseFloat(params.get('lon'));
+  const paramCity = params.get('city') || '';
 
   if (!isNaN(paramLat) && !isNaN(paramLon)) {
+    // Globe에서 넘어온 경우 도시명 표시
+    if (paramCity && locationText) {
+      locationText.textContent = `📍 ${decodeURIComponent(paramCity)}`;
+    }
     await renderFromLocation(paramLat, paramLon);
     if (cameraSection) cameraSection.style.display = 'block';
     return;

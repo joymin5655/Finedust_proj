@@ -2557,17 +2557,54 @@ class PolicyGlobe {
     }
   }
 
+  // ─────────────────────────────────────────────────────────────────────
+  // showCountryPolicy  ← 전략 v2: globeUpdatePanel 위임
+  // 클릭된 국가명 → countryPolicies 룩업 → 통합 패널에 전달
+  // ─────────────────────────────────────────────────────────────────────
   showCountryPolicy(countryName) {
-    const policy = this.countryPolicies[countryName];
-    if (!policy) {
+    const p = this.countryPolicies[countryName];
+    if (!p) {
       console.log('No policy data for', countryName);
       return;
     }
 
-    const card = document.getElementById('policy-card');
-    card.style.display = 'block';
+    // countryCode 추정: data에 없으면 이름 기반 fallback
+    const countryCode = p.countryCode || _nameToCode(countryName);
 
-    // ★ Today 버튼 href 업데이트 (국가 대표 좌표 사용)
+    const otherPolicies = p.additionalPolicies || p.otherPolicies || [];
+
+    window.globeUpdatePanel({
+      type:          'country',
+      name:          countryName,
+      flag:          p.flag   || '🌍',
+      region:        p.region || '',
+      lat:           p.coordinates?.lat ?? null,
+      lon:           p.coordinates?.lon ?? null,
+      pm25:          p.currentPM25  ?? 0,
+      countryCode,
+      policy: p.mainPolicy ? {
+        title:       p.mainPolicy.name,
+        description: p.mainPolicy.description,
+        date:        p.mainPolicy.implementationDate,
+        rating:      p.mainPolicy.effectivenessRating
+      } : null,
+      impact: p.policyImpact ? {
+        rate:    p.policyImpact.reductionRate,
+        period:  p.policyImpact.timeframe,
+        measures: p.policyImpact.keyMeasures || []
+      } : null,
+      trends:        p.pm25Trends   || [],
+      otherPolicies: otherPolicies.map(op => ({ year: op.year, title: op.name || op.title || op }))
+    });
+  }
+
+  /**
+   * Display country PM2.5 trends and policy impact data
+   * This is called when clicking on country policy markers
+   */
+  // (showCountryPolicyTrends 정리된 버전은 아래에 있음)
+  _showCountryPolicyTrends_REMOVED_DUPLICATE() {
+    // 이 함수는 제거됨. 아래 showCountryPolicyTrends를 사용하세요.
     const gotoTodayBtn = document.getElementById('goto-today-btn');
     if (gotoTodayBtn && policy.coordinates) {
       gotoTodayBtn.href = `index.html?lat=${policy.coordinates.lat}&lon=${policy.coordinates.lon}`;
@@ -3722,191 +3759,41 @@ class PolicyGlobe {
    * 🆕 정책 정보 패널 표시 (PM2.5 트렌드 + 정책 영향 포함)
    */
   showPolicyInfoPanel(countryCode, policyData) {
-    const existingPanel = document.getElementById('policy-info-panel');
-    if (existingPanel) existingPanel.remove();
+    // 전략 v2: 기존 팝업 대신 통합 좌측 패널에 위임
+    const p = this.countryPolicies[countryCode] || policyData || {};
+    const name = p.name || countryCode;
 
-    // countryPolicies에서 상세 데이터 가져오기
-    const countryDetail = this.countryPolicies[countryCode] || policyData || null;
-    const effectivenessScore = policyData.effectivenessScore || 
-      (countryDetail?.mainPolicy?.effectivenessRating || 5) / 10;
-    const effectivenessPercent = Math.round(effectivenessScore * 100);
-    
-    const getScoreColor = (score) => {
-      if (score >= 0.7) return '#00ff88';
-      if (score >= 0.5) return '#44dd66';
-      if (score >= 0.3) return '#ffcc00';
-      return '#ff6644';
-    };
-    const scoreColor = getScoreColor(effectivenessScore);
-
-    // PM2.5 트렌드 데이터 처리
-    const pm25Trends = countryDetail?.pm25Trends || [];
-    const hasTrends = pm25Trends.length > 0;
-    
-    // 정책 영향 데이터
-    const policyImpact = countryDetail?.policyImpact || null;
-
-    const panel = document.createElement('div');
-    panel.id = 'policy-info-panel';
-    panel.className = 'fixed z-50 bg-gray-900/95 backdrop-blur-lg border border-white/10 rounded-xl shadow-2xl';
-    panel.style.cssText = `
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      max-width: 520px;
-      width: 92%;
-      max-height: 85vh;
-      overflow-y: auto;
-      animation: slideInUp 0.3s ease-out;
-    `;
-
-    panel.innerHTML = `
-      <div class="p-5">
-        <!-- 헤더 -->
-        <div class="flex items-start justify-between mb-4">
-          <div class="flex items-center gap-3">
-            <span class="text-4xl">${countryDetail?.flag || '🌍'}</span>
-            <div>
-              <h2 class="text-xl font-bold text-white">${countryCode}</h2>
-              <p class="text-sm text-white/60">${countryDetail?.region || policyData?.region || 'Global'}</p>
-            </div>
-          </div>
-          <button id="close-policy-panel" class="text-white/60 hover:text-white transition-colors p-1">
-            <span class="material-symbols-outlined">close</span>
-          </button>
-        </div>
-
-        <!-- 효과도 + 현재 대기질 -->
-        <div class="grid grid-cols-3 gap-3 mb-4">
-          <div class="bg-black/30 rounded-xl p-3 text-center col-span-1">
-            <p class="text-xs text-white/60 mb-1">Effectiveness</p>
-            <p class="text-xl font-bold" style="color: ${scoreColor}">${effectivenessPercent}%</p>
-          </div>
-          ${countryDetail ? `
-          <div class="bg-black/30 rounded-xl p-3 text-center">
-            <p class="text-xs text-white/60 mb-1">AQI</p>
-            <p class="text-xl font-bold ${this.getAQIClass(countryDetail.currentAQI)}">${countryDetail.currentAQI}</p>
-          </div>
-          <div class="bg-black/30 rounded-xl p-3 text-center">
-            <p class="text-xs text-white/60 mb-1">PM2.5</p>
-            <p class="text-xl font-bold text-primary">${countryDetail.currentPM25}</p>
-          </div>
-          ` : '<div class="col-span-2"></div>'}
-        </div>
-
-        <!-- 정책 영향 요약 -->
-        ${policyImpact ? `
-        <div class="bg-gradient-to-r from-green-900/30 to-blue-900/30 rounded-xl p-4 mb-4 border border-green-500/20">
-          <div class="flex items-center gap-2 mb-3">
-            <span class="material-symbols-outlined text-green-400">trending_down</span>
-            <h3 class="text-base font-semibold text-white">Policy Impact</h3>
-          </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <p class="text-2xl font-bold text-green-400">${policyImpact.reductionRate}</p>
-              <p class="text-xs text-white/60">PM2.5 Reduction</p>
-            </div>
-            <div>
-              <p class="text-sm font-medium text-white">${policyImpact.timeframe}</p>
-              <p class="text-xs text-white/60">Period</p>
-            </div>
-          </div>
-          <div class="mt-3 flex flex-wrap gap-1">
-            ${(policyImpact.keyMeasures || []).slice(0, 3).map(m => `
-              <span class="text-xs bg-white/10 px-2 py-1 rounded">${m}</span>
-            `).join('')}
-          </div>
-        </div>
-        ` : ''}
-
-        <!-- PM2.5 트렌드 차트 -->
-        ${hasTrends ? `
-        <div class="bg-black/30 rounded-xl p-4 mb-4">
-          <div class="flex items-center gap-2 mb-3">
-            <span class="material-symbols-outlined text-primary">show_chart</span>
-            <h3 class="text-base font-semibold text-white">PM2.5 Trend</h3>
-          </div>
-          <div class="relative h-32">
-            <canvas id="pm25-trend-chart"></canvas>
-          </div>
-          <div class="mt-2 text-xs text-white/50 text-center">
-            Annual average PM2.5 (µg/m³)
-          </div>
-        </div>
-        ` : ''}
-
-        <!-- 주요 정책 -->
-        ${countryDetail?.mainPolicy ? `
-        <div class="bg-black/30 rounded-xl p-4 mb-4">
-          <div class="flex items-center gap-2 mb-2">
-            <span class="material-symbols-outlined text-primary">policy</span>
-            <h3 class="text-base font-semibold text-white">Main Policy</h3>
-          </div>
-          <h4 class="text-primary font-medium text-sm mb-2">${countryDetail.mainPolicy.name}</h4>
-          <p class="text-xs text-white/70 leading-relaxed line-clamp-3">${countryDetail.mainPolicy.description}</p>
-          <div class="flex items-center gap-3 mt-2 text-xs text-white/50">
-            <span>📅 ${countryDetail.mainPolicy.implementationDate}</span>
-            <span>⭐ ${countryDetail.mainPolicy.effectivenessRating}/10</span>
-          </div>
-        </div>
-        ` : ''}
-
-        <!-- 최근 뉴스 (축소) -->
-        ${countryDetail?.news?.length ? `
-        <div class="bg-black/30 rounded-xl p-4">
-          <div class="flex items-center gap-2 mb-2">
-            <span class="material-symbols-outlined text-primary">newspaper</span>
-            <h3 class="text-sm font-semibold text-white">Recent News</h3>
-          </div>
-          <div class="space-y-2">
-            ${countryDetail.news.slice(0, 2).map(news => `
-              <div class="bg-black/20 rounded-lg p-2">
-                <p class="text-xs text-white/80 line-clamp-1">${news.title}</p>
-                <p class="text-xs text-white/40 mt-1">${news.source} · ${news.date}</p>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-        ` : ''}
-
-        <!-- 버튼 -->
-        <div class="mt-4 flex gap-2">
-          <button id="view-more-policy" class="flex-1 py-2 px-3 bg-primary/20 hover:bg-primary/30 border border-primary/30 rounded-lg text-primary text-sm font-medium transition-colors">
-            View Full Details
-          </button>
-        </div>
-      </div>
-    `;
-
-    document.body.appendChild(panel);
-
-    // PM2.5 트렌드 차트 렌더링
-    if (hasTrends && typeof Chart !== 'undefined') {
-      this.renderPM25TrendChart(pm25Trends, countryDetail?.mainPolicy?.implementationDate);
-    }
-
-    // 이벤트 리스너
-    document.getElementById('close-policy-panel')?.addEventListener('click', () => {
-      panel.style.animation = 'fadeOut 0.2s ease-out';
-      setTimeout(() => panel.remove(), 200);
-      this.markerSystem?.highlightPolicyMarker(countryCode, false);
-    });
-
-    document.getElementById('view-more-policy')?.addEventListener('click', () => {
-      panel.remove();
-      if (countryDetail) {
-        this.showFullDetails(countryCode, countryDetail);
-      }
-    });
-
-    panel.addEventListener('click', (e) => {
-      if (e.target === panel) {
-        panel.style.animation = 'fadeOut 0.2s ease-out';
-        setTimeout(() => panel.remove(), 200);
-        this.markerSystem?.highlightPolicyMarker(countryCode, false);
-      }
+    window.globeUpdatePanel({
+      type:          'country',
+      name,
+      flag:          p.flag   || policyData?.flag   || '🌍',
+      region:        p.region || policyData?.region || '',
+      lat:           p.coordinates?.lat ?? null,
+      lon:           p.coordinates?.lon ?? null,
+      pm25:          p.currentPM25  ?? policyData?.pm25 ?? 0,
+      countryCode,
+      policy: p.mainPolicy ? {
+        title:       p.mainPolicy.name,
+        description: p.mainPolicy.description,
+        date:        p.mainPolicy.implementationDate,
+        rating:      p.mainPolicy.effectivenessRating
+      } : null,
+      impact: p.policyImpact ? {
+        rate:    p.policyImpact.reductionRate,
+        period:  p.policyImpact.timeframe,
+        measures: p.policyImpact.keyMeasures || []
+      } : null,
+      trends:        p.pm25Trends || [],
+      otherPolicies: (p.additionalPolicies || []).map(op => ({
+        year: op.year, title: op.name || op.title || op
+      }))
     });
   }
+
+  /**
+   * 🆕 PM2.5 트렌드 차트 렌더링
+   */
+  // (renderPM25TrendChart는 아래에 한 번만 정의됨)
 
   /**
    * 🆕 PM2.5 트렌드 차트 렌더링
@@ -3990,60 +3877,24 @@ class PolicyGlobe {
    * 🆕 측정소 정보 패널 표시
    */
   showStationInfoPanel(stationData) {
-    const existingPanel = document.getElementById('station-info-panel');
-    if (existingPanel) existingPanel.remove();
-
+    // 전략 v2: 기존 팝업 대신 통합 좌측 패널에 위임
     const pm25 = stationData.pm25 || 0;
-    const aqiColor = this.getPM25ColorString(pm25);
-    const aqiLabel = this.getPM25Label(pm25);
+    const city = stationData.name || stationData.city || stationData.country || 'Station';
 
-    const panel = document.createElement('div');
-    panel.id = 'station-info-panel';
-    panel.className = 'fixed z-50 bg-gray-900/95 backdrop-blur-lg border border-white/10 rounded-xl shadow-2xl';
-    panel.style.cssText = `
-      bottom: 100px;
-      left: 50%;
-      transform: translateX(-50%);
-      max-width: 320px;
-      width: 90%;
-      animation: slideInUp 0.3s ease-out;
-    `;
-
-    panel.innerHTML = `
-      <div class="p-4">
-        <div class="flex items-start justify-between mb-3">
-          <div>
-            <h3 class="text-lg font-bold text-white">${stationData.country || 'Station'}</h3>
-            <p class="text-xs text-white/60">${stationData.id || 'Unknown'}</p>
-          </div>
-          <button id="close-station-panel" class="text-white/60 hover:text-white transition-colors">
-            <span class="material-symbols-outlined text-sm">close</span>
-          </button>
-        </div>
-        
-        <div class="bg-black/30 rounded-lg p-4 text-center">
-          <p class="text-xs text-white/60 mb-1">PM2.5 Level</p>
-          <p class="text-3xl font-bold" style="color: ${aqiColor}">${pm25.toFixed(1)}</p>
-          <p class="text-xs mt-1" style="color: ${aqiColor}">${aqiLabel}</p>
-          <p class="text-xs text-white/50 mt-2">µg/m³</p>
-        </div>
-      </div>
-    `;
-
-    document.body.appendChild(panel);
-
-    document.getElementById('close-station-panel')?.addEventListener('click', () => {
-      panel.style.animation = 'fadeOut 0.2s ease-out';
-      setTimeout(() => panel.remove(), 200);
+    window.globeUpdatePanel({
+      type:   'station',
+      name:   city,
+      flag:   _countryToFlag(stationData.country || ''),
+      region: stationData.country || '',
+      lat:    stationData.lat ?? stationData.latitude  ?? null,
+      lon:    stationData.lon ?? stationData.longitude ?? null,
+      pm25,
+      countryCode: null,  // station만 클릭 시 Policy 버튼 숨김
+      policy:       null,
+      impact:       null,
+      trends:       [],
+      otherPolicies:[]
     });
-
-    // 3초 후 자동 닫기
-    setTimeout(() => {
-      if (document.getElementById('station-info-panel')) {
-        panel.style.animation = 'fadeOut 0.2s ease-out';
-        setTimeout(() => panel.remove(), 200);
-      }
-    }, 5000);
   }
 
   getPM25ColorString(pm25) {
@@ -4308,6 +4159,36 @@ class PolicyGlobe {
       return new Map();
     }
   }
+}
+
+// ── 모듈 레벨 헬퍼 ─────────────────────────────────────────────────────
+// 국가 이름 → ISO 2-letter code (간략 매핑)
+function _nameToCode(name) {
+  const MAP = {
+    'South Korea':'KR', 'Korea':'KR', 'China':'CN', 'Japan':'JP',
+    'India':'IN', 'USA':'US', 'United States':'US', 'Germany':'DE',
+    'France':'FR', 'United Kingdom':'GB', 'UK':'GB', 'Australia':'AU',
+    'Canada':'CA', 'Brazil':'BR', 'Russia':'RU', 'Indonesia':'ID',
+    'Mexico':'MX', 'Saudi Arabia':'SA', 'Turkey':'TR', 'Poland':'PL',
+    'Thailand':'TH', 'Vietnam':'VN', 'Pakistan':'PK', 'Bangladesh':'BD',
+    'Nigeria':'NG', 'Egypt':'EG', 'South Africa':'ZA', 'Iran':'IR',
+    'Italy':'IT', 'Spain':'ES', 'Netherlands':'NL', 'Sweden':'SE',
+    'Switzerland':'CH', 'Belgium':'BE', 'Austria':'AT', 'Norway':'NO',
+    'Denmark':'DK', 'Finland':'FI', 'Singapore':'SG', 'Malaysia':'MY',
+    'Philippines':'PH', 'New Zealand':'NZ', 'Chile':'CL', 'Colombia':'CO',
+    'Argentina':'AR', 'Peru':'PE', 'Portugal':'PT', 'Greece':'GR',
+    'Czech Republic':'CZ', 'Romania':'RO', 'Hungary':'HU', 'Ukraine':'UA',
+  };
+  return MAP[name] || name;
+}
+
+// 국가 이름 / ISO code → 국기 이모지
+function _countryToFlag(nameOrCode) {
+  const code = (nameOrCode.length === 2 ? nameOrCode : _nameToCode(nameOrCode)).toUpperCase();
+  if (code.length !== 2) return '🌍';
+  return String.fromCodePoint(
+    ...code.split('').map(c => 0x1F1E6 + c.charCodeAt(0) - 65)
+  );
 }
 
 // Initialize

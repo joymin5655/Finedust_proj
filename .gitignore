@@ -44,5 +44,15 @@ archive/
 # API tokens (never commit!)
 *.token
 
+# Sample / pre-processed data (not tracked in git)
+# App uses live WAQI data from GitHub Actions + data above is generated locally
+app/data/earthdata/
+app/data/openaq/
+app/data/pm25/
+app/data/policy-impact/
+app/data/policies/
+app/data/policies.json
+app/data/policy-analytics.json
+
 # Data collection logs
 scripts/*.log

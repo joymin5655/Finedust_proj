@@ -30,20 +30,25 @@ function _esc(str) {
   const searchEl    = document.getElementById('policy-search');
   const regionEl    = document.getElementById('policy-region');
 
-  let allCountries = [];
-  let detailChart  = null;
+  let allCountries   = [];
+  let detailChart    = null;
+  let analyticsData  = null; // policy-analytics.json (지역 그룹 평균)
 
   // ── Load data ───────────────────────────────────────────────
+  async function loadAnalytics() {
+    try {
+      const res = await fetch('data/policy-analytics.json');
+      if (res.ok) analyticsData = await res.json();
+    } catch (_) { /* 선택적 - 없어도 기본 표시 유지 */ }
+  }
+
   async function loadData() {
     try {
       const index = await window.DataService.loadPolicyIndex();
       allCountries = index.countries || [];
-
-      // Update stat counters
       document.getElementById('stat-countries').textContent = allCountries.length;
       const policyCount = allCountries.reduce((s, c) => s + (c.policyCount || 0), 0);
       document.getElementById('stat-policies').textContent = policyCount;
-
       renderList(allCountries);
     } catch (err) {
       console.error('Policy data load failed:', err);
@@ -133,14 +138,15 @@ function _esc(str) {
     const policy = Array.isArray(data.policies) ? data.policies[0] : data;
 
     document.getElementById('detail-title').textContent =
-      policy.title || data.title || '—';
+      policy.title || policy.name || data.title || '—';
     document.getElementById('detail-authority').textContent =
-      policy.authority || data.authority || '';
+      policy.authority || data.authority || policy.type || '';
     document.getElementById('detail-desc').textContent =
       policy.description || data.description || '—';
 
     const target = policy.target_pm25 ?? data.target_pm25 ?? '--';
-    const year   = policy.target_year  ?? data.target_year  ?? '----';
+    const year   = policy.target_year  ?? data.target_year  ??
+                   (policy.implementationDate ? policy.implementationDate.slice(0,4) : '----');
     document.getElementById('detail-target').textContent = target;
     document.getElementById('detail-year').textContent   = year;
 
@@ -151,17 +157,153 @@ function _esc(str) {
     }, 50);
 
     const url = policy.url || data.url || '#';
-    // javascript: scheme 차단
-    const safeUrl = (url === '#') ? '#' : (
-      /^(https?:\/\/|\/)/i.test(url) ? url : '#'
-    );
+    const safeUrl = (url === '#') ? '#' : (/^(https?:\/\/|\/)/i.test(url) ? url : '#');
     document.getElementById('detail-link').href = safeUrl;
 
-    // PM2.5 trend chart from OWID data
+    // ── 정책 효과 분석 (PRD §6) ──────────────────────────────
+    renderPolicyEffect(policy, data, meta);
+
+    // PM2.5 trend chart
     const owid = data.owid_pm25 || data.pm25_trend;
     if (owid && owid.years && owid.values) {
       renderTrendChart(owid.years, owid.values);
+    } else if (policy.timeline && policy.timeline.length > 1) {
+      // fallback: policy timeline을 트렌드 차트로 활용
+      const years  = policy.timeline.map(t => t.date.slice(0, 4));
+      const values = policy.timeline.map(t => t.pm25);
+      renderTrendChart(years, values, policy.implementationDate?.slice(0, 4));
     }
+  }
+
+  // ── Policy Effect Panel (PRD §6.1 ~ §6.2) ─────────────────
+  function renderPolicyEffect(policy, data, meta) {
+    const effectWrap = document.getElementById('detail-effect-wrap');
+    if (!effectWrap) return;
+
+    const imp = policy.impact;
+    if (!imp) { effectWrap.style.display = 'none'; return; }
+
+    const before = imp.beforePeriod?.meanPM25;
+    const after  = imp.afterPeriod?.meanPM25;
+    const ana    = imp.analysis || {};
+    const pct    = ana.percentChange;
+
+    if (before == null || after == null || pct == null) {
+      effectWrap.style.display = 'none'; return;
+    }
+
+    effectWrap.style.display = 'block';
+
+    // Before / After 값
+    const el = id => document.getElementById(id);
+    if (el('eff-before'))  el('eff-before').textContent  = `${before.toFixed(1)} µg/m³`;
+    if (el('eff-after'))   el('eff-after').textContent   = `${after.toFixed(1)} µg/m³`;
+
+    // 변화율 칩
+    const pctEl = el('eff-pct');
+    if (pctEl) {
+      const sign = pct < 0 ? '' : '+';
+      pctEl.textContent = `${sign}${pct.toFixed(1)}%`;
+      pctEl.className = `text-sm font-black rounded-full px-3 py-1 ${
+        pct < 0 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400'
+                : 'bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400'
+      }`;
+    }
+
+    // 통계적 유의성
+    const sigEl = el('eff-sig');
+    if (sigEl) {
+      sigEl.textContent = ana.significant ? '✅ Statistically significant' : '⚠️ Not significant';
+      sigEl.style.color = ana.significant ? '#10b981' : '#f59e0b';
+    }
+
+    // 지역 그룹 비교 (PRD §6.2)
+    const groupEl = el('eff-group');
+    if (groupEl) {
+      const region     = meta.region || data.region || '';
+      const regionAvgMap = analyticsData?.regionAvgPct || {};
+      const groupResult  = window.PMService?.calcRelativeEffect(pct, region, regionAvgMap);
+
+      if (groupResult) {
+        const regionSign = groupResult.regionAvg < 0 ? '' : '+';
+        groupEl.innerHTML = `
+          <span class="font-bold">${_esc(region)} avg:</span>
+          ${regionSign}${groupResult.regionAvg}% &nbsp;|&nbsp;
+          <span class="${groupResult.relative < -3 ? 'text-emerald-500 font-bold' : groupResult.relative > 3 ? 'text-orange-500' : 'text-gray-500'}">
+            ${groupResult.label}
+          </span>`;
+        groupEl.style.display = 'block';
+      } else {
+        groupEl.style.display = 'none';
+      }
+    }
+
+    // Timeline mini bar (before → after 화살표)
+    const timelineEl = el('eff-timeline');
+    if (timelineEl && policy.timeline?.length) {
+      renderEffectTimeline(policy.timeline, policy.implementationDate);
+    }
+  }
+
+  // ── Effect Timeline (정책 전후 변화 미니 차트) ──────────────
+  let effectChart = null;
+  function renderEffectTimeline(timeline, policyDate) {
+    const wrap = document.getElementById('eff-timeline');
+    if (!wrap) return;
+    wrap.style.display = 'block';
+
+    const canvas = document.getElementById('eff-timeline-chart');
+    if (!canvas) return;
+
+    if (effectChart) { effectChart.destroy(); effectChart = null; }
+
+    const labels = timeline.map(t => t.date.slice(0, 7));
+    const values = timeline.map(t => t.pm25);
+    const policyYear = policyDate?.slice(0, 4);
+
+    const isDark = document.documentElement.classList.contains('dark');
+    const textColor = isDark ? 'rgba(255,255,255,.6)' : 'rgba(0,0,0,.5)';
+    const gridColor = isDark ? 'rgba(255,255,255,.06)' : 'rgba(0,0,0,.06)';
+
+    // 정책 시행 시점 수직선 annotation (단순 구현 — plugins 없이 pointStyles)
+    const pointColors = labels.map(l => l.startsWith(policyYear) ? '#ef4444' : '#25e2f4');
+    const pointRadius = labels.map(l => l.startsWith(policyYear) ? 5 : 2);
+
+    effectChart = new Chart(canvas, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: 'PM2.5',
+          data: values,
+          borderColor: '#25e2f4',
+          backgroundColor: 'rgba(37,226,244,.08)',
+          fill: true,
+          tension: 0.3,
+          pointBackgroundColor: pointColors,
+          pointRadius
+        }]
+      },
+      options: {
+        responsive: true,
+        animation: { duration: 500 },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              title: items => {
+                const l = items[0].label;
+                return l.startsWith(policyYear) ? `📌 Policy enacted (${l})` : l;
+              }
+            }
+          }
+        },
+        scales: {
+          x: { ticks: { color: textColor, maxTicksLimit: 5 }, grid: { color: gridColor } },
+          y: { ticks: { color: textColor }, grid: { color: gridColor }, beginAtZero: false }
+        }
+      }
+    });
   }
 
   // ── PM2.5 trend chart ───────────────────────────────────────
@@ -256,6 +398,6 @@ function _esc(str) {
   }
 
   // ── Init ────────────────────────────────────────────────────
-  await loadData();
+  await Promise.all([loadData(), loadAnalytics()]);
   handleUrlCountry();
 })();

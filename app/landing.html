@@ -3,6 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- ── 보안 헤더 ─────────────────────────────────────────── -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+  <!-- ── ──────────────────────────────────────────────────── -->
   <meta name="description" content="AirLens – Check today's real-time air quality. GPS + station data + sky photo AI combined to measure PM2.5.">
   <meta name="keywords" content="air quality, PM2.5, AirLens, camera AI, real-time, environmental monitoring">
   <title>AirLens – Today's Air Quality</title>
@@ -43,7 +48,7 @@
     .drag-over { border-color:#25e2f4 !important; background-color:rgba(37,226,244,.08) !important; }
   </style>
 </head>
-<body class="bg-gray-50 dark:bg-bg-dark min-h-screen">
+<body class="bg-gray-50 dark:bg-bg-dark min-h-screen flex flex-col">
 
   <!-- Dark Mode Toggle -->
   <div class="theme-toggle-container">
@@ -91,7 +96,7 @@
   </div>
 
   <!-- Main Content -->
-  <main class="max-w-2xl mx-auto px-4 pt-24 pb-16 flex flex-col gap-6">
+  <main class="flex-1 max-w-2xl mx-auto w-full px-4 pt-24 pb-16 flex flex-col gap-6">
 
     <!-- Page Title -->
     <div class="text-center">
@@ -222,7 +227,7 @@
   </main>
 
   <!-- Footer -->
-  <footer style="background:var(--color-bg-dark);color:var(--color-text-dark);padding:var(--space-5) 0;">
+  <footer style="background:var(--color-bg-dark);color:var(--color-text-dark);padding:var(--space-5) 0;margin-top:auto;">
     <div class="container text-center">
       <p style="color:var(--color-text-dark-secondary);" data-i18n="footer.copy">
         © 2025 AirLens. Built with ❤️ for a cleaner planet.

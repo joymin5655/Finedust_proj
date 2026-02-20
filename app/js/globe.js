@@ -2695,16 +2695,17 @@ class PolicyGlobe {
         const newsItem = document.createElement('div');
         newsItem.className = 'news-item bg-black/20 rounded-lg p-3 cursor-pointer hover:bg-black/30 transition-colors';
         newsItem.innerHTML = `
-          <h6 class="text-sm font-medium text-white mb-1">${news.title}</h6>
+          <h6 class="text-sm font-medium text-white mb-1">${_esc(news.title)}</h6>
           <div class="flex items-center justify-between text-xs text-white/60">
-            <span>${news.source}</span>
-            <span>${news.date}</span>
+            <span>${_esc(news.source)}</span>
+            <span>${_esc(news.date)}</span>
           </div>
         `;
-        // Add click event to open news URL
+        // Add click event to open news URL (javascript: scheme 차단)
         newsItem.addEventListener('click', () => {
-          if (news.url) {
-            window.open(news.url, '_blank', 'noopener,noreferrer');
+          const safeUrl = _safeUrl(news.url);
+          if (safeUrl) {
+            window.open(safeUrl, '_blank', 'noopener,noreferrer');
           }
         });
         newsContainer.appendChild(newsItem);
@@ -2817,12 +2818,17 @@ class PolicyGlobe {
         const newsItem = document.createElement('div');
         newsItem.className = 'news-item bg-black/20 rounded-lg p-3 cursor-pointer hover:bg-black/30 transition-colors';
         newsItem.innerHTML = `
-          <h6 class="text-sm font-medium text-white mb-1">${news.title}</h6>
+          <h6 class="text-sm font-medium text-white mb-1">${_esc(news.title)}</h6>
           <div class="flex items-center justify-between text-xs text-white/60">
-            <span>${news.source}</span>
-            <span>${news.date}</span>
+            <span>${_esc(news.source)}</span>
+            <span>${_esc(news.date)}</span>
           </div>
         `;
+        // URL 클릭 — javascript: scheme 차단
+        newsItem.addEventListener('click', () => {
+          const safeUrl = _safeUrl(news.url);
+          if (safeUrl) window.open(safeUrl, '_blank', 'noopener,noreferrer');
+        });
         newsContainer.appendChild(newsItem);
       });
     } else {
@@ -3201,10 +3207,10 @@ class PolicyGlobe {
     modalContent.innerHTML = `
       <div class="flex items-start justify-between mb-6">
         <div class="flex items-center gap-4">
-          <span class="text-6xl">${policy.flag}</span>
+          <span class="text-6xl">${_esc(policy.flag)}</span>
           <div>
-            <h2 class="text-3xl font-bold text-white">${countryName}</h2>
-            <p class="text-lg text-white/60">${policy.region}</p>
+            <h2 class="text-3xl font-bold text-white">${_esc(countryName)}</h2>
+            <p class="text-lg text-white/60">${_esc(policy.region)}</p>
           </div>
         </div>
         <button id="close-modal" class="text-white/60 hover:text-white transition-colors">
@@ -3219,24 +3225,24 @@ class PolicyGlobe {
             <span class="material-symbols-outlined text-primary text-2xl">policy</span>
             <h3 class="text-2xl font-bold text-white">Main Policy</h3>
           </div>
-          <h4 class="text-xl font-bold text-primary mb-3">${policy.mainPolicy.name}</h4>
-          <p class="text-base text-white/90 mb-4 leading-relaxed">${policy.mainPolicy.description}</p>
+          <h4 class="text-xl font-bold text-primary mb-3">${_esc(policy.mainPolicy.name)}</h4>
+          <p class="text-base text-white/90 mb-4 leading-relaxed">${_esc(policy.mainPolicy.description)}</p>
           <div class="grid grid-cols-2 gap-4">
             <div class="bg-black/30 rounded-lg p-3">
               <p class="text-xs text-white/60 mb-1">Implementation Date</p>
-              <p class="text-sm font-semibold text-white">${policy.mainPolicy.implementationDate}</p>
+              <p class="text-sm font-semibold text-white">${_esc(policy.mainPolicy.implementationDate)}</p>
             </div>
             <div class="bg-black/30 rounded-lg p-3">
               <p class="text-xs text-white/60 mb-1">Effectiveness Rating</p>
-              <p class="text-sm font-semibold text-white">${policy.mainPolicy.effectivenessRating}/10</p>
+              <p class="text-sm font-semibold text-white">${_esc(String(policy.mainPolicy.effectivenessRating))}/10</p>
             </div>
             <div class="bg-black/30 rounded-lg p-3">
               <p class="text-xs text-white/60 mb-1">Policy Type</p>
-              <p class="text-sm font-semibold text-white">${policy.policyType}</p>
+              <p class="text-sm font-semibold text-white">${_esc(policy.policyType)}</p>
             </div>
             <div class="bg-black/30 rounded-lg p-3">
               <p class="text-xs text-white/60 mb-1">Region</p>
-              <p class="text-sm font-semibold text-white">${policy.region}</p>
+              <p class="text-sm font-semibold text-white">${_esc(policy.region)}</p>
             </div>
           </div>
         </div>
@@ -3250,12 +3256,12 @@ class PolicyGlobe {
           <div class="grid grid-cols-2 gap-4">
             <div class="bg-black/30 rounded-lg p-4 text-center">
               <p class="text-sm text-white/60 mb-2">Air Quality Index</p>
-              <p class="text-4xl font-bold ${this.getAQIClass(policy.currentAQI)}">${policy.currentAQI}</p>
-              <p class="text-xs text-white/60 mt-2">${this.getAQILabel(policy.currentAQI)}</p>
+              <p class="text-4xl font-bold ${this.getAQIClass(policy.currentAQI)}">${_esc(String(policy.currentAQI))}</p>
+              <p class="text-xs text-white/60 mt-2">${_esc(this.getAQILabel(policy.currentAQI))}</p>
             </div>
             <div class="bg-black/30 rounded-lg p-4 text-center">
               <p class="text-sm text-white/60 mb-2">PM2.5 Level</p>
-              <p class="text-4xl font-bold text-primary">${policy.currentPM25}</p>
+              <p class="text-4xl font-bold text-primary">${_esc(String(policy.currentPM25))}</p>
               <p class="text-xs text-white/60 mt-2">µg/m³</p>
             </div>
           </div>
@@ -3269,16 +3275,17 @@ class PolicyGlobe {
           </div>
           <div class="space-y-3">
             ${policy.news.map(news => `
-              <div class="bg-black/30 rounded-lg p-4 hover:bg-black/40 transition-colors cursor-pointer">
-                <h5 class="text-base font-semibold text-white mb-2">${news.title}</h5>
+              <div class="bg-black/30 rounded-lg p-4 hover:bg-black/40 transition-colors cursor-pointer"
+                   data-url="${_esc(_safeUrl(news.url))}">
+                <h5 class="text-base font-semibold text-white mb-2">${_esc(news.title)}</h5>
                 <div class="flex items-center justify-between text-sm text-white/60">
                   <span class="flex items-center gap-1">
                     <span class="material-symbols-outlined !text-base">newspaper</span>
-                    ${news.source}
+                    ${_esc(news.source)}
                   </span>
                   <span class="flex items-center gap-1">
                     <span class="material-symbols-outlined !text-base">calendar_today</span>
-                    ${news.date}
+                    ${_esc(news.date)}
                   </span>
                 </div>
               </div>
@@ -3315,6 +3322,14 @@ class PolicyGlobe {
 
     modal.appendChild(modalContent);
     document.body.appendChild(modal);
+
+    // 뉴스 카드 클릭 — data-url 속성에서 검증된 URL 사용
+    modalContent.querySelectorAll('[data-url]').forEach(el => {
+      el.addEventListener('click', () => {
+        const url = el.dataset.url;
+        if (url) window.open(url, '_blank', 'noopener,noreferrer');
+      });
+    });
 
     // Close modal handlers
     const closeBtn = modal.querySelector('#close-modal');
@@ -4162,6 +4177,51 @@ class PolicyGlobe {
 }
 
 // ── 모듈 레벨 헬퍼 ─────────────────────────────────────────────────────
+
+/**
+ * XSS 방어 — HTML 특수문자 이스케이프
+ * innerHTML에 외부 데이터를 삽입할 때 반드시 사용
+ */
+function _esc(str) {
+  if (str == null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;');
+}
+
+/**
+ * URL 안전성 검증 — javascript:, data: scheme 차단
+ * @param {string} url
+ * @returns {string} 안전한 URL 또는 빈 문자열
+ */
+function _safeUrl(url) {
+  if (!url || typeof url !== 'string') return '';
+  const trimmed = url.trim().toLowerCase();
+  if (trimmed.startsWith('javascript:') || trimmed.startsWith('data:') || trimmed.startsWith('vbscript:')) return '';
+  return url;
+}
+
+/**
+ * URL 안전성 검증 — javascript: / data: scheme 차단
+ * window.open / href에 사용할 URL만 허용
+ */
+function _safeUrl(url) {
+  if (!url || typeof url !== 'string') return null;
+  const trimmed = url.trim().toLowerCase();
+  if (trimmed.startsWith('javascript:') || trimmed.startsWith('data:') || trimmed.startsWith('vbscript:')) {
+    console.warn('🚫 Blocked unsafe URL:', url);
+    return null;
+  }
+  // http/https/상대경로만 허용
+  if (!trimmed.startsWith('http://') && !trimmed.startsWith('https://') && !trimmed.startsWith('/')) {
+    return null;
+  }
+  return url;
+}
+
 // 국가 이름 → ISO 2-letter code (간략 매핑)
 function _nameToCode(name) {
   const MAP = {

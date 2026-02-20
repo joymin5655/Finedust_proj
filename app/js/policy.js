@@ -10,6 +10,17 @@
  * Depends on: dataService.js, uiService.js, i18n.js, Chart.js
  */
 
+/** HTML 특수문자 이스케이프 — XSS 방지 */
+function _esc(str) {
+  if (str == null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;');
+}
+
 (async function PolicyPage() {
   // ── DOM refs ────────────────────────────────────────────────
   const listEl      = document.getElementById('policy-list');
@@ -55,14 +66,14 @@
       <button
         class="policy-card text-left rounded-xl border border-gray-200 dark:border-white/10
                bg-white dark:bg-black/20 p-4 shadow-sm hover:shadow-md"
-        data-file="${c.dataFile}" data-country="${c.country}">
+        data-file="${_esc(c.dataFile)}" data-country="${_esc(c.country)}">
         <div class="flex items-start gap-3">
-          <span class="text-2xl flex-shrink-0">${c.flag || '🌍'}</span>
+          <span class="text-2xl flex-shrink-0">${_esc(c.flag || '🌍')}</span>
           <div class="min-w-0">
-            <p class="text-gray-900 dark:text-white font-bold text-sm truncate">${c.country}</p>
-            <p class="text-gray-400 text-xs">${c.region || ''}</p>
+            <p class="text-gray-900 dark:text-white font-bold text-sm truncate">${_esc(c.country)}</p>
+            <p class="text-gray-400 text-xs">${_esc(c.region || '')}</p>
             <p class="text-primary text-xs font-semibold mt-1">
-              ${c.policyCount || 0} polic${c.policyCount === 1 ? 'y' : 'ies'}
+              ${_esc(String(c.policyCount || 0))} polic${c.policyCount === 1 ? 'y' : 'ies'}
             </p>
           </div>
         </div>
@@ -140,7 +151,11 @@
     }, 50);
 
     const url = policy.url || data.url || '#';
-    document.getElementById('detail-link').href = url;
+    // javascript: scheme 차단
+    const safeUrl = (url === '#') ? '#' : (
+      /^(https?:\/\/|\/)/i.test(url) ? url : '#'
+    );
+    document.getElementById('detail-link').href = safeUrl;
 
     // PM2.5 trend chart from OWID data
     const owid = data.owid_pm25 || data.pm25_trend;

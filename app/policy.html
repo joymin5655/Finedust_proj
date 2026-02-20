@@ -3,6 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- ── 보안 헤더 ─────────────────────────────────────────── -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+  <!-- ── ──────────────────────────────────────────────────── -->
   <meta name="description" content="AirLens Policy Research — 66 countries, 133 air quality policies with PM2.5 trend charts and effectiveness analysis.">
   <title>AirLens - Policy Research</title>
 
@@ -36,7 +41,7 @@
     #detail-panel { transition: opacity .3s; }
   </style>
 </head>
-<body class="bg-gray-50 dark:bg-bg-dark min-h-screen">
+<body class="bg-gray-50 dark:bg-bg-dark min-h-screen flex flex-col">
 
   <!-- Apply saved theme immediately -->
   <script>if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark');</script>
@@ -81,7 +86,7 @@
   </nav>
 
   <!-- ── Main ────────────────────────────────────────────── -->
-  <main class="max-w-5xl mx-auto px-4 pt-24 pb-16">
+  <main class="flex-1 max-w-5xl mx-auto w-full px-4 pt-24 pb-16">
 
     <!-- Header -->
     <div class="text-center mb-10">
@@ -208,7 +213,7 @@
   </main>
 
   <!-- ── Footer ──────────────────────────────────────────── -->
-  <footer style="background:var(--color-bg-dark);color:var(--color-text-dark);padding:var(--space-5) 0;margin-top:2rem;">
+  <footer style="background:var(--color-bg-dark);color:var(--color-text-dark);padding:var(--space-5) 0;margin-top:auto;">
     <div class="container text-center">
       <p style="color:var(--color-text-dark-secondary);" data-i18n="footer.copy">
         © 2025 AirLens. Built with ❤️ for a cleaner planet.

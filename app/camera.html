@@ -3,6 +3,11 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<!-- ── 보안 헤더 ───────────────────────────────────────────── -->
+<meta http-equiv="X-Content-Type-Options" content="nosniff" />
+<meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
+<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+<!-- ── ────────────────────────────────────────────────────── -->
 <meta name="description" content="AI-powered PM2.5 prediction from sky photos. Upload an image and get real-time air quality analysis with 92.3% accuracy using EU Copernicus CAMS data.">
 <meta name="keywords" content="PM2.5 prediction, air quality AI, camera AI, sky photo analysis, pollution detection, real-time air quality">
 <meta name="author" content="AirLens Team">
@@ -61,7 +66,7 @@
         }
     </style>
 </head>
-<body class="bg-background-light dark:bg-background-dark">
+<body class="bg-background-light dark:bg-background-dark flex flex-col min-h-screen">
     <!-- Dark Mode Toggle Button -->
     <div class="theme-toggle-container">
         <div class="toggle-cont">
@@ -344,7 +349,7 @@ CNN-LSTM architecture analyzing sky conditions with TensorFlow.js
 </div>
 </div>
 
-<footer style="background: var(--color-bg-dark); color: var(--color-text-dark); padding: var(--space-5) 0;">
+<footer style="background: var(--color-bg-dark); color: var(--color-text-dark); padding: var(--space-5) 0; margin-top: auto;">
     <div class="container text-center">
         <p style="color: var(--color-text-dark-secondary);">
             © 2025 AirLens. Built with ❤️ for a cleaner planet.

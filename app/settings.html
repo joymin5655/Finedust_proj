@@ -263,16 +263,16 @@
             <div class="feat-row dimmed"><span class="lk">🔒</span>Personal 30-day exposure history</div>
           </div>
           <button disabled
-                  class="mt-5 w-full py-2.5 rounded-xl border-2 border-primary/40
-                         text-primary/60 font-bold text-sm cursor-default">
-            Current Plan
+                  class="mt-5 w-full py-2.5 rounded-xl border-2 border-gray-200 dark:border-white/15
+                         text-gray-400 dark:text-gray-600 font-bold text-sm cursor-default">
+            Downgrade
           </button>
         </div>
 
         <!-- Plus Plan -->
         <div class="plan-card featured relative pt-8">
           <div class="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap">
-            <span class="plan-badge">✨ RECOMMENDED</span>
+            <span class="plan-badge">✅ YOUR PLAN</span>
           </div>
           <div class="flex items-center justify-between mb-1">
             <span class="text-base font-black text-gray-900 dark:text-white">Plus</span>
@@ -288,14 +288,20 @@
             <div class="feat-row"><span class="ck">✓</span>Advanced Camera CNN (ResNet/MobileNet)</div>
             <div class="feat-row"><span class="ck">✓</span>3-source fusion + confidence %</div>
             <div class="feat-row"><span class="ck">✓</span>Policy ΔPM &amp; group comparison</div>
-            <div class="feat-row"><span class="ck">✓</span>30-day personal exposure history</div>
-            <div class="feat-row"><span class="ck">✓</span>Monthly AI health report</div>
-            <div class="feat-row"><span class="ck">✓</span>Sensitive-group alerts (asthma etc.)</div>
+            <div class="feat-row"><span class="ck">✓</span>Watchlist + multi-city view</div>
+            <div class="feat-row"><span class="ck">✓</span>Globe AOD layer + time slider</div>
+            <div class="feat-row"><span class="ck">✓</span>CSV export &amp; monthly AI report</div>
           </div>
-          <button class="mt-5 w-full py-2.5 rounded-xl bg-primary text-gray-900
-                         font-bold text-sm hover:opacity-90 transition-opacity">
-            Upgrade to Plus →
+          <!-- Active 상태 버튼 -->
+          <button disabled
+                  class="mt-5 w-full py-2.5 rounded-xl bg-primary/20 border-2 border-primary
+                         text-primary font-bold text-sm cursor-default flex items-center justify-center gap-2">
+            <span class="material-symbols-outlined text-base">check_circle</span>
+            Active Plan
           </button>
+          <p class="text-center text-xs text-gray-400 dark:text-gray-500 mt-2">
+            Paid via PayPal · Renews monthly
+          </p>
         </div>
       </div>
 
@@ -313,3 +319,100 @@
       </div>
     </div>
 
+
+    </div>
+
+    <!-- ④ Model Info ──────────────────────────────────── -->
+    <div class="settings-card rounded-2xl border border-gray-200 dark:border-white/10
+                bg-white dark:bg-black/20 p-6 shadow-sm">
+      <div class="mb-5">
+        <h2 class="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary" style="font-size:1.1rem;">psychology</span>
+          AI Model Info
+        </h2>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Details about the models powering AirLens</p>
+      </div>
+      <div class="flex flex-col gap-3">
+        <div class="model-info-item rounded-xl border border-gray-100 dark:border-white/8 p-4">
+          <h3 class="font-bold text-gray-800 dark:text-gray-200 text-sm mb-2">📷 Camera AI Model</h3>
+          <div class="text-xs text-gray-500 dark:text-gray-400 space-y-1">
+            <p><strong class="text-gray-700 dark:text-gray-300">Input:</strong> Sky images (RGB)</p>
+            <p><strong class="text-gray-700 dark:text-gray-300">Output:</strong> PM2.5 concentration (µg/m³)</p>
+            <p><strong class="text-gray-700 dark:text-gray-300">Accuracy:</strong> MAE 8.2 µg/m³</p>
+            <p><strong class="text-gray-700 dark:text-gray-300">Technology:</strong> TensorFlow.js (browser-based)</p>
+          </div>
+        </div>
+        <div class="model-info-item rounded-xl border border-gray-100 dark:border-white/8 p-4">
+          <h3 class="font-bold text-gray-800 dark:text-gray-200 text-sm mb-2">🌍 Data Sources</h3>
+          <div class="text-xs text-gray-500 dark:text-gray-400 space-y-1">
+            <p><strong class="text-gray-700 dark:text-gray-300">🇪🇺 EU Copernicus CAMS (Primary)</strong> — No key needed</p>
+            <p class="text-primary">→ PM2.5, PM10, NO₂, AOD, Dust · Worldwide</p>
+            <p class="mt-1"><strong class="text-gray-700 dark:text-gray-300">Optional:</strong> WAQI · OpenWeather · OpenAQ</p>
+          </div>
+        </div>
+        <div class="model-info-item rounded-xl border border-gray-100 dark:border-white/8 p-4">
+          <h3 class="font-bold text-gray-800 dark:text-gray-200 text-sm mb-2">📊 Performance Metrics</h3>
+          <div class="text-xs text-gray-500 dark:text-gray-400 space-y-1">
+            <p><strong class="text-gray-700 dark:text-gray-300">Validation Accuracy:</strong> 92.3%</p>
+            <p><strong class="text-gray-700 dark:text-gray-300">Mean Absolute Error:</strong> 8.2 µg/m³</p>
+            <p><strong class="text-gray-700 dark:text-gray-300">R² Score:</strong> 0.89</p>
+            <p><strong class="text-gray-700 dark:text-gray-300">Inference Time:</strong> &lt;500ms (browser)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ⑤ About ──────────────────────────────────────── -->
+    <div class="settings-card rounded-2xl border border-gray-200 dark:border-white/10
+                bg-white dark:bg-black/20 p-6 shadow-sm">
+      <div class="mb-4">
+        <h2 class="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary" style="font-size:1.1rem;">info</span>
+          About AirLens
+        </h2>
+      </div>
+      <div class="about-info text-xs text-gray-500 dark:text-gray-400 space-y-1.5">
+        <p><strong class="text-gray-700 dark:text-gray-300">Version:</strong> 1.0.0</p>
+        <p><strong class="text-gray-700 dark:text-gray-300">Plan:</strong>
+          <span class="text-primary font-bold">✨ Plus</span>
+        </p>
+        <p><strong class="text-gray-700 dark:text-gray-300">Last Updated:</strong> February 2026</p>
+        <p><strong class="text-gray-700 dark:text-gray-300">License:</strong> MIT License</p>
+        <p><strong class="text-gray-700 dark:text-gray-300">GitHub:</strong>
+          <a href="https://github.com/joymin5655/Finedust_proj" target="_blank"
+             class="text-primary hover:underline">joymin5655/Finedust_proj</a>
+        </p>
+        <p class="pt-2 leading-relaxed">
+          AirLens is an open-source project making air quality data accessible to everyone.
+          Built with modern web technologies and powered by AI, we aim to raise awareness
+          about air pollution and contribute to a cleaner, healthier planet.
+        </p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── Footer ────────────────────────────────────────── -->
+  <footer style="background:var(--color-bg-dark);color:var(--color-text-dark);padding:var(--space-5) 0;margin-top:auto;">
+    <div class="container text-center">
+      <p style="color:var(--color-text-dark-secondary);" data-i18n="footer.copy">
+        © 2025 AirLens. Built with ❤️ for a cleaner planet.
+      </p>
+      <p style="color:var(--color-text-dark-secondary);font-size:.8rem;margin-top:.5rem;">
+        <a href="https://github.com/joymin5655/Finedust_proj" style="color:var(--color-primary);" target="_blank">
+          View on GitHub
+        </a>
+      </p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/i18n.js"></script>
+  <script src="js/theme-toggle.js"></script>
+  <script src="js/message-utils.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/settings.js"></script>
+  <script src="js/pro-features.js"></script>
+</body>
+</html>

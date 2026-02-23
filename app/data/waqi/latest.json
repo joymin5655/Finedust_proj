@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-02-23T10:45:04.835Z",
+  "updated_at": "2026-02-23T10:50:01.351Z",
   "count": 53,
   "source": "WAQI API",
   "cities": [
@@ -68,7 +68,7 @@
       },
       "pollutants": {
         "pm25": 25,
-        "pm10": 18,
+        "pm10": 26,
         "o3": 27.2,
         "no2": 19.9,
         "so2": 4,
@@ -96,9 +96,9 @@
       "aqi": 30,
       "dominentpol": "pm10",
       "time": {
-        "s": "2026-02-23 18:00:00",
+        "s": "2026-02-23 19:00:00",
         "tz": "+09:00",
-        "v": 1771869600
+        "v": 1771873200
       },
       "location": {
         "name": "Incheon (인천)",
@@ -152,7 +152,7 @@
       },
       "pollutants": {
         "pm25": 21,
-        "pm10": 27,
+        "pm10": 23,
         "o3": 35.4,
         "no2": 12.6,
         "so2": 3.3,
@@ -194,7 +194,7 @@
       },
       "pollutants": {
         "pm25": 38,
-        "pm10": 22,
+        "pm10": 20,
         "o3": 31.7,
         "no2": 11.4,
         "so2": 3.9,
@@ -236,7 +236,7 @@
       },
       "pollutants": {
         "pm25": 53,
-        "pm10": 33,
+        "pm10": 29,
         "o3": 29.3,
         "no2": 13.3,
         "so2": 4.9,
@@ -278,7 +278,7 @@
       },
       "pollutants": {
         "pm25": 61,
-        "pm10": 43,
+        "pm10": 38,
         "o3": 32,
         "no2": 34.4,
         "so2": 11.9,
@@ -526,6 +526,10 @@
       },
       "attribution": [
         {
+          "name": "Sichuan Province Environmental Protection Agency (四川省环保重点城市环境空气质量实时监测结果)",
+          "url": "https://sthjt.sc.gov.cn/"
+        },
+        {
           "name": "Chengdu Environmental Protection Agency (成都市环境监测中心站_成都市环境监测中心站)",
           "url": "http://sthj.chengdu.gov.cn/"
         },
@@ -536,10 +540,6 @@
         {
           "name": "U.S. Consulate Chengdu Air Quality Monitor",
           "url": "https://china.usembassy-china.org.cn/embassy-consulates/chengdu/air-quality-monitor/"
-        },
-        {
-          "name": "Sichuan Province Environmental Protection Agency (四川省环保重点城市环境空气质量实时监测结果)",
-          "url": "https://sthjt.sc.gov.cn/"
         },
         {
           "name": "World Air Quality Index Project",
@@ -669,10 +669,10 @@
         "co": 6.6
       },
       "weather": {
-        "temperature": 21.85,
-        "pressure": 901.9333333333334,
-        "humidity": 34.9,
-        "wind": 1.1749999999999998
+        "temperature": 20.9,
+        "pressure": 864.4,
+        "humidity": 36.3,
+        "wind": 0.8
       },
       "attribution": [
         {
@@ -1111,12 +1111,12 @@
     },
     {
       "city": "paris",
-      "aqi": 27,
+      "aqi": 21,
       "dominentpol": "pm25",
       "time": {
-        "s": "2026-02-23 08:00:00",
+        "s": "2026-02-23 09:00:00",
         "tz": "+01:00",
-        "v": 1771833600
+        "v": 1771837200
       },
       "location": {
         "name": "Paris",
@@ -1127,18 +1127,18 @@
         "url": "https://aqicn.org/city/paris"
       },
       "pollutants": {
-        "pm25": 27,
-        "pm10": 6,
-        "o3": 21,
-        "no2": 19.7,
+        "pm25": 21,
+        "pm10": 13,
+        "o3": 24.5,
+        "no2": 16.5,
         "so2": 0.6,
         "co": 0.1
       },
       "weather": {
-        "temperature": 11.3,
-        "pressure": 1022.8,
-        "humidity": 86.6,
-        "wind": 2.8
+        "temperature": 12.8,
+        "pressure": 1022.7,
+        "humidity": 77,
+        "wind": 2.5
       },
       "attribution": [
         {
@@ -1407,10 +1407,10 @@
         "co": 0.1
       },
       "weather": {
-        "temperature": 12.2,
-        "pressure": 994.4,
-        "humidity": 66.8,
-        "wind": 8
+        "temperature": 14.1,
+        "pressure": 1021.5,
+        "humidity": 67,
+        "wind": 7
       },
       "attribution": [
         {
@@ -1955,12 +1955,12 @@
     },
     {
       "city": "santiago",
-      "aqi": 46,
+      "aqi": 59,
       "dominentpol": "pm25",
       "time": {
-        "s": "2026-02-23 05:00:00",
+        "s": "2026-02-23 06:00:00",
         "tz": "-03:00",
-        "v": 1771822800
+        "v": 1771826400
       },
       "location": {
         "name": "Parque O'Higgins, Chile",
@@ -1971,10 +1971,10 @@
         "url": "https://aqicn.org/city/chile/parque-ohiggins"
       },
       "pollutants": {
-        "pm25": 46,
-        "pm10": 35,
-        "o3": 2.4,
-        "no2": 15.9,
+        "pm25": 59,
+        "pm10": 33,
+        "o3": 1.6,
+        "no2": 15.7,
         "so2": null,
         "co": 0.4
       },

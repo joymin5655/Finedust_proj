@@ -3,279 +3,267 @@
  * ────────────────────────────────────────────────
  * PRD v1.5 §3 기반: 단일 진입점으로 모든 데이터 소스 관리
  *
- * 기존 파일 통합:
- *   - waqi-data-service.js → loadStations()
- *   - openaqService.js → loadYearlyTrends()
- *   - earthdataService.js → loadAodData()
- *   - policy-data-service.js → loadPolicies()
- *   - shared-data-service.js → subscribe/notify
- *
- * 새로운 파일에서도 하위 호환성 유지:
- *   import { DataService } from './services/dataService.js';
+ * ⚠️  일반 <script> 태그로 로드 (ES module 아님)
+ *     → window.DataService 로 접근
  */
 
-import { getDataBasePath, CACHE_TTL, DATA_SOURCES } from '../utils/constants.js';
+(function () {
+  'use strict';
 
-class _DataService {
-  constructor() {
-    this._cache = new Map();
-    this._subscribers = new Map();
+  // ── 인라인 상수 (utils/constants.js에서 가져옴) ──────────────
+  var CACHE_TTL = {
+    stations:   5 * 60 * 1000,   // 5분
+    policies:   10 * 60 * 1000,  // 10분
+    prediction: 60 * 60 * 1000,  // 1시간
+  };
+
+  function getDataBasePath() {
+    if (typeof window !== 'undefined') {
+      if (window.location.hostname.includes('github.io')) {
+        return '/Finedust_proj/app/data';
+      }
+      // 로컬 개발 시 현재 경로 기준
+      var path = window.location.pathname;
+      // /app/index.html → /app/data  또는 /app/ → /app/data
+      var appIdx = path.indexOf('/app/');
+      if (appIdx !== -1) {
+        return path.substring(0, appIdx) + '/app/data';
+      }
+      return window.location.origin + '/data';
+    }
+    return '/data';
+  }
+
+  // ── DataService 클래스 ──────────────────────────────────────
+  function DataService() {
+    this._cache = {};
+    this._subscribers = {};
     this._basePath = getDataBasePath();
   }
 
-  // ── Cache Layer ─────────────────────────────────────────────
-  _isFresh(key, ttl) {
-    const entry = this._cache.get(key);
+  // Cache
+  DataService.prototype._isFresh = function (key, ttl) {
+    var entry = this._cache[key];
     return entry && (Date.now() - entry.ts < ttl);
-  }
-  _set(key, data) { this._cache.set(key, { data, ts: Date.now() }); }
-  _get(key) { return this._cache.get(key)?.data ?? null; }
-  clearCache() { this._cache.clear(); }
+  };
+  DataService.prototype._set = function (key, data) {
+    this._cache[key] = { data: data, ts: Date.now() };
+  };
+  DataService.prototype._get = function (key) {
+    var entry = this._cache[key];
+    return entry ? entry.data : null;
+  };
+  DataService.prototype.clearCache = function () { this._cache = {}; };
 
-  // ── Pub/Sub ─────────────────────────────────────────────────
-  subscribe(event, fn) {
-    if (!this._subscribers.has(event)) this._subscribers.set(event, new Set());
-    this._subscribers.get(event).add(fn);
-    return () => this._subscribers.get(event)?.delete(fn);
-  }
-  _notify(event, data) {
-    (this._subscribers.get(event) || []).forEach(fn => {
-      try { fn(data, event); } catch (e) { console.error(`[DataService] subscriber error (${event}):`, e); }
+  // Pub/Sub
+  DataService.prototype.subscribe = function (event, fn) {
+    if (!this._subscribers[event]) this._subscribers[event] = [];
+    this._subscribers[event].push(fn);
+    return function () {
+      var arr = this._subscribers[event];
+      if (arr) {
+        var idx = arr.indexOf(fn);
+        if (idx !== -1) arr.splice(idx, 1);
+      }
+    }.bind(this);
+  };
+  DataService.prototype._notify = function (event, data) {
+    var subs = this._subscribers[event] || [];
+    subs.forEach(function (fn) {
+      try { fn(data, event); } catch (e) { console.error('[DataService] subscriber error (' + event + '):', e); }
     });
-  }
+  };
 
-  // ── Fetch helper ────────────────────────────────────────────
-  async _fetch(path) {
-    const url = `${this._basePath}/${path}`;
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`HTTP ${res.status}: ${url}`);
-    return res.json();
-  }
+  // Fetch helper
+  DataService.prototype._fetch = function (path) {
+    var url = this._basePath + '/' + path;
+    return fetch(url).then(function (res) {
+      if (!res.ok) throw new Error('HTTP ' + res.status + ': ' + url);
+      return res.json();
+    });
+  };
 
-  // ── 1. Stations (WAQI) ─────────────────────────────────────
-  async loadStations() {
-    const KEY = 'stations';
-    if (this._isFresh(KEY, CACHE_TTL.stations)) return this._get(KEY);
+  // ── 1. Stations (WAQI) — raw JSON 반환 ─────────────────────
+  DataService.prototype.loadStations = function () {
+    var self = this;
+    var KEY = 'stations';
+    if (this._isFresh(KEY, CACHE_TTL.stations)) return Promise.resolve(this._get(KEY));
 
-    try {
-      const raw = await this._fetch('waqi/latest.json');
-      const map = new Map();
-
-      (raw.cities || []).forEach(city => {
-        const id = city.city || city.location?.name || 'unknown';
-        const geo = city.location?.geo || [0, 0];
-        map.set(id, {
-          id, name: city.location?.name || id, city: id,
-          lat: geo[0], lon: geo[1],
-          latitude: geo[0], longitude: geo[1],
-          aqi:  city.aqi || 0,
-          pm25: city.pollutants?.pm25 ?? city.aqi ?? 0,
-          pm10: city.pollutants?.pm10 ?? null,
-          dominentpol: city.dominentpol || 'pm25',
-          source: 'WAQI',
-          url: city.location?.url || '',
-          weather:    city.weather    || {},
-          pollutants: city.pollutants || {},
-          lastUpdated: city.time?.s || raw.updated_at || new Date().toISOString(),
-        });
-      });
-
-      this._set(KEY, map);
-      this._notify('stations', map);
-      console.log(`✅ [DataService] Loaded ${map.size} stations`);
-      return map;
-    } catch (e) {
+    return this._fetch('waqi/latest.json').then(function (raw) {
+      self._set(KEY, raw);
+      self._notify('stations', raw);
+      var count = (raw.cities || []).length;
+      console.log('✅ [DataService] Loaded ' + count + ' stations');
+      return raw;
+    }).catch(function (e) {
       console.warn('[DataService] stations load failed:', e.message);
-      return this._get(KEY) || new Map();
-    }
-  }
+      return self._get(KEY) || { cities: [], count: 0 };
+    });
+  };
 
-  getStations() { return this._get('stations') || new Map(); }
+  DataService.prototype.getStations = function () {
+    return this._get('stations') || { cities: [], count: 0 };
+  };
 
-  // ── 2. Global Stations (WAQI full list) ────────────────────
-  async loadGlobalStations() {
-    const KEY = 'global-stations';
-    if (this._isFresh(KEY, CACHE_TTL.stations)) return this._get(KEY);
+  // ── 2. Global Stations ────────────────────────────────────
+  DataService.prototype.loadGlobalStations = function () {
+    var self = this;
+    var KEY = 'global-stations';
+    if (this._isFresh(KEY, CACHE_TTL.stations)) return Promise.resolve(this._get(KEY));
 
-    try {
-      const data = await this._fetch('waqi/global-stations.json');
-      this._set(KEY, data);
+    return this._fetch('waqi/global-stations.json').then(function (data) {
+      self._set(KEY, data);
       return data;
-    } catch (e) {
+    }).catch(function (e) {
       console.warn('[DataService] global-stations failed:', e.message);
-      return this._get(KEY) || { stations: [], count: 0 };
-    }
-  }
+      return self._get(KEY) || { stations: [], count: 0 };
+    });
+  };
 
   // ── 3. OpenAQ Yearly Trends ────────────────────────────────
-  async loadYearlyTrends() {
-    const KEY = 'openaq-years';
-    if (this._isFresh(KEY, CACHE_TTL.policies)) return this._get(KEY);
-
-    try {
-      const data = await this._fetch('openaq/pm25_years.json');
-      this._set(KEY, data);
-      return data;
-    } catch (e) {
+  DataService.prototype.loadYearlyTrends = function () {
+    var self = this;
+    var KEY = 'openaq-years';
+    if (this._isFresh(KEY, CACHE_TTL.policies)) return Promise.resolve(this._get(KEY));
+    return this._fetch('openaq/pm25_years.json').then(function (d) {
+      self._set(KEY, d); return d;
+    }).catch(function (e) {
       console.warn('[DataService] openaq years failed:', e.message);
-      return this._get(KEY);
-    }
-  }
+      return self._get(KEY);
+    });
+  };
 
-  async getCityYearlyTrend(city, country = null) {
-    const data = await this.loadYearlyTrends();
-    if (!data) return [];
-    const entry = data.data?.find(d =>
-      d.city.toLowerCase() === city.toLowerCase() &&
-      (!country || d.country === country)
-    );
-    return entry?.data || [];
-  }
+  DataService.prototype.getCityYearlyTrend = function (city, country) {
+    return this.loadYearlyTrends().then(function (data) {
+      if (!data) return [];
+      var entry = (data.data || []).find(function (d) {
+        return d.city.toLowerCase() === city.toLowerCase() &&
+          (!country || d.country === country);
+      });
+      return entry ? (entry.data || []) : [];
+    });
+  };
 
   // ── 4. OpenAQ Daily Trends ─────────────────────────────────
-  async loadDailyTrends() {
-    const KEY = 'openaq-days';
-    if (this._isFresh(KEY, CACHE_TTL.policies)) return this._get(KEY);
-
-    try {
-      const data = await this._fetch('openaq/pm25_days.json');
-      this._set(KEY, data);
-      return data;
-    } catch (e) {
+  DataService.prototype.loadDailyTrends = function () {
+    var self = this;
+    var KEY = 'openaq-days';
+    if (this._isFresh(KEY, CACHE_TTL.policies)) return Promise.resolve(this._get(KEY));
+    return this._fetch('openaq/pm25_days.json').then(function (d) {
+      self._set(KEY, d); return d;
+    }).catch(function (e) {
       console.warn('[DataService] openaq days failed:', e.message);
-      return this._get(KEY);
-    }
-  }
+      return self._get(KEY);
+    });
+  };
 
   // ── 5. Earthdata AOD ───────────────────────────────────────
-  async loadAodSamples() {
-    const KEY = 'aod-samples';
-    if (this._isFresh(KEY, CACHE_TTL.prediction)) return this._get(KEY);
-
-    try {
-      const data = await this._fetch('earthdata/aod_samples.json');
-      this._set(KEY, data);
-      return data;
-    } catch (e) {
+  DataService.prototype.loadAodSamples = function () {
+    var self = this;
+    var KEY = 'aod-samples';
+    if (this._isFresh(KEY, CACHE_TTL.prediction)) return Promise.resolve(this._get(KEY));
+    return this._fetch('earthdata/aod_samples.json').then(function (d) {
+      self._set(KEY, d); return d;
+    }).catch(function (e) {
       console.warn('[DataService] aod failed:', e.message);
-      return this._get(KEY);
-    }
-  }
+      return self._get(KEY);
+    });
+  };
 
-  async loadAodTrend() {
-    const KEY = 'aod-trend';
-    if (this._isFresh(KEY, CACHE_TTL.prediction)) return this._get(KEY);
-
-    try {
-      const data = await this._fetch('earthdata/aod_trend.json');
-      this._set(KEY, data);
-      return data;
-    } catch (e) { return this._get(KEY); }
-  }
+  DataService.prototype.loadAodTrend = function () {
+    var self = this;
+    var KEY = 'aod-trend';
+    if (this._isFresh(KEY, CACHE_TTL.prediction)) return Promise.resolve(this._get(KEY));
+    return this._fetch('earthdata/aod_trend.json').then(function (d) {
+      self._set(KEY, d); return d;
+    }).catch(function () { return self._get(KEY); });
+  };
 
   // ── 6. Country Policies ────────────────────────────────────
-  async loadCountryPolicies() {
-    const KEY = 'country-policies';
-    if (this._isFresh(KEY, CACHE_TTL.policies)) return this._get(KEY);
-
-    try {
-      const data = await this._fetch('country-policies.json');
-      this._set(KEY, data);
-      this._notify('policies', data);
-      console.log(`✅ [DataService] Loaded ${Object.keys(data).length} country policies`);
-      return data;
-    } catch (e) {
+  DataService.prototype.loadCountryPolicies = function () {
+    var self = this;
+    var KEY = 'country-policies';
+    if (this._isFresh(KEY, CACHE_TTL.policies)) return Promise.resolve(this._get(KEY));
+    return this._fetch('country-policies.json').then(function (d) {
+      self._set(KEY, d);
+      self._notify('policies', d);
+      console.log('✅ [DataService] Loaded ' + Object.keys(d).length + ' country policies');
+      return d;
+    }).catch(function (e) {
       console.warn('[DataService] country-policies failed:', e.message);
-      return this._get(KEY) || {};
-    }
-  }
+      return self._get(KEY) || {};
+    });
+  };
 
   // ── 7. Policy Impact (per-country JSON) ────────────────────
-  async loadPolicyIndex() {
-    const KEY = 'policy-index';
-    if (this._isFresh(KEY, CACHE_TTL.policies)) return this._get(KEY);
+  DataService.prototype.loadPolicyIndex = function () {
+    var self = this;
+    var KEY = 'policy-index';
+    if (this._isFresh(KEY, CACHE_TTL.policies)) return Promise.resolve(this._get(KEY));
+    return this._fetch('policy-impact/index.json').then(function (d) {
+      self._set(KEY, d); return d;
+    }).catch(function () { return self._get(KEY); });
+  };
 
-    try {
-      const data = await this._fetch('policy-impact/index.json');
-      this._set(KEY, data);
-      return data;
-    } catch (e) { return this._get(KEY); }
-  }
-
-  async loadCountryImpact(dataFile) {
-    try {
-      return await this._fetch(`policy-impact/${dataFile}`);
-    } catch (e) {
-      console.warn(`[DataService] impact ${dataFile} failed:`, e.message);
+  DataService.prototype.loadCountryImpact = function (dataFile) {
+    return this._fetch('policy-impact/' + dataFile).catch(function (e) {
+      console.warn('[DataService] impact ' + dataFile + ' failed:', e.message);
       return null;
-    }
-  }
+    });
+  };
+
+  // ── 하위 호환: policy.js에서 loadCountryPolicy() 호출 ──────
+  DataService.prototype.loadCountryPolicy = DataService.prototype.loadCountryImpact;
 
   // ── 8. Policies (flat list) ────────────────────────────────
-  async loadPoliciesList() {
-    const KEY = 'policies-list';
-    if (this._isFresh(KEY, CACHE_TTL.policies)) return this._get(KEY);
-
-    try {
-      const data = await this._fetch('policies.json');
-      this._set(KEY, data);
-      return data;
-    } catch (e) { return this._get(KEY); }
-  }
+  DataService.prototype.loadPoliciesList = function () {
+    var self = this;
+    var KEY = 'policies-list';
+    if (this._isFresh(KEY, CACHE_TTL.policies)) return Promise.resolve(this._get(KEY));
+    return this._fetch('policies.json').then(function (d) {
+      self._set(KEY, d); return d;
+    }).catch(function () { return self._get(KEY); });
+  };
 
   // ── 9. Prediction Grid (ML Spec §2.6) ─────────────────────
-  // 향후 ML 모델 결과물 로드용
-  async loadPredictionGrid() {
-    const KEY = 'prediction-grid';
-    if (this._isFresh(KEY, CACHE_TTL.prediction)) return this._get(KEY);
+  DataService.prototype.loadPredictionGrid = function () {
+    var self = this;
+    var KEY = 'prediction-grid';
+    if (this._isFresh(KEY, CACHE_TTL.prediction)) return Promise.resolve(this._get(KEY));
+    return this._fetch('predictions/grid_latest.json').then(function (d) {
+      self._set(KEY, d);
+      self._notify('predictions', d);
+      return d;
+    }).catch(function () { return null; });
+  };
 
-    try {
-      const data = await this._fetch('predictions/grid_latest.json');
-      this._set(KEY, data);
-      this._notify('predictions', data);
-      return data;
-    } catch (e) {
-      // 아직 ML 모델 미배포 시 조용히 실패
-      return null;
-    }
-  }
-
-  // ── 10. Weather features (ML Spec §2.2) ────────────────────
-  // Open-Meteo에서 기상 데이터 직접 fetch (브라우저용 fallback)
-  async fetchWeatherForLocation(lat, lon) {
-    try {
-      const params = new URLSearchParams({
-        latitude: lat, longitude: lon,
-        current: 'temperature_2m,relative_humidity_2m,wind_speed_10m,surface_pressure',
-        timezone: 'auto',
-      });
-      const res = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`);
+  // ── 10. Weather (Open-Meteo) ──────────────────────────────
+  DataService.prototype.fetchWeatherForLocation = function (lat, lon) {
+    var params = new URLSearchParams({
+      latitude: lat, longitude: lon,
+      current: 'temperature_2m,relative_humidity_2m,wind_speed_10m,surface_pressure',
+      timezone: 'auto',
+    });
+    return fetch('https://api.open-meteo.com/v1/forecast?' + params).then(function (res) {
       if (!res.ok) return null;
-      const data = await res.json();
-      return data.current || null;
-    } catch (e) { return null; }
-  }
+      return res.json().then(function (d) { return d.current || null; });
+    }).catch(function () { return null; });
+  };
 
-  // ── 11. Open-Meteo Air Quality (fallback PM2.5) ───────────
-  async fetchAirQualityForCity(lat, lon) {
-    try {
-      const params = new URLSearchParams({
-        latitude: lat, longitude: lon,
-        current: 'pm2_5,pm10,us_aqi',
-        timezone: 'auto',
-      });
-      const res = await fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?${params}`);
+  // ── 11. Air Quality (Open-Meteo) ──────────────────────────
+  DataService.prototype.fetchAirQualityForCity = function (lat, lon) {
+    var params = new URLSearchParams({
+      latitude: lat, longitude: lon,
+      current: 'pm2_5,pm10,us_aqi',
+      timezone: 'auto',
+    });
+    return fetch('https://air-quality-api.open-meteo.com/v1/air-quality?' + params).then(function (res) {
       if (!res.ok) return null;
-      const data = await res.json();
-      return data.current || null;
-    } catch (e) { return null; }
-  }
-}
+      return res.json().then(function (d) { return d.current || null; });
+    }).catch(function () { return null; });
+  };
 
-// 싱글턴 인스턴스
-export const DataService = new _DataService();
+  // ── 싱글턴 등록 ───────────────────────────────────────────
+  window.DataService = new DataService();
 
-// 하위 호환성: window.DataService
-if (typeof window !== 'undefined') {
-  window.DataService = DataService;
-}
+})();

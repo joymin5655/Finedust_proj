@@ -19,7 +19,7 @@ import { policyDataService } from '../services/policy/policy-data-service.js';
 import { waqiDataService } from '../services/waqi-data-service.js';
 import { policyImpactAnalyzer } from '../services/policy/policy-impact-analyzer.js';
 import { PolicyChangeVisualizer, getPolicyChangeVisualizer } from '../services/policy/policy-change-visualizer.js';
-import { DataService } from '../services/dataService.js';
+import { DataService } from '../services/dataService.module.js';
 import { pm25ToHex, pm25ToLabel } from '../utils/color.js';
 import { countryToFlag, nameToCode } from '../utils/geo.js';
 import { esc, safeUrl } from '../utils/security.js';

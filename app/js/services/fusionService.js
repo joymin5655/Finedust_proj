@@ -15,7 +15,7 @@
  *   - constants.js (basePath, TTL)
  */
 
-import { DataService } from './dataService.js';
+import { DataService } from './dataService.module.js';
 import { getDataBasePath, CACHE_TTL } from '../utils/constants.js';
 
 class _FusionService {

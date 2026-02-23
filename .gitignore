@@ -38,7 +38,10 @@ app/js/config.js
 *.tmp
 .cache/
 
-# Archives
+# ── 로컬 전용 (서비스 운영과 무관, GitHub에 올리지 않음) ──
+docs/
+_archive/
+analysis/
 archive/
 
 # API tokens (never commit!)

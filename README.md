@@ -3,7 +3,6 @@
 > An open-source platform for real-time PM2.5 visualization, policy impact analysis, and satellite-based air quality estimation.
 
 [![Deploy to GitHub Pages](https://github.com/joymin5655/Finedust_proj/actions/workflows/deploy.yml/badge.svg)](https://github.com/joymin5655/Finedust_proj/actions/workflows/deploy.yml)
-[![WAQI Data](https://github.com/joymin5655/Finedust_proj/actions/workflows/update-waqi-data.yml/badge.svg)](https://github.com/joymin5655/Finedust_proj/actions/workflows/update-waqi-data.yml)
 [![Update AirLens Data (Full Pipeline)](https://github.com/joymin5655/Finedust_proj/actions/workflows/update_airdata.yml/badge.svg)](https://github.com/joymin5655/Finedust_proj/actions/workflows/update_airdata.yml)
 
 **🔗 Live:** [https://joymin5655.github.io/Finedust_proj/app/](https://joymin5655.github.io/Finedust_proj/app/)
@@ -44,8 +43,7 @@ AirLens bridges this gap with three approaches:
 | Workflow | Schedule | Status |
 |----------|----------|--------|
 | `deploy.yml` | On push to main | Deploy to GitHub Pages |
-| `update-waqi-data.yml` | Daily 00:00 UTC | Fetch WAQI real-time data |
-| `update_airdata.yml` | Daily 00:00 + Weekly Sun 02:00 UTC | OpenAQ + NASA Earthdata AOD |
+| `update_airdata.yml` | Daily 00:00 UTC (WAQI) + Weekly Sun 02:00 UTC (OpenAQ + Earthdata) | Full data pipeline |
 
 > ⚠️ `Update AirLens Data` currently requires `OPENAQ_API_KEY` and `EARTHDATA_TOKEN` to be set in GitHub Secrets → Settings → Secrets and variables → Actions.
 
@@ -118,8 +116,7 @@ AirLens는 이 격차를 세 가지 방식으로 해소합니다.
 | 워크플로우 | 스케줄 | 역할 |
 |-----------|--------|------|
 | `deploy.yml` | main 브랜치 push 시 | GitHub Pages 자동 배포 |
-| `update-waqi-data.yml` | 매일 00:00 UTC | WAQI 실시간 데이터 수집 |
-| `update_airdata.yml` | 매일 00:00 + 매주 일요일 02:00 UTC | OpenAQ + NASA Earthdata AOD 수집 |
+| `update_airdata.yml` | 매일 00:00 UTC (WAQI) + 매주 일요일 02:00 UTC (OpenAQ + Earthdata) | 전체 데이터 파이프라인 |
 
 > ⚠️ `Update AirLens Data` 워크플로우가 failing 상태일 경우, GitHub Secrets에 `OPENAQ_API_KEY`와 `EARTHDATA_TOKEN`이 설정되어 있는지 확인하세요. (Settings → Secrets and variables → Actions)
 

@@ -5,6 +5,15 @@
 
 export class EnhancedDataIntegrationService {
   constructor() {
+    // 환경별 데이터 기본 경로
+    this._dataBase = window.location.hostname.includes('github.io')
+      ? '/Finedust_proj/app/data'
+      : (() => {
+          const path = window.location.pathname;
+          const appIdx = path.indexOf('/app/');
+          return appIdx !== -1 ? path.substring(0, appIdx) + '/app/data' : '/data';
+        })();
+
     // 중앙 데이터 저장소
     this.centralStore = {
       stations: new Map(),
@@ -189,7 +198,7 @@ export class EnhancedDataIntegrationService {
    */
   async fetchStationsData() {
     try {
-      const response = await fetch('/data/pm25/latest.json');
+      const response = await fetch(`${this._dataBase}/pm25/latest.json`);
       if (!response.ok) throw new Error('Failed to fetch stations');
       
       const data = await response.json();
@@ -205,7 +214,7 @@ export class EnhancedDataIntegrationService {
    */
   async fetchPoliciesData() {
     try {
-      const response = await fetch('/data/policies/enhanced-policies.json');
+      const response = await fetch(`${this._dataBase}/policies/enhanced-policies.json`);
       if (!response.ok) throw new Error('Failed to fetch policies');
       
       const data = await response.json();

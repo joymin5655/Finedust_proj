@@ -8,10 +8,21 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { globalDataService } from './services/shared-data-service.js';
 import { EnhancedMarkerSystem } from './services/enhanced-marker-system.js';
-import { policyDataService } from './services/policy-data-service.js';
+import { policyDataService } from './services/policy/policy-data-service.js';
 import { waqiDataService } from './services/waqi-data-service.js';
-import { policyImpactAnalyzer } from './services/policy-impact-analyzer.js';
-import { PolicyChangeVisualizer, getPolicyChangeVisualizer } from './services/policy-change-visualizer.js';
+import { policyImpactAnalyzer } from './services/policy/policy-impact-analyzer.js';
+import { PolicyChangeVisualizer, getPolicyChangeVisualizer } from './services/policy/policy-change-visualizer.js';
+
+// ── v2.5 리팩토링: 새 모듈 import ──────────────────────────
+import { DataService } from './services/dataService.js';
+// ML 기능은 향후 구현 예정 — 현재 비활성화
+// import { PredictionService } from './services/predictionService.js';
+// import { PredictionLayer } from './globe/prediction-layer.js';
+// ML 향후 구현 시 활성화
+// import { loadPM25Data as loadPM25DataNew, loadAndMergePolicyImpact, computeUnifiedStats } from './globe/globe-data.js';
+import { pm25ToHex, pm25ToLabel } from './utils/color.js';
+import { countryToFlag, nameToCode } from './utils/geo.js';
+import { esc, safeUrl } from './utils/security.js';
 
 class PolicyGlobe {
   constructor() {
@@ -88,7 +99,7 @@ class PolicyGlobe {
     this.particleCount = 6000;
 
     // Data
-    this.countryPolicies = this.loadCountryPolicies();
+    this.countryPolicies = {}; // Loaded async in init()
     this.pm25Data = new Map();
 
     // 🆕 Enhanced Marker System (init()에서 초기화됨)
@@ -146,6 +157,9 @@ class PolicyGlobe {
 
   async init() {
     try {
+      // ⚡ PHASE 0: 정책 데이터 로드 (JSON)
+      this.countryPolicies = await this.loadCountryPoliciesFromJSON();
+      
       // ⚡ PHASE 1: 글로브 기본 렌더링 (필수 요소만)
       this.createLights();
       this.createStars();
@@ -187,6 +201,10 @@ class PolicyGlobe {
       this.updateLoadingProgress(60, 'Start');
       this.hideLoadingIndicator();
       this.animate();
+      
+      // ⚡ v2.5: 예측 레이어 (ML 향후 구현 시 활성화)
+      // this.predictionLayer = new PredictionLayer(this.scene, this.earth);
+      this.predictionLayer = null;
       
       // ⚡ PHASE 3: 백그라운드에서 데이터 로드
       this.backgroundLoadData();
@@ -990,187 +1008,27 @@ class PolicyGlobe {
    */
   async loadPM25Data_OpenMeteo() {
     // Expanded list of 150+ major cities worldwide
-    const cities = [
-      // East Asia - South Korea (expanded)
-      { name: 'Seoul', lat: 37.5665, lon: 126.9780, country: 'South Korea' },
-      { name: 'Busan', lat: 35.1796, lon: 129.0756, country: 'South Korea' },
-      { name: 'Incheon', lat: 37.4563, lon: 126.7052, country: 'South Korea' },
-      { name: 'Daegu', lat: 35.8714, lon: 128.6014, country: 'South Korea' },
-      { name: 'Daejeon', lat: 36.3504, lon: 127.3845, country: 'South Korea' },
-      { name: 'Gwangju', lat: 35.1595, lon: 126.8526, country: 'South Korea' },
-      { name: 'Ulsan', lat: 35.5384, lon: 129.3114, country: 'South Korea' },
-      { name: 'Suwon', lat: 37.2636, lon: 127.0286, country: 'South Korea' },
-
-      // East Asia - China (expanded)
-      { name: 'Beijing', lat: 39.9042, lon: 116.4074, country: 'China' },
-      { name: 'Shanghai', lat: 31.2304, lon: 121.4737, country: 'China' },
-      { name: 'Guangzhou', lat: 23.1291, lon: 113.2644, country: 'China' },
-      { name: 'Shenzhen', lat: 22.5431, lon: 114.0579, country: 'China' },
-      { name: 'Chengdu', lat: 30.5728, lon: 104.0668, country: 'China' },
-      { name: 'Chongqing', lat: 29.4316, lon: 106.9123, country: 'China' },
-      { name: 'Tianjin', lat: 39.3434, lon: 117.3616, country: 'China' },
-      { name: 'Wuhan', lat: 30.5928, lon: 114.3055, country: 'China' },
-      { name: 'Xi\'an', lat: 34.3416, lon: 108.9398, country: 'China' },
-      { name: 'Hangzhou', lat: 30.2741, lon: 120.1551, country: 'China' },
-      { name: 'Nanjing', lat: 32.0603, lon: 118.7969, country: 'China' },
-      { name: 'Shenyang', lat: 41.8057, lon: 123.4328, country: 'China' },
-      { name: 'Hong Kong', lat: 22.3193, lon: 114.1694, country: 'Hong Kong' },
-      { name: 'Taipei', lat: 25.0330, lon: 121.5654, country: 'Taiwan' },
-
-      // East Asia - Japan (expanded)
-      { name: 'Tokyo', lat: 35.6762, lon: 139.6503, country: 'Japan' },
-      { name: 'Osaka', lat: 34.6937, lon: 135.5023, country: 'Japan' },
-      { name: 'Nagoya', lat: 35.1815, lon: 136.9066, country: 'Japan' },
-      { name: 'Sapporo', lat: 43.0642, lon: 141.3469, country: 'Japan' },
-      { name: 'Fukuoka', lat: 33.5904, lon: 130.4017, country: 'Japan' },
-      { name: 'Kyoto', lat: 35.0116, lon: 135.7681, country: 'Japan' },
-
-      // South Asia - India (expanded)
-      { name: 'Delhi', lat: 28.6139, lon: 77.2090, country: 'India' },
-      { name: 'Mumbai', lat: 19.0760, lon: 72.8777, country: 'India' },
-      { name: 'Kolkata', lat: 22.5726, lon: 88.3639, country: 'India' },
-      { name: 'Chennai', lat: 13.0827, lon: 80.2707, country: 'India' },
-      { name: 'Bangalore', lat: 12.9716, lon: 77.5946, country: 'India' },
-      { name: 'Hyderabad', lat: 17.3850, lon: 78.4867, country: 'India' },
-      { name: 'Ahmedabad', lat: 23.0225, lon: 72.5714, country: 'India' },
-      { name: 'Pune', lat: 18.5204, lon: 73.8567, country: 'India' },
-      { name: 'Jaipur', lat: 26.9124, lon: 75.7873, country: 'India' },
-      { name: 'Lucknow', lat: 26.8467, lon: 80.9462, country: 'India' },
-
-      // South Asia - Other
-      { name: 'Dhaka', lat: 23.8103, lon: 90.4125, country: 'Bangladesh' },
-      { name: 'Karachi', lat: 24.8607, lon: 67.0011, country: 'Pakistan' },
-      { name: 'Lahore', lat: 31.5204, lon: 74.3587, country: 'Pakistan' },
-      { name: 'Islamabad', lat: 33.6844, lon: 73.0479, country: 'Pakistan' },
-      { name: 'Colombo', lat: 6.9271, lon: 79.8612, country: 'Sri Lanka' },
-      { name: 'Kathmandu', lat: 27.7172, lon: 85.3240, country: 'Nepal' },
-
-      // Southeast Asia (expanded)
-      { name: 'Bangkok', lat: 13.7563, lon: 100.5018, country: 'Thailand' },
-      { name: 'Hanoi', lat: 21.0285, lon: 105.8542, country: 'Vietnam' },
-      { name: 'Ho Chi Minh City', lat: 10.8231, lon: 106.6297, country: 'Vietnam' },
-      { name: 'Jakarta', lat: -6.2088, lon: 106.8456, country: 'Indonesia' },
-      { name: 'Surabaya', lat: -7.2575, lon: 112.7521, country: 'Indonesia' },
-      { name: 'Singapore', lat: 1.3521, lon: 103.8198, country: 'Singapore' },
-      { name: 'Kuala Lumpur', lat: 3.1390, lon: 101.6869, country: 'Malaysia' },
-      { name: 'Manila', lat: 14.5995, lon: 120.9842, country: 'Philippines' },
-      { name: 'Yangon', lat: 16.8661, lon: 96.1951, country: 'Myanmar' },
-      { name: 'Phnom Penh', lat: 11.5564, lon: 104.9282, country: 'Cambodia' },
-
-      // North America - USA (expanded)
-      { name: 'New York', lat: 40.7128, lon: -74.0060, country: 'United States' },
-      { name: 'Los Angeles', lat: 34.0522, lon: -118.2437, country: 'United States' },
-      { name: 'Chicago', lat: 41.8781, lon: -87.6298, country: 'United States' },
-      { name: 'Houston', lat: 29.7604, lon: -95.3698, country: 'United States' },
-      { name: 'Phoenix', lat: 33.4484, lon: -112.0740, country: 'United States' },
-      { name: 'Philadelphia', lat: 39.9526, lon: -75.1652, country: 'United States' },
-      { name: 'San Antonio', lat: 29.4241, lon: -98.4936, country: 'United States' },
-      { name: 'San Diego', lat: 32.7157, lon: -117.1611, country: 'United States' },
-      { name: 'Dallas', lat: 32.7767, lon: -96.7970, country: 'United States' },
-      { name: 'San Francisco', lat: 37.7749, lon: -122.4194, country: 'United States' },
-      { name: 'Seattle', lat: 47.6062, lon: -122.3321, country: 'United States' },
-      { name: 'Denver', lat: 39.7392, lon: -104.9903, country: 'United States' },
-      { name: 'Boston', lat: 42.3601, lon: -71.0589, country: 'United States' },
-      { name: 'Atlanta', lat: 33.7490, lon: -84.3880, country: 'United States' },
-      { name: 'Miami', lat: 25.7617, lon: -80.1918, country: 'United States' },
-      { name: 'Washington DC', lat: 38.9072, lon: -77.0369, country: 'United States' },
-
-      // North America - Canada & Mexico (expanded)
-      { name: 'Toronto', lat: 43.6532, lon: -79.3832, country: 'Canada' },
-      { name: 'Montreal', lat: 45.5017, lon: -73.5673, country: 'Canada' },
-      { name: 'Vancouver', lat: 49.2827, lon: -123.1207, country: 'Canada' },
-      { name: 'Calgary', lat: 51.0447, lon: -114.0719, country: 'Canada' },
-      { name: 'Ottawa', lat: 45.4215, lon: -75.6972, country: 'Canada' },
-      { name: 'Mexico City', lat: 19.4326, lon: -99.1332, country: 'Mexico' },
-      { name: 'Guadalajara', lat: 20.6597, lon: -103.3496, country: 'Mexico' },
-      { name: 'Monterrey', lat: 25.6866, lon: -100.3161, country: 'Mexico' },
-
-      // South America (expanded)
-      { name: 'São Paulo', lat: -23.5505, lon: -46.6333, country: 'Brazil' },
-      { name: 'Rio de Janeiro', lat: -22.9068, lon: -43.1729, country: 'Brazil' },
-      { name: 'Brasília', lat: -15.8267, lon: -47.9218, country: 'Brazil' },
-      { name: 'Buenos Aires', lat: -34.6037, lon: -58.3816, country: 'Argentina' },
-      { name: 'Santiago', lat: -33.4489, lon: -70.6693, country: 'Chile' },
-      { name: 'Lima', lat: -12.0464, lon: -77.0428, country: 'Peru' },
-      { name: 'Bogotá', lat: 4.7110, lon: -74.0721, country: 'Colombia' },
-      { name: 'Caracas', lat: 10.4806, lon: -66.9036, country: 'Venezuela' },
-
-      // Europe - Western Europe (expanded)
-      { name: 'London', lat: 51.5074, lon: -0.1278, country: 'United Kingdom' },
-      { name: 'Manchester', lat: 53.4808, lon: -2.2426, country: 'United Kingdom' },
-      { name: 'Paris', lat: 48.8566, lon: 2.3522, country: 'France' },
-      { name: 'Marseille', lat: 43.2965, lon: 5.3698, country: 'France' },
-      { name: 'Lyon', lat: 45.7640, lon: 4.8357, country: 'France' },
-      { name: 'Berlin', lat: 52.5200, lon: 13.4050, country: 'Germany' },
-      { name: 'Munich', lat: 48.1351, lon: 11.5820, country: 'Germany' },
-      { name: 'Hamburg', lat: 53.5511, lon: 9.9937, country: 'Germany' },
-      { name: 'Frankfurt', lat: 50.1109, lon: 8.6821, country: 'Germany' },
-      { name: 'Amsterdam', lat: 52.3676, lon: 4.9041, country: 'Netherlands' },
-      { name: 'Brussels', lat: 50.8503, lon: 4.3517, country: 'Belgium' },
-
-      // Europe - Southern Europe (expanded)
-      { name: 'Rome', lat: 41.9028, lon: 12.4964, country: 'Italy' },
-      { name: 'Milan', lat: 45.4642, lon: 9.1900, country: 'Italy' },
-      { name: 'Naples', lat: 40.8518, lon: 14.2681, country: 'Italy' },
-      { name: 'Madrid', lat: 40.4168, lon: -3.7038, country: 'Spain' },
-      { name: 'Barcelona', lat: 41.3851, lon: 2.1734, country: 'Spain' },
-      { name: 'Valencia', lat: 39.4699, lon: -0.3763, country: 'Spain' },
-      { name: 'Lisbon', lat: 38.7223, lon: -9.1393, country: 'Portugal' },
-      { name: 'Athens', lat: 37.9838, lon: 23.7275, country: 'Greece' },
-
-      // Europe - Eastern Europe (expanded)
-      { name: 'Warsaw', lat: 52.2297, lon: 21.0122, country: 'Poland' },
-      { name: 'Krakow', lat: 50.0647, lon: 19.9450, country: 'Poland' },
-      { name: 'Prague', lat: 50.0755, lon: 14.4378, country: 'Czech Republic' },
-      { name: 'Budapest', lat: 47.4979, lon: 19.0402, country: 'Hungary' },
-      { name: 'Vienna', lat: 48.2082, lon: 16.3738, country: 'Austria' },
-      { name: 'Bucharest', lat: 44.4268, lon: 26.1025, country: 'Romania' },
-      { name: 'Sofia', lat: 42.6977, lon: 23.3219, country: 'Bulgaria' },
-
-      // Europe - Northern Europe
-      { name: 'Stockholm', lat: 59.3293, lon: 18.0686, country: 'Sweden' },
-      { name: 'Copenhagen', lat: 55.6761, lon: 12.5683, country: 'Denmark' },
-      { name: 'Oslo', lat: 59.9139, lon: 10.7522, country: 'Norway' },
-      { name: 'Helsinki', lat: 60.1699, lon: 24.9384, country: 'Finland' },
-
-      // Europe - Other
-      { name: 'Istanbul', lat: 41.0082, lon: 28.9784, country: 'Turkey' },
-      { name: 'Ankara', lat: 39.9334, lon: 32.8597, country: 'Turkey' },
-      { name: 'Moscow', lat: 55.7558, lon: 37.6173, country: 'Russia' },
-      { name: 'Saint Petersburg', lat: 59.9311, lon: 30.3609, country: 'Russia' },
-
-      // Oceania (expanded)
-      { name: 'Sydney', lat: -33.8688, lon: 151.2093, country: 'Australia' },
-      { name: 'Melbourne', lat: -37.8136, lon: 144.9631, country: 'Australia' },
-      { name: 'Brisbane', lat: -27.4698, lon: 153.0251, country: 'Australia' },
-      { name: 'Perth', lat: -31.9505, lon: 115.8605, country: 'Australia' },
-      { name: 'Auckland', lat: -36.8485, lon: 174.7633, country: 'New Zealand' },
-      { name: 'Wellington', lat: -41.2865, lon: 174.7762, country: 'New Zealand' },
-
-      // Africa (expanded)
-      { name: 'Cairo', lat: 30.0444, lon: 31.2357, country: 'Egypt' },
-      { name: 'Lagos', lat: 6.5244, lon: 3.3792, country: 'Nigeria' },
-      { name: 'Kinshasa', lat: -4.4419, lon: 15.2663, country: 'DR Congo' },
-      { name: 'Johannesburg', lat: -26.2041, lon: 28.0473, country: 'South Africa' },
-      { name: 'Cape Town', lat: -33.9249, lon: 18.4241, country: 'South Africa' },
-      { name: 'Nairobi', lat: -1.2921, lon: 36.8219, country: 'Kenya' },
-      { name: 'Addis Ababa', lat: 9.0320, lon: 38.7469, country: 'Ethiopia' },
-      { name: 'Casablanca', lat: 33.5731, lon: -7.5898, country: 'Morocco' },
-      { name: 'Accra', lat: 5.6037, lon: -0.1870, country: 'Ghana' },
-
-      // Middle East (expanded)
-      { name: 'Riyadh', lat: 24.7136, lon: 46.6753, country: 'Saudi Arabia' },
-      { name: 'Jeddah', lat: 21.5433, lon: 39.1728, country: 'Saudi Arabia' },
-      { name: 'Dubai', lat: 25.2048, lon: 55.2708, country: 'United Arab Emirates' },
-      { name: 'Abu Dhabi', lat: 24.4539, lon: 54.3773, country: 'United Arab Emirates' },
-      { name: 'Tehran', lat: 35.6892, lon: 51.3890, country: 'Iran' },
-      { name: 'Baghdad', lat: 33.3152, lon: 44.3661, country: 'Iraq' },
-      { name: 'Tel Aviv', lat: 32.0853, lon: 34.7818, country: 'Israel' },
-      { name: 'Jerusalem', lat: 31.7683, lon: 35.2137, country: 'Israel' },
-      { name: 'Beirut', lat: 33.8886, lon: 35.4955, country: 'Lebanon' },
-      { name: 'Doha', lat: 25.2854, lon: 51.5310, country: 'Qatar' },
-      { name: 'Kuwait City', lat: 29.3759, lon: 47.9774, country: 'Kuwait' }
-    ];
+    // Load cities from JSON (was ~180 lines of hardcoded data)
+    let cities = [];
+    try {
+      const basePath = window.location.hostname.includes('github.io')
+        ? '/Finedust_proj/app/data'
+        : (window.location.origin + '/data');
+      const res = await fetch(`${basePath}/major-cities.json`);
+      if (res.ok) cities = await res.json();
+    } catch (e) {
+      console.warn('⚠️ Failed to load major-cities.json');
+    }
+    if (cities.length === 0) {
+      // Minimal fallback
+      cities = [
+        { name: 'Seoul', lat: 37.5665, lon: 126.9780, country: 'South Korea' },
+        { name: 'Beijing', lat: 39.9042, lon: 116.4074, country: 'China' },
+        { name: 'Tokyo', lat: 35.6762, lon: 139.6503, country: 'Japan' },
+        { name: 'New York', lat: 40.7128, lon: -74.0060, country: 'United States' },
+        { name: 'London', lat: 51.5074, lon: -0.1278, country: 'United Kingdom' }
+      ];
+    }
 
     console.log(`📍 Fetching REAL data for ${cities.length} major cities from EU Copernicus...`);
 
@@ -1434,850 +1292,43 @@ class PolicyGlobe {
    * - WAQI API (optional)
    * - OpenWeather API (optional)
    */
-  loadCountryPolicies() {
+  /**
+   * Load country policy data from JSON file
+   * Data extracted from hardcoded JS to app/data/country-policies.json
+   */
+  async loadCountryPoliciesFromJSON() {
+    try {
+      const basePath = window.location.hostname.includes('github.io')
+        ? '/Finedust_proj/app/data'
+        : (window.location.origin + '/data');
+      const res = await fetch(`${basePath}/country-policies.json`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      console.log(`✅ Loaded ${Object.keys(data).length} country policies from JSON`);
+      return data;
+    } catch (error) {
+      console.warn('⚠️ Failed to load country-policies.json, using fallback:', error.message);
+      return this._fallbackCountryPolicies();
+    }
+  }
+
+  /**
+   * Minimal fallback data (only if JSON fails to load)
+   */
+  _fallbackCountryPolicies() {
     return {
-      'South Korea': {
-        flag: '🇰🇷',
-        region: 'East Asia',
-        policyType: 'Comprehensive',
-        mainPolicy: {
-          name: 'Fine Dust Special Act',
-          description: 'Comprehensive legislation to reduce PM2.5 emissions through vehicle restrictions, industrial controls, and public health measures.',
-          implementationDate: '2019-02-15',
-          effectivenessRating: 8
-        },
-        // Historical PM2.5 trends (µg/m³ annual average) - IQAir 2024
-        pm25Trends: [
-          { year: 2015, value: 29.1, note: 'Pre-policy baseline' },
-          { year: 2016, value: 27.5, note: 'Initial monitoring improvements' },
-          { year: 2017, value: 27.0, note: 'Awareness campaigns begin' },
-          { year: 2018, value: 25.8, note: 'Policy development' },
-          { year: 2019, value: 24.5, note: '🔸 Fine Dust Special Act implemented' },
-          { year: 2020, value: 21.3, note: 'Vehicle restrictions, COVID impact' },
-          { year: 2021, value: 19.8, note: 'Industrial controls strengthened' },
-          { year: 2022, value: 18.5, note: 'Green New Deal initiatives' },
-          { year: 2023, value: 17.2, note: 'Continued improvement' },
-          { year: 2024, value: 16.8, note: '✅ IQAir 2024: -42% from 2015' }
-        ],
-        policyImpact: {
-          reductionRate: '42%',
-          timeframe: '2015-2024',
-          status: 'Effective',
-          keyMeasures: ['Vehicle restrictions', 'Industrial emission controls', 'Seasonal reduction programs', 'Air purifier subsidies']
-        },
-        news: [
-          { title: 'Seoul implements emergency fine dust reduction measures', date: '2025-01-05', source: 'Yonhap News' },
-          { title: 'New air purifier subsidy program launched', date: '2024-12-20', source: 'Korea Herald' },
-          { title: 'Vehicle restrictions expanded in metropolitan areas', date: '2024-12-10', source: 'KBS News' }
-        ],
-        currentAQI: 68,
-        currentPM25: 16.8
-      },
-      'China': {
-        flag: '🇨🇳',
-        region: 'East Asia',
-        policyType: 'Comprehensive',
-        mainPolicy: {
-          name: 'Blue Sky Protection Campaign',
-          description: 'National initiative targeting industrial emissions, coal use reduction, and vehicle standards to improve air quality in major cities.',
-          implementationDate: '2018-06-01',
-          effectivenessRating: 7
-        },
-        // Historical PM2.5 trends (µg/m³ annual average - Beijing) - IQAir 2024
-        pm25Trends: [
-          { year: 2013, value: 89.5, note: 'Air pollution crisis peak' },
-          { year: 2014, value: 85.9, note: 'Action Plan begins' },
-          { year: 2015, value: 80.6, note: 'Coal reduction starts' },
-          { year: 2016, value: 73.0, note: 'Heavy industry controls' },
-          { year: 2017, value: 58.0, note: 'Major improvement phase' },
-          { year: 2018, value: 51.0, note: '🔸 Blue Sky Protection Campaign launched' },
-          { year: 2019, value: 42.1, note: 'Coal-to-gas conversion' },
-          { year: 2020, value: 38.0, note: 'COVID impact + policy effect' },
-          { year: 2021, value: 33.0, note: 'Sustained improvements' },
-          { year: 2022, value: 30.6, note: 'Target achieved' },
-          { year: 2023, value: 32.1, note: 'Post-lockdown increase' },
-          { year: 2024, value: 29.2, note: '✅ IQAir 2024: -67% from 2013' }
-        ],
-        policyImpact: {
-          reductionRate: '67%',
-          timeframe: '2013-2024',
-          status: 'Highly Effective',
-          keyMeasures: ['Coal power plant closures', 'Industrial restructuring', 'Vehicle emission standards (China VI)', 'Clean heating program']
-        },
-        news: [
-          { title: 'Beijing achieves lowest PM2.5 levels in decade', date: '2025-01-10', source: 'Xinhua' },
-          { title: 'Coal power plant shutdowns continue nationwide', date: '2024-12-28', source: 'China Daily' },
-          { title: 'Red alert issued for heavy pollution in northern regions', date: '2024-12-15', source: 'CGTN' }
-        ],
-        currentAQI: 115,
-        currentPM25: 29.2
-      },
-      'Japan': {
-        flag: '🇯🇵',
-        region: 'East Asia',
-        policyType: 'Industrial Controls',
-        mainPolicy: {
-          name: 'Air Pollution Control Act',
-          description: 'Strict emission standards for vehicles and industries, focusing on PM2.5 reduction and transboundary pollution.',
-          implementationDate: '1968-06-10',
-          effectivenessRating: 9
-        },
-        // Historical PM2.5 trends (µg/m³ annual average - Tokyo) - IQAir 2024
-        pm25Trends: [
-          { year: 2010, value: 15.2, note: 'Early monitoring period' },
-          { year: 2012, value: 13.8, note: 'Post-Fukushima energy shift' },
-          { year: 2014, value: 12.5, note: 'Diesel vehicle regulations' },
-          { year: 2016, value: 11.3, note: 'Industrial emission improvements' },
-          { year: 2018, value: 10.1, note: 'Continuous improvement' },
-          { year: 2020, value: 9.2, note: 'Olympic preparations + COVID' },
-          { year: 2022, value: 8.8, note: 'Sustained low levels' },
-          { year: 2024, value: 8.5, note: '✅ IQAir 2024: Among cleanest in Asia' }
-        ],
-        policyImpact: {
-          reductionRate: '44%',
-          timeframe: '2010-2024',
-          status: 'Exemplary',
-          keyMeasures: ['Strict diesel regulations', 'Industrial emission controls', 'Cross-border pollution monitoring', 'Clean energy transition']
-        },
-        news: [
-          { title: 'Tokyo maintains world-class air quality standards', date: '2025-01-07', source: 'Japan Times' },
-          { title: 'New diesel vehicle restrictions announced', date: '2024-12-20', source: 'NHK' },
-          { title: 'Cross-border pollution monitoring enhanced', date: '2024-12-01', source: 'Asahi Shimbun' }
-        ],
-        currentAQI: 35,
-        currentPM25: 8.5
-      },
-      'India': {
-        flag: '🇮🇳',
-        region: 'South Asia',
-        policyType: 'Comprehensive',
-        mainPolicy: {
-          name: 'National Clean Air Programme (NCAP)',
-          description: 'Comprehensive strategy to reduce PM2.5 and PM10 concentrations by 20-30% by 2024 across 122 non-attainment cities.',
-          implementationDate: '2019-01-10',
-          effectivenessRating: 6
-        },
-        // Historical PM2.5 trends (µg/m³ annual average - Delhi) - IQAir 2024
-        pm25Trends: [
-          { year: 2015, value: 143.0, note: 'Severe pollution crisis' },
-          { year: 2016, value: 135.0, note: 'Post-Diwali peak awareness' },
-          { year: 2017, value: 125.0, note: 'Odd-even scheme trials' },
-          { year: 2018, value: 113.0, note: 'Construction dust controls' },
-          { year: 2019, value: 98.6, note: '🔸 NCAP launched' },
-          { year: 2020, value: 84.0, note: 'COVID lockdown impact' },
-          { year: 2021, value: 96.4, note: 'Economic recovery increase' },
-          { year: 2022, value: 89.1, note: 'Stubble burning continues' },
-          { year: 2023, value: 54.4, note: 'Improved monitoring' },
-          { year: 2024, value: 50.6, note: '⚠️ IQAir 2024: 5th most polluted country' }
-        ],
-        policyImpact: {
-          reductionRate: '65%',
-          timeframe: '2015-2024',
-          status: 'Partial Progress',
-          keyMeasures: ['Odd-even vehicle scheme', 'Stubble burning penalties', 'Construction dust controls', 'BS-VI fuel standards']
-        },
-        news: [
-          { title: 'Delhi implements odd-even vehicle scheme', date: '2025-01-08', source: 'Times of India' },
-          { title: 'Supreme Court mandates stubble burning penalties', date: '2024-12-22', source: 'Indian Express' },
-          { title: 'Air quality monitoring network expanded', date: '2024-12-05', source: 'Hindustan Times' }
-        ],
-        currentAQI: 171,
-        currentPM25: 50.6
-      },
-      'Bangladesh': {
-        flag: '🇧🇩',
-        region: 'South Asia',
-        policyType: 'Industrial Controls',
-        mainPolicy: {
-          name: 'Clean Air and Sustainable Environment',
-          description: 'National policy focusing on brick kiln emissions, vehicle standards, and industrial pollution control in Dhaka.',
-          implementationDate: '2020-03-15',
-          effectivenessRating: 4
-        },
-        // Historical PM2.5 trends (µg/m³ annual average - Dhaka) - IQAir 2024
-        pm25Trends: [
-          { year: 2017, value: 97.1, note: 'World\'s most polluted capital' },
-          { year: 2018, value: 97.1, note: 'Brick kilns major contributor' },
-          { year: 2019, value: 83.3, note: 'Awareness campaigns begin' },
-          { year: 2020, value: 77.1, note: '🔸 Clean Air policy launched' },
-          { year: 2021, value: 76.9, note: 'COVID-19 restrictions help' },
-          { year: 2022, value: 65.8, note: 'Brick kiln modernization slow' },
-          { year: 2023, value: 79.9, note: 'Construction boom increases dust' },
-          { year: 2024, value: 78.0, note: '⚠️ IQAir 2024: 2nd most polluted country' }
-        ],
-        policyImpact: {
-          reductionRate: '20%',
-          timeframe: '2017-2024',
-          status: 'Limited Progress',
-          keyMeasures: ['Brick kiln modernization', 'Vehicle emission standards', 'Construction dust controls', 'Monitoring expansion']
-        },
-        news: [
-          { title: 'Dhaka battles severe air pollution crisis', date: '2025-01-11', source: 'Dhaka Tribune' },
-          { title: 'Brick kiln modernization program launched', date: '2024-12-25', source: 'Daily Star' },
-          { title: 'Air quality monitoring stations expanded', date: '2024-12-08', source: 'Bangladesh Post' }
-        ],
-        currentAQI: 260,
-        currentPM25: 78.0
-      },
-      'United States': {
-        flag: '🇺🇸',
-        region: 'North America',
-        policyType: 'Monitoring & Standards',
-        mainPolicy: {
-          name: 'Clean Air Act Amendments',
-          description: 'Federal regulations setting National Ambient Air Quality Standards (NAAQS) for PM2.5 and other pollutants.',
-          implementationDate: '1990-11-15',
-          effectivenessRating: 9
-        },
-        // Historical PM2.5 trends (µg/m³ annual average - National) - IQAir 2024
-        pm25Trends: [
-          { year: 2000, value: 13.5, note: 'PM2.5 monitoring begins nationwide' },
-          { year: 2005, value: 12.3, note: 'Clean Air Interstate Rule' },
-          { year: 2010, value: 10.2, note: 'Industrial emission reductions' },
-          { year: 2015, value: 8.6, note: 'Vehicle standards tightened' },
-          { year: 2017, value: 8.0, note: 'Continuous improvement' },
-          { year: 2019, value: 7.5, note: 'Near WHO guideline (5 µg/m³)' },
-          { year: 2020, value: 8.4, note: 'Wildfire impact + COVID' },
-          { year: 2021, value: 8.7, note: 'Increased wildfire impact' },
-          { year: 2023, value: 9.1, note: 'Canadian wildfire smoke' },
-          { year: 2024, value: 8.2, note: '✅ IQAir 2024: Stable, wildfire challenge' }
-        ],
-        policyImpact: {
-          reductionRate: '39%',
-          timeframe: '2000-2024',
-          status: 'Effective',
-          keyMeasures: ['Clean Air Act enforcement', 'Vehicle emission standards', 'Industrial controls', 'State implementation plans']
-        },
-        news: [
-          { title: 'EPA strengthens PM2.5 standards', date: '2025-01-12', source: 'Reuters' },
-          { title: 'California leads in zero-emission vehicle adoption', date: '2024-12-18', source: 'LA Times' },
-          { title: 'Wildfire smoke prompts air quality alerts', date: '2024-11-30', source: 'AP News' }
-        ],
-        currentAQI: 34,
-        currentPM25: 8.2
-      },
-      'Canada': {
-        flag: '🇨🇦',
-        region: 'North America',
-        policyType: 'Monitoring & Standards',
-        mainPolicy: {
-          name: 'Canadian Ambient Air Quality Standards',
-          description: 'Federal and provincial standards for PM2.5 and other air pollutants with regular monitoring and reporting.',
-          implementationDate: '2013-05-17',
-          effectivenessRating: 8
-        },
-        // Historical PM2.5 trends (µg/m³ annual average) - IQAir 2024
-        pm25Trends: [
-          { year: 2015, value: 8.2, note: 'Pre-wildfire baseline' },
-          { year: 2017, value: 7.5, note: 'Clean fuel standards' },
-          { year: 2019, value: 7.0, note: 'Low emission vehicles' },
-          { year: 2020, value: 6.5, note: 'COVID-19 impact' },
-          { year: 2021, value: 8.5, note: 'Wildfire smoke impact' },
-          { year: 2023, value: 10.2, note: '⚠️ Record wildfire season' },
-          { year: 2024, value: 6.4, note: '✅ IQAir 2024: Recovery' }
-        ],
-        policyImpact: {
-          reductionRate: '22%',
-          timeframe: '2015-2024',
-          status: 'Effective (wildfire challenge)',
-          keyMeasures: ['Clean fuel regulations', 'Oil sands emission limits', 'Provincial air standards', 'Wildfire management']
-        },
-        news: [
-          { title: 'Wildfire smoke affects air quality across provinces', date: '2025-01-09', source: 'CBC News' },
-          { title: 'New emissions standards for oil sands sector', date: '2024-12-22', source: 'Globe and Mail' },
-          { title: 'Clean fuel regulations come into effect', date: '2024-12-01', source: 'National Post' }
-        ],
-        currentAQI: 26,
-        currentPM25: 6.4
-      },
-      'Mexico': {
-        flag: '🇲🇽',
-        region: 'North America',
-        policyType: 'Vehicle Restrictions',
-        mainPolicy: {
-          name: 'Hoy No Circula Program',
-          description: 'Vehicle restriction program in Mexico City limiting car use based on license plate numbers to reduce emissions.',
-          implementationDate: '1989-11-20',
-          effectivenessRating: 6
-        },
-        // Historical PM2.5 trends (µg/m³ annual average) - IQAir 2024
-        pm25Trends: [
-          { year: 2015, value: 25.2, note: 'Baseline monitoring' },
-          { year: 2017, value: 23.5, note: 'Vehicle restrictions' },
-          { year: 2019, value: 21.1, note: 'Metro expansion' },
-          { year: 2020, value: 17.5, note: 'COVID-19 impact' },
-          { year: 2022, value: 19.2, note: 'Economic recovery' },
-          { year: 2024, value: 18.7, note: '✅ IQAir 2024: 26% reduction' }
-        ],
-        policyImpact: {
-          reductionRate: '26%',
-          timeframe: '2015-2024',
-          status: 'Moderate Progress',
-          keyMeasures: ['Hoy No Circula restrictions', 'Metro expansion', 'Vehicle emission testing', 'Industrial controls']
-        },
-        news: [
-          { title: 'Mexico City air quality shows improvement', date: '2025-01-06', source: 'El Universal' },
-          { title: 'New public transport expansion planned', date: '2024-12-19', source: 'Reforma' },
-          { title: 'Industrial emissions regulations tightened', date: '2024-12-03', source: 'Milenio' }
-        ],
-        currentAQI: 76,
-        currentPM25: 18.7
-      },
-      'Brazil': {
-        flag: '🇧🇷',
-        region: 'South America',
-        policyType: 'Industrial Controls',
-        mainPolicy: {
-          name: 'National Air Quality Program',
-          description: 'Federal program establishing air quality standards and monitoring requirements for major urban areas.',
-          implementationDate: '2018-09-10',
-          effectivenessRating: 7
-        },
-        news: [
-          { title: 'São Paulo implements new emission zones', date: '2025-01-04', source: 'Folha de S.Paulo' },
-          { title: 'Amazon deforestation affects regional air quality', date: '2024-12-20', source: 'O Globo' },
-          { title: 'Biofuel adoption increases in transport sector', date: '2024-12-07', source: 'Estado' }
-        ],
-        currentAQI: 95,
-        currentPM25: 32
-      },
-      'United Kingdom': {
-        flag: '🇬🇧',
-        region: 'Europe',
-        policyType: 'Comprehensive',
-        mainPolicy: {
-          name: 'Clean Air Strategy 2019',
-          description: 'Comprehensive plan to reduce air pollution from transport, farming, and industry with legally binding targets.',
-          implementationDate: '2019-01-14',
-          effectivenessRating: 8
-        },
-        // Historical PM2.5 trends (µg/m³ annual average - London)
-        pm25Trends: [
-          { year: 2010, value: 16.0, note: 'EU compliance issues' },
-          { year: 2012, value: 15.5, note: 'London 2012 Olympics improvements' },
-          { year: 2014, value: 15.0, note: 'Low Emission Zone expanded' },
-          { year: 2016, value: 13.2, note: 'Air quality plans updated' },
-          { year: 2019, value: 11.4, note: '🔸 Clean Air Strategy + ULEZ launched' },
-          { year: 2020, value: 9.7, note: 'COVID-19 lockdown impact' },
-          { year: 2021, value: 10.0, note: 'Traffic returns gradually' },
-          { year: 2023, value: 9.5, note: 'ULEZ expansion to Greater London' },
-          { year: 2024, value: 9.1, note: 'Near WHO guideline' },
-          { year: 2025, value: 8.8, note: '✅ 45% reduction from 2010' }
-        ],
-        policyImpact: {
-          reductionRate: '45%',
-          timeframe: '2010-2025',
-          status: 'Effective',
-          keyMeasures: ['Ultra Low Emission Zone', 'Diesel vehicle restrictions', 'Wood burning bans', 'Clean bus fleet']
-        },
-        news: [
-          { title: 'London Ultra Low Emission Zone expanded', date: '2025-01-03', source: 'BBC News' },
-          { title: 'Government announces wood burning restrictions', date: '2024-12-15', source: 'The Guardian' },
-          { title: 'Air quality improving in major UK cities', date: '2024-11-28', source: 'Independent' }
-        ],
-        currentAQI: 37,
-        currentPM25: 9.0
-      },
-      'Germany': {
-        flag: '🇩🇪',
-        region: 'Europe',
-        policyType: 'Vehicle Restrictions',
-        mainPolicy: {
-          name: 'Diesel Driving Bans',
-          description: 'City-specific bans on older diesel vehicles in environmental zones to reduce nitrogen dioxide and particulate matter.',
-          implementationDate: '2018-02-27',
-          effectivenessRating: 8
-        },
-        // Historical PM2.5 trends (µg/m³ annual average - Berlin)
-        pm25Trends: [
-          { year: 2010, value: 18.5, note: 'EU air quality standards' },
-          { year: 2013, value: 17.0, note: 'Energiewende begins' },
-          { year: 2015, value: 16.2, note: 'Diesel emissions scandal' },
-          { year: 2018, value: 15.0, note: '🔸 Diesel driving bans begin' },
-          { year: 2020, value: 12.5, note: 'COVID-19 + coal phase-out' },
-          { year: 2022, value: 11.8, note: 'Environmental zones expanded' },
-          { year: 2024, value: 10.9, note: 'Coal exit accelerating' },
-          { year: 2025, value: 10.5, note: '✅ 43% reduction from 2010' }
-        ],
-        policyImpact: {
-          reductionRate: '43%',
-          timeframe: '2010-2025',
-          status: 'Effective',
-          keyMeasures: ['Diesel vehicle bans', 'Coal phase-out', 'Environmental zones', 'EV incentives']
-        },
-        news: [
-          { title: 'Berlin expands environmental zones', date: '2025-01-10', source: 'Deutsche Welle' },
-          { title: 'Coal phase-out accelerates air quality improvements', date: '2024-12-18', source: 'Spiegel' },
-          { title: 'Electric vehicle incentives extended', date: '2024-12-05', source: 'FAZ' }
-        ],
-        currentAQI: 43,
-        currentPM25: 10.5
-      },
-      'France': {
-        flag: '🇫🇷',
-        region: 'Europe',
-        policyType: 'Vehicle Restrictions',
-        mainPolicy: {
-          name: 'Crit\'Air Vignette System',
-          description: 'Vehicle classification system restricting high-emission vehicles in low-emission zones across major cities.',
-          implementationDate: '2016-07-01',
-          effectivenessRating: 7
-        },
-        news: [
-          { title: 'Paris strengthens low-emission zone rules', date: '2025-01-08', source: 'Le Monde' },
-          { title: 'Air quality improvement in major cities', date: '2024-12-21', source: 'Le Figaro' },
-          { title: 'Free public transport on high-pollution days', date: '2024-12-09', source: 'France 24' }
-        ],
-        currentAQI: 82,
-        currentPM25: 28
-      },
-      'Italy': {
-        flag: '🇮🇹',
-        region: 'Europe',
-        policyType: 'Vehicle Restrictions',
-        mainPolicy: {
-          name: 'Traffic Limitation Zones',
-          description: 'ZTL (Zone a Traffico Limitato) system restricting vehicle access in historic city centers to reduce pollution.',
-          implementationDate: '2000-01-15',
-          effectivenessRating: 6
-        },
-        news: [
-          { title: 'Milan implements stricter vehicle bans', date: '2025-01-07', source: 'Corriere della Sera' },
-          { title: 'Po Valley faces persistent smog issues', date: '2024-12-23', source: 'La Repubblica' },
-          { title: 'Rome expands pedestrian zones', date: '2024-12-11', source: 'ANSA' }
-        ],
-        currentAQI: 105,
-        currentPM25: 38
-      },
-      'Spain': {
-        flag: '🇪🇸',
-        region: 'Europe',
-        policyType: 'Vehicle Restrictions',
-        mainPolicy: {
-          name: 'Madrid Central Low Emission Zone',
-          description: 'Restricted access zone in Madrid city center limiting entry to low-emission vehicles.',
-          implementationDate: '2018-11-30',
-          effectivenessRating: 7
-        },
-        news: [
-          { title: 'Barcelona extends low-emission zones', date: '2025-01-05', source: 'El País' },
-          { title: 'Air quality standards improved nationwide', date: '2024-12-17', source: 'ABC' },
-          { title: 'Electric bus fleet expansion announced', date: '2024-12-02', source: 'El Mundo' }
-        ],
-        currentAQI: 88,
-        currentPM25: 29
-      },
-      'Poland': {
-        flag: '🇵🇱',
-        region: 'Europe',
-        policyType: 'Energy Transition',
-        mainPolicy: {
-          name: 'Anti-Smog Resolution',
-          description: 'Regional regulations banning coal and wood burning in residential heating to combat severe winter pollution.',
-          implementationDate: '2017-09-11',
-          effectivenessRating: 5
-        },
-        news: [
-          { title: 'Krakow continues fight against smog', date: '2025-01-09', source: 'Gazeta Wyborcza' },
-          { title: 'Coal heating ban enforcement strengthened', date: '2024-12-24', source: 'Rzeczpospolita' },
-          { title: 'Government subsidizes clean heating systems', date: '2024-12-06', source: 'TVN24' }
-        ],
-        currentAQI: 155,
-        currentPM25: 68
-      },
-      'Turkey': {
-        flag: '🇹🇷',
-        region: 'Europe',
-        policyType: 'Industrial Controls',
-        mainPolicy: {
-          name: 'Air Quality Management Regulation',
-          description: 'National regulation setting emission limits for industries and vehicles, with monitoring in major cities.',
-          implementationDate: '2008-06-06',
-          effectivenessRating: 6
-        },
-        news: [
-          { title: 'Istanbul air quality monitoring expanded', date: '2025-01-06', source: 'Hürriyet' },
-          { title: 'Coal power plant emissions under scrutiny', date: '2024-12-19', source: 'Milliyet' },
-          { title: 'Natural gas conversion program continues', date: '2024-12-04', source: 'Sabah' }
-        ],
-        currentAQI: 118,
-        currentPM25: 42
-      },
-      'Russia': {
-        flag: '🇷🇺',
-        region: 'Europe',
-        policyType: 'Industrial Controls',
-        mainPolicy: {
-          name: 'Clean Air Federal Project',
-          description: 'National program targeting industrial emissions in 12 most polluted cities with mandatory emission reductions.',
-          implementationDate: '2019-01-01',
-          effectivenessRating: 6
-        },
-        news: [
-          { title: 'Moscow air quality shows improvement', date: '2025-01-08', source: 'TASS' },
-          { title: 'Industrial emission limits tightened', date: '2024-12-21', source: 'RIA Novosti' },
-          { title: 'Siberian cities face winter pollution', date: '2024-12-10', source: 'Interfax' }
-        ],
-        currentAQI: 130,
-        currentPM25: 48
-      },
-      'Thailand': {
-        flag: '🇹🇭',
-        region: 'Southeast Asia',
-        policyType: 'Comprehensive',
-        mainPolicy: {
-          name: 'Clean Air Action Plan',
-          description: 'Comprehensive plan addressing crop burning, vehicle emissions, and industrial pollution in Bangkok and northern regions.',
-          implementationDate: '2019-02-01',
-          effectivenessRating: 6
-        },
-        news: [
-          { title: 'Bangkok implements emergency pollution measures', date: '2025-01-11', source: 'Bangkok Post' },
-          { title: 'Northern Thailand battles seasonal smog', date: '2024-12-26', source: 'The Nation' },
-          { title: 'Crop burning restrictions enforced', date: '2024-12-12', source: 'Thai PBS' }
-        ],
-        currentAQI: 142,
-        currentPM25: 52
-      },
-      'Vietnam': {
-        flag: '🇻🇳',
-        region: 'Southeast Asia',
-        policyType: 'Industrial Controls',
-        mainPolicy: {
-          name: 'National Air Quality Action Plan',
-          description: 'Action plan targeting industrial emissions, transport pollution, and construction dust in Hanoi and Ho Chi Minh City.',
-          implementationDate: '2020-07-01',
-          effectivenessRating: 5
-        },
-        news: [
-          { title: 'Hanoi air quality concerns rise', date: '2025-01-09', source: 'VnExpress' },
-          { title: 'Industrial zone emissions regulated', date: '2024-12-23', source: 'Tuoi Tre' },
-          { title: 'Motorcycle emission standards updated', date: '2024-12-08', source: 'Thanh Nien' }
-        ],
-        currentAQI: 138,
-        currentPM25: 51
-      },
-      'Indonesia': {
-        flag: '🇮🇩',
-        region: 'Southeast Asia',
-        policyType: 'Industrial Controls',
-        mainPolicy: {
-          name: 'Blue Sky Program',
-          description: 'Government initiative focusing on vehicle emission standards and industrial pollution control in Jakarta.',
-          implementationDate: '2012-08-15',
-          effectivenessRating: 5
-        },
-        news: [
-          { title: 'Jakarta air pollution reaches unhealthy levels', date: '2025-01-10', source: 'Jakarta Post' },
-          { title: 'Coal plant emissions under review', date: '2024-12-24', source: 'Kompas' },
-          { title: 'Public transport expansion planned', date: '2024-12-09', source: 'Tempo' }
-        ],
-        currentAQI: 152,
-        currentPM25: 62
-      },
-      'Singapore': {
-        flag: '🇸🇬',
-        region: 'Southeast Asia',
-        policyType: 'Comprehensive',
-        mainPolicy: {
-          name: 'Transboundary Haze Pollution Act',
-          description: 'Comprehensive air quality management including vehicle quotas, industrial standards, and regional haze response.',
-          implementationDate: '2014-09-25',
-          effectivenessRating: 9
-        },
-        news: [
-          { title: 'Singapore maintains excellent air quality', date: '2025-01-07', source: 'Straits Times' },
-          { title: 'Regional haze monitoring enhanced', date: '2024-12-20', source: 'CNA' },
-          { title: 'Electric vehicle adoption accelerates', date: '2024-12-05', source: 'Today' }
-        ],
-        currentAQI: 58,
-        currentPM25: 18
-      },
-      'Malaysia': {
-        flag: '🇲🇾',
-        region: 'Southeast Asia',
-        policyType: 'Monitoring & Standards',
-        mainPolicy: {
-          name: 'New Malaysian Air Quality Standards',
-          description: 'Updated national standards for air pollutants with enhanced monitoring and enforcement mechanisms.',
-          implementationDate: '2015-06-01',
-          effectivenessRating: 7
-        },
-        news: [
-          { title: 'Kuala Lumpur air quality improves', date: '2025-01-06', source: 'New Straits Times' },
-          { title: 'Transboundary haze remains concern', date: '2024-12-21', source: 'Star' },
-          { title: 'Industrial emission standards tightened', date: '2024-12-07', source: 'Malay Mail' }
-        ],
-        currentAQI: 98,
-        currentPM25: 35
-      },
-      'Philippines': {
-        flag: '🇵🇭',
-        region: 'Southeast Asia',
-        policyType: 'Vehicle Restrictions',
-        mainPolicy: {
-          name: 'Clean Air Act',
-          description: 'National legislation controlling vehicle emissions, industrial pollution, and promoting clean fuel use in Metro Manila.',
-          implementationDate: '1999-06-23',
-          effectivenessRating: 6
-        },
-        news: [
-          { title: 'Manila implements vehicle emission testing', date: '2025-01-08', source: 'Philippine Star' },
-          { title: 'Jeepney modernization program continues', date: '2024-12-22', source: 'Inquirer' },
-          { title: 'Air quality monitoring expanded', date: '2024-12-06', source: 'Manila Bulletin' }
-        ],
-        currentAQI: 112,
-        currentPM25: 40
-      },
-      'Australia': {
-        flag: '🇦🇺',
-        region: 'Oceania',
-        policyType: 'Monitoring & Standards',
-        mainPolicy: {
-          name: 'National Environment Protection Measure',
-          description: 'Federal standards for ambient air quality including PM2.5 with state-level implementation and monitoring.',
-          implementationDate: '2016-02-25',
-          effectivenessRating: 9
-        },
-        // Historical PM2.5 trends (µg/m³ annual average) - IQAir 2024
-        pm25Trends: [
-          { year: 2015, value: 7.5, note: 'Baseline monitoring' },
-          { year: 2017, value: 6.8, note: 'Clean air policies' },
-          { year: 2019, value: 8.2, note: 'Pre-bushfire normal' },
-          { year: 2020, value: 12.5, note: '⚠️ Black Summer bushfires' },
-          { year: 2021, value: 6.0, note: 'Recovery period' },
-          { year: 2022, value: 5.2, note: 'Continued improvement' },
-          { year: 2023, value: 4.5, note: 'Near WHO target' },
-          { year: 2024, value: 4.0, note: '✅ IQAir 2024: WHO standard met!' }
-        ],
-        policyImpact: {
-          reductionRate: '47%',
-          timeframe: '2015-2024',
-          status: 'Exemplary',
-          keyMeasures: ['National air quality standards', 'State implementation', 'Bushfire management', 'Renewable energy transition']
-        },
-        news: [
-          { title: 'Sydney air quality remains good', date: '2025-01-09', source: 'Sydney Morning Herald' },
-          { title: 'Bushfire smoke impacts seasonal air quality', date: '2024-12-23', source: 'ABC News' },
-          { title: 'Emission standards for industry updated', date: '2024-12-08', source: 'The Australian' }
-        ],
-        currentAQI: 16,
-        currentPM25: 4.0
-      },
-      'New Zealand': {
-        flag: '🇳🇿',
-        region: 'Oceania',
-        policyType: 'Energy Transition',
-        mainPolicy: {
-          name: 'National Environmental Standards for Air Quality',
-          description: 'Regulations targeting domestic heating emissions and industrial pollution with focus on PM10 and PM2.5.',
-          implementationDate: '2004-09-07',
-          effectivenessRating: 9
-        },
-        // Historical PM2.5 trends (µg/m³ annual average) - IQAir 2024
-        pm25Trends: [
-          { year: 2015, value: 8.5, note: 'Wood burner issues' },
-          { year: 2017, value: 7.2, note: 'Burner replacement program' },
-          { year: 2019, value: 6.0, note: 'Clean heating progress' },
-          { year: 2020, value: 5.5, note: 'COVID-19 reduction' },
-          { year: 2022, value: 5.0, note: 'Sustained improvements' },
-          { year: 2023, value: 4.8, note: 'Near WHO target' },
-          { year: 2024, value: 4.5, note: '✅ IQAir 2024: WHO standard met!' }
-        ],
-        policyImpact: {
-          reductionRate: '47%',
-          timeframe: '2015-2024',
-          status: 'Exemplary',
-          keyMeasures: ['Wood burner replacement', 'Clean heating subsidies', 'Winter air quality programs', 'Renewable energy']
-        },
-        news: [
-          { title: 'Auckland air quality improvement continues', date: '2025-01-05', source: 'NZ Herald' },
-          { title: 'Wood burner replacement program successful', date: '2024-12-19', source: 'Stuff' },
-          { title: 'Winter air pollution targets met', date: '2024-12-03', source: 'Radio NZ' }
-        ],
-        currentAQI: 18,
-        currentPM25: 4.5
-      },
-      'South Africa': {
-        flag: '🇿🇦',
-        region: 'Africa',
-        policyType: 'Industrial Controls',
-        mainPolicy: {
-          name: 'National Ambient Air Quality Standards',
-          description: 'National standards for air pollutants with priority areas in Highveld and industrial regions.',
-          implementationDate: '2009-12-24',
-          effectivenessRating: 6
-        },
-        news: [
-          { title: 'Johannesburg tackles air pollution', date: '2025-01-07', source: 'Daily Maverick' },
-          { title: 'Coal power plant emissions debated', date: '2024-12-20', source: 'News24' },
-          { title: 'Air quality monitoring network expanded', date: '2024-12-05', source: 'Mail & Guardian' }
-        ],
-        currentAQI: 115,
-        currentPM25: 41
-      },
-      'Egypt': {
-        flag: '🇪🇬',
-        region: 'Africa',
-        policyType: 'Industrial Controls',
-        mainPolicy: {
-          name: 'National Air Quality Strategy',
-          description: 'Strategy addressing industrial emissions, vehicle pollution, and agricultural burning in Greater Cairo.',
-          implementationDate: '2018-03-15',
-          effectivenessRating: 5
-        },
-        news: [
-          { title: 'Cairo implements pollution reduction measures', date: '2025-01-10', source: 'Al-Ahram' },
-          { title: 'Black cloud season monitoring begins', date: '2024-12-25', source: 'Egypt Today' },
-          { title: 'Industrial zone emissions regulated', date: '2024-12-11', source: 'Daily News Egypt' }
-        ],
-        currentAQI: 168,
-        currentPM25: 78
-      },
-      'Nigeria': {
-        flag: '🇳🇬',
-        region: 'Africa',
-        policyType: 'Monitoring & Standards',
-        mainPolicy: {
-          name: 'National Air Quality Standards',
-          description: 'Federal standards for air pollutants with monitoring in Lagos and major urban centers.',
-          implementationDate: '2014-11-02',
-          effectivenessRating: 4
-        },
-        news: [
-          { title: 'Lagos air quality concerns addressed', date: '2025-01-08', source: 'Punch' },
-          { title: 'Generator emissions regulation proposed', date: '2024-12-22', source: 'Vanguard' },
-          { title: 'Air quality monitoring stations installed', date: '2024-12-07', source: 'Premium Times' }
-        ],
-        currentAQI: 172,
-        currentPM25: 82
-      },
-      'Saudi Arabia': {
-        flag: '🇸🇦',
-        region: 'Middle East',
-        policyType: 'Industrial Controls',
-        mainPolicy: {
-          name: 'Environmental Standards for Air Quality',
-          description: 'National standards targeting industrial emissions and dust pollution in Riyadh and industrial cities.',
-          implementationDate: '2012-07-15',
-          effectivenessRating: 7
-        },
-        news: [
-          { title: 'Riyadh air quality improvement initiatives', date: '2025-01-09', source: 'Arab News' },
-          { title: 'Industrial emission limits enforced', date: '2024-12-23', source: 'Saudi Gazette' },
-          { title: 'Dust storm monitoring enhanced', date: '2024-12-09', source: 'Okaz' }
-        ],
-        currentAQI: 128,
-        currentPM25: 46
-      },
-      'UAE': {
-        flag: '🇦🇪',
-        region: 'Middle East',
-        policyType: 'Comprehensive',
-        mainPolicy: {
-          name: 'National Air Quality Agenda',
-          description: 'Comprehensive strategy including vehicle standards, industrial controls, and dust management in Dubai and Abu Dhabi.',
-          implementationDate: '2017-04-10',
-          effectivenessRating: 7
-        },
-        news: [
-          { title: 'Dubai air quality monitoring upgraded', date: '2025-01-07', source: 'Gulf News' },
-          { title: 'Clean energy transition continues', date: '2024-12-21', source: 'The National' },
-          { title: 'Construction dust regulations tightened', date: '2024-12-06', source: 'Khaleej Times' }
-        ],
-        currentAQI: 102,
-        currentPM25: 36
-      },
-      'Iran': {
-        flag: '🇮🇷',
-        region: 'Middle East',
-        policyType: 'Vehicle Restrictions',
-        mainPolicy: {
-          name: 'Tehran Air Quality Control Plan',
-          description: 'Traffic management and industrial emission controls in Tehran to address severe pollution episodes.',
-          implementationDate: '2016-10-18',
-          effectivenessRating: 5
-        },
-        news: [
-          { title: 'Tehran schools closed due to pollution', date: '2025-01-11', source: 'Tehran Times' },
-          { title: 'Vehicle restrictions extended', date: '2024-12-26', source: 'Press TV' },
-          { title: 'Air quality emergency measures activated', date: '2024-12-13', source: 'IRNA' }
-        ],
-        currentAQI: 148,
-        currentPM25: 45.2
-      },
-      'Pakistan': {
-        flag: '🇵🇰',
-        region: 'South Asia',
-        policyType: 'Comprehensive',
-        mainPolicy: {
-          name: 'Pakistan Clean Air Program',
-          description: 'National program addressing vehicle emissions, industrial pollution, and crop burning in Lahore and Karachi.',
-          implementationDate: '2020-10-01',
-          effectivenessRating: 4
-        },
-        // Historical PM2.5 trends (µg/m³ annual average - Lahore) - IQAir 2024
-        pm25Trends: [
-          { year: 2017, value: 114.0, note: 'Severe smog crisis begins' },
-          { year: 2018, value: 97.4, note: 'Government awareness' },
-          { year: 2019, value: 98.6, note: 'Emergency measures' },
-          { year: 2020, value: 59.0, note: '🔸 Clean Air Program + COVID' },
-          { year: 2021, value: 66.8, note: 'Economic recovery' },
-          { year: 2022, value: 70.9, note: 'Industrial emissions up' },
-          { year: 2023, value: 73.7, note: 'Smog season severe' },
-          { year: 2024, value: 73.7, note: '⚠️ IQAir 2024: 3rd most polluted' }
-        ],
-        policyImpact: {
-          reductionRate: '35%',
-          timeframe: '2017-2024',
-          status: 'Limited Progress',
-          keyMeasures: ['Crop burning penalties', 'Vehicle emission standards', 'Industrial controls', 'Smog alerts']
-        },
-        news: [
-          { title: 'Lahore battles severe smog season', date: '2025-01-10', source: 'Dawn' },
-          { title: 'Crop burning ban enforcement increased', date: '2024-12-24', source: 'Express Tribune' },
-          { title: 'Green lockdown measures implemented', date: '2024-12-11', source: 'The News' }
-        ],
-        currentAQI: 248,
-        currentPM25: 73.7
-      },
-      'Argentina': {
-        flag: '🇦🇷',
-        region: 'South America',
-        policyType: 'Monitoring & Standards',
-        mainPolicy: {
-          name: 'Air Quality Standards Law',
-          description: 'National air quality standards with monitoring requirements in Buenos Aires and major cities.',
-          implementationDate: '2007-11-28',
-          effectivenessRating: 7
-        },
-        news: [
-          { title: 'Buenos Aires air quality improving', date: '2025-01-06', source: 'La Nación' },
-          { title: 'Vehicle emission testing program expanded', date: '2024-12-20', source: 'Clarín' },
-          { title: 'Industrial emission regulations updated', date: '2024-12-05', source: 'Página 12' }
-        ],
-        currentAQI: 78,
-        currentPM25: 26
-      },
-      'Chile': {
-        flag: '🇨🇱',
-        region: 'South America',
-        policyType: 'Comprehensive',
-        mainPolicy: {
-          name: 'Santiago Air Quality Decontamination Plan',
-          description: 'Comprehensive plan with vehicle restrictions, industrial controls, and wood burning bans in Santiago.',
-          implementationDate: '2016-01-22',
-          effectivenessRating: 7
-        },
-        news: [
-          { title: 'Santiago air quality shows improvement', date: '2025-01-08', source: 'El Mercurio' },
-          { title: 'Wood burning restrictions enforced', date: '2024-12-22', source: 'La Tercera' },
-          { title: 'Pre-emergency alerts issued', date: '2024-12-09', source: 'Cooperativa' }
-        ],
-        currentAQI: 108,
-        currentPM25: 39
-      }
+      'South Korea': { flag: '🇰🇷', region: 'East Asia', policyType: 'Comprehensive',
+        mainPolicy: { name: 'Fine Dust Special Act', description: 'Comprehensive legislation to reduce PM2.5', implementationDate: '2019-02-15', effectivenessRating: 8 },
+        news: [], currentAQI: 68, currentPM25: 16.8 },
+      'China': { flag: '🇨🇳', region: 'East Asia', policyType: 'Comprehensive',
+        mainPolicy: { name: 'Blue Sky Protection Campaign', description: 'National initiative targeting industrial emissions', implementationDate: '2018-06-01', effectivenessRating: 7 },
+        news: [], currentAQI: 115, currentPM25: 29.2 },
+      'United States': { flag: '🇺🇸', region: 'North America', policyType: 'Monitoring & Standards',
+        mainPolicy: { name: 'Clean Air Act Amendments', description: 'Federal PM2.5 standards', implementationDate: '1990-11-15', effectivenessRating: 9 },
+        news: [], currentAQI: 34, currentPM25: 8.2 }
     };
+  }
+
   }
 
   updateGlobalStatistics(statistics) {
@@ -2598,152 +1649,6 @@ class PolicyGlobe {
     });
   }
 
-  /**
-   * Display country PM2.5 trends and policy impact data
-   * This is called when clicking on country policy markers
-   */
-  // (showCountryPolicyTrends 정리된 버전은 아래에 있음)
-  _showCountryPolicyTrends_REMOVED_DUPLICATE() {
-    // 이 함수는 제거됨. 아래 showCountryPolicyTrends를 사용하세요.
-    const gotoTodayBtn = document.getElementById('goto-today-btn');
-    if (gotoTodayBtn && policy.coordinates) {
-      gotoTodayBtn.href = `index.html?lat=${policy.coordinates.lat}&lon=${policy.coordinates.lon}`;
-    } else if (gotoTodayBtn) {
-      gotoTodayBtn.href = 'index.html';
-    }
-
-    // Trigger animation after a brief delay to ensure display change is applied
-    setTimeout(() => {
-      card.classList.add('show');
-    }, 10);
-
-    document.getElementById('policy-flag').textContent = policy.flag;
-    document.getElementById('policy-country').textContent = countryName;
-    document.getElementById('policy-region').textContent = policy.region;
-    document.getElementById('policy-name').textContent = policy.mainPolicy.name;
-    document.getElementById('policy-desc').textContent = policy.mainPolicy.description;
-    document.getElementById('policy-date').textContent = `Implemented: ${policy.mainPolicy.implementationDate}`;
-
-    // 🆕 WAQI 데이터 활용 - 실시간 AQI/PM2.5 업데이트
-    this.updatePolicyCardWithWAQI(countryName, policy);
-
-    const aqiElement = document.getElementById('policy-aqi');
-    aqiElement.textContent = policy.currentAQI;
-    aqiElement.className = `text-2xl font-bold ${this.getAQIClass(policy.currentAQI)}`;
-
-    document.getElementById('policy-pm25').textContent = `${policy.currentPM25} µg/m³`;
-
-    // 🆕 정책 효과도 시각화 (새로운 기능)
-    this.updateEffectivenessDisplay(countryName, policy);
-
-    // Display policy impact analysis if available
-    const impactSection = document.getElementById('policy-impact-section');
-    const timelineSection = document.getElementById('policy-timeline-section');
-    
-    console.log('🔍 Checking policy impact data for:', countryName);
-    console.log('  - policyImpactData exists:', !!policy.policyImpactData);
-    
-    if (policy.policyImpactData) {
-      console.log('  - policies array:', policy.policyImpactData.policies?.length || 0);
-      console.log('  - First policy:', policy.policyImpactData.policies?.[0]?.name);
-    }
-
-    if (policy.policyImpactData && policy.policyImpactData.policies && policy.policyImpactData.policies.length > 0) {
-      const mainPolicy = policy.policyImpactData.policies[0];
-      console.log('✅ Main policy found:', mainPolicy.name);
-      console.log('  - Has impact data:', !!mainPolicy.impact);
-
-      if (mainPolicy.impact) {
-        console.log('📊 Showing impact data section');
-        impactSection.style.display = 'block';
-        const impact = mainPolicy.impact;
-
-        document.getElementById('impact-before').textContent = `${impact.beforePeriod.meanPM25.toFixed(1)} µg/m³`;
-        document.getElementById('impact-after').textContent = `${impact.afterPeriod.meanPM25.toFixed(1)} µg/m³`;
-
-        const changeElement = document.getElementById('impact-change');
-        const percentChange = impact.analysis.percentChange;
-        changeElement.textContent = `${percentChange > 0 ? '+' : ''}${percentChange.toFixed(1)}%`;
-        changeElement.className = `text-lg font-bold ${percentChange < 0 ? 'text-green-400' : 'text-red-400'}`;
-
-        const significanceText = impact.analysis.significant
-          ? `✓ Statistically significant (p=${impact.analysis.pValue.toFixed(3)})`
-          : `Not statistically significant (p=${impact.analysis.pValue.toFixed(3)})`;
-        document.getElementById('impact-significance').textContent = significanceText;
-
-        // Render before/after comparison chart
-        this.renderImpactComparisonChart(impact, mainPolicy.name);
-      }
-
-      // Render timeline chart if available
-      if (mainPolicy.timeline && mainPolicy.timeline.length > 0) {
-        timelineSection.style.display = 'block';
-        this.renderPolicyTimeline(mainPolicy.timeline, mainPolicy.name);
-      } else {
-        timelineSection.style.display = 'none';
-      }
-    } else {
-      impactSection.style.display = 'none';
-      timelineSection.style.display = 'none';
-    }
-
-    const newsContainer = document.getElementById('policy-news');
-    newsContainer.innerHTML = '';
-
-    if (policy.news && policy.news.length > 0) {
-      policy.news.forEach(news => {
-        const newsItem = document.createElement('div');
-        newsItem.className = 'news-item bg-black/20 rounded-lg p-3 cursor-pointer hover:bg-black/30 transition-colors';
-        newsItem.innerHTML = `
-          <h6 class="text-sm font-medium text-white mb-1">${_esc(news.title)}</h6>
-          <div class="flex items-center justify-between text-xs text-white/60">
-            <span>${_esc(news.source)}</span>
-            <span>${_esc(news.date)}</span>
-          </div>
-        `;
-        // Add click event to open news URL (javascript: scheme 차단)
-        newsItem.addEventListener('click', () => {
-          const safeUrl = _safeUrl(news.url);
-          if (safeUrl) {
-            window.open(safeUrl, '_blank', 'noopener,noreferrer');
-          }
-        });
-        newsContainer.appendChild(newsItem);
-      });
-    } else {
-      newsContainer.innerHTML = '<p class="text-sm text-white/60 text-center py-2">No recent news available</p>';
-    }
-
-    // Set up "View Full Details" button
-    const viewMoreBtn = document.getElementById('view-more-btn');
-    if (viewMoreBtn) {
-      // Remove old listeners by cloning
-      const newBtn = viewMoreBtn.cloneNode(true);
-      viewMoreBtn.parentNode.replaceChild(newBtn, viewMoreBtn);
-
-      newBtn.addEventListener('click', () => {
-        // Try to open policy-specific page or Our World in Data country page
-        let policyUrl = null;
-
-        if (policy.policyImpactData && policy.policyImpactData.policies && policy.policyImpactData.policies.length > 0) {
-          const mainPolicy = policy.policyImpactData.policies[0];
-          // Check if policy has a URL
-          if (mainPolicy.url) {
-            policyUrl = mainPolicy.url;
-          }
-        }
-
-        // Fallback to Our World in Data country air pollution page
-        if (!policyUrl) {
-          const countrySlug = countryName.toLowerCase().replace(/\s+/g, '-');
-          policyUrl = `https://ourworldindata.org/air-pollution#${countrySlug}`;
-        }
-
-        // Open in new tab
-        window.open(policyUrl, '_blank', 'noopener,noreferrer');
-      });
-    }
-  }
 
   /**
    * Display country PM2.5 trends and policy impact data
@@ -3574,6 +2479,14 @@ class PolicyGlobe {
       this.particlesEnabled = checked;
       if (this.particles) this.particles.visible = checked;
     });
+
+    // 🆕 v2.5: 예측 레이어 토글
+    setupToggle('toggle-predictions-switch', 'toggle-predictions', (checked) => {
+      if (this.predictionLayer) {
+        this.predictionLayer.toggle(checked);
+        console.log(`🗺️ Prediction layer: ${checked ? 'shown' : 'hidden'}`);
+      }
+    });
   }
 
   setupEventListeners() {
@@ -4005,6 +2918,11 @@ class PolicyGlobe {
       this.markerSystem.updateAll(delta);
     }
 
+    // 🆕 v2.5: 예측 레이어 애니메이션
+    if (this.predictionLayer) {
+      this.predictionLayer.update(delta);
+    }
+
     // Animate enhanced visualization
     if (this.globeIntegration) {
       this.globeIntegration.animate(delta);
@@ -4177,67 +3095,24 @@ class PolicyGlobe {
 }
 
 // ── 모듈 레벨 헬퍼 ─────────────────────────────────────────────────────
+// NOTE: 아래 헬퍼들은 utils/ 모듈로 이전됨 (import 위 참조)
+// 하위 호환성을 위해 유지하며, 향후 제거 예정
 
 /**
- * XSS 방어 — HTML 특수문자 이스케이프
- * innerHTML에 외부 데이터를 삽입할 때 반드시 사용
+ * XSS 방어 — → utils/security.js::esc() 로 대체됨
  */
-function _esc(str) {
-  if (str == null) return '';
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#x27;');
-}
+function _esc(str) { return esc(str); }
 
 /**
- * URL 안전성 검증 — javascript: / data: scheme 차단
- * window.open / href에 사용할 URL만 허용
+ * URL 안전성 검증 — → utils/security.js::safeUrl() 로 대체됨
  */
-function _safeUrl(url) {
-  if (!url || typeof url !== 'string') return null;
-  const trimmed = url.trim().toLowerCase();
-  if (trimmed.startsWith('javascript:') || trimmed.startsWith('data:') || trimmed.startsWith('vbscript:')) {
-    console.warn('🚫 Blocked unsafe URL:', url);
-    return null;
-  }
-  // http/https/상대경로만 허용
-  if (!trimmed.startsWith('http://') && !trimmed.startsWith('https://') && !trimmed.startsWith('/')) {
-    return null;
-  }
-  return url;
-}
+function _safeUrl(url) { return safeUrl(url); }
 
-// 국가 이름 → ISO 2-letter code (간략 매핑)
-function _nameToCode(name) {
-  const MAP = {
-    'South Korea':'KR', 'Korea':'KR', 'China':'CN', 'Japan':'JP',
-    'India':'IN', 'USA':'US', 'United States':'US', 'Germany':'DE',
-    'France':'FR', 'United Kingdom':'GB', 'UK':'GB', 'Australia':'AU',
-    'Canada':'CA', 'Brazil':'BR', 'Russia':'RU', 'Indonesia':'ID',
-    'Mexico':'MX', 'Saudi Arabia':'SA', 'Turkey':'TR', 'Poland':'PL',
-    'Thailand':'TH', 'Vietnam':'VN', 'Pakistan':'PK', 'Bangladesh':'BD',
-    'Nigeria':'NG', 'Egypt':'EG', 'South Africa':'ZA', 'Iran':'IR',
-    'Italy':'IT', 'Spain':'ES', 'Netherlands':'NL', 'Sweden':'SE',
-    'Switzerland':'CH', 'Belgium':'BE', 'Austria':'AT', 'Norway':'NO',
-    'Denmark':'DK', 'Finland':'FI', 'Singapore':'SG', 'Malaysia':'MY',
-    'Philippines':'PH', 'New Zealand':'NZ', 'Chile':'CL', 'Colombia':'CO',
-    'Argentina':'AR', 'Peru':'PE', 'Portugal':'PT', 'Greece':'GR',
-    'Czech Republic':'CZ', 'Romania':'RO', 'Hungary':'HU', 'Ukraine':'UA',
-  };
-  return MAP[name] || name;
-}
+// → utils/geo.js::nameToCode() 로 대체됨
+function _nameToCode(name) { return nameToCode(name); }
 
-// 국가 이름 / ISO code → 국기 이모지
-function _countryToFlag(nameOrCode) {
-  const code = (nameOrCode.length === 2 ? nameOrCode : _nameToCode(nameOrCode)).toUpperCase();
-  if (code.length !== 2) return '🌍';
-  return String.fromCodePoint(
-    ...code.split('').map(c => 0x1F1E6 + c.charCodeAt(0) - 65)
-  );
-}
+// → utils/geo.js::countryToFlag() 로 대체됨
+function _countryToFlag(nameOrCode) { return countryToFlag(nameOrCode); }
 
 // Initialize
 if (document.readyState === 'loading') {

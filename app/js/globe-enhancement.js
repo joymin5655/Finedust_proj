@@ -4,9 +4,9 @@
  */
 
 // 새로운 시스템 임포트
-import { EnhancedPolicyVisualization } from './services/enhanced-policy-system/policy-visualization.js';
-import { PolicyComparisonPanel } from './services/enhanced-policy-system/policy-comparison-panel.js';
-import { dataIntegrationService } from './services/enhanced-policy-system/data-integration-service.js';
+import { EnhancedPolicyVisualization } from './services/policy/policy-visualization.js';
+import { PolicyComparisonPanel } from './services/policy/policy-comparison-panel.js';
+import { dataIntegrationService } from './services/policy/data-integration-service.js';
 
 // 기존 Globe 클래스 확장
 export function enhanceGlobe(PolicyGlobe) {

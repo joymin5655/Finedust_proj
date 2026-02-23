@@ -46,3 +46,15 @@ archive/
 
 # Data collection logs
 scripts/*.log
+
+# ML model artifacts (too large for git)
+models/*.pkl
+models/*.onnx
+models/*.pt
+models/*.h5
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/

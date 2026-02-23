@@ -1,0 +1,9 @@
+{
+  "generated_at": "2026-02-22T00:00:00Z",
+  "model": "placeholder",
+  "model_version": "0.0",
+  "grid_resolution_deg": 5,
+  "prediction_count": 0,
+  "predictions": [],
+  "note": "Run scripts/python/ml/train_pm25_model.py to generate real predictions"
+}

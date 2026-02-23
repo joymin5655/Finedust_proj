@@ -56,58 +56,53 @@ function _esc(str) {
     } catch (err) {
       console.error('Policy data load failed:', err);
       listEl.innerHTML = `
-        <div class="col-span-2 text-center py-12 text-red-400">
+        <div class="text-center py-12 text-red-400">
           <span class="material-symbols-outlined text-4xl block mb-2">error</span>
           <p class="text-sm">Failed to load policy data. Please try again.</p>
         </div>`;
     }
   }
 
-  // ── Render card grid ────────────────────────────────────────
+  // ── Render country list (single-column sidebar) ──────────────
   function renderList(countries) {
     if (!countries.length) {
-      listEl.innerHTML = `<div class="col-span-2 text-center py-12 text-gray-400 text-sm">No results found.</div>`;
+      listEl.innerHTML = `<div class="text-center py-12 text-gray-500 text-xs">No results found.</div>`;
       return;
     }
 
     listEl.innerHTML = countries.map(c => `
-      <button
-        class="policy-card text-left rounded-xl border border-gray-200 dark:border-white/10
-               bg-white dark:bg-black/20 p-4 shadow-sm hover:shadow-md"
-        data-file="${_esc(c.dataFile)}" data-country="${_esc(c.country)}">
-        <div class="flex items-start gap-3">
-          <span class="text-2xl flex-shrink-0">${_esc(c.flag || '🌍')}</span>
-          <div class="min-w-0">
-            <p class="text-gray-900 dark:text-white font-bold text-sm truncate">${_esc(c.country)}</p>
-            <p class="text-gray-400 text-xs">${_esc(c.region || '')}</p>
-            <p class="text-primary text-xs font-semibold mt-1">
-              ${_esc(String(c.policyCount || 0))} polic${c.policyCount === 1 ? 'y' : 'ies'}
-            </p>
-          </div>
+      <div class="country-item"
+           data-file="${_esc(c.dataFile)}" data-country="${_esc(c.country)}">
+        <span class="flag">${_esc(c.flag || '🌍')}</span>
+        <div class="info">
+          <p class="name">${_esc(c.country)}</p>
+          <p class="meta">${_esc(c.region || '')}</p>
         </div>
-      </button>
+        <span class="count">${_esc(String(c.policyCount || 0))}</span>
+      </div>
     `).join('');
 
     // Attach click events
-    listEl.querySelectorAll('.policy-card').forEach(btn => {
+    listEl.querySelectorAll('.country-item').forEach(btn => {
       btn.addEventListener('click', () => selectCountry(btn));
     });
   }
 
   // ── Select country → show detail panel ─────────────────────
   async function selectCountry(btn) {
-    // Highlight selected card
-    listEl.querySelectorAll('.policy-card').forEach(b => b.classList.remove('selected'));
+    // Highlight selected item
+    listEl.querySelectorAll('.country-item').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
 
     const file    = btn.dataset.file;
     const country = btn.dataset.country;
 
-    // Show panel
-    detailPanel.style.opacity = '1';
-    detailPanel.style.pointerEvents = 'auto';
+    // Show dashboard content
     detailPH.style.display    = 'none';
-    detailCnt.style.display   = 'block';
+    detailCnt.style.display   = 'flex';
+    // Hide effect placeholder, will be shown if no data
+    const effPH = document.getElementById('detail-effect-placeholder');
+    if (effPH) effPH.style.display = 'none';
 
     // Find meta from index
     const meta = allCountries.find(c => c.country === country) || {};
@@ -181,10 +176,11 @@ function _esc(str) {
   // ── Policy Effect Panel (PRD §6.1 ~ §6.2) ─────────────────
   function renderPolicyEffect(policy, data, meta) {
     const effectWrap = document.getElementById('detail-effect-wrap');
+    const effPH = document.getElementById('detail-effect-placeholder');
     if (!effectWrap) return;
 
     const imp = policy.impact;
-    if (!imp) { effectWrap.style.display = 'none'; return; }
+    if (!imp) { effectWrap.style.display = 'none'; if(effPH) effPH.style.display='flex'; return; }
 
     const before = imp.beforePeriod?.meanPM25;
     const after  = imp.afterPeriod?.meanPM25;
@@ -192,10 +188,11 @@ function _esc(str) {
     const pct    = ana.percentChange;
 
     if (before == null || after == null || pct == null) {
-      effectWrap.style.display = 'none'; return;
+      effectWrap.style.display = 'none'; if(effPH) effPH.style.display='flex'; return;
     }
 
-    effectWrap.style.display = 'block';
+    effectWrap.style.display = 'flex';
+    if(effPH) effPH.style.display = 'none';
 
     // Before / After 값
     const el = id => document.getElementById(id);
@@ -392,7 +389,7 @@ function _esc(str) {
 
     // 첫 번째 카드 자동 클릭 (DOM 업데이트 후)
     setTimeout(() => {
-      const firstCard = listEl.querySelector('.policy-card');
+      const firstCard = listEl.querySelector('.country-item');
       if (firstCard) {
         firstCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
         selectCountry(firstCard);

@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   # ─────────────────────────────────────────────────────────────────
-  # Job 1: WAQI 실시간 데이터 (기존 Node.js 스크립트)
+  # Job 1: WAQI 실시간 데이터 (Node.js)
   # ─────────────────────────────────────────────────────────────────
   update-waqi:
     name: 'WAQI Realtime'
@@ -50,35 +50,38 @@ jobs:
         run: node scripts/fetch-waqi-data.js
         timeout-minutes: 10
 
-      - name: Commit WAQI data
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Commit & Push WAQI data
         run: |
           git config user.name "airlens-bot"
           git config user.email "airlens-bot@users.noreply.github.com"
           git add app/data/waqi/
           if ! git diff --staged --quiet; then
             git commit -m "📊 Update WAQI data [$(date +'%Y-%m-%d %H:%M UTC')]"
-            git pull --rebase origin main
-            git push origin main
-            echo "✅ WAQI data pushed"
+            for i in 1 2 3; do
+              git pull --rebase origin main && git push origin main && echo "✅ WAQI data pushed" && exit 0
+              echo "⏳ Push attempt $i failed, retrying in 5s..."
+              sleep 5
+            done
+            echo "❌ Failed to push after 3 attempts"
+            exit 1
           else
             echo "ℹ️  No WAQI changes"
           fi
 
   # ─────────────────────────────────────────────────────────────────
-  # Job 2: OpenAQ PM2.5 시계열 데이터
+  # Job 2: OpenAQ PM2.5 시계열 (주 1회 또는 수동)
   # ─────────────────────────────────────────────────────────────────
   update-openaq:
     name: 'OpenAQ PM2.5 Timeseries'
+    needs: update-waqi
     runs-on: ubuntu-latest
-    # 매주 일요일 02:00 UTC 스케줄 혹은 수동 dispatch 시만 실행
     if: >
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'schedule' && startsWith(github.event.schedule, '0 2'))
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: main
           fetch-depth: 0
 
       - uses: actions/setup-python@v5
@@ -108,35 +111,39 @@ jobs:
       - name: Build policy effects
         run: python3 scripts/python/build_policy_effect.py
 
-      - name: Commit OpenAQ data
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Commit & Push OpenAQ data
         run: |
           git config user.name "airlens-bot"
           git config user.email "airlens-bot@users.noreply.github.com"
           git add app/data/openaq/ app/data/policy-impact/
           if ! git diff --staged --quiet; then
             git commit -m "📈 Update OpenAQ + policy effect data [$(date +'%Y-%m-%d')]"
-            git pull --rebase origin main
-            git push origin main
-            echo "✅ OpenAQ data pushed"
+            for i in 1 2 3; do
+              git pull --rebase origin main && git push origin main && echo "✅ OpenAQ data pushed" && exit 0
+              echo "⏳ Push attempt $i failed, retrying in 5s..."
+              sleep 5
+            done
+            echo "❌ Failed to push after 3 attempts"
+            exit 1
           else
             echo "ℹ️  No OpenAQ changes"
           fi
 
   # ─────────────────────────────────────────────────────────────────
-  # Job 3: NASA Earthdata AOD (별도 실행, 주 1회)
+  # Job 3: NASA Earthdata AOD (주 1회 또는 수동)
   # ─────────────────────────────────────────────────────────────────
   update-earthdata:
     name: 'NASA Earthdata AOD'
+    needs: update-openaq
     runs-on: ubuntu-latest
-    # 매주 일요일 02:00 UTC 스케줄 혹은 수동 dispatch 시만 실행
     if: >
-      github.event_name == 'workflow_dispatch' ||
-      (github.event_name == 'schedule' && startsWith(github.event.schedule, '0 2'))
+      always() &&
+      (github.event_name == 'workflow_dispatch' ||
+       (github.event_name == 'schedule' && startsWith(github.event.schedule, '0 2')))
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: main
           fetch-depth: 0
 
       - uses: actions/setup-python@v5
@@ -155,18 +162,20 @@ jobs:
         run: python3 scripts/python/fetch_earthdata_aod.py
         timeout-minutes: 30
 
-      - name: Commit Earthdata
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Commit & Push Earthdata
         run: |
           git config user.name "airlens-bot"
           git config user.email "airlens-bot@users.noreply.github.com"
           git add app/data/earthdata/
           if ! git diff --staged --quiet; then
             git commit -m "🛰️  Update Earthdata AOD [$(date +'%Y-%m-%d')]"
-            git pull --rebase origin main
-            git push origin main
-            echo "✅ Earthdata pushed"
+            for i in 1 2 3; do
+              git pull --rebase origin main && git push origin main && echo "✅ Earthdata pushed" && exit 0
+              echo "⏳ Push attempt $i failed, retrying in 5s..."
+              sleep 5
+            done
+            echo "❌ Failed to push after 3 attempts"
+            exit 1
           else
             echo "ℹ️  No Earthdata changes"
           fi

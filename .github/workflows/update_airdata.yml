@@ -9,6 +9,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: airdata-update
+  cancel-in-progress: false
+
 jobs:
   # ─────────────────────────────────────────────────────────────────
   # Job 1: WAQI 실시간 데이터 (기존 Node.js 스크립트)
@@ -42,6 +46,7 @@ jobs:
       - name: Fetch WAQI data
         env:
           WAQI_TOKEN: ${{ secrets.WAQI_TOKEN }}
+          SKIP_HISTORY: 'true'
         run: node scripts/fetch-waqi-data.js
         timeout-minutes: 10
 
@@ -54,6 +59,7 @@ jobs:
           git add app/data/waqi/
           if ! git diff --staged --quiet; then
             git commit -m "📊 Update WAQI data [$(date +'%Y-%m-%d %H:%M UTC')]"
+            git pull --rebase origin main
             git push origin main
             echo "✅ WAQI data pushed"
           else
@@ -111,6 +117,7 @@ jobs:
           git add app/data/openaq/ app/data/policy-impact/
           if ! git diff --staged --quiet; then
             git commit -m "📈 Update OpenAQ + policy effect data [$(date +'%Y-%m-%d')]"
+            git pull --rebase origin main
             git push origin main
             echo "✅ OpenAQ data pushed"
           else
@@ -123,6 +130,10 @@ jobs:
   update-earthdata:
     name: 'NASA Earthdata AOD'
     runs-on: ubuntu-latest
+    # 매주 일요일 02:00 UTC 스케줄 혹은 수동 dispatch 시만 실행
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'schedule' && startsWith(github.event.schedule, '0 2'))
     steps:
       - uses: actions/checkout@v4
         with:
@@ -153,6 +164,7 @@ jobs:
           git add app/data/earthdata/
           if ! git diff --staged --quiet; then
             git commit -m "🛰️  Update Earthdata AOD [$(date +'%Y-%m-%d')]"
+            git pull --rebase origin main
             git push origin main
             echo "✅ Earthdata pushed"
           else

@@ -212,17 +212,21 @@ async function main() {
   );
   console.log('💾 Saved: latest.json');
   
-  // 날짜별 히스토리
-  const historyDir = path.join(OUTPUT_DIR, 'history');
-  if (!fs.existsSync(historyDir)) {
-    fs.mkdirSync(historyDir, { recursive: true });
+  // 날짜별 히스토리 (SKIP_HISTORY=true 시 건너뛰기 — CI 환경 용)
+  if (process.env.SKIP_HISTORY !== 'true') {
+    const historyDir = path.join(OUTPUT_DIR, 'history');
+    if (!fs.existsSync(historyDir)) {
+      fs.mkdirSync(historyDir, { recursive: true });
+    }
+    
+    fs.writeFileSync(
+      path.join(historyDir, `${dateStr}.json`),
+      JSON.stringify(cityOutput, null, 2)
+    );
+    console.log(`💾 Saved: history/${dateStr}.json`);
+  } else {
+    console.log('ℹ️  Skipping history write (SKIP_HISTORY=true)');
   }
-  
-  fs.writeFileSync(
-    path.join(historyDir, `${dateStr}.json`),
-    JSON.stringify(cityOutput, null, 2)
-  );
-  console.log(`💾 Saved: history/${dateStr}.json`);
   
   // 전 세계 측정소 데이터
   if (globalStations.length > 0) {

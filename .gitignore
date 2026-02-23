@@ -47,6 +47,9 @@ archive/
 # Data collection logs
 scripts/*.log
 
+# WAQI daily history (only latest.json needed in repo)
+app/data/waqi/history/
+
 # ML model artifacts (too large for git)
 models/*.pkl
 models/*.onnx

@@ -33,16 +33,138 @@ function _esc(str) {
   let allCountries   = [];
   let detailChart    = null;
   let analyticsData  = null; // policy-analytics.json (지역 그룹 평균)
+  let globalPolicies = null; // policies.json (target/credibility 보조)
 
   // ── Load data ───────────────────────────────────────────────
   async function loadAnalytics() {
     try {
-      // dataService와 동일한 BASE 경로 사용
       const isGHPages = window.location.hostname.includes('github.io');
       const base = isGHPages ? '/Finedust_proj/app/data' : window.location.origin + '/data';
       const res = await fetch(`${base}/policy-analytics.json`);
       if (res.ok) analyticsData = await res.json();
-    } catch (_) { /* 선택적 - 없어도 기본 표시 유지 */ }
+    } catch (_) { /* 선택적 — 없어도 기본 표시 유지 */ }
+  }
+
+  // ── Load global policies.json (target_pm25, credibility 보조) ──
+  async function loadGlobalPolicies() {
+    try {
+      const isGHPages = window.location.hostname.includes('github.io');
+      const base = isGHPages ? '/Finedust_proj/app/data' : window.location.origin + '/data';
+      const res = await fetch(`${base}/policies.json`);
+      if (res.ok) {
+        const data = await res.json();
+        globalPolicies = data.policies || [];
+      }
+    } catch (_) { /* 선택적 */ }
+  }
+
+  // ── 데이터 기반 credibility 동적 계산 ─────────────────────────
+  // 정책 JSON 필드에서 데이터 품질/신뢰도를 추론
+  function computeCredibility(policy, data) {
+    let score = 0;
+    let maxScore = 0;
+
+    // 1. impact 데이터 존재 여부 (25점)
+    maxScore += 25;
+    if (policy.impact) {
+      score += 10;
+      if (policy.impact.beforePeriod?.meanPM25 != null) score += 5;
+      if (policy.impact.afterPeriod?.meanPM25 != null) score += 5;
+      if (policy.impact.analysis) score += 5;
+    }
+
+    // 2. 통계적 유의성 (25점)
+    maxScore += 25;
+    const ana = policy.impact?.analysis;
+    if (ana) {
+      if (ana.pValue != null) {
+        if (ana.pValue <= 0.01) score += 20;
+        else if (ana.pValue <= 0.05) score += 15;
+        else if (ana.pValue <= 0.1) score += 8;
+        else score += 3;
+      }
+      if (ana.effectSize === 'large') score += 5;
+      else if (ana.effectSize === 'medium') score += 3;
+      else if (ana.effectSize === 'small') score += 1;
+    }
+
+    // 3. 샘플 수 (20점)
+    maxScore += 20;
+    const samplesBefore = policy.impact?.beforePeriod?.samples || 0;
+    const samplesAfter  = policy.impact?.afterPeriod?.samples || 0;
+    const totalSamples  = samplesBefore + samplesAfter;
+    if (totalSamples >= 2000) score += 20;
+    else if (totalSamples >= 1000) score += 15;
+    else if (totalSamples >= 500) score += 10;
+    else if (totalSamples > 0) score += 5;
+
+    // 4. timeline 데이터 (15점)
+    maxScore += 15;
+    const tl = policy.timeline;
+    if (tl && tl.length >= 5) score += 15;
+    else if (tl && tl.length >= 3) score += 10;
+    else if (tl && tl.length >= 1) score += 5;
+
+    // 5. 메타데이터 완성도 (15점)
+    maxScore += 15;
+    if (policy.description) score += 3;
+    if (policy.url) score += 3;
+    if (policy.type) score += 2;
+    if (policy.targetPollutants?.length) score += 2;
+    if (policy.measures?.length >= 3) score += 3;
+    else if (policy.measures?.length >= 1) score += 2;
+    if (data.realTimeData) score += 2;
+
+    return maxScore > 0 ? score / maxScore : 0;
+  }
+
+  // ── 정책 설명에서 PM2.5 목표치 추출 ─────────────────────────
+  function extractTarget(policy, countryName) {
+    // 1. policies.json에서 먼저 찾기
+    if (globalPolicies) {
+      const match = globalPolicies.find(p =>
+        p.country === countryName ||
+        (policy.name && p.title && (
+          p.title.toLowerCase().includes(policy.name.toLowerCase().slice(0, 10)) ||
+          policy.name.toLowerCase().includes(p.title.toLowerCase().slice(0, 10))
+        ))
+      );
+      if (match && match.target_pm25) {
+        return { pm25: match.target_pm25, year: match.target_year || null };
+      }
+    }
+
+    // 2. description에서 regex로 추출 (예: "reduce PM2.5 to 15 µg/m³ by 2030")
+    const desc = policy.description || '';
+    
+    // Pattern: "to X µg/m³" or "to X μg/m³"
+    const toMatch = desc.match(/to\s+(\d+(?:\.\d+)?)\s*(?:µg\/m³|μg\/m³|ug\/m3)/i);
+    if (toMatch) {
+      const yearMatch = desc.match(/by\s+(\d{4})/i);
+      return { pm25: parseFloat(toMatch[1]), year: yearMatch ? parseInt(yearMatch[1]) : null };
+    }
+
+    // Pattern: "reduce by X%" → 목표는 before * (1 - X/100) 으로 추정
+    const pctMatch = desc.match(/reduce\s+(?:PM\S*\s+)?(?:by\s+)?(\d+)(?:\s*[-–]\s*(\d+))?\s*%/i);
+    if (pctMatch && policy.impact?.beforePeriod?.meanPM25) {
+      const pct = pctMatch[2] ? parseInt(pctMatch[2]) : parseInt(pctMatch[1]); // 범위면 큰 값 사용
+      const before = policy.impact.beforePeriod.meanPM25;
+      const target = before * (1 - pct / 100);
+      const yearMatch = desc.match(/by\s+(\d{4})/i);
+      return { pm25: Math.round(target * 10) / 10, year: yearMatch ? parseInt(yearMatch[1]) : null };
+    }
+
+    // 3. impact afterPeriod → 달성치를 "실질 목표"로 표시 (fallback)
+    if (policy.impact?.afterPeriod?.meanPM25 != null) {
+      const afterYear = policy.impact.afterPeriod.end?.slice(0, 4);
+      return {
+        pm25: policy.impact.afterPeriod.meanPM25,
+        year: afterYear ? parseInt(afterYear) : null,
+        isAchieved: true  // 목표가 아니라 달성치
+      };
+    }
+
+    return { pm25: null, year: null };
   }
 
   async function loadData() {
@@ -134,6 +256,7 @@ function _esc(str) {
   function populateDetail(data, meta) {
     // Use first policy entry if array
     const policy = Array.isArray(data.policies) ? data.policies[0] : data;
+    const countryName = data.country || meta.country || '';
 
     document.getElementById('detail-title').textContent =
       policy.title || policy.name || data.title || '—';
@@ -142,16 +265,32 @@ function _esc(str) {
     document.getElementById('detail-desc').textContent =
       policy.description || data.description || '—';
 
-    const target = policy.target_pm25 ?? data.target_pm25 ?? '--';
-    const year   = policy.target_year  ?? data.target_year  ??
-                   (policy.implementationDate ? policy.implementationDate.slice(0,4) : '----');
-    document.getElementById('detail-target').textContent = target;
-    document.getElementById('detail-year').textContent   = year;
+    // ── PM2.5 Target (동적 추출) ────────────────────────────────
+    const targetInfo = extractTarget(policy, countryName);
+    const targetLabelEl = document.getElementById('detail-target-label');
+    if (targetInfo.pm25 != null) {
+      document.getElementById('detail-target').textContent = targetInfo.pm25;
+      if (targetLabelEl) {
+        targetLabelEl.textContent = targetInfo.isAchieved ? 'PM2.5 Achieved' : 'PM2.5 Target';
+      }
+    } else {
+      document.getElementById('detail-target').textContent = '--';
+      if (targetLabelEl) targetLabelEl.textContent = 'PM2.5 Target';
+    }
+    const targetYear = targetInfo.year
+      ?? (policy.implementationDate ? parseInt(policy.implementationDate.slice(0, 4)) : null);
+    document.getElementById('detail-year').textContent = targetYear || '----';
 
-    const cred = (policy.credibility ?? data.credibility ?? 0) * 100;
+    // ── Data Credibility (동적 계산) ────────────────────────────
+    const cred = computeCredibility(policy, data) * 100;
     document.getElementById('detail-cred-pct').textContent = `${cred.toFixed(0)}%`;
+    // Color coding based on score
+    const credBar = document.getElementById('detail-cred-bar');
     setTimeout(() => {
-      document.getElementById('detail-cred-bar').style.width = `${cred}%`;
+      credBar.style.width = `${cred}%`;
+      if (cred >= 70) credBar.style.background = '#25e2f4';       // primary
+      else if (cred >= 40) credBar.style.background = '#f59e0b';  // amber
+      else credBar.style.background = '#ef4444';                    // red
     }, 50);
 
     const url = policy.url || data.url || '#';
@@ -166,7 +305,6 @@ function _esc(str) {
     if (owid && owid.years && owid.values) {
       renderTrendChart(owid.years, owid.values);
     } else if (policy.timeline && policy.timeline.length > 1) {
-      // fallback: policy timeline을 트렌드 차트로 활용
       const years  = policy.timeline.map(t => t.date.slice(0, 4));
       const values = policy.timeline.map(t => t.pm25);
       renderTrendChart(years, values, policy.implementationDate?.slice(0, 4));
@@ -398,6 +536,6 @@ function _esc(str) {
   }
 
   // ── Init ────────────────────────────────────────────────────
-  await Promise.all([loadData(), loadAnalytics()]);
+  await Promise.all([loadData(), loadAnalytics(), loadGlobalPolicies()]);
   handleUrlCountry();
 })();

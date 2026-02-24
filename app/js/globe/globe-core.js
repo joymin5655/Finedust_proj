@@ -30,6 +30,8 @@ import { mixMarkers } from './globe-markers.js';
 import { mixData } from './globe-data.js';
 import { mixUI } from './globe-ui.js';
 import { mixCharts } from './globe-charts.js';
+import { mixLayers } from './globe-layers.js';
+import { mixInteraction } from './globe-interaction.js';
 
 class PolicyGlobe {
   constructor() {
@@ -208,6 +210,8 @@ mixMarkers(PolicyGlobe);
 mixData(PolicyGlobe);
 mixUI(PolicyGlobe);
 mixCharts(PolicyGlobe);
+mixLayers(PolicyGlobe);
+mixInteraction(PolicyGlobe);
 
 // ── Bootstrap ─────────────────────────────────────────────────
 if (document.readyState === 'loading') {

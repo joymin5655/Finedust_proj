@@ -24,6 +24,19 @@ export function mixData(Cls) {
         await this.createPM25MarkersAsync();
       }
 
+      // ── 레이어 시스템 초기화 (globe-layers.js) ────────────
+      if (typeof this.initLayerSystem === 'function') {
+        this.initLayerSystem();
+        this.setupLayerToggles();
+        // 기본 ON 레이어는 즉시 빌드
+        await this.buildSatelliteLayer(); // 기본 off지만 미리 빌드 생략 가능
+      }
+
+      // ── 인터랙션 강화 초기화 (globe-interaction.js) ────────
+      if (typeof this.setupInteractionEnhancements === 'function') {
+        this.setupInteractionEnhancements();
+      }
+
       this.setupEventListeners();
       this.setupToggleSwitches();
       this.getUserLocationAndHighlight();

@@ -249,6 +249,11 @@
             }
         }
 
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+            to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
         .news-item {
             transition: all 0.2s;
         }
@@ -993,6 +998,112 @@
                             </div>
                         </div>
                     </label>
+
+                    <!-- Satellite AOD Layer (NEW) -->
+                    <label class="flex items-center gap-1.5 bg-transparent px-1.5 min-h-[32px] py-0.5 justify-between cursor-pointer hover:bg-white/5 rounded-lg transition-colors">
+                        <div class="flex items-center gap-1.5">
+                            <div class="text-white flex items-center justify-center rounded-lg bg-black/20 shrink-0 size-6">
+                                <span class="material-symbols-outlined !text-sm">satellite_alt</span>
+                            </div>
+                            <div class="flex flex-col justify-center">
+                                <p class="text-white text-[10px] font-medium leading-tight line-clamp-1">Satellite AOD</p>
+                            </div>
+                        </div>
+                        <div class="shrink-0">
+                            <div class="toggle-switch" id="toggle-satellite-switch" style="width: 32px; height: 18px;">
+                                <input type="checkbox" id="toggle-satellite">
+                                <div class="toggle-knob" style="width: 14px; height: 14px;"></div>
+                            </div>
+                        </div>
+                    </label>
+
+                    <!-- Predicted PM Layer (NEW) -->
+                    <label class="flex items-center gap-1.5 bg-transparent px-1.5 min-h-[32px] py-0.5 justify-between cursor-pointer hover:bg-white/5 rounded-lg transition-colors">
+                        <div class="flex items-center gap-1.5">
+                            <div class="text-white flex items-center justify-center rounded-lg bg-black/20 shrink-0 size-6">
+                                <span class="material-symbols-outlined !text-sm">auto_graph</span>
+                            </div>
+                            <div class="flex flex-col justify-center">
+                                <p class="text-white text-[10px] font-medium leading-tight line-clamp-1">ML Prediction</p>
+                            </div>
+                        </div>
+                        <div class="shrink-0">
+                            <div class="toggle-switch" id="toggle-prediction-switch" style="width: 32px; height: 18px;">
+                                <input type="checkbox" id="toggle-prediction">
+                                <div class="toggle-knob" style="width: 14px; height: 14px;"></div>
+                            </div>
+                        </div>
+                    </label>
+
+                    <!-- Data Quality Layer (NEW) -->
+                    <label class="flex items-center gap-1.5 bg-transparent px-1.5 min-h-[32px] py-0.5 justify-between cursor-pointer hover:bg-white/5 rounded-lg transition-colors">
+                        <div class="flex items-center gap-1.5">
+                            <div class="text-white flex items-center justify-center rounded-lg bg-black/20 shrink-0 size-6">
+                                <span class="material-symbols-outlined !text-sm">verified</span>
+                            </div>
+                            <div class="flex flex-col justify-center">
+                                <p class="text-white text-[10px] font-medium leading-tight line-clamp-1">Data Quality</p>
+                            </div>
+                        </div>
+                        <div class="shrink-0">
+                            <div class="toggle-switch" id="toggle-quality-switch" style="width: 32px; height: 18px;">
+                                <input type="checkbox" id="toggle-quality">
+                                <div class="toggle-knob" style="width: 14px; height: 14px;"></div>
+                            </div>
+                        </div>
+                    </label>
+
+                    <!-- Layer Legend (동적으로 채워짐) -->
+                    <div id="layer-legend"
+                         class="mt-1 p-2 bg-black/30 rounded-lg border border-white/10 text-[9px]"
+                         style="display:none;">
+                    </div>
+                </div>
+
+                <div class="my-0.5 border-t border-white/10"></div>
+
+                <!-- Quick Focus Buttons (NEW) -->
+                <div class="flex flex-col gap-0.5">
+                    <div class="flex flex-col mb-0.5">
+                        <h1 class="text-white text-xs font-semibold leading-tight">Quick Focus</h1>
+                        <p class="text-white/40 text-[9px]">카메라 자동 이동</p>
+                    </div>
+
+                    <button id="qf-top-polluted"
+                            class="flex items-center gap-1.5 w-full px-2 py-1.5 rounded-lg bg-red-900/30 hover:bg-red-900/50 border border-red-500/20 hover:border-red-500/40 transition-all text-left">
+                        <span class="material-symbols-outlined text-red-400 !text-sm">factory</span>
+                        <div>
+                            <p class="text-white text-[10px] font-semibold leading-tight">Top Polluted</p>
+                            <p class="text-white/40 text-[9px]">최악 오염 도시</p>
+                        </div>
+                    </button>
+
+                    <button id="qf-most-improved"
+                            class="flex items-center gap-1.5 w-full px-2 py-1.5 rounded-lg bg-green-900/30 hover:bg-green-900/50 border border-green-500/20 hover:border-green-500/40 transition-all text-left">
+                        <span class="material-symbols-outlined text-green-400 !text-sm">trending_down</span>
+                        <div>
+                            <p class="text-white text-[10px] font-semibold leading-tight">Most Improved</p>
+                            <p class="text-white/40 text-[9px]">가장 개선된 국가</p>
+                        </div>
+                    </button>
+
+                    <button id="qf-policy-highlight"
+                            class="flex items-center gap-1.5 w-full px-2 py-1.5 rounded-lg bg-primary/10 hover:bg-primary/20 border border-primary/20 hover:border-primary/40 transition-all text-left">
+                        <span class="material-symbols-outlined text-primary !text-sm">policy</span>
+                        <div>
+                            <p class="text-white text-[10px] font-semibold leading-tight">Policy Highlight</p>
+                            <p class="text-white/40 text-[9px]">최신 정책 국가</p>
+                        </div>
+                    </button>
+
+                    <button id="qf-my-location"
+                            class="flex items-center gap-1.5 w-full px-2 py-1.5 rounded-lg bg-purple-900/30 hover:bg-purple-900/50 border border-purple-500/20 hover:border-purple-500/40 transition-all text-left">
+                        <span class="material-symbols-outlined text-purple-400 !text-sm">my_location</span>
+                        <div>
+                            <p class="text-white text-[10px] font-semibold leading-tight">My Location</p>
+                            <p class="text-white/40 text-[9px]">내 위치로 이동</p>
+                        </div>
+                    </button>
                 </div>
 
                 <div class="my-0.5 border-t border-white/10"></div>

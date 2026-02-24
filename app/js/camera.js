@@ -804,9 +804,15 @@ class CameraAI {
   }
 
   getAirQuality(pm25) {
+    const cfg = window.AirLensConfig;
+    if (cfg?.getPM25Grade) {
+      const g = cfg.getPM25Grade(pm25);
+      const cls = pm25 <= 12 ? 'good' : pm25 <= 55.5 ? 'moderate' : 'unhealthy';
+      return { label: g.label, class: cls };
+    }
     if (pm25 <= 12) return { label: 'Good', class: 'good' };
-    if (pm25 <= 35) return { label: 'Moderate', class: 'moderate' };
-    if (pm25 <= 55) return { label: 'Unhealthy for Sensitive Groups', class: 'moderate' };
+    if (pm25 <= 35.5) return { label: 'Moderate', class: 'moderate' };
+    if (pm25 <= 55.5) return { label: 'Unhealthy for Sensitive Groups', class: 'moderate' };
     return { label: 'Unhealthy', class: 'unhealthy' };
   }
 

@@ -9,6 +9,7 @@
  */
 
 import * as THREE from 'three';
+import { getPM25Grade } from '../utils/config.js';
 
 export function mixInteraction(Cls) {
   const P = Cls.prototype;
@@ -74,11 +75,8 @@ export function mixInteraction(Cls) {
 
   P._pm25GradeStr = function (pm25) {
     if (pm25 == null) return '—';
-    if (pm25 <= 12)  return '<span style="color:#00e400">● Good</span>';
-    if (pm25 <= 35)  return '<span style="color:#ffff00">● Moderate</span>';
-    if (pm25 <= 55)  return '<span style="color:#ff7e00">● Unhealthy(SG)</span>';
-    if (pm25 <= 150) return '<span style="color:#ff5555">● Unhealthy</span>';
-    return '<span style="color:#cc44cc">● Very Unhealthy</span>';
+    const g = getPM25Grade(pm25);
+    return `<span style="color:${g.color}">● ${g.label}</span>`;
   };
 
   // ── 개선된 마우스무브 (툴팁 포함) ──────────────────────────

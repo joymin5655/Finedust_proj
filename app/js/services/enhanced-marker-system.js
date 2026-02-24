@@ -9,6 +9,7 @@
  */
 
 import * as THREE from 'three';
+import { getPM25Grade } from '../utils/config.js';
 
 // 국가별 수도/주요 도시 좌표
 export const COUNTRY_COORDINATES = {
@@ -350,11 +351,8 @@ export class EnhancedMarkerSystem {
   }
 
   getPM25Color(pm25) {
-    if (pm25 <= 12) return new THREE.Color(0x00e400);
-    if (pm25 <= 35.5) return new THREE.Color(0xffff00);
-    if (pm25 <= 55.5) return new THREE.Color(0xff7e00);
-    if (pm25 <= 150.5) return new THREE.Color(0xff0000);
-    return new THREE.Color(0x8f3f97);
+    const g = getPM25Grade(pm25);
+    return new THREE.Color(g.hex);
   }
 
   getPolicyColor(score) {

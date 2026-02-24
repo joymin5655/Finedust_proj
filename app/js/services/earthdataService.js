@@ -5,12 +5,9 @@
  * Globe·Policy 페이지에서 AOD 시각화에 사용
  */
 
-const BASE = (() => {
-  if (window.location.hostname.includes('github.io')) {
-    return '/Finedust_proj/app/data/earthdata';
-  }
-  return window.location.origin + '/data/earthdata';
-})();
+import { earthdataUrl, getBasePath } from '../utils/config.js';
+
+const BASE = getBasePath() + '/earthdata';
 
 let _cache = {};
 

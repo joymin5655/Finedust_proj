@@ -204,18 +204,31 @@ const PMService = (() => {
   // § 4. 등급 / 행동 가이드 / UI 헬퍼
   // ─────────────────────────────────────────────────────────────
   function getGrade(pm25) {
+    // Use centralized config if available
+    if (window.AirLensConfig?.getPM25Grade) {
+      const g = window.AirLensConfig.getPM25Grade(pm25);
+      return {
+        label: g.labelKo || g.label,
+        labelEn: g.label,
+        color: g.darkColor || g.color,
+        bgClass: g.bgClass || '',
+        emoji: g.emoji
+      };
+    }
+    // Fallback (config.js not loaded yet)
     if (pm25 == null) return { label: '—', labelEn: '—', color: '#888', bgClass: '' };
-    if (pm25 <= 15) return { label: '좋음',     labelEn: 'Good',          color: '#10b981', bgClass: 'grade-good' };
-    if (pm25 <= 35) return { label: '보통',     labelEn: 'Moderate',      color: '#f59e0b', bgClass: 'grade-moderate' };
-    if (pm25 <= 55) return { label: '나쁨',     labelEn: 'Unhealthy',     color: '#f97316', bgClass: 'grade-unhealthy' };
+    if (pm25 <= 12)   return { label: '좋음',     labelEn: 'Good',          color: '#10b981', bgClass: 'grade-good' };
+    if (pm25 <= 35.5) return { label: '보통',     labelEn: 'Moderate',      color: '#f59e0b', bgClass: 'grade-moderate' };
+    if (pm25 <= 55.5) return { label: '나쁨',     labelEn: 'Unhealthy',     color: '#f97316', bgClass: 'grade-unhealthy' };
     return             { label: '매우 나쁨', labelEn: 'Very Unhealthy', color: '#ef4444', bgClass: 'grade-very-unhealthy' };
   }
 
   function getActionGuide(pm25) {
+    if (window.AirLensConfig?.getActionGuide) return window.AirLensConfig.getActionGuide(pm25);
     if (pm25 == null) return '';
-    if (pm25 <= 15) return '야외 활동에 적합한 공기입니다. 마음껏 즐기세요. 🌿';
-    if (pm25 <= 35) return '민감군(어린이, 노약자, 호흡기 질환자)은 마스크 착용을 권장합니다.';
-    if (pm25 <= 55) return 'KF94 마스크 착용을 권장합니다. 장시간 야외 운동은 자제하세요. 😷';
+    if (pm25 <= 12) return '야외 활동에 적합한 공기입니다. 마음껏 즐기세요. 🌿';
+    if (pm25 <= 35.5) return '민감군(어린이, 노약자, 호흡기 질환자)은 마스크 착용을 권장합니다.';
+    if (pm25 <= 55.5) return 'KF94 마스크 착용을 권장합니다. 장시간 야외 운동은 자제하세요. 😷';
     return '⚠️ KF94 마스크 필수 착용. 야외 활동을 최소화하고 환기를 자제하세요.';
   }
 

@@ -5,6 +5,7 @@
 
 import { esc, safeUrl } from '../utils/security.js';
 import { nameToCode, countryToFlag } from '../utils/geo.js';
+import { getPM25Grade } from '../utils/config.js';
 
 // module-level helpers (backward compat)
 function _esc(str) { return esc(str); }
@@ -431,21 +432,11 @@ export function mixUI(Cls) {
   };
 
   P.getPM25ColorString = function (pm25) {
-    if (pm25 <= 12) return '#00e400';
-    if (pm25 <= 35.4) return '#ffff00';
-    if (pm25 <= 55.4) return '#ff7e00';
-    if (pm25 <= 150.4) return '#ff0000';
-    if (pm25 <= 250.4) return '#8f3f97';
-    return '#7e0023';
+    return getPM25Grade(pm25).color;
   };
 
   P.getPM25Label = function (pm25) {
-    if (pm25 <= 12) return 'Good';
-    if (pm25 <= 35.4) return 'Moderate';
-    if (pm25 <= 55.4) return 'Unhealthy (SG)';
-    if (pm25 <= 150.4) return 'Unhealthy';
-    if (pm25 <= 250.4) return 'Very Unhealthy';
-    return 'Hazardous';
+    return getPM25Grade(pm25).label;
   };
 
   // ── Policy UI Update ───────────────────────────────────────

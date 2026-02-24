@@ -307,11 +307,13 @@
 
   <!--
     Script load order (important):
-    1. i18n.js      — translations (before any UI renders)
-    2. theme-toggle — applies saved theme
-    3. services     — data layer
-    4. today.js     — page logic (Today view entrypoint)
+    0. config.js     — centralized constants (must be first)
+    1. i18n.js       — translations (before any UI renders)
+    2. theme-toggle  — applies saved theme
+    3. services      — data layer
+    4. today.js      — page logic (Today view entrypoint)
   -->
+  <script src="js/utils/config.js"></script>
   <script src="js/i18n.js"></script>
   <script src="js/theme-toggle.js"></script>
   <script src="js/main.js"></script>

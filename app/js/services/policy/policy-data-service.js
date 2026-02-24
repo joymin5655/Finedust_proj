@@ -18,15 +18,7 @@ export class PolicyDataService {
    * 환경에 맞는 기본 URL 반환
    */
   getBaseURL() {
-    const hostname = window.location.hostname;
-    
-    // GitHub Pages
-    if (hostname.includes('github.io')) {
-      return '/Finedust_proj/app/data';
-    }
-    
-    // 로컬 개발 환경: origin 포함 (포트 지원)
-    return window.location.origin + '/data';
+    return window.AirLensConfig?.getBasePath?.() || '/data';
   }
 
   /**

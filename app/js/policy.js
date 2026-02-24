@@ -38,8 +38,7 @@ function _esc(str) {
   // ── Load data ───────────────────────────────────────────────
   async function loadAnalytics() {
     try {
-      const isGHPages = window.location.hostname.includes('github.io');
-      const base = isGHPages ? '/Finedust_proj/app/data' : window.location.origin + '/data';
+      const base = window.AirLensConfig?.getBasePath?.() || '/data';
       const res = await fetch(`${base}/policy-analytics.json`);
       if (res.ok) analyticsData = await res.json();
     } catch (_) { /* 선택적 — 없어도 기본 표시 유지 */ }
@@ -48,8 +47,7 @@ function _esc(str) {
   // ── Load global policies.json (target_pm25, credibility 보조) ──
   async function loadGlobalPolicies() {
     try {
-      const isGHPages = window.location.hostname.includes('github.io');
-      const base = isGHPages ? '/Finedust_proj/app/data' : window.location.origin + '/data';
+      const base = window.AirLensConfig?.getBasePath?.() || '/data';
       const res = await fetch(`${base}/policies.json`);
       if (res.ok) {
         const data = await res.json();

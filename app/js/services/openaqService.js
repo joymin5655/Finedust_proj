@@ -5,12 +5,9 @@
  * Today·Policy 페이지에서 연간/일간 트렌드를 제공
  */
 
-const BASE = (() => {
-  if (window.location.hostname.includes('github.io')) {
-    return '/Finedust_proj/app/data/openaq';
-  }
-  return window.location.origin + '/data/openaq';
-})();
+import { openaqUrl, getBasePath } from '../utils/config.js';
+
+const BASE = getBasePath() + '/openaq';
 
 let _cache = {};
 

@@ -1293,12 +1293,17 @@
             if (hint) hint.style.opacity = '0';
         };
 
-        // ── PM2.5 등급 헬퍼 ──────────────────────────────────────
+        // ── PM2.5 등급 헬퍼 (centralized config 사용) ─────────────
         function _pmGrade(v) {
-            if (v <= 15) return { label: '😊 Good',              color: '#22c55e' };
-            if (v <= 35) return { label: '🙂 Moderate',          color: '#eab308' };
-            if (v <= 55) return { label: '😷 Unhealthy',         color: '#f97316' };
-            return              { label: '⚠️ Very Unhealthy',    color: '#ef4444' };
+            if (window.AirLensConfig?.getPM25Grade) {
+                const g = window.AirLensConfig.getPM25Grade(v);
+                return { label: `${g.emoji} ${g.label}`, color: g.darkColor || g.color };
+            }
+            // Fallback
+            if (v <= 12)   return { label: '😊 Good',              color: '#22c55e' };
+            if (v <= 35.5) return { label: '🙂 Moderate',          color: '#eab308' };
+            if (v <= 55.5) return { label: '😷 Unhealthy',         color: '#f97316' };
+            return                { label: '⚠️ Very Unhealthy',    color: '#ef4444' };
         }
 
         // ── 미니 트렌드 차트 ──────────────────────────────────────
@@ -1371,6 +1376,7 @@
     </script>
 
     <!-- 스크립트 로드 (안전한 순서) -->
+    <script src="js/utils/config.js"></script>
     <script src="js/i18n.js"></script>
     <script src="js/theme-toggle.js" defer></script>
     <script src="js/main.js" defer></script>

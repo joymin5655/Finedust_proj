@@ -9,12 +9,9 @@
 
 import { getAllAodPoints, aodToColor } from './services/earthdataService.js';
 import { loadPm25Years } from './services/openaqService.js';
+import { getBasePath } from './utils/config.js';
 
-const DATA_BASE = (() => {
-  if (window.location.hostname.includes('github.io'))
-    return '/Finedust_proj/app/data';
-  return '/app/data';
-})();
+const DATA_BASE = getBasePath();
 
 // ── WAQI latest.json 로드 ─────────────────────────────────────────
 async function loadWaqiLatest() {

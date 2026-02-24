@@ -9,12 +9,9 @@
 
 import { getCityYearlyTrend, getCountryLatestPm25 } from './services/openaqService.js';
 import { getCityAod, aodToColor, aodToLabel } from './services/earthdataService.js';
+import { getBasePath } from './utils/config.js';
 
-const DATA_BASE = (() => {
-  if (window.location.hostname.includes('github.io'))
-    return '/Finedust_proj/app/data';
-  return '/app/data';
-})();
+const DATA_BASE = getBasePath();
 
 // ── Policy Effect 데이터 로드 ─────────────────────────────────────
 let _policyEffectCache = null;

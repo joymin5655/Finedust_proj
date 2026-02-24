@@ -76,8 +76,7 @@ export function mixData(Cls) {
   P.loadPM25Data_OpenMeteo = async function () {
     let cities = [];
     try {
-      const basePath = window.location.hostname.includes('github.io')
-        ? '/Finedust_proj/app/data' : (window.location.origin + '/data');
+      const basePath = window.AirLensConfig?.getBasePath?.() || '/data';
       const res = await fetch(`${basePath}/major-cities.json`);
       if (res.ok) cities = await res.json();
     } catch (e) { console.warn('⚠️ Failed to load major-cities.json'); }
@@ -222,8 +221,7 @@ export function mixData(Cls) {
   // ── Country Policies from JSON ─────────────────────────────
   P.loadCountryPoliciesFromJSON = async function () {
     try {
-      const basePath = window.location.hostname.includes('github.io')
-        ? '/Finedust_proj/app/data' : (window.location.origin + '/data');
+      const basePath = window.AirLensConfig?.getBasePath?.() || '/data';
       const response = await fetch(`${basePath}/country-policies.json`);
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();

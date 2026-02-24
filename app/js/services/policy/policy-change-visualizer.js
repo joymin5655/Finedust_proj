@@ -427,14 +427,7 @@ export class PolicyChangeVisualizer {
    * 기본 경로 반환
    */
   getBasePath() {
-    const hostname = window.location.hostname;
-    if (hostname.includes('github.io')) {
-      return '/Finedust_proj/app/data';
-    }
-    if (hostname === 'localhost' || hostname === '127.0.0.1') {
-      return '/app/data';
-    }
-    return 'data';
+    return window.AirLensConfig?.getBasePath?.() || '/data';
   }
 
   /**

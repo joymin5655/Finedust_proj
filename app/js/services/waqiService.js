@@ -7,12 +7,9 @@
  * ⚠️  이 파일은 토큰을 사용하지 않음 — 오직 Actions가 만든 JSON만 fetch
  */
 
-const BASE = (() => {
-  if (window.location.hostname.includes('github.io')) {
-    return '/Finedust_proj/app/data/waqi';
-  }
-  return window.location.origin + '/data/waqi';
-})();
+import { waqiUrl, getBasePath } from '../utils/config.js';
+
+const BASE = getBasePath() + '/waqi';
 
 let _cache = {};
 

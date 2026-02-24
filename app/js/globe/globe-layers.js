@@ -12,26 +12,24 @@
  */
 
 import * as THREE from 'three';
+import { getBasePath, earthdataUrl, PM25_GRADES, getPM25Grade } from '../utils/config.js';
 
-// ── 색상 팔레트 (PM2.5 → hex) ─────────────────────────────────────
+// ── 색상 팔레트 (PM2.5 → config 기반) ─────────────────────────────
 function pm25Color(value, alpha = 0.75) {
   if (value == null) return `rgba(100,100,120,${alpha})`;
-  if (value <= 12)  return `rgba(0,228,0,${alpha})`;
-  if (value <= 35)  return `rgba(255,255,0,${alpha})`;
-  if (value <= 55)  return `rgba(255,126,0,${alpha})`;
-  if (value <= 150) return `rgba(255,0,0,${alpha})`;
-  if (value <= 250) return `rgba(143,63,151,${alpha})`;
-  return `rgba(126,0,35,${alpha})`;
+  const g = getPM25Grade(value);
+  // color hex → rgb
+  const hex = g.color;
+  const r = parseInt(hex.slice(1,3), 16);
+  const gv = parseInt(hex.slice(3,5), 16);
+  const b = parseInt(hex.slice(5,7), 16);
+  return `rgba(${r},${gv},${b},${alpha})`;
 }
 
 function pm25ColorThree(value) {
   if (value == null) return new THREE.Color(0x4a4a6a);
-  if (value <= 12)  return new THREE.Color(0x00e400);
-  if (value <= 35)  return new THREE.Color(0xffff00);
-  if (value <= 55)  return new THREE.Color(0xff7e00);
-  if (value <= 150) return new THREE.Color(0xff0000);
-  if (value <= 250) return new THREE.Color(0x8f3f97);
-  return new THREE.Color(0x7e0023);
+  const g = getPM25Grade(value);
+  return new THREE.Color(g.hex);
 }
 
 // DQSS 점수 → 색상
@@ -106,9 +104,7 @@ export function mixLayers(Cls) {
     try {
       const today = new Date();
       const dateStr = `${today.getFullYear()}${String(today.getMonth()+1).padStart(2,'0')}${String(today.getDate()).padStart(2,'0')}`;
-      const basePath = window.location.hostname.includes('github.io')
-        ? '/Finedust_proj/app/data/earthdata'
-        : (window.location.origin + '/data/earthdata');
+      const basePath = getBasePath() + '/earthdata';
       const res = await fetch(`${basePath}/aod_pm25_grid_${dateStr}.json`);
       if (res.ok) gridData = await res.json();
     } catch (e) { /* 데이터 없음 */ }
@@ -197,8 +193,7 @@ export function mixLayers(Cls) {
 
     let predData = null;
     try {
-      const basePath = window.location.hostname.includes('github.io')
-        ? '/Finedust_proj/app/data' : (window.location.origin + '/data');
+      const basePath = getBasePath();
       const res = await fetch(`${basePath}/predicted_grid.json`);
       if (res.ok) predData = await res.json();
     } catch (e) { /* 없으면 pm25Data 기반 생성 */ }
@@ -312,8 +307,7 @@ export function mixLayers(Cls) {
     // DQSS 데이터 로드
     let qualityData = null;
     try {
-      const basePath = window.location.hostname.includes('github.io')
-        ? '/Finedust_proj/app/data' : (window.location.origin + '/data');
+      const basePath = getBasePath();
       const res = await fetch(`${basePath}/data_quality.json`);
       if (res.ok) qualityData = await res.json();
     } catch (e) { /* 없으면 pm25Data 기반 모사 */ }

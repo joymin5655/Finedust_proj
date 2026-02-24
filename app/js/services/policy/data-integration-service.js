@@ -5,14 +5,8 @@
 
 export class EnhancedDataIntegrationService {
   constructor() {
-    // 환경별 데이터 기본 경로
-    this._dataBase = window.location.hostname.includes('github.io')
-      ? '/Finedust_proj/app/data'
-      : (() => {
-          const path = window.location.pathname;
-          const appIdx = path.indexOf('/app/');
-          return appIdx !== -1 ? path.substring(0, appIdx) + '/app/data' : '/data';
-        })();
+    // 중앙 설정에서 데이터 경로 가져오기
+    this._dataBase = window.AirLensConfig?.getBasePath?.() || '/data';
 
     // 중앙 데이터 저장소
     this.centralStore = {
@@ -113,6 +107,11 @@ export class EnhancedDataIntegrationService {
       }
       
       function getPM25Category(pm25) {
+        const cfg = window.AirLensConfig;
+        if (cfg?.getPM25Grade) {
+          const g = cfg.getPM25Grade(pm25);
+          return g.label.toLowerCase().replace(/\s+/g, '_').replace('for_sensitive', 'sensitive');
+        }
         if (pm25 <= 12) return 'good';
         if (pm25 <= 35.4) return 'moderate';
         if (pm25 <= 55.4) return 'unhealthy_sensitive';

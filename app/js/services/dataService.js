@@ -10,21 +10,24 @@
 (function () {
   'use strict';
 
-  // ── 인라인 상수 (utils/constants.js에서 가져옴) ──────────────
-  var CACHE_TTL = {
-    stations:   5 * 60 * 1000,   // 5분
-    policies:   10 * 60 * 1000,  // 10분
-    prediction: 60 * 60 * 1000,  // 1시간
+  // ── 중앙 설정에서 가져옴 (utils/config.js → window.AirLensConfig) ──
+  // config.js가 먼저 로드되어야 함. 아닐 경우 fallback 사용.
+  function _getConfig() { return window.AirLensConfig || {}; }
+
+  var CACHE_TTL = (_getConfig().CACHE_TTL) || {
+    stations:   5 * 60 * 1000,
+    policies:   10 * 60 * 1000,
+    prediction: 60 * 60 * 1000,
   };
 
   function getDataBasePath() {
+    if (_getConfig().getBasePath) return _getConfig().getBasePath();
+    // Fallback (config.js 미로드 시)
     if (typeof window !== 'undefined') {
       if (window.location.hostname.includes('github.io')) {
         return '/Finedust_proj/app/data';
       }
-      // 로컬 개발 시 현재 경로 기준
       var path = window.location.pathname;
-      // /app/index.html → /app/data  또는 /app/ → /app/data
       var appIdx = path.indexOf('/app/');
       if (appIdx !== -1) {
         return path.substring(0, appIdx) + '/app/data';

@@ -6,15 +6,24 @@
  */
 
 const UIService = (() => {
-  // ── PM2.5 grade ──────────────────────────────────────────────
-  const GRADES = [
-    { max: 15, key: 'grade.good',     color: '#10b981', bg: 'grade-good'          },
-    { max: 35, key: 'grade.moderate', color: '#f59e0b', bg: 'grade-moderate'      },
-    { max: 55, key: 'grade.unhealthy',color: '#f97316', bg: 'grade-unhealthy'     },
-    { max: Infinity, key: 'grade.very',color: '#ef4444', bg: 'grade-very-unhealthy' }
-  ];
-
+  // ── PM2.5 grade (delegates to centralized config) ────────────
   function grade(pm25) {
+    if (window.AirLensConfig?.getPM25Grade) {
+      const g = window.AirLensConfig.getPM25Grade(pm25);
+      return {
+        key:   `grade.${g.label.toLowerCase().replace(/\s+/g, '_')}`,
+        label: window.I18n ? window.I18n.t(`grade.${g.label.toLowerCase()}`) : g.label,
+        color: g.darkColor || g.color,
+        bg:    g.bgClass || ''
+      };
+    }
+    // Fallback
+    const GRADES = [
+      { max: 12,   key: 'grade.good',     color: '#10b981', bg: 'grade-good'          },
+      { max: 35.5, key: 'grade.moderate', color: '#f59e0b', bg: 'grade-moderate'      },
+      { max: 55.5, key: 'grade.unhealthy',color: '#f97316', bg: 'grade-unhealthy'     },
+      { max: Infinity, key: 'grade.very',color: '#ef4444', bg: 'grade-very-unhealthy' }
+    ];
     const g = GRADES.find(g => pm25 <= g.max);
     return {
       key:   g.key,

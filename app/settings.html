@@ -9,24 +9,25 @@
   <meta name="description" content="AirLens Settings - Customize your experience">
   <title>Settings - AirLens</title>
 
-  <!-- Tailwind — 다른 페이지와 완전히 동일한 설정 -->
+  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <script src="js/utils/config.js"></script>
   <script>
-    tailwind.config = {
+    tailwind.config = window.AirLensConfig?.TAILWIND_CONFIG || {
       darkMode: 'class',
       theme: { extend: { colors: { primary: '#25e2f4', 'bg-dark': '#102122' } } }
-    }
+    };
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/settings.css">
 
-  <!-- 다크모드 플래시 방지 (다른 페이지와 동일) -->
+  <!-- 다크모드 플래시 방지 -->
   <script>if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark');</script>
 
   <style>
-    /* ── settings.css 'body.dark-mode' 규칙을 'html.dark' 방식으로 브릿지 ── */
+    /* ── settings.css 'body.dark-mode' → 'html.dark' 브릿지 ── */
     html.dark body { background-color: #102122; }
     html.dark .settings-section { background: #102122 !important; }
     html.dark .settings-card {
@@ -51,7 +52,6 @@
     html.dark .model-details p  { color: #94a3b8; }
     html.dark .about-info p     { color: #94a3b8; }
 
-    /* theme-btn.active — primary(밝은 색) 배경 + 어두운 텍스트로 가독성 확보 */
     .theme-btn.active {
       background: #25e2f4 !important;
       color: #0c2224 !important;
@@ -63,7 +63,7 @@
       color: #0c2224 !important;
     }
 
-    /* ── 플랜 카드 ─────────────────────────────────────── */
+    /* ── 플랜 카드 ── */
     .plan-card {
       border-radius: 1rem; border: 2px solid #e5e7eb;
       padding: 1.5rem; background: #fff;
@@ -90,7 +90,7 @@
     .feat-row.dimmed { color: #9ca3af; }
     html.dark .feat-row.dimmed { color: #4b5563; }
 
-    /* ── 동기화 펄스 ────────────────────────────────────── */
+    /* ── 동기화 펄스 ── */
     #sync-pulse {
       display: inline-block; width: 6px; height: 6px; border-radius: 50%;
       background: #10b981; margin-left: 5px; vertical-align: middle;
@@ -106,7 +106,7 @@
 </head>
 <body class="bg-gray-50 dark:bg-bg-dark min-h-screen flex flex-col">
 
-  <!-- ── Dark Mode Toggle (좌하단 — 다른 페이지와 완전 동일) ── -->
+  <!-- ── Dark Mode Toggle (좌하단) ── -->
   <div class="theme-toggle-container">
     <div class="toggle-cont">
       <input class="toggle-input" id="theme-toggle" name="toggle" type="checkbox" />
@@ -125,7 +125,7 @@
     </div>
   </div>
 
-  <!-- ── Navigation ─────────────────────────────────────── -->
+  <!-- ── Navigation ── -->
   <nav class="navbar">
     <div class="navbar-container">
       <a href="index.html" class="navbar-logo">AirLens</a>
@@ -145,7 +145,7 @@
     </div>
   </nav>
 
-  <!-- ── Main Content ──────────────────────────────────── -->
+  <!-- ── Main Content ── -->
   <main class="flex-1 max-w-2xl mx-auto w-full px-4 pt-24 pb-16 flex flex-col gap-6">
 
     <!-- 페이지 제목 -->
@@ -157,7 +157,7 @@
          data-i18n="settings.subtitle">Customize your AirLens experience</p>
     </div>
 
-    <!-- ① Appearance ──────────────────────────────────── -->
+    <!-- ① Appearance ── -->
     <div class="settings-card rounded-2xl border border-gray-200 dark:border-white/10
                 bg-white dark:bg-black/20 p-6 shadow-sm">
       <div class="mb-5">
@@ -168,7 +168,6 @@
         <p class="text-xs text-gray-500 dark:text-gray-400 mt-1"
            data-i18n="settings.appearance.sub">Customize how AirLens looks</p>
       </div>
-
       <div class="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-200"
@@ -178,8 +177,6 @@
             <span id="sync-pulse"></span>
           </p>
         </div>
-
-        <!-- 테마 버튼 — theme-selector 클래스 유지 (settings.css 스타일 적용됨) -->
         <div class="theme-selector flex gap-1 rounded-xl p-1
                     bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10">
           <button class="theme-btn flex items-center gap-1.5 px-4 py-2 rounded-lg
@@ -198,7 +195,7 @@
       </div>
     </div>
 
-    <!-- ② Language ─────────────────────────────────────── -->
+    <!-- ② Language ── -->
     <div class="settings-card rounded-2xl border border-gray-200 dark:border-white/10
                 bg-white dark:bg-black/20 p-6 shadow-sm">
       <div class="mb-5">
@@ -231,7 +228,7 @@
       </div>
     </div>
 
-    <!-- ③ Plan & Pricing ──────────────────────────────── -->
+    <!-- ③ Plan & Pricing ── -->
     <div class="settings-card rounded-2xl border border-gray-200 dark:border-white/10
                 bg-white dark:bg-black/20 p-6 shadow-sm">
       <div class="mb-5">
@@ -243,7 +240,6 @@
           Upgrade to Plus for AI-powered reports and advanced features
         </p>
       </div>
-
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <!-- Free Plan -->
         <div class="plan-card">
@@ -268,7 +264,6 @@
             Current Plan
           </button>
         </div>
-
         <!-- Plus Plan -->
         <div class="plan-card featured relative pt-8">
           <div class="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap">
@@ -298,7 +293,6 @@
           </button>
         </div>
       </div>
-
       <!-- 쿼터 안내 -->
       <div class="mt-4 rounded-xl bg-gray-50 dark:bg-white/5
                   border border-gray-100 dark:border-white/8 p-3 flex items-start gap-2">
@@ -313,11 +307,7 @@
       </div>
     </div>
 
-<<<<<<< HEAD
-
-    </div>
-
-    <!-- ④ Model Info ──────────────────────────────────── -->
+    <!-- ④ Model Info — config.js 기반 동적 표시 ── -->
     <div class="settings-card rounded-2xl border border-gray-200 dark:border-white/10
                 bg-white dark:bg-black/20 p-6 shadow-sm">
       <div class="mb-5">
@@ -332,32 +322,43 @@
           <h3 class="font-bold text-gray-800 dark:text-gray-200 text-sm mb-2">📷 Camera AI Model</h3>
           <div class="text-xs text-gray-500 dark:text-gray-400 space-y-1">
             <p><strong class="text-gray-700 dark:text-gray-300">Input:</strong> Sky images (RGB)</p>
-            <p><strong class="text-gray-700 dark:text-gray-300">Output:</strong> PM2.5 concentration (µg/m³)</p>
-            <p><strong class="text-gray-700 dark:text-gray-300">Accuracy:</strong> MAE 8.2 µg/m³</p>
-            <p><strong class="text-gray-700 dark:text-gray-300">Technology:</strong> TensorFlow.js (browser-based)</p>
+            <p><strong class="text-gray-700 dark:text-gray-300">Output:</strong> 4-class AQ grade (Good / Moderate / Unhealthy / Very Unhealthy)</p>
+            <p><strong class="text-gray-700 dark:text-gray-300">Architecture:</strong> ResNet18 / MobileNet → ONNX (browser inference)</p>
+            <p><strong class="text-gray-700 dark:text-gray-300">Status:</strong>
+              <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 text-[10px] font-bold">
+                EXPERIMENTAL
+              </span>
+            </p>
+          </div>
+        </div>
+        <div class="model-info-item rounded-xl border border-gray-100 dark:border-white/8 p-4">
+          <h3 class="font-bold text-gray-800 dark:text-gray-200 text-sm mb-2">🛰️ AOD → PM2.5 Regression</h3>
+          <div class="text-xs text-gray-500 dark:text-gray-400 space-y-1">
+            <p><strong class="text-gray-700 dark:text-gray-300">Input:</strong> Satellite AOD, Temperature, Humidity, Wind Speed, Elevation, Month</p>
+            <p><strong class="text-gray-700 dark:text-gray-300">Output:</strong> Predicted PM2.5 (µg/m³) + uncertainty (RMSE)</p>
+            <p><strong class="text-gray-700 dark:text-gray-300">Model:</strong> RandomForest / XGBoost (Quantile)</p>
+            <p><strong class="text-gray-700 dark:text-gray-300">Target:</strong>
+              R² ≥ <span id="model-target-r2">--</span>,
+              RMSE ≤ <span id="model-target-rmse">--</span> µg/m³
+            </p>
           </div>
         </div>
         <div class="model-info-item rounded-xl border border-gray-100 dark:border-white/8 p-4">
           <h3 class="font-bold text-gray-800 dark:text-gray-200 text-sm mb-2">🌍 Data Sources</h3>
-          <div class="text-xs text-gray-500 dark:text-gray-400 space-y-1">
-            <p><strong class="text-gray-700 dark:text-gray-300">🇪🇺 EU Copernicus CAMS (Primary)</strong> — No key needed</p>
-            <p class="text-primary">→ PM2.5, PM10, NO₂, AOD, Dust · Worldwide</p>
-            <p class="mt-1"><strong class="text-gray-700 dark:text-gray-300">Optional:</strong> WAQI · OpenWeather · OpenAQ</p>
+          <div class="text-xs text-gray-500 dark:text-gray-400 space-y-1" id="data-sources-list">
+            <!-- JS가 config.js DATA_SOURCES 기반으로 채움 -->
           </div>
         </div>
         <div class="model-info-item rounded-xl border border-gray-100 dark:border-white/8 p-4">
-          <h3 class="font-bold text-gray-800 dark:text-gray-200 text-sm mb-2">📊 Performance Metrics</h3>
-          <div class="text-xs text-gray-500 dark:text-gray-400 space-y-1">
-            <p><strong class="text-gray-700 dark:text-gray-300">Validation Accuracy:</strong> 92.3%</p>
-            <p><strong class="text-gray-700 dark:text-gray-300">Mean Absolute Error:</strong> 8.2 µg/m³</p>
-            <p><strong class="text-gray-700 dark:text-gray-300">R² Score:</strong> 0.89</p>
-            <p><strong class="text-gray-700 dark:text-gray-300">Inference Time:</strong> &lt;500ms (browser)</p>
+          <h3 class="font-bold text-gray-800 dark:text-gray-200 text-sm mb-2">📊 PM2.5 Grading (US EPA)</h3>
+          <div class="text-xs space-y-1" id="grade-legend">
+            <!-- JS가 config.js PM25_GRADES 기반으로 채움 -->
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ⑤ About ──────────────────────────────────────── -->
+    <!-- ⑤ About ── -->
     <div class="settings-card rounded-2xl border border-gray-200 dark:border-white/10
                 bg-white dark:bg-black/20 p-6 shadow-sm">
       <div class="mb-4">
@@ -367,9 +368,9 @@
         </h2>
       </div>
       <div class="about-info text-xs text-gray-500 dark:text-gray-400 space-y-1.5">
-        <p><strong class="text-gray-700 dark:text-gray-300">Version:</strong> 1.0.0</p>
+        <p><strong class="text-gray-700 dark:text-gray-300">Version:</strong> 2.0.0</p>
         <p><strong class="text-gray-700 dark:text-gray-300">Plan:</strong>
-          <span class="text-primary font-bold">✨ Plus</span>
+          <span class="text-green-500 font-bold">Free (Open Source)</span>
         </p>
         <p><strong class="text-gray-700 dark:text-gray-300">Last Updated:</strong> February 2026</p>
         <p><strong class="text-gray-700 dark:text-gray-300">License:</strong> MIT License</p>
@@ -387,7 +388,7 @@
 
   </main>
 
-  <!-- ── Footer ────────────────────────────────────────── -->
+  <!-- ── Footer ── -->
   <footer style="background:var(--color-bg-dark);color:var(--color-text-dark);padding:var(--space-5) 0;margin-top:auto;">
     <div class="container text-center">
       <p style="color:var(--color-text-dark-secondary);" data-i18n="footer.copy">
@@ -402,13 +403,59 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="js/utils/config.js"></script>
   <script src="js/i18n.js"></script>
   <script src="js/theme-toggle.js"></script>
   <script src="js/message-utils.js"></script>
   <script src="js/main.js"></script>
   <script src="js/settings.js"></script>
+
+  <!-- config.js 기반 동적 데이터 채우기 -->
+  <script>
+  (function() {
+    const cfg = window.AirLensConfig;
+    if (!cfg) return;
+
+    // ML 목표 지표
+    const ml = cfg.ML_CONFIG?.target_metrics;
+    if (ml) {
+      const r2El = document.getElementById('model-target-r2');
+      const rmseEl = document.getElementById('model-target-rmse');
+      if (r2El)   r2El.textContent   = ml.r2;
+      if (rmseEl) rmseEl.textContent = ml.rmse;
+    }
+
+    // 데이터 소스 목록
+    const srcEl = document.getElementById('data-sources-list');
+    if (srcEl && cfg.DATA_SOURCES) {
+      const icons = { waqi: '🌐', openaq: '📡', earthdata: '🛰️', openmeteo: '🌤️' };
+      const descs = {
+        waqi:      'Real-time AQI from worldwide stations (Token required)',
+        openaq:    'Open air quality measurements — ODbL license',
+        earthdata: 'NASA satellite AOD data (Account required)',
+        openmeteo: 'Weather features — Temperature, Humidity, Wind (No key)'
+      };
+      let html = '';
+      for (const [key, src] of Object.entries(cfg.DATA_SOURCES)) {
+        html += `<p><strong class="text-gray-700 dark:text-gray-300">${icons[key] || '📦'} ${src.name}</strong> — ${descs[key] || ''}</p>`;
+      }
+      srcEl.innerHTML = html;
+    }
+
+    // PM2.5 등급 범례
+    const gradeEl = document.getElementById('grade-legend');
+    if (gradeEl && cfg.PM25_GRADES) {
+      let html = '';
+      for (const g of cfg.PM25_GRADES) {
+        const maxStr = g.max === Infinity ? '+' : `≤ ${g.max}`;
+        html += `<div class="flex items-center gap-2">
+          <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${g.color};flex-shrink:0;"></span>
+          <span class="text-gray-700 dark:text-gray-300 font-semibold">${g.label}</span>
+          <span class="text-gray-400">(${maxStr} µg/m³)</span>
+        </div>`;
+      }
+      gradeEl.innerHTML = html;
+    }
+  })();
+  </script>
 </body>
 </html>
-=======
->>>>>>> parent of 4a58049 (✨ Pro 버전 적용 — Watchlist/Alert/CSV Export/Group Compare/AOD Layer/Time Slider)

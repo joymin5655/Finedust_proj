@@ -1149,7 +1149,7 @@
 
         </main>
 
-        <!-- Help Tooltip — 패널이 열리면 자동으로 숨김 -->
+        <!-- Help Tooltip — 패널이 열리면 자동으로 숨김, 8초 후 자동 페이드아웃 -->
         <div id="globe-hint"
              class="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-30 pointer-events-none
                     transition-opacity duration-500">
@@ -1159,10 +1159,17 @@
                 <span>
                     마커 클릭 →
                     <span class="text-primary font-semibold">PM2.5</span> 확인 +
-                    <span class="text-green-400 font-semibold">정책</span> 상세 보기
+                    <span class="text-green-400 font-semibold">Policy</span> 페이지로 이동
                 </span>
             </div>
         </div>
+        <script>
+            // 힌트 배너 8초 후 자동 페이드아웃
+            setTimeout(() => {
+                const hint = document.getElementById('globe-hint');
+                if (hint) { hint.style.opacity = '0'; setTimeout(() => hint.remove(), 600); }
+            }, 8000);
+        </script>
 
     </div>
 

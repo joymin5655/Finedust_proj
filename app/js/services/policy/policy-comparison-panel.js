@@ -5,7 +5,17 @@
 
 export class PolicyComparisonPanel {
   constructor(containerElement) {
-    this.container = containerElement || document.getElementById('policy-comparison-panel');
+    // v4.0: 독립 패널 자동 생성 비활성화 — Policy Explorer에 통합됨
+    // 명시적으로 containerElement를 전달한 경우에만 초기화
+    if (!containerElement) {
+      console.log('[PolicyComparisonPanel] No container provided, skipping auto-creation');
+      this.container = null;
+      this.selectedPolicy = null;
+      this.comparisonChart = null;
+      this.chartLibLoaded = false;
+      return;
+    }
+    this.container = containerElement;
     this.selectedPolicy = null;
     this.comparisonChart = null;
     

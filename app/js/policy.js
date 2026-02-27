@@ -307,6 +307,9 @@ function _esc(str) {
       const values = policy.timeline.map(t => t.pm25);
       renderTrendChart(years, values, policy.implementationDate?.slice(0, 4));
     }
+
+    // ── Enhanced data (AOD + Policy Effect basic) ──────────
+    loadEnhancedData(countryName, data);
   }
 
   // ── Policy Effect Panel (PRD §6.1 ~ §6.2) ─────────────────
@@ -500,6 +503,111 @@ function _esc(str) {
 
   searchEl?.addEventListener('input',  applyFilters);
   regionEl?.addEventListener('change', applyFilters);
+
+  // ── Enhanced Data: AOD + Policy Effect (policy-enhanced.js 통합) ──
+  const COUNTRY_CAPITAL = {
+    'South Korea': 'Seoul', 'China': 'Beijing', 'Japan': 'Tokyo',
+    'India': 'Delhi', 'United States': 'New York', 'United Kingdom': 'London',
+    'Germany': 'Berlin', 'France': 'Paris', 'Poland': 'Warsaw',
+    'Thailand': 'Bangkok', 'Australia': 'Sydney', 'Canada': 'Toronto',
+    'Brazil': 'São Paulo', 'Indonesia': 'Jakarta', 'Mexico': 'Mexico City',
+    'Turkey': 'Istanbul', 'Italy': 'Rome', 'Spain': 'Madrid',
+    'Netherlands': 'Amsterdam', 'Vietnam': 'Hanoi', 'Singapore': 'Singapore',
+    'Malaysia': 'Kuala Lumpur', 'Philippines': 'Manila', 'South Africa': 'Johannesburg',
+  };
+
+  let _policyEffectCache = null;
+  let _aodCache = null;
+
+  async function loadEnhancedData(countryName, data) {
+    const wrap = document.getElementById('detail-enhanced-wrap');
+    const content = document.getElementById('enhanced-data-content');
+    if (!wrap || !content) return;
+
+    content.innerHTML = '';
+    wrap.style.display = 'none';
+
+    const base = window.AirLensConfig?.getBasePath?.() || '/data';
+    let hasContent = false;
+
+    // 1. AOD 데이터
+    try {
+      if (!_aodCache) {
+        const res = await fetch(`${base}/earthdata/aod_samples.json`);
+        if (res.ok) _aodCache = await res.json();
+      }
+      const capital = COUNTRY_CAPITAL[countryName];
+      const aodCity = _aodCache?.cities?.find(c =>
+        c.city?.toLowerCase() === (capital || '').toLowerCase()
+      );
+      if (aodCity?.aod_annual_avg != null) {
+        const aod = aodCity.aod_annual_avg;
+        const color = aod < 0.1 ? '#00e5ff' : aod < 0.2 ? '#69f0ae' : aod < 0.35 ? '#ffff00' : aod < 0.5 ? '#ff9800' : '#f44336';
+        const label = aod < 0.1 ? 'Very Low' : aod < 0.2 ? 'Low' : aod < 0.35 ? 'Moderate' : aod < 0.5 ? 'High' : 'Very High';
+        const trendIcon = aodCity.trend === 'decreasing' ? '📉' : aodCity.trend === 'increasing' ? '📈' : '➡️';
+
+        content.innerHTML += `
+          <div class="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-yellow-500/15">
+            <div class="flex items-center gap-3">
+              <span class="text-lg">🛰️</span>
+              <div>
+                <p class="text-xs font-bold text-white/70">Satellite AOD (${_esc(capital)})</p>
+                <p class="text-[10px] text-white/40">MODIS/MAIAC · NASA Earthdata</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-lg font-black" style="color:${color}">${aod.toFixed(2)}</span>
+              <span class="text-xs text-white/40 ml-1">AOD</span>
+              <p class="text-[10px]" style="color:${color}">${label} ${trendIcon}</p>
+            </div>
+          </div>`;
+        hasContent = true;
+      }
+    } catch (e) { /* AOD 선택적 */ }
+
+    // 2. Policy Effect (basic JSON)
+    try {
+      if (!_policyEffectCache) {
+        const res = await fetch(`${base}/policy-impact/policy_effect_basic.json`);
+        if (res.ok) _policyEffectCache = await res.json();
+      }
+      const cc = data.countryCode || allCountries.find(c => c.country === countryName)?.countryCode;
+      const entry = _policyEffectCache?.effects?.find(e => e.country_code === cc);
+      if (entry?.effect) {
+        const e = entry.effect;
+        const changeColor = e.improved ? '#4ade80' : '#f87171';
+        const changeIcon = e.improved ? '📉' : '📈';
+
+        content.innerHTML += `
+          <div class="p-3 rounded-lg border ${e.improved ? 'bg-emerald-500/5 border-emerald-500/15' : 'bg-red-500/5 border-red-500/15'}">
+            <div class="flex items-center justify-between mb-2">
+              <p class="text-xs font-bold text-white/70">🏛️ Cross-Source Policy Effect</p>
+              <span class="text-[10px] text-white/40">±${e.window_years || 3}yr average</span>
+            </div>
+            <div class="grid grid-cols-3 gap-2 text-center">
+              <div class="p-2 rounded bg-black/20">
+                <p class="text-[10px] text-white/40">Before</p>
+                <p class="text-sm font-bold text-amber-400">${e.before_avg}</p>
+              </div>
+              <div class="p-2 rounded bg-black/20">
+                <p class="text-[10px] text-white/40">After</p>
+                <p class="text-sm font-bold text-blue-400">${e.after_avg}</p>
+              </div>
+              <div class="p-2 rounded bg-black/20">
+                <p class="text-[10px] text-white/40">Change</p>
+                <p class="text-sm font-bold" style="color:${changeColor}">${changeIcon} ${e.change_pct > 0 ? '+' : ''}${e.change_pct}%</p>
+              </div>
+            </div>
+            ${entry.policy_name ? `<p class="text-[10px] text-white/30 mt-2">${_esc(entry.policy_name)} (${entry.policy_year || ''})</p>` : ''}
+          </div>`;
+        hasContent = true;
+      }
+    } catch (e) { /* 선택적 */ }
+
+    if (hasContent) {
+      wrap.style.display = 'block';
+    }
+  }
 
   // ── URL 파라미터 처리 (?country=KR) ────────────────────────
   // Globe에서 "See All Policies →" 버튼을 클릭하면

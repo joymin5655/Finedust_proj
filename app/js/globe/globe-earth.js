@@ -359,21 +359,21 @@ export function mixEarth(Cls) {
     for (const band of cloudBands) {
       const yCenter = band.latCenter * canvas.height;
       const yRange = band.latWidth * canvas.height;
-      const count = Math.floor(200 * band.density);
+      const count = Math.floor(120 * band.density);
 
       for (let i = 0; i < count; i++) {
         const x = Math.random() * canvas.width;
         const y = yCenter + (Math.random() - 0.5) * yRange * 2;
-        const radius = 15 + Math.random() * 30;
-        const opacity = 0.1 + Math.random() * 0.2 * band.density;
+        const radius = 8 + Math.random() * 16;
+        const opacity = 0.05 + Math.random() * 0.12 * band.density;
 
         ctx.globalAlpha = opacity;
         // 여러 원으로 자연스러운 형태
-        const clusterSize = 2 + Math.floor(Math.random() * 3);
+        const clusterSize = 2 + Math.floor(Math.random() * 2);
         for (let j = 0; j < clusterSize; j++) {
           const ox = (Math.random() - 0.5) * radius;
-          const oy = (Math.random() - 0.5) * radius * 0.4;
-          const r = radius * (0.5 + Math.random() * 0.5);
+          const oy = (Math.random() - 0.5) * radius * 0.3;
+          const r = radius * (0.4 + Math.random() * 0.4);
           ctx.beginPath();
           ctx.arc(x + ox, y + oy, r, 0, Math.PI * 2);
           ctx.fill();
@@ -386,7 +386,7 @@ export function mixEarth(Cls) {
     const material = new THREE.MeshPhongMaterial({
       map: texture,
       transparent: true,
-      opacity: 0.45,
+      opacity: 0.3,
       depthWrite: false,
     });
     this.clouds = new THREE.Mesh(geometry, material);

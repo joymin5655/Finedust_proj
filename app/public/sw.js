@@ -1,4 +1,4 @@
-const CACHE_NAME = 'airlens-v1';
+const CACHE_NAME = 'airlens-v2';
 const urlsToCache = [
   '/',
   '/index.html',

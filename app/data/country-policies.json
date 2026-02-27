@@ -90,7 +90,8 @@
       }
     ],
     "currentAQI": 68,
-    "currentPM25": 16.8
+    "currentPM25": 16.8,
+    "countryCode": "KR"
   },
   "China": {
     "flag": "🇨🇳",
@@ -193,7 +194,8 @@
       }
     ],
     "currentAQI": 115,
-    "currentPM25": 29.2
+    "currentPM25": 29.2,
+    "countryCode": "CN"
   },
   "Japan": {
     "flag": "🇯🇵",
@@ -276,7 +278,8 @@
       }
     ],
     "currentAQI": 35,
-    "currentPM25": 8.5
+    "currentPM25": 8.5,
+    "countryCode": "JP"
   },
   "India": {
     "flag": "🇮🇳",
@@ -369,7 +372,8 @@
       }
     ],
     "currentAQI": 171,
-    "currentPM25": 50.6
+    "currentPM25": 50.6,
+    "countryCode": "IN"
   },
   "Bangladesh": {
     "flag": "🇧🇩",
@@ -452,7 +456,8 @@
       }
     ],
     "currentAQI": 260,
-    "currentPM25": 78.0
+    "currentPM25": 78.0,
+    "countryCode": "BD"
   },
   "United States": {
     "flag": "🇺🇸",
@@ -545,7 +550,8 @@
       }
     ],
     "currentAQI": 34,
-    "currentPM25": 8.2
+    "currentPM25": 8.2,
+    "countryCode": "US"
   },
   "Canada": {
     "flag": "🇨🇦",
@@ -623,7 +629,8 @@
       }
     ],
     "currentAQI": 26,
-    "currentPM25": 6.4
+    "currentPM25": 6.4,
+    "countryCode": "CA"
   },
   "Mexico": {
     "flag": "🇲🇽",
@@ -696,7 +703,8 @@
       }
     ],
     "currentAQI": 76,
-    "currentPM25": 18.7
+    "currentPM25": 18.7,
+    "countryCode": "MX"
   },
   "Brazil": {
     "flag": "🇧🇷",
@@ -726,7 +734,8 @@
       }
     ],
     "currentAQI": 95,
-    "currentPM25": 32
+    "currentPM25": 32,
+    "countryCode": "BR"
   },
   "United Kingdom": {
     "flag": "🇬🇧",
@@ -819,7 +828,8 @@
       }
     ],
     "currentAQI": 37,
-    "currentPM25": 9.0
+    "currentPM25": 9.0,
+    "countryCode": "GB"
   },
   "Germany": {
     "flag": "🇩🇪",
@@ -902,7 +912,8 @@
       }
     ],
     "currentAQI": 43,
-    "currentPM25": 10.5
+    "currentPM25": 10.5,
+    "countryCode": "DE"
   },
   "France": {
     "flag": "🇫🇷",
@@ -932,7 +943,8 @@
       }
     ],
     "currentAQI": 82,
-    "currentPM25": 28
+    "currentPM25": 28,
+    "countryCode": "FR"
   },
   "Italy": {
     "flag": "🇮🇹",
@@ -962,7 +974,8 @@
       }
     ],
     "currentAQI": 105,
-    "currentPM25": 38
+    "currentPM25": 38,
+    "countryCode": "IT"
   },
   "Spain": {
     "flag": "🇪🇸",
@@ -992,7 +1005,8 @@
       }
     ],
     "currentAQI": 88,
-    "currentPM25": 29
+    "currentPM25": 29,
+    "countryCode": "ES"
   },
   "Poland": {
     "flag": "🇵🇱",
@@ -1022,7 +1036,8 @@
       }
     ],
     "currentAQI": 155,
-    "currentPM25": 68
+    "currentPM25": 68,
+    "countryCode": "PL"
   },
   "Turkey": {
     "flag": "🇹🇷",
@@ -1052,7 +1067,8 @@
       }
     ],
     "currentAQI": 118,
-    "currentPM25": 42
+    "currentPM25": 42,
+    "countryCode": "TR"
   },
   "Russia": {
     "flag": "🇷🇺",
@@ -1112,7 +1128,8 @@
       }
     ],
     "currentAQI": 142,
-    "currentPM25": 52
+    "currentPM25": 52,
+    "countryCode": "TH"
   },
   "Vietnam": {
     "flag": "🇻🇳",
@@ -1142,7 +1159,8 @@
       }
     ],
     "currentAQI": 138,
-    "currentPM25": 51
+    "currentPM25": 51,
+    "countryCode": "VN"
   },
   "Indonesia": {
     "flag": "🇮🇩",
@@ -1172,7 +1190,8 @@
       }
     ],
     "currentAQI": 152,
-    "currentPM25": 62
+    "currentPM25": 62,
+    "countryCode": "ID"
   },
   "Singapore": {
     "flag": "🇸🇬",
@@ -1202,7 +1221,8 @@
       }
     ],
     "currentAQI": 58,
-    "currentPM25": 18
+    "currentPM25": 18,
+    "countryCode": "SG"
   },
   "Malaysia": {
     "flag": "🇲🇾",
@@ -1232,7 +1252,8 @@
       }
     ],
     "currentAQI": 98,
-    "currentPM25": 35
+    "currentPM25": 35,
+    "countryCode": "MY"
   },
   "Philippines": {
     "flag": "🇵🇭",
@@ -1262,7 +1283,8 @@
       }
     ],
     "currentAQI": 112,
-    "currentPM25": 40
+    "currentPM25": 40,
+    "countryCode": "PH"
   },
   "Australia": {
     "flag": "🇦🇺",
@@ -1345,7 +1367,8 @@
       }
     ],
     "currentAQI": 16,
-    "currentPM25": 4.0
+    "currentPM25": 4.0,
+    "countryCode": "AU"
   },
   "New Zealand": {
     "flag": "🇳🇿",
@@ -1423,7 +1446,8 @@
       }
     ],
     "currentAQI": 18,
-    "currentPM25": 4.5
+    "currentPM25": 4.5,
+    "countryCode": "NZ"
   },
   "South Africa": {
     "flag": "🇿🇦",
@@ -1453,7 +1477,8 @@
       }
     ],
     "currentAQI": 115,
-    "currentPM25": 41
+    "currentPM25": 41,
+    "countryCode": "ZA"
   },
   "Egypt": {
     "flag": "🇪🇬",
@@ -1483,7 +1508,8 @@
       }
     ],
     "currentAQI": 168,
-    "currentPM25": 78
+    "currentPM25": 78,
+    "countryCode": "EG"
   },
   "Nigeria": {
     "flag": "🇳🇬",
@@ -1513,7 +1539,8 @@
       }
     ],
     "currentAQI": 172,
-    "currentPM25": 82
+    "currentPM25": 82,
+    "countryCode": "NG"
   },
   "Saudi Arabia": {
     "flag": "🇸🇦",
@@ -1543,7 +1570,8 @@
       }
     ],
     "currentAQI": 128,
-    "currentPM25": 46
+    "currentPM25": 46,
+    "countryCode": "SA"
   },
   "UAE": {
     "flag": "🇦🇪",
@@ -1603,7 +1631,8 @@
       }
     ],
     "currentAQI": 148,
-    "currentPM25": 45.2
+    "currentPM25": 45.2,
+    "countryCode": "IR"
   },
   "Pakistan": {
     "flag": "🇵🇰",
@@ -1686,7 +1715,8 @@
       }
     ],
     "currentAQI": 248,
-    "currentPM25": 73.7
+    "currentPM25": 73.7,
+    "countryCode": "PK"
   },
   "Argentina": {
     "flag": "🇦🇷",
@@ -1716,7 +1746,8 @@
       }
     ],
     "currentAQI": 78,
-    "currentPM25": 26
+    "currentPM25": 26,
+    "countryCode": "AR"
   },
   "Chile": {
     "flag": "🇨🇱",
@@ -1746,6 +1777,7 @@
       }
     ],
     "currentAQI": 108,
-    "currentPM25": 39
+    "currentPM25": 39,
+    "countryCode": "CL"
   }
 }

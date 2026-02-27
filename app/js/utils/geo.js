@@ -79,6 +79,11 @@ const COUNTRY_CODE_MAP = {
   'Philippines': 'PH', 'New Zealand': 'NZ', 'Chile': 'CL', 'Colombia': 'CO',
   'Argentina': 'AR', 'Peru': 'PE', 'Portugal': 'PT', 'Greece': 'GR',
   'Czech Republic': 'CZ', 'Romania': 'RO', 'Hungary': 'HU', 'Ukraine': 'UA',
+  'United Arab Emirates': 'AE', 'UAE': 'AE', 'Israel': 'IL', 'Ireland': 'IE',
+  'Kenya': 'KE', 'Ethiopia': 'ET', 'Ecuador': 'EC', 'Morocco': 'MA',
+  'Costa Rica': 'CR', 'Jordan': 'JO', 'Ghana': 'GH', 'Cameroon': 'CM',
+  'Serbia': 'RS', 'Uruguay': 'UY', 'Kazakhstan': 'KZ', 'Tanzania': 'TZ',
+  'Croatia': 'HR', 'Myanmar': 'MM', 'Qatar': 'QA', 'Uganda': 'UG',
 };
 
 export function nameToCode(name) {

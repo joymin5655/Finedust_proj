@@ -180,19 +180,7 @@ export function mixEarth(Cls) {
     return texture;
   };
 
-  P.createProceduralEarth = function (geometry) {
-    const texture = this.createProceduralEarthTexture();
-    const material = new THREE.MeshPhongMaterial({
-      map: texture,
-      bumpScale: 0.005,
-      specular: new THREE.Color(0x333333),
-      shininess: 15,
-      emissive: new THREE.Color(0x112244),
-      emissiveIntensity: 0.1
-    });
-    this.earth = new THREE.Mesh(geometry, material);
-    this.scene.add(this.earth);
-  };
+  // createProceduralEarth 제거됨 — createRealisticEarth가 직접 fallback 처리
 
   P.addOceanNoise = function (ctx, width, height) {
     const imageData = ctx.getImageData(0, 0, width, height);

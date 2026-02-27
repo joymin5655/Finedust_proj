@@ -6,6 +6,7 @@
 
 import { waqiDataService } from '../services/waqi-data-service.js';
 import { FusionService } from '../services/fusionService.js';
+import { haversineDistance } from '../utils/geo.js';
 
 export function mixData(Cls) {
   const P = Cls.prototype;
@@ -237,22 +238,14 @@ export function mixData(Cls) {
     }
   };
 
-  P.calculateDistance = function (lat1, lon1, lat2, lon2) {
-    const R = 6371;
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = Math.sin(dLat/2)**2 +
-              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-              Math.sin(dLon/2)**2;
-    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  };
+  // calculateDistance → geo.js haversineDistance로 통합됨
 
   P.highlightUserLocation = function () {
     if (!this.userLocation || !this.pm25Data) return;
     let nearestCity = null;
     let minDistance = Infinity;
     this.pm25Data.forEach((data, city) => {
-      const distance = this.calculateDistance(this.userLocation.lat, this.userLocation.lon, data.lat, data.lon);
+      const distance = haversineDistance(this.userLocation.lat, this.userLocation.lon, data.lat, data.lon);
       if (distance < minDistance) { minDistance = distance; nearestCity = { city, data, distance }; }
     });
     if (nearestCity && nearestCity.distance < 500) {

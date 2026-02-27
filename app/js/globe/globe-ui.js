@@ -181,25 +181,7 @@ export function mixUI(Cls) {
   };
 
   // ── Mouse Move ─────────────────────────────────────────────
-  P.onMouseMove = function (event) {
-    this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    this.raycaster.setFromCamera(this.mouse, this.camera);
-
-    if (this.markerSystem?.markerGroups?.policies) {
-      const hits = this.raycaster.intersectObjects(this.markerSystem.markerGroups.policies.children, true);
-      if (hits.length > 0) { document.body.style.cursor = 'pointer'; return; }
-    }
-    if (this.markerSystem?.markerGroups?.pm25) {
-      const hits = this.raycaster.intersectObjects(this.markerSystem.markerGroups.pm25.children, true);
-      if (hits.length > 0) { document.body.style.cursor = 'pointer'; return; }
-    }
-    if (this.pm25Markers && this.showPM25) {
-      const hits = this.raycaster.intersectObjects(this.pm25Markers.children, true);
-      if (hits.length > 0) { document.body.style.cursor = 'pointer'; return; }
-    }
-    document.body.style.cursor = 'default';
-  };
+  // onMouseMove → globe-interaction.js의 onMouseMoveEnhanced로 통합됨
 
   P.onResize = function () {
     const w = window.innerWidth, h = window.innerHeight;

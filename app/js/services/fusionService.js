@@ -89,7 +89,6 @@ class _FusionService {
       } else {
         console.log('[FusionService] OpenAQ: no data available (empty dataset)');
       }
-      }
     } catch (e) {
       console.warn('[FusionService] OpenAQ load failed:', e.message);
     }
@@ -97,17 +96,20 @@ class _FusionService {
     // 3. AOD samples (위성 보조)
     try {
       const aodData = await DataService.loadAodSamples();
-      if (aodData?.samples) {
-        for (const sample of aodData.samples) {
-          const key = this._normalizeKey(null, sample.lat, sample.lon);
+      const aodCities = aodData?.cities || aodData?.samples || [];
+      if (aodCities.length > 0) {
+        for (const sample of aodCities) {
+          const key = this._normalizeKey(sample.city, sample.lat, sample.lon);
           const existing = fused.get(key);
           if (existing) {
-            existing.aod = sample.aod;
+            existing.aod = sample.aod_annual_avg ?? sample.aod;
+            existing.aodTrend = sample.trend;
             existing.sourceCount++;
+            existing.dqss = Math.min(1, existing.dqss + 0.05); // AOD 교차 보너스
           }
           // AOD-only points는 현재 무시 (PM2.5 예측 모델 필요)
         }
-        console.log(`[FusionService] AOD: ${aodData.samples.length} points checked`);
+        console.log(`[FusionService] AOD: ${aodCities.length} cities checked`);
       }
     } catch (e) { /* AOD는 선택적 */ }
 

@@ -18,6 +18,11 @@
 import { DataService } from './dataService.module.js';
 import { getDataBasePath, CACHE_TTL } from '../utils/constants.js';
 import { haversineDistance } from '../utils/geo.js';
+import { computeDQSS } from '../analysis/dqss-engine.js';
+import { reliabilityEngine } from '../analysis/bayesian-reliability.js';
+// 향후 확장용 (fuse() 내 AOD 보정·이상치 진단 적용 시 활성화)
+// import { correctedAodToPm25 } from '../analysis/aod-correction.js';
+// import { diagnoseAnomaly } from '../analysis/anomaly-detection.js';
 
 class _FusionService {
   constructor() {
@@ -163,24 +168,44 @@ class _FusionService {
     return null;
   }
 
-  // ── DQSS-lite (간이 데이터 품질 점수) ──────────────────────
+  // ── DQSS (Advanced — uses analysis/dqss-engine) ─────────────
   _computeDQSS(record) {
-    let score = 0.5; // base
+    try {
+      // 경과 시간 계산
+      let ageHours = null;
+      if (record.lastUpdated) {
+        ageHours = (Date.now() - new Date(record.lastUpdated).getTime()) / 3_600_000;
+      }
 
-    // Freshness: 최근 1시간 이내 → 높은 점수
+      const result = computeDQSS({
+        ageHours,
+        percentAvailable: record.completeness ?? null,
+        crossSourceDelta: record.crossSourceDelta ?? null,
+        sourceCount: record.sourceCount ?? 1,
+        rollingStd48h: record.rollingStd ?? null,
+        spikeCount: 0,
+        meanAbsResidual: null,
+        bayesianReliability: reliabilityEngine.getReliability(record.id || record.name),
+        anomalyFlag: false,
+      });
+
+      return result.normalized; // 0–1 스케일
+    } catch (e) {
+      // Fallback: 간이 계산
+      return this._computeDQSSFallback(record);
+    }
+  }
+
+  _computeDQSSFallback(record) {
+    let score = 0.5;
     if (record.lastUpdated) {
       const age = (Date.now() - new Date(record.lastUpdated).getTime()) / 3600_000;
       if (age <= 1) score += 0.25;
       else if (age <= 6) score += 0.15;
       else if (age <= 24) score += 0.05;
     }
-
-    // PM2.5 존재 여부
     if (record.pm25 != null && record.pm25 >= 0) score += 0.15;
-
-    // AQI 존재 여부
     if (record.aqi != null && record.aqi >= 0) score += 0.1;
-
     return Math.min(1.0, score);
   }
 

@@ -14,6 +14,7 @@
 import * as THREE from 'three';
 import { getBasePath, earthdataUrl, PM25_GRADES, getPM25Grade } from '../utils/config.js';
 import { getAllAodPoints, aodToColor } from '../services/earthdataService.js';
+import { correctedAodToPm25 } from '../analysis/aod-correction.js';
 
 // ── 색상 팔레트 (PM2.5 → config 기반) ─────────────────────────────
 function pm25Color(value, alpha = 0.75) {
@@ -121,10 +122,18 @@ export function mixLayers(Cls) {
     // AOD 포인트가 있으면 주변 보간 격자 생성
     if (aodPoints.length > 0) {
       gridData = { grid: [] };
+      const currentMonth = new Date().getMonth() + 1;
       for (const pt of aodPoints) {
-        // 도시 주변 5×5 보간 격자 (AOD 기반)
-        const estPm25 = pt.aod != null ? pt.aod * 120 : null;
+        if (pt.aod == null) continue;
+        // 고급 AOD → PM2.5 보정 (습도/PBLH/계절 보정 적용)
+        const corrected = correctedAodToPm25({
+          aod: pt.aod,
+          month: currentMonth,
+          lat: pt.lat,
+        });
+        const estPm25 = corrected.pm25;
         if (estPm25 == null) continue;
+        // 도시 주변 5×5 보간 격자
         for (let dlat = -2; dlat <= 2; dlat++) {
           for (let dlon = -2; dlon <= 2; dlon++) {
             const dist = Math.sqrt(dlat * dlat + dlon * dlon);
@@ -135,7 +144,8 @@ export function mixLayers(Cls) {
               value: estPm25 * decay,
               aod: pt.aod * decay,
               city: pt.city,
-              source: 'aod_trend',
+              source: 'aod_corrected',
+              uncertainty: corrected.uncertainty * decay,
             });
           }
         }

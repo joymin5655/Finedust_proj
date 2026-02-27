@@ -125,6 +125,51 @@ export const ML_CONFIG = {
   target_metrics: { r2: 0.6, rmse: 9.0 },
 };
 
+// ── Analysis Engine Config ──────────────────────────────────
+export const ANALYSIS_CONFIG = {
+  // DQSS weights / thresholds
+  dqss: {
+    badgeThresholds: { high: 75, medium: 50, low: 25 },
+    anomalyPenalty: -20,
+  },
+  // Bayesian Reliability
+  bayesian: {
+    defaultAlpha: 5,
+    defaultBeta: 3,
+    tau: 8.0,           // µg/m³ residual threshold
+    decayFactor: 0.995,
+  },
+  // AOD correction
+  aod: {
+    baseCoeff: 120,
+    hygroscopicGamma: 0.38,
+    pblhRef: 1500,      // m
+  },
+  // GTWR bandwidths
+  gtwr: {
+    spatialBandwidth: 100,  // km
+    temporalBandwidth: 24,  // hours
+  },
+  // Anomaly detection
+  anomaly: {
+    zScoreThreshold: 3.0,
+    madThreshold: 3.5,
+    isolationForest: { nTrees: 50, maxSamples: 256, contamination: 0.03 },
+  },
+  // H3 spatial indexing
+  h3: {
+    defaultResolution: 5,   // ~8.5km edge
+    globeResolution: 4,     // ~22.6km edge (for globe view)
+  },
+  // Policy analysis (SCM)
+  policy: {
+    minPreYears: 3,
+    minDonors: 2,
+    placeboAlpha: 0.1,
+    maxDonors: 10,
+  },
+};
+
 // ── Tailwind Config (shared across all pages) ───────────────
 export const TAILWIND_CONFIG = {
   darkMode: 'class',
@@ -157,6 +202,7 @@ if (typeof window !== 'undefined') {
     CACHE_TTL,
     DATA_SOURCES,
     ML_CONFIG,
+    ANALYSIS_CONFIG,
     TAILWIND_CONFIG,
   };
 }

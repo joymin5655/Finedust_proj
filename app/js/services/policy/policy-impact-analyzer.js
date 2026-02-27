@@ -11,6 +11,7 @@
 
 import { waqiDataService } from '../waqi-data-service.js';
 import { globalDataService } from '../shared-data-service.js';
+import { analyzePolicy, recommendDonors, prePostComparison } from '../../analysis/synthetic-control.js';
 
 export class PolicyImpactAnalyzer {
   constructor() {
@@ -408,6 +409,80 @@ export class PolicyImpactAnalyzer {
       .sort((a, b) => b.effectivenessScore - a.effectivenessScore);
     
     return ranked;
+  }
+
+  /**
+   * 고급 정책 효과 분석 (3단계: Pre/Post → DID → SCM)
+   * analysis/synthetic-control.js의 다단계 파이프라인 활용
+   *
+   * @param {string} country - 대상 국가
+   * @param {Array<Object>} [donorPool] - 대조군 풀 (없으면 자동 추천)
+   * @returns {Object} 3단계 분석 결과
+   */
+  async analyzeAdvanced(country, donorPool = null) {
+    try {
+      const policyData = await this.loadPolicyImpactData(country);
+      if (!policyData?.policies?.[0]) {
+        return { valid: false, reason: 'No policy data' };
+      }
+
+      const mainPolicy = policyData.policies[0];
+      const policyYear = mainPolicy.year || mainPolicy.startYear;
+      if (!policyYear) return { valid: false, reason: 'No policy year' };
+
+      // 처리군 시계열 구성
+      const treated = {
+        name: country,
+        region: policyData.region,
+        timeseries: this._extractTimeseries(policyData),
+      };
+
+      if (treated.timeseries.length < 3) {
+        // fallback: Stage 1만
+        const pre = treated.timeseries.filter(t => t.year < policyYear).map(t => t.pm25);
+        const post = treated.timeseries.filter(t => t.year >= policyYear).map(t => t.pm25);
+        return { ...prePostComparison(pre, post), country };
+      }
+
+      // 대조군 풀 구성 (없으면 빈 배열 — Stage 1만 실행)
+      const donors = donorPool || [];
+
+      return analyzePolicy({ treated, donors, policyYear });
+    } catch (e) {
+      console.warn(`[PolicyImpactAnalyzer] Advanced analysis failed for ${country}:`, e);
+      return { valid: false, reason: e.message };
+    }
+  }
+
+  /**
+   * 정책 데이터에서 연도별 PM2.5 시계열 추출
+   */
+  _extractTimeseries(policyData) {
+    const timeseries = [];
+
+    // impact의 beforePeriod / afterPeriod에서 추출
+    const policy = policyData.policies?.[0];
+    if (policy?.impact?.beforePeriod?.yearlyData) {
+      for (const yd of policy.impact.beforePeriod.yearlyData) {
+        timeseries.push({ year: yd.year, pm25: yd.meanPM25 ?? yd.pm25 });
+      }
+    }
+    if (policy?.impact?.afterPeriod?.yearlyData) {
+      for (const yd of policy.impact.afterPeriod.yearlyData) {
+        timeseries.push({ year: yd.year, pm25: yd.meanPM25 ?? yd.pm25 });
+      }
+    }
+
+    // timeline에서 보충
+    if (timeseries.length === 0 && policy?.timeline) {
+      for (const item of policy.timeline) {
+        if (item.year && item.pm25) {
+          timeseries.push({ year: item.year, pm25: item.pm25 });
+        }
+      }
+    }
+
+    return timeseries.filter(t => t.year != null && t.pm25 != null);
   }
 }
 

@@ -174,12 +174,13 @@ export function mixLayers(Cls) {
     geo.setAttribute('color',    new THREE.Float32BufferAttribute(colors, 3));
 
     const mat = new THREE.PointsMaterial({
-      size: 0.022,
+      size: 0.025,
       vertexColors: true,
       transparent: true,
-      opacity: 0.55,
+      opacity: 0.6,
       depthWrite: false,
       sizeAttenuation: true,
+      blending: THREE.AdditiveBlending,
     });
 
     const points = new THREE.Points(geo, mat);
@@ -315,19 +316,22 @@ export function mixLayers(Cls) {
       const { lat, lon, uncertainty } = pt;
       if (!lat || !lon) continue;
       const vec = latLonToVec3(lat, lon, 1.012);
-      const ringGeo = new THREE.RingGeometry(0.015, 0.025, 16);
+
+      // 불확실성 크기에 비례하는 링
+      const scale = 0.01 + Math.min(uncertainty / 100, 0.03);
+      const ringGeo = new THREE.RingGeometry(scale, scale * 1.6, 24);
       const ringMat = new THREE.MeshBasicMaterial({
-        color: 0xff8800,
+        color: uncertainty > 20 ? 0xff4400 : 0xff8800,
         transparent: true,
-        opacity: 0.4,
+        opacity: 0.35 + Math.min(uncertainty / 80, 0.25),
         side: THREE.DoubleSide,
         depthWrite: false,
+        blending: THREE.AdditiveBlending,
       });
       const ring = new THREE.Mesh(ringGeo, ringMat);
       ring.position.copy(vec);
       ring.lookAt(new THREE.Vector3(0, 0, 0));
-      ring.rotateX(Math.PI / 2);
-      ring.userData = { uncertainty, lat, lon };
+      ring.userData = { uncertainty, lat, lon, layerType: 'prediction' };
       group.add(ring);
     }
   };

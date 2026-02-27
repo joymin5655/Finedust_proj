@@ -9,7 +9,7 @@
  */
 
 import * as THREE from 'three';
-import { getPM25Grade } from '../utils/config.js';
+import { getPM25Grade, PM25_GRADES } from '../utils/config.js';
 
 // 국가별 수도/주요 도시 좌표
 export const COUNTRY_COORDINATES = {
@@ -139,7 +139,7 @@ export class EnhancedMarkerSystem {
   }
 
   /**
-   * PM2.5 마커 생성 - 빠른 버전
+   * PM2.5 마커 생성 - 등급별 크기·투명도 차별화
    * lat/lon 또는 latitude/longitude 모두 지원
    */
   createPM25Marker(data) {
@@ -149,15 +149,19 @@ export class EnhancedMarkerSystem {
     
     if (!lat || !lon) return null;
     
-    const markerRadius = 0.006;
     const color = this.getPM25Color(pm25);
     
-    // 단순한 구체만 생성 (성능 최적화)
-    const geometry = new THREE.SphereGeometry(markerRadius, 8, 8);
+    // 등급별 크기·투명도 차별화
+    const grade = getPM25Grade(pm25);
+    const gradeIdx = PM25_GRADES.indexOf(grade);
+    const baseRadius = 0.005 + gradeIdx * 0.001; // 나쁠수록 큼
+    const opacity = 0.65 + gradeIdx * 0.06;      // 나쁠수록 진함
+    
+    const geometry = new THREE.SphereGeometry(baseRadius, 8, 8);
     const material = new THREE.MeshBasicMaterial({
       color: color,
       transparent: true,
-      opacity: 0.8
+      opacity: Math.min(0.95, opacity),
     });
     const sphere = new THREE.Mesh(geometry, material);
     

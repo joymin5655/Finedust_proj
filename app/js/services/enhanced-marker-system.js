@@ -140,11 +140,14 @@ export class EnhancedMarkerSystem {
 
   /**
    * PM2.5 마커 생성 - 빠른 버전
+   * lat/lon 또는 latitude/longitude 모두 지원
    */
   createPM25Marker(data) {
-    const { id, latitude, longitude, pm25, country } = data;
+    const lat = data.latitude ?? data.lat;
+    const lon = data.longitude ?? data.lon;
+    const { id, pm25, country } = data;
     
-    if (!latitude || !longitude) return null;
+    if (!lat || !lon) return null;
     
     const markerRadius = 0.006;
     const color = this.getPM25Color(pm25);
@@ -160,14 +163,19 @@ export class EnhancedMarkerSystem {
     
     sphere.userData = {
       type: 'pm25',
-      id,
+      id: id || data.city,
+      city: data.city || data.name || id,
+      name: data.name || data.city || id,
       pm25,
+      aqi: data.aqi,
       country,
-      latitude,
-      longitude
+      source: data.source,
+      lat, lon,
+      latitude: lat,
+      longitude: lon
     };
     
-    const position = this.latLonToPosition(latitude, longitude);
+    const position = this.latLonToPosition(lat, lon);
     sphere.position.copy(position);
     
     this.markerGroups.pm25.add(sphere);
@@ -380,11 +388,19 @@ export class EnhancedMarkerSystem {
   }
 
   clearAll() {
+    this.clearPM25Markers();
+    this.clearPolicyMarkers();
+  }
+
+  clearPM25Markers() {
     this.pm25Markers.clear();
-    this.policyMarkers.clear();
     while (this.markerGroups.pm25.children.length > 0) {
       this.markerGroups.pm25.remove(this.markerGroups.pm25.children[0]);
     }
+  }
+
+  clearPolicyMarkers() {
+    this.policyMarkers.clear();
     while (this.markerGroups.policies.children.length > 0) {
       this.markerGroups.policies.remove(this.markerGroups.policies.children[0]);
     }

@@ -101,13 +101,18 @@ export function mixMarkers(Cls) {
     let created = 0;
     for (const [city, data] of this.pm25Data.entries()) {
       const marker = this.markerSystem.createPM25Marker({
+        id: city,
         city,
+        // enhanced-marker-system expects latitude/longitude
+        latitude: data.lat,
+        longitude: data.lon,
         lat: data.lat,
         lon: data.lon,
         pm25: data.pm25,
         aqi: data.aqi,
         country: data.country,
-        source: data.source
+        source: data.source,
+        name: data.stationName || city
       });
       if (marker) created++;
     }

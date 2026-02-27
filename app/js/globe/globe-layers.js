@@ -446,12 +446,10 @@ export function mixLayers(Cls) {
       });
     };
 
+    // 새 레이어만 여기서 바인딩 (stations/policy는 globe-ui.js setupToggleSwitches에서 처리)
     bind('toggle-satellite-switch',  'toggle-satellite',  'satellite');
     bind('toggle-prediction-switch', 'toggle-prediction', 'prediction');
     bind('toggle-quality-switch',    'toggle-quality',    'quality');
-    // stations/policy는 기존 setupToggleSwitches에서 처리, 여기서도 연동
-    bind('toggle-pm25-switch',       'toggle-pm25',       'stations');
-    bind('toggle-policies-switch',   'toggle-policies',   'policy');
   };
 
   P._ensureLayerBuilt = async function (layerName) {

@@ -49,6 +49,12 @@ export function mixData(Cls) {
           console.warn('⚠️ Enhanced visualization:', error.message);
         }
       }
+
+      // Enhancement 초기화 (globe-enhancement.js가 로드되었으면)
+      if (typeof this._initEnhancement === 'function') {
+        await this._initEnhancement();
+      }
+
       console.log('✅ All background data loaded');
     } catch (error) {
       console.error('⚠️ Background load error:', error);

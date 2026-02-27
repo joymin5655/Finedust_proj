@@ -54,9 +54,13 @@ export function mixUI(Cls) {
     setupToggle('toggle-pm25-switch', 'toggle-pm25', (checked) => {
       this.showPM25 = checked;
       if (this.markerSystem) this.markerSystem.markerGroups.pm25.visible = checked;
+      // 레이어 시스템 연동
+      if (this.layers?.stations) this.layers.stations.visible = checked;
     });
     setupToggle('toggle-policies-switch', 'toggle-policies', (checked) => {
       if (this.markerSystem) this.markerSystem.markerGroups.policies.visible = checked;
+      // 레이어 시스템 연동
+      if (this.layers?.policy) this.layers.policy.visible = checked;
     });
     setupToggle('toggle-particles-switch', 'toggle-particles', (checked) => {
       this.particlesEnabled = checked;
@@ -123,8 +127,9 @@ export function mixUI(Cls) {
       });
     }
 
+    // mousemove는 globe-interaction.js의 onMouseMoveEnhanced가 처리
+    // (이중 리스너 방지 — 여기서는 click만 등록)
     this.canvas.addEventListener('click', (e) => this.onClick(e));
-    this.canvas.addEventListener('mousemove', (e) => this.onMouseMove(e));
   };
 
   // ── Click Handler ──────────────────────────────────────────

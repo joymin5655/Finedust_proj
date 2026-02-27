@@ -142,6 +142,35 @@ export function mixInteraction(Cls) {
       }
     }
 
+    // Layer points (satellite, prediction, quality)
+    if (!found && this.layers) {
+      for (const layerName of ['satellite', 'prediction', 'quality']) {
+        const layer = this.layers[layerName];
+        if (!layer?.visible || !layer?.group) continue;
+        const hits = this.raycaster.intersectObjects(layer.group.children, true);
+        if (hits.length > 0) {
+          const pt = hits[0];
+          const ud = pt.object?.userData || {};
+          const labels = {
+            satellite: 'Satellite AOD',
+            prediction: 'ML Prediction',
+            quality: 'Data Quality'
+          };
+          const html = `
+            <div style="font-weight:700;color:#25e2f4;margin-bottom:4px;">
+              ${labels[layerName] || layerName}
+            </div>
+            ${ud.uncertainty != null ? `<div style="font-size:10px;color:rgba(255,255,255,0.5);">Uncertainty: ±${ud.uncertainty.toFixed(1)}</div>` : ''}
+            <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-top:4px;">
+              ${layer.label || layerName} layer
+            </div>`;
+          this._showTooltip(cx, cy, html);
+          found = true;
+          break;
+        }
+      }
+    }
+
     if (!found) {
       this._hideTooltip();
       document.body.style.cursor = 'default';
@@ -373,10 +402,9 @@ export function mixInteraction(Cls) {
     this.initHoverTooltip();
     this.setupQuickFocus();
 
-    // 기존 mousemove를 개선 버전으로 교체
-    // canvas의 이전 mousemove listener는 globe-ui.js onMouseMove
-    // → 여기서 추가 등록 (중복 OK — 각자 다른 역할)
-    this.canvas.addEventListener('mousemove', (e) => this.onMouseMoveEnhanced(e));
+    // Enhanced mousemove (단일 리스너 — globe-ui.js에서는 mousemove 등록 안 함)
+    this._onMouseMoveEnhancedBound = (e) => this.onMouseMoveEnhanced(e);
+    this.canvas.addEventListener('mousemove', this._onMouseMoveEnhancedBound);
 
     // 캔버스 밖으로 나가면 툴팁 숨기기
     this.canvas.addEventListener('mouseleave', () => this._hideTooltip());

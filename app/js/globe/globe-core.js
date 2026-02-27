@@ -149,6 +149,9 @@ class PolicyGlobe {
         throw markerError;
       }
 
+      // Particles (atmospheric flow arrows) — 토글 기본 off
+      this.createParticles();
+
       this.updateLoadingProgress(60, 'Start');
       this.hideLoadingIndicator();
       this.animate();
@@ -181,9 +184,18 @@ class PolicyGlobe {
     if (this.stars) this.stars.rotation.y += 0.00001;
 
     this.updateParticles();
-    if (this.markerSystem) this.markerSystem.updateAll(delta);
-    if (this.predictionLayer) this.predictionLayer.update(delta);
-    if (this.globeIntegration) this.globeIntegration.animate(delta);
+    if (this.markerSystem) this.markerSystem.updateAll?.(delta);
+    if (this.predictionLayer) this.predictionLayer.update?.(delta);
+    if (this.globeIntegration) this.globeIntegration.animate?.(delta);
+
+    // Enhancement LOD (safe — method may not exist yet)
+    if (typeof this._updateEnhancementLOD === 'function') {
+      this._updateEnhancementLOD();
+    }
+    // Enhanced policy visualization update
+    if (this.enhancedPolicyViz?.update) {
+      this.enhancedPolicyViz.update(this.time * 0.001);
+    }
 
     // PM2.5 marker pulse animation
     if (this.pm25Markers && this.showPM25) {
@@ -220,12 +232,13 @@ if (document.readyState === 'loading') {
   new PolicyGlobe();
 }
 
-// Load enhancements
+// Load enhancements (safe — no method overrides)
 import('../globe-enhancement.js').then(module => {
   module.enhanceGlobe(PolicyGlobe);
-  console.log('✅ Globe enhancements loaded');
+  console.log('✅ Globe enhancement methods registered');
+  // Enhancement init will be called after backgroundLoadData
 }).catch(error => {
-  console.error('Failed to load enhancements:', error);
+  console.warn('⚠️ Globe enhancements unavailable:', error.message);
 });
 
 export { PolicyGlobe };

@@ -13,6 +13,7 @@
 
 import * as THREE from 'three';
 import { getBasePath, earthdataUrl, PM25_GRADES, getPM25Grade } from '../utils/config.js';
+import { getAllAodPoints, aodToColor } from '../services/earthdataService.js';
 
 // ── 색상 팔레트 (PM2.5 → config 기반) ─────────────────────────────
 function pm25Color(value, alpha = 0.75) {
@@ -99,22 +100,54 @@ export function mixLayers(Cls) {
     this.layers.satellite.group = group;
     this.scene.add(group);
 
-    // 데이터 로드 시도
-    let gridData = null;
+    // 1차: 실제 AOD 데이터 (earthdataService)
+    let aodPoints = [];
     try {
-      const today = new Date();
-      const dateStr = `${today.getFullYear()}${String(today.getMonth()+1).padStart(2,'0')}${String(today.getDate()).padStart(2,'0')}`;
-      const basePath = getBasePath() + '/earthdata';
-      const res = await fetch(`${basePath}/aod_pm25_grid_${dateStr}.json`);
-      if (res.ok) gridData = await res.json();
-    } catch (e) { /* 데이터 없음 */ }
+      aodPoints = await getAllAodPoints();
+    } catch (e) { /* fallback */ }
 
-    // 데이터가 없으면 pm25Data에서 보간 생성
-    if (!gridData || !gridData.grid) {
+    // 2차: 날짜별 grid JSON (GitHub Actions 생성)
+    let gridData = null;
+    if (aodPoints.length === 0) {
+      try {
+        const today = new Date();
+        const dateStr = `${today.getFullYear()}${String(today.getMonth()+1).padStart(2,'0')}${String(today.getDate()).padStart(2,'0')}`;
+        const basePath = getBasePath() + '/earthdata';
+        const res = await fetch(`${basePath}/aod_pm25_grid_${dateStr}.json`);
+        if (res.ok) gridData = await res.json();
+      } catch (e) { /* 데이터 없음 */ }
+    }
+
+    // AOD 포인트가 있으면 주변 보간 격자 생성
+    if (aodPoints.length > 0) {
+      gridData = { grid: [] };
+      for (const pt of aodPoints) {
+        // 도시 주변 5×5 보간 격자 (AOD 기반)
+        const estPm25 = pt.aod != null ? pt.aod * 120 : null;
+        if (estPm25 == null) continue;
+        for (let dlat = -2; dlat <= 2; dlat++) {
+          for (let dlon = -2; dlon <= 2; dlon++) {
+            const dist = Math.sqrt(dlat * dlat + dlon * dlon);
+            const decay = Math.exp(-dist * 0.6);
+            gridData.grid.push({
+              lat: pt.lat + dlat * 0.5,
+              lon: pt.lon + dlon * 0.5,
+              value: estPm25 * decay,
+              aod: pt.aod * decay,
+              city: pt.city,
+              source: 'aod_trend',
+            });
+          }
+        }
+      }
+    }
+
+    // 3차 fallback: pm25Data 기반 synthetic
+    if (!gridData || !gridData.grid || gridData.grid.length === 0) {
       gridData = this._generateSyntheticAODGrid();
     }
 
-    if (!gridData?.grid) {
+    if (!gridData?.grid || gridData.grid.length === 0) {
       console.warn('⚠️ No satellite grid data available');
       return;
     }
@@ -122,7 +155,6 @@ export function mixLayers(Cls) {
     // 격자 점 렌더링
     const positions = [];
     const colors = [];
-    const geo = new THREE.BufferGeometry();
 
     for (const cell of gridData.grid) {
       const { lat, lon, value, aod } = cell;
@@ -137,6 +169,7 @@ export function mixLayers(Cls) {
 
     if (positions.length === 0) return;
 
+    const geo = new THREE.BufferGeometry();
     geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
     geo.setAttribute('color',    new THREE.Float32BufferAttribute(colors, 3));
 
@@ -153,7 +186,8 @@ export function mixLayers(Cls) {
     points.userData.layerType = 'satellite';
     group.add(points);
 
-    console.log(`✅ Satellite layer: ${positions.length / 3} points`);
+    const src = aodPoints.length > 0 ? 'AOD data' : 'synthetic';
+    console.log(`✅ Satellite layer: ${positions.length / 3} points (${src})`);
   };
 
   // pm25Data로부터 보간 그리드 생성 (AOD 데이터 없을 때)
@@ -252,14 +286,21 @@ export function mixLayers(Cls) {
     for (const [, d] of this.pm25Data) {
       if (d.lat == null || d.lon == null) continue;
       const p50 = d.pm25 || 20;
-      // 간단한 랜덤 불확실성 (실제 모델 없을 때 시연용)
-      const uncertainty = p50 * 0.25 + Math.random() * 5;
+
+      // DQSS 기반 불확실성: 품질 낮을수록 불확실성 높음
+      const dqss = d.dqss ?? 0.5;
+      const baseUnc = p50 * (1.2 - dqss); // dqss=1.0 → 20%, dqss=0.5 → 70%
+      const sourceBonus = (d.sourceCount || 1) > 1 ? 0.8 : 1.0; // 다중 소스면 불확실성 감소
+      const uncertainty = Math.max(2, baseUnc * sourceBonus);
+
       result.push({
         lat: d.lat, lon: d.lon,
         predicted_p50: p50,
         predicted_p10: Math.max(0, p50 - uncertainty * 0.8),
         predicted_p90: p50 + uncertainty * 1.2,
         uncertainty,
+        source: d.source,
+        dqss,
       });
     }
     return result;
@@ -352,9 +393,27 @@ export function mixLayers(Cls) {
     const result = [];
     if (!this.pm25Data) return result;
     for (const [name, d] of this.pm25Data) {
-      // 간단한 quality score: 데이터가 있으면 60+, 최근이면 높게
-      const score = d.pm25 != null ? (60 + Math.random() * 35) : (20 + Math.random() * 30);
-      result.push({ lat: d.lat, lon: d.lon, score, station: name });
+      // FusionService에서 이미 계산된 DQSS가 있으면 사용
+      if (d.dqss != null) {
+        result.push({
+          lat: d.lat, lon: d.lon,
+          score: Math.round(d.dqss * 100),
+          station: name,
+          sourceCount: d.sourceCount || 1,
+        });
+      } else {
+        // fallback: 간단한 점수 계산
+        let score = 40;
+        if (d.pm25 != null && d.pm25 >= 0) score += 25;
+        if (d.aqi != null && d.aqi >= 0) score += 15;
+        if (d.sourceCount > 1) score += 10;
+        if (d.lastUpdate) {
+          const age = (Date.now() - new Date(d.lastUpdate).getTime()) / 3600_000;
+          if (age <= 1) score += 10;
+          else if (age <= 6) score += 5;
+        }
+        result.push({ lat: d.lat, lon: d.lon, score: Math.min(100, score), station: name });
+      }
     }
     return result;
   };

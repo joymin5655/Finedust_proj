@@ -63,17 +63,15 @@ class _FusionService {
     // 2. OpenAQ yearly trends (보조: 시계열 풍부)
     try {
       const openaqData = await DataService.loadYearlyTrends();
-      if (openaqData?.data) {
+      if (openaqData?.data && openaqData.data.length > 0) {
         for (const entry of openaqData.data) {
           const key = this._normalizeKey(entry.city, entry.lat, entry.lon);
           const existing = fused.get(key);
           if (existing) {
-            // Merge: add source, cross-check
             existing.sourceCount++;
             existing.openaqTrend = entry.data;
-            existing.dqss = Math.min(1, existing.dqss + 0.1); // cross-source bonus
+            existing.dqss = Math.min(1, existing.dqss + 0.1);
           } else {
-            // Latest year value
             const latest = entry.data?.[entry.data.length - 1];
             fused.set(key, {
               id: key, name: entry.city,
@@ -88,6 +86,9 @@ class _FusionService {
           }
         }
         console.log(`[FusionService] OpenAQ: ${openaqData.data.length} cities merged`);
+      } else {
+        console.log('[FusionService] OpenAQ: no data available (empty dataset)');
+      }
       }
     } catch (e) {
       console.warn('[FusionService] OpenAQ load failed:', e.message);

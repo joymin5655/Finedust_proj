@@ -4,6 +4,7 @@
  */
 
 import { esc, safeUrl } from '../utils/security.js';
+import { WHO_GUIDELINE } from '../utils/config.js';
 
 function _esc(str) { return esc(str); }
 function _safeUrl(url) { return safeUrl(url); }
@@ -29,24 +30,36 @@ export function mixCharts(Cls) {
       type: 'line',
       data: {
         labels,
-        datasets: [{
-          label: 'PM2.5 Annual Average (µg/m³)',
-          data: pm25Values,
-          borderColor: '#25e2f4',
-          backgroundColor: gradient,
-          borderWidth: 3,
-          pointRadius: 6,
-          pointBackgroundColor: (context) => {
-            const idx = context.dataIndex;
-            return trendsData[idx].note?.includes('🔸') ? '#ff6b35' :
-                   trendsData[idx].note?.includes('✅') ? '#00ff88' : '#25e2f4';
+        datasets: [
+          {
+            label: 'PM2.5 Annual Average (µg/m³)',
+            data: pm25Values,
+            borderColor: '#25e2f4',
+            backgroundColor: gradient,
+            borderWidth: 3,
+            pointRadius: 6,
+            pointBackgroundColor: (context) => {
+              const idx = context.dataIndex;
+              return trendsData[idx].note?.includes('🔸') ? '#ff6b35' :
+                     trendsData[idx].note?.includes('✅') ? '#00ff88' : '#25e2f4';
+            },
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2,
+            pointHoverRadius: 8,
+            fill: true,
+            tension: 0.3
           },
-          pointBorderColor: '#ffffff',
-          pointBorderWidth: 2,
-          pointHoverRadius: 8,
-          fill: true,
-          tension: 0.3
-        }]
+          {
+            label: `WHO Guideline (${WHO_GUIDELINE.pm25_annual} µg/m³)`,
+            data: pm25Values.map(() => WHO_GUIDELINE.pm25_annual),
+            borderColor: 'rgba(255, 80, 80, 0.7)',
+            borderWidth: 2,
+            borderDash: [8, 4],
+            pointRadius: 0,
+            fill: false,
+            tension: 0,
+          }
+        ]
       },
       options: {
         responsive: true,
@@ -58,7 +71,16 @@ export function mixCharts(Cls) {
             color: '#ffffff',
             font: { size: 14, weight: 'bold' }
           },
-          legend: { display: false },
+          legend: {
+            display: true,
+            labels: {
+              color: 'rgba(255,255,255,0.6)',
+              font: { size: 10 },
+              usePointStyle: true,
+              pointStyle: 'line',
+              filter: (item) => item.datasetIndex === 1, // WHO만 범례에 표시
+            }
+          },
           tooltip: {
             callbacks: {
               label: (context) => {

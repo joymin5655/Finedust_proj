@@ -124,6 +124,13 @@ export function mixInteraction(Cls) {
         if (obj?.userData) {
           const d = obj.userData;
           const pm25 = d.pm25 ?? d.value ?? null;
+          // DQSS badge
+          const dqss = d.dqss ?? null;
+          const dqssBadge = dqss != null
+            ? `<span style="display:inline-block;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:600;background:${dqss >= 0.8 ? 'rgba(0,255,136,0.2);color:#00ff88' : dqss >= 0.6 ? 'rgba(255,204,0,0.2);color:#ffcc00' : 'rgba(255,100,0,0.2);color:#ff8800'};">${dqss >= 0.8 ? 'High' : dqss >= 0.6 ? 'Medium' : 'Low'} Quality</span>`
+            : '';
+          const sourceInfo = d.source ? `<div style="font-size:9px;color:rgba(255,255,255,0.3);margin-top:2px;">Source: ${d.source}${d.sourceCount > 1 ? ` (+${d.sourceCount - 1})` : ''}</div>` : '';
+
           const html = `
             <div style="font-weight:700;color:#25e2f4;margin-bottom:4px;">
               📍 ${d.city || d.name || '—'}
@@ -132,6 +139,8 @@ export function mixInteraction(Cls) {
             ${pm25 != null ? `<div style="margin-bottom:2px;">PM2.5 <b>${pm25.toFixed(1)}</b> µg/m³</div>` : ''}
             ${this._pm25GradeStr(pm25)}
             ${d.aqi != null ? `<div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:3px;">AQI: ${d.aqi}</div>` : ''}
+            ${dqssBadge ? `<div style="margin-top:4px;">${dqssBadge}</div>` : ''}
+            ${sourceInfo}
             <div style="margin-top:6px;border-top:1px solid rgba(255,255,255,0.1);padding-top:4px;font-size:10px;color:rgba(255,255,255,0.5);">
               클릭하면 상세 보기
             </div>`;

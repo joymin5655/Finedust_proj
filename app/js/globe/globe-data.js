@@ -1,9 +1,11 @@
 /**
  * globe-data.js — Data loading: PM2.5, policies, WAQI, statistics
  * ───────────────────────────────────────────────────────────────
+ * v4.1: FusionService 통합 — WAQI+OpenAQ+AOD 데이터를 단일 소스로 사용
  */
 
 import { waqiDataService } from '../services/waqi-data-service.js';
+import { FusionService } from '../services/fusionService.js';
 
 export function mixData(Cls) {
   const P = Cls.prototype;
@@ -61,19 +63,53 @@ export function mixData(Cls) {
     }
   };
 
-  // ── Load PM2.5 data (priority: local WAQI → Open-Meteo) ──
+  // ── Load PM2.5 data (priority: FusionService → WAQI → Open-Meteo) ──
   P.loadPM25Data = async function () {
     console.log('🌍 Loading PM2.5 data...');
+
+    // 1차: FusionService (WAQI + OpenAQ + AOD 통합)
+    try {
+      const fused = await FusionService.fuse();
+      if (fused && fused.size > 0) {
+        this.pm25Data = new Map();
+        this._fusedData = fused; // 원본 보관 (레이어에서 활용)
+        for (const [key, record] of fused) {
+          const name = record.name || key;
+          this.pm25Data.set(name, {
+            lat: record.lat,
+            lon: record.lon,
+            pm25: record.pm25,
+            aqi: record.aqi,
+            country: record.country,
+            stationName: record.name || name,
+            source: record.source || 'Fused',
+            lastUpdate: record.lastUpdated,
+            dqss: record.dqss,
+            sourceCount: record.sourceCount,
+            aod: record.aod,
+            openaqTrend: record.openaqTrend,
+          });
+        }
+        console.log(`✅ FusionService: ${this.pm25Data.size} locations (${FusionService.getSize()} fused)`);
+        return;
+      }
+    } catch (error) {
+      console.warn('⚠️ FusionService failed, falling back:', error.message);
+    }
+
+    // 2차: WAQI JSON 직접 로드
     try {
       const waqiData = await waqiDataService.loadWAQIData();
       if (waqiData && waqiData.size > 0) {
-        console.log(`✅ Loaded ${waqiData.size} cities from WAQI JSON!`);
+        console.log(`✅ Loaded ${waqiData.size} cities from WAQI JSON`);
         this.pm25Data = waqiData;
         return;
       }
     } catch (error) {
       console.warn('⚠️ WAQI JSON load failed:', error.message);
     }
+
+    // 3차: Open-Meteo API 직접 호출
     console.log('🔄 Falling back to Open-Meteo...');
     await this.loadPM25Data_OpenMeteo();
   };

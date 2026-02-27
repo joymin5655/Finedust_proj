@@ -11,7 +11,7 @@
  */
 
 import { EnhancedPolicyVisualization } from './services/policy/policy-visualization.js';
-import { PolicyComparisonPanel } from './services/policy/policy-comparison-panel.js';
+// PolicyComparisonPanel → Policy Explorer에 통합, 독립 패널 사용 안 함
 import { dataIntegrationService } from './services/policy/data-integration-service.js';
 
 export function enhanceGlobe(PolicyGlobe) {
@@ -26,8 +26,9 @@ export function enhanceGlobe(PolicyGlobe) {
         this.enhancedPolicyViz = new EnhancedPolicyVisualization(this.scene, this.earth);
       }
 
-      // Policy comparison panel (DOM 기반)
-      this.comparisonPanel = new PolicyComparisonPanel();
+      // PolicyComparisonPanel은 독립 패널로 표시하지 않음
+      // → Policy Explorer(control-panel) 안에서 국가 선택 시 데이터 표시
+      // this.comparisonPanel = new PolicyComparisonPanel(); // ← 제거
 
       // 데이터 통합 서비스 구독
       this._setupEnhancementSubscriptions();
@@ -46,15 +47,9 @@ export function enhanceGlobe(PolicyGlobe) {
     try {
       this._enhancementUnsub = dataIntegrationService.subscribe?.((event) => {
         const { type, data } = event?.detail || {};
-        if (type === 'policy_impact' && this.comparisonPanel) {
-          this.comparisonPanel.updatePolicyData({
-            ...data,
-            comparison: {
-              before_pm25: data?.beforeAverage,
-              after_pm25: data?.afterAverage,
-              timeline: []
-            }
-          });
+        if (type === 'policy_impact' && data) {
+          // Policy Explorer 패널에서 이 데이터를 활용 (showCountryPolicy에서 처리)
+          console.log(`[Enhancement] Policy impact event: ${data.country || data.title}`);
         }
       });
     } catch (e) {

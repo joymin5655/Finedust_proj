@@ -49,19 +49,6 @@ AirLens bridges this gap with three approaches:
 
 ---
 
-## Quick Start
-
-```bash
-git clone https://github.com/joymin5655/Finedust_proj.git
-cd Finedust_proj
-
-# No build required — static site
-python3 -m http.server 8000
-# Open: http://localhost:8000/app/
-```
-
----
-
 ## Tech Stack
 
 | Layer | Technology |

@@ -58,7 +58,7 @@ const OpenAIService = (() => {
     try {
       const res = await fetch(`${API_BASE}/api/health`, { method: 'GET' });
       return res.ok;
-    } catch {
+    } catch (e) {
       return false;
     }
   }

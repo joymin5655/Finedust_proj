@@ -16,7 +16,7 @@ async function loadPolicyEffect() {
     const res = await fetch(`${getBasePath()}/policy-impact/policy_effect_basic.json`);
     if (!res.ok) return null;
     return res.json();
-  } catch { return null; }
+  } catch (e) { return null; }
 }
 
 /**

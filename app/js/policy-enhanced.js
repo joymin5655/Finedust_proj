@@ -22,7 +22,7 @@ async function loadPolicyEffect() {
     if (!res.ok) return null;
     _policyEffectCache = await res.json();
     return _policyEffectCache;
-  } catch { return null; }
+  } catch (e) { return null; }
 }
 
 // 국가 코드 매핑

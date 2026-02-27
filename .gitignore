@@ -1,65 +1,86 @@
-# Dependencies
+# ═══════════════════════════════════════════════════════════
+# AirLens .gitignore
+# ═══════════════════════════════════════════════════════════
+
+# ── Dependencies ──────────────────────────────────────────
 node_modules/
 package-lock.json
 
-# OS Files
+# ── OS Files ──────────────────────────────────────────────
 .DS_Store
 Thumbs.db
 
-# Editor
+# ── Editor ────────────────────────────────────────────────
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 
-# Build outputs
+# ── Build outputs ─────────────────────────────────────────
 dist/
 build/
 _site/
 *.log
 
-# Symlinks (local development only)
+# ── Symlinks (local development only) ────────────────────
 /assets
 /css
 /data
 /js
 /public
 
-# Environment
+# ── Environment ──────────────────────────────────────────
 .env
 .env.local
 
-# API Configuration (contains sensitive API keys)
-# Copy config.template.js to config.js and add your keys
+# ── API Configuration (sensitive keys) ───────────────────
 app/js/config.js
 
-# Temporary files
+# ── Temporary ─────────────────────────────────────────────
 *.tmp
 .cache/
 
-# ── 로컬 전용 (서비스 운영과 무관, GitHub에 올리지 않음) ──
-docs/
-_archive/
-/analysis/
-archive/
+# ═══════════════════════════════════════════════════════════
+# 로컬 전용 폴더 (GitHub에 올리지 않음)
+# ═══════════════════════════════════════════════════════════
 
-# API tokens (never commit!)
-*.token
+# 로컬 분석용 원본 데이터 (대용량 CSV, HDF5 등)
+/local-data/
 
-# Data collection logs
-scripts/*.log
+# 로컬 ML 학습 작업 공간 (중간 모델, 실험 로그)
+/local-models/
 
-# WAQI daily history (only latest.json needed in repo)
+# 로컬 Jupyter 노트북·Python 분석 스크립트
+/local-analysis/
+
+# PRD·스펙 등 내부 문서 (루트 docs/)
+/docs/
+
+# 과거 코드 백업
+/_archive/
+
+# ═══════════════════════════════════════════════════════════
+# 서비스 폴더 내 제외 항목
+# ═══════════════════════════════════════════════════════════
+
+# WAQI daily history (latest.json만 repo에 유지)
 app/data/waqi/history/
 
-# ML model artifacts (too large for git)
-models/*.pkl
-models/*.onnx
-models/*.pt
-models/*.h5
+# 대용량 모델 바이너리 (50MB 초과 시 GitHub Releases 사용)
+app/models/**/*.pkl
+app/models/**/*.pt
+app/models/**/*.h5
+!app/models/**/*.onnx
+!app/models/**/*.json
 
-# Python
+# ── API tokens ────────────────────────────────────────────
+*.token
+
+# ── Data collection logs ─────────────────────────────────
+scripts/*.log
+
+# ── Python ────────────────────────────────────────────────
 __pycache__/
 *.pyc
 .venv/

@@ -85,7 +85,7 @@ Beyond monitoring, AirLens aims to become the first open platform that quantitat
 
 ## 비전
 
-**AirLens는 대기질 정보의 민주화를 위해 존재합니다.**
+**AirLens는 대기질 정보의 보편화를 위해 존재합니다.**
 
 깨끗한 공기 데이터에 대한 접근은 특권이 아니라 권리입니다. 우리 플랫폼은 지상 관측소, 위성 원격 탐사, 머신러닝을 결합하여 지역 인프라와 무관하게 전 세계 모든 곳에 대기질 인사이트를 제공합니다.
 

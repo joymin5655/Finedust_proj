@@ -6,8 +6,8 @@
 <meta http-equiv="X-Content-Type-Options" content="nosniff" />
 <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
 <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
-<meta name="description" content="AirLens - About our methodology, data sources, and architecture for global air quality intelligence.">
-<title>AirLens - About & Methodology</title>
+<meta name="description" content="AirLens - How our models work, what data we collect, and how the analysis pipeline operates.">
+<title>AirLens - How It Works</title>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
 <link rel="stylesheet" href="css/main.css"/>
 <link rel="stylesheet" href="css/settings.css"/>
@@ -30,6 +30,7 @@ tailwind.config = {
 .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
 .stat-card { transition: transform 0.2s; }
 .stat-card:hover { transform: translateY(-2px); }
+.formula { font-family: 'Courier New', monospace; background: rgba(37,226,244,0.08); padding: 2px 8px; border-radius: 4px; }
 </style>
 </head>
 <body class="bg-background-light dark:bg-background-dark flex flex-col min-h-screen">
@@ -71,424 +72,540 @@ tailwind.config = {
 <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
 
 <!-- Hero -->
-<section class="flex flex-col gap-6 px-4 py-10 text-center">
+<section class="flex flex-col gap-4 px-4 py-10 text-center">
   <h1 class="text-slate-900 dark:text-white text-4xl font-black leading-tight tracking-[-0.033em] sm:text-5xl">
-    AirLens: Global Air Quality Intelligence
+    How AirLens Works
   </h1>
   <p class="text-slate-600 dark:text-slate-300 text-base max-w-3xl mx-auto">
-    센서가 없는 지역에서도 신뢰 가능한 공기질 정보를 제공하고,
-    공공정책의 효과를 데이터로 검증하는 오픈소스 플랫폼입니다.
+    데이터 수집부터 분석 엔진, 시각화까지 — AirLens의 기술 구조를 설명합니다.
   </p>
-  <div class="flex flex-wrap gap-3 justify-center">
-    <button onclick="window.location.href='https://github.com/joymin5655/Finedust_proj'"
-      class="flex items-center justify-center rounded-lg h-10 px-5 sm:h-12 bg-primary text-slate-900 text-sm font-bold sm:text-base hover:opacity-90 transition-opacity">
-      View on GitHub
-    </button>
-    <button onclick="window.location.href='globe.html'"
-      class="flex items-center justify-center rounded-lg h-10 px-5 sm:h-12 bg-slate-200 dark:bg-white/10 text-slate-800 dark:text-white text-sm font-bold sm:text-base hover:bg-slate-300 dark:hover:bg-white/20 transition-colors">
-      Try Live Demo
-    </button>
-  </div>
 </section>
 
 <!-- Key Stats -->
 <section class="grid grid-cols-2 sm:grid-cols-4 gap-4 px-4 pb-8">
   <div class="stat-card text-center p-4 rounded-xl bg-white/60 dark:bg-white/5 border border-slate-200 dark:border-white/10">
+    <div class="text-3xl font-black text-primary">4</div>
+    <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">Data Sources</div>
+  </div>
+  <div class="stat-card text-center p-4 rounded-xl bg-white/60 dark:bg-white/5 border border-slate-200 dark:border-white/10">
     <div class="text-3xl font-black text-primary">68</div>
     <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">Countries Analyzed</div>
   </div>
   <div class="stat-card text-center p-4 rounded-xl bg-white/60 dark:bg-white/5 border border-slate-200 dark:border-white/10">
-    <div class="text-3xl font-black text-primary">5+</div>
-    <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">Data Sources</div>
-  </div>
-  <div class="stat-card text-center p-4 rounded-xl bg-white/60 dark:bg-white/5 border border-slate-200 dark:border-white/10">
-    <div class="text-3xl font-black text-primary">150+</div>
-    <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">Cities Monitored</div>
+    <div class="text-3xl font-black text-primary">6</div>
+    <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">Analysis Engines</div>
   </div>
   <div class="stat-card text-center p-4 rounded-xl bg-white/60 dark:bg-white/5 border border-slate-200 dark:border-white/10">
     <div class="text-3xl font-black text-primary">24/7</div>
-    <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">Auto Data Updates</div>
+    <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">Auto Pipeline</div>
   </div>
 </section>
 
-<!-- Project Vision -->
-<section class="p-6 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 mb-6" id="vision">
-  <h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight px-4 pb-3 pt-5">Project Vision</h2>
-  <div class="px-4 space-y-4">
+<!-- ══════════════════════════════════════════════════ -->
+<!-- SECTION 1: Data Sources & Collection              -->
+<!-- ══════════════════════════════════════════════════ -->
+<section class="p-6 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 mb-6" id="data-sources">
+  <h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight px-4 pb-3 pt-5">
+    <span class="material-symbols-outlined text-primary align-middle mr-1">database</span>
+    1. Data Sources &amp; Collection
+  </h2>
+  <div class="px-4 space-y-6">
+
     <p class="text-slate-700 dark:text-slate-300 text-base">
-      전 세계 대기질 관측소는 선진국에 편중되어 있습니다.
-      개발도상국과 농촌 지역의 수십억 인구는 자신이 마시는 공기의 질조차 알 수 없는 상황입니다.
+      AirLens는 4개의 공개 데이터 소스에서 대기질·기상·위성 데이터를 자동 수집합니다.
+      모든 API 키는 GitHub Secrets에만 저장되며, 클라이언트 코드에 노출되지 않습니다.
     </p>
-    <p class="text-slate-700 dark:text-slate-300 text-base">
-      AirLens는 위성 원격 탐사(AOD), 지상 관측소 데이터, 기상 데이터를 융합하여
-      이 격차를 해소하고자 합니다. 또한 68개국의 대기질 정책을 정량 분석하여,
-      정책이 실제로 효과가 있었는지를 데이터로 보여줍니다.
-    </p>
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-      <div class="text-center p-3 rounded-lg bg-white/50 dark:bg-white/5">
-        <span class="material-symbols-outlined text-primary text-2xl">visibility</span>
-        <div class="text-xs font-medium text-slate-700 dark:text-slate-300 mt-1">Transparency</div>
+
+    <!-- Source Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <!-- WAQI -->
+      <div class="p-4 rounded-lg bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 border border-blue-200 dark:border-blue-800">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center text-xl">🌍</div>
+          <div>
+            <h3 class="font-bold text-slate-900 dark:text-white">WAQI</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400">World Air Quality Index</p>
+          </div>
+        </div>
+        <div class="text-sm text-slate-700 dark:text-slate-300 space-y-1">
+          <p><strong>수집 항목:</strong> 전 세계 150+ 도시 실시간 AQI / PM2.5</p>
+          <p><strong>수집 주기:</strong> 매일 00:00 UTC (GitHub Actions)</p>
+          <p><strong>저장 위치:</strong> <span class="formula">app/data/waqi/latest.json</span></p>
+          <p><strong>사용처:</strong> Globe 마커, Today 카드, FusionService 입력</p>
+        </div>
+        <a class="text-xs text-primary hover:underline mt-2 inline-block" href="https://aqicn.org" target="_blank" rel="noopener">aqicn.org →</a>
       </div>
-      <div class="text-center p-3 rounded-lg bg-white/50 dark:bg-white/5">
-        <span class="material-symbols-outlined text-primary text-2xl">replay</span>
-        <div class="text-xs font-medium text-slate-700 dark:text-slate-300 mt-1">Reproducibility</div>
+
+      <!-- OpenAQ -->
+      <div class="p-4 rounded-lg bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200 dark:border-green-800">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center text-xl">🏛️</div>
+          <div>
+            <h3 class="font-bold text-slate-900 dark:text-white">OpenAQ</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Open Air Quality Data</p>
+          </div>
+        </div>
+        <div class="text-sm text-slate-700 dark:text-slate-300 space-y-1">
+          <p><strong>수집 항목:</strong> 정부 공식 관측소 PM2.5 (연간/일간 시계열)</p>
+          <p><strong>수집 주기:</strong> 매주 일요일 02:00 UTC</p>
+          <p><strong>저장 위치:</strong> <span class="formula">app/data/openaq/pm25_years.json</span></p>
+          <p><strong>사용처:</strong> 정책 전후 비교, 장기 추세 차트, 교차 검증</p>
+        </div>
+        <a class="text-xs text-primary hover:underline mt-2 inline-block" href="https://openaq.org" target="_blank" rel="noopener">openaq.org →</a>
       </div>
-      <div class="text-center p-3 rounded-lg bg-white/50 dark:bg-white/5">
-        <span class="material-symbols-outlined text-primary text-2xl">science</span>
-        <div class="text-xs font-medium text-slate-700 dark:text-slate-300 mt-1">Scientific Integrity</div>
+
+      <!-- NASA Earthdata -->
+      <div class="p-4 rounded-lg bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 border border-purple-200 dark:border-purple-800">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center text-xl">🛰️</div>
+          <div>
+            <h3 class="font-bold text-slate-900 dark:text-white">NASA Earthdata</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400">MAIAC / MODIS AOD</p>
+          </div>
+        </div>
+        <div class="text-sm text-slate-700 dark:text-slate-300 space-y-1">
+          <p><strong>수집 항목:</strong> AOD(에어로졸 광학 두께) — 위성 기반 대기 입자 측정</p>
+          <p><strong>수집 주기:</strong> 매주 일요일 02:00 UTC</p>
+          <p><strong>저장 위치:</strong> <span class="formula">app/data/earthdata/aod_samples.json</span></p>
+          <p><strong>사용처:</strong> Globe AOD 레이어, PM2.5 추정 모델 입력</p>
+        </div>
+        <a class="text-xs text-primary hover:underline mt-2 inline-block" href="https://earthdata.nasa.gov" target="_blank" rel="noopener">earthdata.nasa.gov →</a>
       </div>
-      <div class="text-center p-3 rounded-lg bg-white/50 dark:bg-white/5">
-        <span class="material-symbols-outlined text-primary text-2xl">expand</span>
-        <div class="text-xs font-medium text-slate-700 dark:text-slate-300 mt-1">Scalability</div>
+
+      <!-- Open-Meteo -->
+      <div class="p-4 rounded-lg bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 border border-orange-200 dark:border-orange-800">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center text-xl">🌤️</div>
+          <div>
+            <h3 class="font-bold text-slate-900 dark:text-white">Open-Meteo + CAMS</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Weather &amp; EU Copernicus</p>
+          </div>
+        </div>
+        <div class="text-sm text-slate-700 dark:text-slate-300 space-y-1">
+          <p><strong>수집 항목:</strong> 온도, 습도, 풍속 + EU CAMS 위성 PM2.5</p>
+          <p><strong>수집 주기:</strong> 실시간 (클라이언트 요청 시)</p>
+          <p><strong>API 키:</strong> 불필요 (무료)</p>
+          <p><strong>사용처:</strong> Today 보조 데이터, AOD 보정 기상 입력</p>
+        </div>
+        <a class="text-xs text-primary hover:underline mt-2 inline-block" href="https://open-meteo.com" target="_blank" rel="noopener">open-meteo.com →</a>
       </div>
     </div>
+
+    <!-- Supporting Sources -->
+    <div>
+      <h3 class="font-bold text-sm text-slate-800 dark:text-slate-200 mb-2 mt-2">Supporting Sources</h3>
+      <div class="flex flex-wrap gap-3">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-200/70 dark:bg-slate-800/70 text-xs font-medium text-slate-700 dark:text-slate-300">🏥 WHO — Air Quality Guidelines</span>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-200/70 dark:bg-slate-800/70 text-xs font-medium text-slate-700 dark:text-slate-300">🏦 World Bank — GDP, Population (WDI)</span>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-200/70 dark:bg-slate-800/70 text-xs font-medium text-slate-700 dark:text-slate-300">🇪🇺 EU Copernicus CAMS — Satellite PM2.5</span>
+      </div>
+    </div>
+
   </div>
 </section>
 
-<!-- System Architecture -->
-<section class="p-6 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 mb-6" id="architecture">
-  <h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight px-4 pb-3 pt-5">System Architecture</h2>
-  <div class="px-4">
-    <p class="text-slate-700 dark:text-slate-300 text-base mb-4">
-      AirLens는 외부 API에서 수집한 데이터를 자동 정규화하고,
-      다중 소스를 융합(FusionService)하여 일관된 뷰를 제공합니다.
+<!-- ══════════════════════════════════════════════════ -->
+<!-- SECTION 2: Data Pipeline                          -->
+<!-- ══════════════════════════════════════════════════ -->
+<section class="p-6 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 mb-6" id="pipeline">
+  <h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight px-4 pb-3 pt-5">
+    <span class="material-symbols-outlined text-primary align-middle mr-1">sync</span>
+    2. Data Pipeline
+  </h2>
+  <div class="px-4 space-y-4">
+
+    <p class="text-slate-700 dark:text-slate-300 text-base">
+      GitHub Actions가 외부 API에서 데이터를 수집하고, 정규화된 JSON으로 변환하여 저장합니다.
+      브라우저에서는 FusionService가 이 데이터를 하나의 통합 뷰로 합성합니다.
     </p>
+
+    <!-- Pipeline Diagram -->
     <div class="bg-slate-200/50 dark:bg-slate-800/50 p-4 rounded-lg font-mono text-xs sm:text-sm text-slate-700 dark:text-slate-300 overflow-x-auto">
 <pre class="whitespace-pre">
-┌───────────────────────────────────┐
-│         External APIs             │
-│ OpenAQ · WAQI · Open-Meteo       │
-│ NASA Earthdata · World Bank       │
-└──────────────┬────────────────────┘
-               ▼
-┌───────────────────────────────────┐
-│    scripts/ (GitHub Actions)      │
-│ fetch_openaq · fetch-waqi-data    │
-│ fetch_earthdata_aod               │
-└──────────────┬────────────────────┘
-               ▼
-┌───────────────────────────────────┐
-│     app/data/ (Static JSON)       │
-│ waqi/ · openaq/ · earthdata/      │
-│ policy-impact/ (68 countries)     │
-└──────────────┬────────────────────┘
-               ▼
-┌───────────────────────────────────┐
-│  FusionService (Data Layer)       │
-│ Multi-source merge + DQSS-lite    │
-│ Deduplication + Quality scoring   │
-└──────────────┬────────────────────┘
-               ▼
-┌───────────────────────────────────┐
-│   3D Globe · Today · Policy       │
-│   Camera AI · Charts              │
-│   → GitHub Pages                  │
-└───────────────────────────────────┘
+External APIs                    GitHub Actions              Static JSON             Browser
+─────────────                    ──────────────              ───────────             ───────
+WAQI API ──────┐
+OpenAQ API ────┤  ──→  scripts/  ──→  app/data/  ──→  FusionService.fuse()
+Earthdata API ─┤       • fetch-waqi-data.js          • waqi/latest.json       ↓
+Open-Meteo ────┘       • fetch_openaq.py             • openaq/pm25_years.json Multi-source
+                       • fetch_earthdata_aod.py      • earthdata/aod_*.json   merge + DQSS
+                       • build_policy_effect.py      • policy-impact/*.json        ↓
+                                                                              Globe / Today
+                                                                              Policy / Charts
 </pre>
     </div>
-  </div>
-</section>
 
-<!-- Methodology -->
-<section class="p-6 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 mb-6" id="methodology">
-  <h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight px-4 pb-3 pt-5">Research &amp; Methodology</h2>
-  <div class="px-4 space-y-8">
-
-    <!-- Multi-Source Data Fusion -->
-    <div>
-      <h3 class="font-bold text-lg text-slate-800 dark:text-slate-100 mb-2">
-        <span class="material-symbols-outlined text-primary align-middle mr-1">merge</span>
-        Multi-Source Data Fusion
-      </h3>
-      <p class="text-slate-700 dark:text-slate-300 text-base mb-3">
-        WAQI(실시간 AQI), OpenAQ(정부 공식 관측), NASA Earthdata(위성 AOD),
-        Open-Meteo(기상)를 FusionService가 단일 Map으로 통합합니다.
-        좌표 기반 중복 제거, 교차 소스 검증, DQSS-lite 점수 자동 부착을 수행합니다.
-      </p>
-      <div class="bg-slate-200/50 dark:bg-slate-800/50 p-3 rounded-lg text-sm">
-        <strong class="text-slate-900 dark:text-white">DQSS-lite (Data Quality Score):</strong>
-        <p class="text-slate-600 dark:text-slate-400 mt-1">
-          Freshness(데이터 신선도) + Completeness(완전성) + Cross-source consistency(교차 검증)
-          → 0~1.0 점수 → High / Medium / Low 배지로 표시
+    <!-- Pipeline Steps -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
+      <div class="p-4 rounded-lg bg-white/50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
+        <div class="text-primary font-bold text-sm mb-1">① 수집 (Ingestion)</div>
+        <p class="text-xs text-slate-600 dark:text-slate-400">
+          GitHub Actions 워크플로우가 스케줄에 따라 외부 API를 호출하고 원본 응답을 JSON으로 저장합니다.
+          Rate limit을 준수하며, 실패 시 자동 재시도합니다.
+        </p>
+      </div>
+      <div class="p-4 rounded-lg bg-white/50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
+        <div class="text-primary font-bold text-sm mb-1">② 정규화 (Harmonization)</div>
+        <p class="text-xs text-slate-600 dark:text-slate-400">
+          Python/Node 스크립트가 다양한 API 형식을 통일된 스키마로 변환합니다.
+          좌표 정규화(WGS84), 단위 변환(µg/m³), 중복 제거를 수행합니다.
+        </p>
+      </div>
+      <div class="p-4 rounded-lg bg-white/50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
+        <div class="text-primary font-bold text-sm mb-1">③ 융합 (Fusion)</div>
+        <p class="text-xs text-slate-600 dark:text-slate-400">
+          브라우저의 FusionService가 WAQI + OpenAQ + Open-Meteo 데이터를 좌표 기반으로 병합하고,
+          각 관측소에 데이터 품질 점수(DQSS)를 자동 부여합니다.
         </p>
       </div>
     </div>
 
-    <!-- Policy Impact Analysis -->
-    <div>
-      <h3 class="font-bold text-lg text-slate-800 dark:text-slate-100 mb-2">
-        <span class="material-symbols-outlined text-primary align-middle mr-1">policy</span>
-        Policy Impact Analysis (DID-lite)
-      </h3>
-      <p class="text-slate-700 dark:text-slate-300 text-base mb-3">
-        68개국의 대기질 정책 시행 전후 3년간 PM2.5 평균을 비교하는
-        Difference-in-Differences(DID) 방법론을 적용합니다.
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- SECTION 3: Analysis Engines                       -->
+<!-- ══════════════════════════════════════════════════ -->
+<section class="p-6 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 mb-6" id="analysis-engines">
+  <h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight px-4 pb-3 pt-5">
+    <span class="material-symbols-outlined text-primary align-middle mr-1">analytics</span>
+    3. Analysis Engines
+  </h2>
+  <div class="px-4 space-y-8">
+
+    <p class="text-slate-700 dark:text-slate-300 text-base">
+      AirLens는 6개의 분석 엔진을 브라우저 내에서 실행합니다. 모든 모듈은 ES6 모듈로 구현되어
+      <span class="formula">app/js/analysis/</span>에서 관리됩니다.
+    </p>
+
+    <!-- Engine 1: DQSS -->
+    <div class="p-5 rounded-lg bg-white/50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
+      <div class="flex items-start gap-3 mb-3">
+        <div class="w-8 h-8 bg-green-500 rounded-lg flex-shrink-0 flex items-center justify-center text-white text-sm font-bold">1</div>
+        <div>
+          <h3 class="font-bold text-slate-900 dark:text-white">DQSS — Data Quality Scoring System</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400">dqss-engine.js · 264줄</p>
+        </div>
+      </div>
+      <p class="text-sm text-slate-700 dark:text-slate-300 mb-3">
+        각 관측소의 데이터 신뢰도를 0–100 점수로 평가합니다. 5개 컴포넌트의 가중 합산으로 계산됩니다.
+      </p>
+      <div class="grid grid-cols-5 gap-2 text-center text-xs">
+        <div class="p-2 rounded bg-slate-200/50 dark:bg-slate-800/50">
+          <div class="font-bold text-primary">0–25</div>
+          <div class="text-slate-600 dark:text-slate-400">Freshness</div>
+          <div class="text-slate-500 dark:text-slate-500 text-[10px]">데이터 경과 시간</div>
+        </div>
+        <div class="p-2 rounded bg-slate-200/50 dark:bg-slate-800/50">
+          <div class="font-bold text-primary">0–20</div>
+          <div class="text-slate-600 dark:text-slate-400">Completeness</div>
+          <div class="text-slate-500 dark:text-slate-500 text-[10px]">24시간 가용률</div>
+        </div>
+        <div class="p-2 rounded bg-slate-200/50 dark:bg-slate-800/50">
+          <div class="font-bold text-primary">0–20</div>
+          <div class="text-slate-600 dark:text-slate-400">Consistency</div>
+          <div class="text-slate-500 dark:text-slate-500 text-[10px]">교차 소스 일치</div>
+        </div>
+        <div class="p-2 rounded bg-slate-200/50 dark:bg-slate-800/50">
+          <div class="font-bold text-primary">0–20</div>
+          <div class="text-slate-600 dark:text-slate-400">Stability</div>
+          <div class="text-slate-500 dark:text-slate-500 text-[10px]">시계열 안정성</div>
+        </div>
+        <div class="p-2 rounded bg-slate-200/50 dark:bg-slate-800/50">
+          <div class="font-bold text-primary">0–15</div>
+          <div class="text-slate-600 dark:text-slate-400">Residual</div>
+          <div class="text-slate-500 dark:text-slate-500 text-[10px]">모델 오차</div>
+        </div>
+      </div>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">
+        → Badge: <strong>High</strong> (≥75) · <strong>Medium</strong> (≥50) · <strong>Low</strong> (≥25) · <strong>Unreliable</strong> (&lt;25)
+      </p>
+    </div>
+
+    <!-- Engine 2: Bayesian -->
+    <div class="p-5 rounded-lg bg-white/50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
+      <div class="flex items-start gap-3 mb-3">
+        <div class="w-8 h-8 bg-indigo-500 rounded-lg flex-shrink-0 flex items-center justify-center text-white text-sm font-bold">2</div>
+        <div>
+          <h3 class="font-bold text-slate-900 dark:text-white">Bayesian Reliability Engine</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400">bayesian-reliability.js · 257줄</p>
+        </div>
+      </div>
+      <p class="text-sm text-slate-700 dark:text-slate-300 mb-3">
+        각 센서의 신뢰도를 Beta 분포로 모델링합니다. 관측이 쌓일수록 정확한 신뢰도가 추정됩니다.
       </p>
       <div class="bg-slate-200/50 dark:bg-slate-800/50 p-3 rounded-lg text-sm font-mono text-slate-700 dark:text-slate-300">
-        absolute_change = Post_mean − Pre_mean<br>
-        relative_change = (Post − Pre) / Pre × 100%
+        R<sub>i</sub> ~ Beta(α, β) &nbsp;|&nbsp; Prior: α₀=5, β₀=3 → E[R]=0.625<br>
+        관측마다: |obs − pred| ≤ τ → α+=1, 아니면 β+=1<br>
+        시간 감쇠: α,β × 0.995 (최근 관측 가중)
       </div>
-      <p class="text-slate-500 dark:text-slate-400 text-sm mt-2">
-        ⚠️ 정책 분석 결과는 준실험적(approximate causal) 추정치입니다.
-        단독 정책 근거가 아닌 참고 자료로만 활용해야 합니다.
-        향후 parallel trend 검정, placebo test, event study로 고도화 예정입니다.
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">
+        → DQSS에 Bayesian 보너스/감점(±5) 반영 · FusionService에서 품질가중 평균 산출
       </p>
     </div>
 
-    <!-- Satellite Prediction (Planned) -->
-    <div>
-      <h3 class="font-bold text-lg text-slate-800 dark:text-slate-100 mb-2">
-        <span class="material-symbols-outlined text-primary align-middle mr-1">satellite_alt</span>
-        AOD → PM2.5 Prediction Model
-        <span class="inline-block ml-2 px-2 py-0.5 text-xs font-medium rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-200">v2.5 Planned</span>
-      </h3>
-      <p class="text-slate-700 dark:text-slate-300 text-base mb-3">
-        NASA MAIAC/MODIS AOD(에어로졸 광학 두께) + 기상 데이터(온도, 습도, 풍속, PBLH)를
-        입력으로 지상 PM2.5를 추정하는 ML 모델을 구축 중입니다.
+    <!-- Engine 3: AOD Correction -->
+    <div class="p-5 rounded-lg bg-white/50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
+      <div class="flex items-start gap-3 mb-3">
+        <div class="w-8 h-8 bg-purple-500 rounded-lg flex-shrink-0 flex items-center justify-center text-white text-sm font-bold">3</div>
+        <div>
+          <h3 class="font-bold text-slate-900 dark:text-white">AOD → PM2.5 Advanced Correction</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400">aod-correction.js · 289줄</p>
+        </div>
+      </div>
+      <p class="text-sm text-slate-700 dark:text-slate-300 mb-3">
+        위성 AOD 값을 지상 PM2.5로 변환합니다. 단순 선형 변환(AOD×120) 대신,
+        습도·대기경계층·계절·고도·풍속을 보정하는 물리 기반 모델을 적용합니다.
       </p>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div class="bg-slate-200/50 dark:bg-slate-800/50 p-3 rounded-lg text-sm">
-          <strong class="text-slate-900 dark:text-white">모델 후보</strong>
-          <p class="text-slate-600 dark:text-slate-400 mt-1">RandomForest (베이스라인) → XGBoost / LightGBM (Quantile)</p>
+      <div class="bg-slate-200/50 dark:bg-slate-800/50 p-3 rounded-lg text-sm font-mono text-slate-700 dark:text-slate-300">
+        PM2.5 = AOD × (baseCoeff / f(RH)) × g(PBLH) × seasonal × elevation × wind<br><br>
+        f(RH) = 1/(1 − RH/100)<sup>0.38</sup> &nbsp;— 흡습 성장 보정<br>
+        g(PBLH) = 1500/PBLH &nbsp;— 경계층 높이 보정
+      </div>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">
+        + GTWR-lite (지리적 시간 가중 회귀) 보간으로 공간-시간 보간 수행
+      </p>
+    </div>
+
+    <!-- Engine 4: Anomaly Detection -->
+    <div class="p-5 rounded-lg bg-white/50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
+      <div class="flex items-start gap-3 mb-3">
+        <div class="w-8 h-8 bg-red-500 rounded-lg flex-shrink-0 flex items-center justify-center text-white text-sm font-bold">4</div>
+        <div>
+          <h3 class="font-bold text-slate-900 dark:text-white">Anomaly Detection</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400">anomaly-detection.js · 291줄</p>
         </div>
-        <div class="bg-slate-200/50 dark:bg-slate-800/50 p-3 rounded-lg text-sm">
-          <strong class="text-slate-900 dark:text-white">목표 성능</strong>
-          <p class="text-slate-600 dark:text-slate-400 mt-1">R² ≥ 0.6 · RMSE 한 자릿수(µg/m³) · Quantile 예측(p10/p50/p90)</p>
+      </div>
+      <p class="text-sm text-slate-700 dark:text-slate-300 mb-3">
+        센서 오작동, 급격한 오염 변화, 데이터 오류를 4가지 방법으로 탐지합니다.
+      </p>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-center">
+        <div class="p-2 rounded bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+          <div class="font-bold text-red-600 dark:text-red-400">Z-Score</div>
+          <div class="text-slate-500 dark:text-slate-400">표준 편차 기반</div>
         </div>
+        <div class="p-2 rounded bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+          <div class="font-bold text-red-600 dark:text-red-400">MAD</div>
+          <div class="text-slate-500 dark:text-slate-400">로버스트 탐지</div>
+        </div>
+        <div class="p-2 rounded bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+          <div class="font-bold text-red-600 dark:text-red-400">Isolation Forest</div>
+          <div class="text-slate-500 dark:text-slate-400">다변량 이상치</div>
+        </div>
+        <div class="p-2 rounded bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+          <div class="font-bold text-red-600 dark:text-red-400">CUSUM</div>
+          <div class="text-slate-500 dark:text-slate-400">시계열 변화점</div>
+        </div>
+      </div>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">
+        → 이상치 감지 시 DQSS 점수 −20 감점 · Globe에서 경고 표시
+      </p>
+    </div>
+
+    <!-- Engine 5: Policy Analysis -->
+    <div class="p-5 rounded-lg bg-white/50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
+      <div class="flex items-start gap-3 mb-3">
+        <div class="w-8 h-8 bg-amber-500 rounded-lg flex-shrink-0 flex items-center justify-center text-white text-sm font-bold">5</div>
+        <div>
+          <h3 class="font-bold text-slate-900 dark:text-white">Policy Impact Analysis — 3-Stage Pipeline</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400">synthetic-control.js · 721줄</p>
+        </div>
+      </div>
+      <p class="text-sm text-slate-700 dark:text-slate-300 mb-3">
+        68개국의 대기질 정책 효과를 3단계 파이프라인으로 분석합니다.
+        데이터 가용성에 따라 자동으로 적절한 분석 단계가 선택됩니다.
+      </p>
+      <div class="space-y-3">
+        <div class="flex gap-3 items-start">
+          <div class="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/30 flex-shrink-0 flex items-center justify-center text-xs font-bold text-green-700 dark:text-green-300">1</div>
+          <div>
+            <div class="text-sm font-bold text-slate-800 dark:text-slate-100">Pre/Post Comparison</div>
+            <p class="text-xs text-slate-600 dark:text-slate-400">정책 시행 전후 3년 평균 비교 · Welch's t-test · Cohen's d 효과 크기</p>
+          </div>
+        </div>
+        <div class="flex gap-3 items-start">
+          <div class="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/30 flex-shrink-0 flex items-center justify-center text-xs font-bold text-blue-700 dark:text-blue-300">2</div>
+          <div>
+            <div class="text-sm font-bold text-slate-800 dark:text-slate-100">DID with Fixed Effects</div>
+            <p class="text-xs text-slate-600 dark:text-slate-400">국가·연도 고정효과 포함 이중차분법 · Parallel trend 검정</p>
+          </div>
+        </div>
+        <div class="flex gap-3 items-start">
+          <div class="w-6 h-6 rounded-full bg-purple-100 dark:bg-purple-900/30 flex-shrink-0 flex items-center justify-center text-xs font-bold text-purple-700 dark:text-purple-300">3</div>
+          <div>
+            <div class="text-sm font-bold text-slate-800 dark:text-slate-100">Synthetic Control Method</div>
+            <p class="text-xs text-slate-600 dark:text-slate-400">"정책이 없었을 경우의 가상 시나리오" 생성 · 대조군 자동 추천 · Placebo test (p-value)</p>
+          </div>
+        </div>
+      </div>
+      <div class="mt-3 p-3 bg-amber-50 dark:bg-amber-900/15 border border-amber-200 dark:border-amber-800 rounded-lg">
+        <p class="text-xs text-amber-800 dark:text-amber-200">
+          ⚠️ 정책 분석 결과는 준실험적(approximate causal) 추정치입니다. 단독 정책 근거로 사용하지 마세요.
+        </p>
       </div>
     </div>
 
-    <!-- Camera AI -->
-    <div>
-      <h3 class="font-bold text-lg text-slate-800 dark:text-slate-100 mb-2">
-        <span class="material-symbols-outlined text-primary align-middle mr-1">photo_camera</span>
-        Camera AI Classification
-        <span class="inline-block ml-2 px-2 py-0.5 text-xs font-medium rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200">Experimental</span>
-      </h3>
-      <p class="text-slate-700 dark:text-slate-300 text-base">
-        하늘 사진을 촬영하면 브라우저 내에서 대기질 등급(Good / Moderate / Unhealthy / Very Unhealthy)을
-        추정합니다. 모든 분석은 클라이언트에서 수행되며, 사진은 서버로 전송되지 않습니다.
-        향후 ONNX 모델(ResNet18/MobileNet) 기반 추론으로 전환 예정입니다.
+    <!-- Engine 6: H3 Spatial -->
+    <div class="p-5 rounded-lg bg-white/50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
+      <div class="flex items-start gap-3 mb-3">
+        <div class="w-8 h-8 bg-cyan-500 rounded-lg flex-shrink-0 flex items-center justify-center text-white text-sm font-bold">6</div>
+        <div>
+          <h3 class="font-bold text-slate-900 dark:text-white">H3 Hexagonal Spatial Indexing</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400">h3-spatial-index.js + h3-neighbors.js + h3-aggregation.js · 243줄</p>
+        </div>
+      </div>
+      <p class="text-sm text-slate-700 dark:text-slate-300 mb-3">
+        Uber H3 육각형 인덱스를 사용하여 모든 인접 셀과의 거리를 일정하게 유지합니다.
+        관측 데이터를 육각형 셀로 집계하고, 공간 스무딩과 핫스팟 탐지(Getis-Ord Gi*)를 수행합니다.
       </p>
+      <div class="flex flex-wrap gap-2 text-xs">
+        <span class="px-2 py-1 rounded bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 font-medium">latLonToH3()</span>
+        <span class="px-2 py-1 rounded bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 font-medium">aggregateToH3()</span>
+        <span class="px-2 py-1 rounded bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 font-medium">h3SpatialSmooth()</span>
+        <span class="px-2 py-1 rounded bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 font-medium">detectHotspots()</span>
+      </div>
     </div>
 
   </div>
 </section>
 
-<!-- Technology Stack -->
-<section class="px-4 py-8 mb-6">
-  <h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight pb-4">Technology Stack</h2>
-  <div class="grid grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-4">
-    <div class="flex flex-1 gap-3 rounded-lg border border-gray-200/80 dark:border-white/10 bg-white/50 dark:bg-white/5 p-4 flex-col">
-      <span class="material-symbols-outlined text-primary text-3xl">view_in_ar</span>
-      <h3 class="text-gray-900 dark:text-white text-base font-bold">Three.js</h3>
-      <p class="text-gray-600 dark:text-gray-400 text-sm">3D Globe + WebGL</p>
-    </div>
-    <div class="flex flex-1 gap-3 rounded-lg border border-gray-200/80 dark:border-white/10 bg-white/50 dark:bg-white/5 p-4 flex-col">
-      <span class="material-symbols-outlined text-primary text-3xl">language</span>
-      <h3 class="text-gray-900 dark:text-white text-base font-bold">Vanilla JS (ES6+)</h3>
-      <p class="text-gray-600 dark:text-gray-400 text-sm">Modular Architecture</p>
-    </div>
-    <div class="flex flex-1 gap-3 rounded-lg border border-gray-200/80 dark:border-white/10 bg-white/50 dark:bg-white/5 p-4 flex-col">
-      <span class="material-symbols-outlined text-primary text-3xl">insert_chart</span>
-      <h3 class="text-gray-900 dark:text-white text-base font-bold">Chart.js</h3>
-      <p class="text-gray-600 dark:text-gray-400 text-sm">Data Visualization</p>
-    </div>
-    <div class="flex flex-1 gap-3 rounded-lg border border-gray-200/80 dark:border-white/10 bg-white/50 dark:bg-white/5 p-4 flex-col">
-      <span class="material-symbols-outlined text-primary text-3xl">code</span>
-      <h3 class="text-gray-900 dark:text-white text-base font-bold">Python</h3>
-      <p class="text-gray-600 dark:text-gray-400 text-sm">Data Pipeline + ML</p>
-    </div>
-    <div class="flex flex-1 gap-3 rounded-lg border border-gray-200/80 dark:border-white/10 bg-white/50 dark:bg-white/5 p-4 flex-col">
-      <span class="material-symbols-outlined text-primary text-3xl">cloud_sync</span>
-      <h3 class="text-gray-900 dark:text-white text-base font-bold">GitHub Actions</h3>
-      <p class="text-gray-600 dark:text-gray-400 text-sm">CI/CD + Auto Fetch</p>
-    </div>
-    <div class="flex flex-1 gap-3 rounded-lg border border-gray-200/80 dark:border-white/10 bg-white/50 dark:bg-white/5 p-4 flex-col">
-      <span class="material-symbols-outlined text-primary text-3xl">css</span>
-      <h3 class="text-gray-900 dark:text-white text-base font-bold">Tailwind CSS</h3>
-      <p class="text-gray-600 dark:text-gray-400 text-sm">Responsive UI</p>
-    </div>
-  </div>
-</section>
-
-<!-- Data Sources -->
-<section class="p-6 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 mb-6" id="datasources">
-  <h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight px-4 pb-3 pt-5">Data Sources</h2>
-  <div class="px-4">
-    <div class="p-3 bg-green-100 dark:bg-green-900/20 border border-green-300 dark:border-green-700 rounded-lg mb-4">
-      <div class="flex items-center gap-2 text-sm font-medium text-green-900 dark:text-green-100">
-        <span class="text-xl">✅</span>
-        <span>모든 데이터는 공인된 국제기구 및 공개 플랫폼에서 수집됩니다</span>
-      </div>
-    </div>
-
-    <h3 class="font-bold text-slate-800 dark:text-slate-100 mb-3 mt-4">Primary Sources</h3>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-      <div class="flex items-start gap-4 p-4 bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-        <div class="w-12 h-12 bg-blue-500 rounded-full flex-shrink-0 flex items-center justify-center text-2xl">🌍</div>
-        <div>
-          <h4 class="font-bold text-slate-900 dark:text-white">WAQI</h4>
-          <p class="text-xs text-slate-600 dark:text-slate-400 mb-1">World Air Quality Index — 전 세계 실시간 AQI</p>
-          <a class="text-sm text-primary hover:underline font-medium" href="https://aqicn.org" target="_blank" rel="noopener">aqicn.org →</a>
-        </div>
-      </div>
-      <div class="flex items-start gap-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-lg border border-green-200 dark:border-green-800">
-        <div class="w-12 h-12 bg-green-500 rounded-full flex-shrink-0 flex items-center justify-center text-2xl">🏛️</div>
-        <div>
-          <h4 class="font-bold text-slate-900 dark:text-white">OpenAQ</h4>
-          <p class="text-xs text-slate-600 dark:text-slate-400 mb-1">전 세계 정부 공식 관측소 데이터 (ODbL)</p>
-          <a class="text-sm text-primary hover:underline font-medium" href="https://openaq.org" target="_blank" rel="noopener">openaq.org →</a>
-        </div>
-      </div>
-      <div class="flex items-start gap-4 p-4 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-lg border border-purple-200 dark:border-purple-800">
-        <div class="w-12 h-12 bg-purple-500 rounded-full flex-shrink-0 flex items-center justify-center text-2xl">🛰️</div>
-        <div>
-          <h4 class="font-bold text-slate-900 dark:text-white">NASA Earthdata</h4>
-          <p class="text-xs text-slate-600 dark:text-slate-400 mb-1">MAIAC/MODIS AOD 위성 에어로졸 데이터</p>
-          <a class="text-sm text-primary hover:underline font-medium" href="https://earthdata.nasa.gov" target="_blank" rel="noopener">earthdata.nasa.gov →</a>
-        </div>
-      </div>
-      <div class="flex items-start gap-4 p-4 bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 rounded-lg border border-orange-200 dark:border-orange-800">
-        <div class="w-12 h-12 bg-orange-500 rounded-full flex-shrink-0 flex items-center justify-center text-2xl">🌤️</div>
-        <div>
-          <h4 class="font-bold text-slate-900 dark:text-white">Open-Meteo</h4>
-          <p class="text-xs text-slate-600 dark:text-slate-400 mb-1">기상(온도·습도·풍속) + EU CAMS 대기질</p>
-          <a class="text-sm text-primary hover:underline font-medium" href="https://open-meteo.com" target="_blank" rel="noopener">open-meteo.com →</a>
-        </div>
-      </div>
-    </div>
-
-    <h3 class="font-bold text-slate-800 dark:text-slate-100 mb-3">Supporting Sources</h3>
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-      <div class="flex items-center gap-3 p-3 bg-slate-200/50 dark:bg-slate-900/50 rounded-lg">
-        <span class="text-2xl">🏥</span>
-        <div>
-          <h4 class="font-bold text-slate-800 dark:text-slate-100 text-sm">WHO</h4>
-          <p class="text-xs text-slate-600 dark:text-slate-400">Air Quality Guidelines</p>
-        </div>
-      </div>
-      <div class="flex items-center gap-3 p-3 bg-slate-200/50 dark:bg-slate-900/50 rounded-lg">
-        <span class="text-2xl">🏦</span>
-        <div>
-          <h4 class="font-bold text-slate-800 dark:text-slate-100 text-sm">World Bank</h4>
-          <p class="text-xs text-slate-600 dark:text-slate-400">GDP · Population · WDI</p>
-        </div>
-      </div>
-      <div class="flex items-center gap-3 p-3 bg-slate-200/50 dark:bg-slate-900/50 rounded-lg">
-        <span class="text-2xl">🇪🇺</span>
-        <div>
-          <h4 class="font-bold text-slate-800 dark:text-slate-100 text-sm">EU Copernicus CAMS</h4>
-          <p class="text-xs text-slate-600 dark:text-slate-400">Satellite PM2.5</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Transparency & Governance -->
-<section class="p-6 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 mb-6" id="governance">
-  <h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight px-4 pb-3 pt-5">Transparency &amp; Governance</h2>
+<!-- ══════════════════════════════════════════════════ -->
+<!-- SECTION 4: Globe Visualization                    -->
+<!-- ══════════════════════════════════════════════════ -->
+<section class="p-6 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 mb-6" id="visualization">
+  <h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight px-4 pb-3 pt-5">
+    <span class="material-symbols-outlined text-primary align-middle mr-1">public</span>
+    4. Globe Visualization Layers
+  </h2>
   <div class="px-4 space-y-4">
+
+    <p class="text-slate-700 dark:text-slate-300 text-base">
+      Three.js 기반 3D Globe는 4개의 데이터 레이어를 독립적으로 토글할 수 있습니다.
+      8개 모듈(mixin 패턴)로 분할되어 유지보수가 용이합니다.
+    </p>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div class="p-3 rounded-lg bg-white/50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-center">
+        <span class="material-symbols-outlined text-purple-500 text-2xl">satellite_alt</span>
+        <div class="text-xs font-bold text-slate-800 dark:text-slate-100 mt-1">Satellite AOD</div>
+        <div class="text-[10px] text-slate-500 dark:text-slate-400">위성 에어로졸</div>
+      </div>
+      <div class="p-3 rounded-lg bg-white/50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-center">
+        <span class="material-symbols-outlined text-blue-500 text-2xl">model_training</span>
+        <div class="text-xs font-bold text-slate-800 dark:text-slate-100 mt-1">ML Prediction</div>
+        <div class="text-[10px] text-slate-500 dark:text-slate-400">PM2.5 추정</div>
+      </div>
+      <div class="p-3 rounded-lg bg-white/50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-center">
+        <span class="material-symbols-outlined text-green-500 text-2xl">verified</span>
+        <div class="text-xs font-bold text-slate-800 dark:text-slate-100 mt-1">Data Quality</div>
+        <div class="text-[10px] text-slate-500 dark:text-slate-400">DQSS 점수</div>
+      </div>
+      <div class="p-3 rounded-lg bg-white/50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-center">
+        <span class="material-symbols-outlined text-amber-500 text-2xl">policy</span>
+        <div class="text-xs font-bold text-slate-800 dark:text-slate-100 mt-1">Policy Impact</div>
+        <div class="text-[10px] text-slate-500 dark:text-slate-400">정책 효과</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- SECTION 5: Transparency                           -->
+<!-- ══════════════════════════════════════════════════ -->
+<section class="p-6 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 mb-6" id="transparency">
+  <h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight px-4 pb-3 pt-5">
+    <span class="material-symbols-outlined text-primary align-middle mr-1">shield</span>
+    5. Transparency &amp; Limitations
+  </h2>
+  <div class="px-4">
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div class="p-4 rounded-lg bg-white/50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
         <div class="flex items-center gap-2 mb-2">
-          <span class="material-symbols-outlined text-primary">verified</span>
-          <h4 class="font-bold text-slate-800 dark:text-slate-100">데이터 출처 표기</h4>
+          <span class="material-symbols-outlined text-primary text-lg">verified</span>
+          <h4 class="font-bold text-slate-800 dark:text-slate-100 text-sm">데이터 출처 표기</h4>
         </div>
-        <p class="text-sm text-slate-600 dark:text-slate-400">
-          모든 화면과 API 응답에 데이터 출처를 명시합니다.
-          관측 데이터와 예측 데이터를 명확히 구분합니다.
+        <p class="text-xs text-slate-600 dark:text-slate-400">
+          모든 화면에 데이터 출처를 명시합니다. 관측 데이터와 추정 데이터를 명확히 구분합니다.
         </p>
       </div>
       <div class="p-4 rounded-lg bg-white/50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
         <div class="flex items-center gap-2 mb-2">
-          <span class="material-symbols-outlined text-primary">error_outline</span>
-          <h4 class="font-bold text-slate-800 dark:text-slate-100">불확실성 표시</h4>
+          <span class="material-symbols-outlined text-primary text-lg">error_outline</span>
+          <h4 class="font-bold text-slate-800 dark:text-slate-100 text-sm">불확실성 표시</h4>
         </div>
-        <p class="text-sm text-slate-600 dark:text-slate-400">
-          모든 예측·분석 결과에 불확실성 범위(RMSE, 신뢰구간)와
-          데이터 품질 점수(DQSS)를 함께 제공합니다.
+        <p class="text-xs text-slate-600 dark:text-slate-400">
+          모든 예측에 RMSE, 신뢰구간, DQSS 품질 점수를 함께 제공합니다.
         </p>
       </div>
       <div class="p-4 rounded-lg bg-white/50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
         <div class="flex items-center gap-2 mb-2">
-          <span class="material-symbols-outlined text-primary">shield</span>
-          <h4 class="font-bold text-slate-800 dark:text-slate-100">프라이버시 보호</h4>
+          <span class="material-symbols-outlined text-primary text-lg">lock</span>
+          <h4 class="font-bold text-slate-800 dark:text-slate-100 text-sm">프라이버시</h4>
         </div>
-        <p class="text-sm text-slate-600 dark:text-slate-400">
-          사용자 위치 및 카메라 사진은 브라우저 내에서만 처리됩니다.
-          서버로 전송되지 않으며, 개인정보를 수집하지 않습니다.
+        <p class="text-xs text-slate-600 dark:text-slate-400">
+          위치·카메라 사진은 브라우저 내에서만 처리됩니다. 서버로 전송하지 않습니다.
         </p>
       </div>
       <div class="p-4 rounded-lg bg-white/50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
         <div class="flex items-center gap-2 mb-2">
-          <span class="material-symbols-outlined text-primary">gavel</span>
-          <h4 class="font-bold text-slate-800 dark:text-slate-100">정책 분석 면책</h4>
+          <span class="material-symbols-outlined text-primary text-lg">gavel</span>
+          <h4 class="font-bold text-slate-800 dark:text-slate-100 text-sm">정책 분석 면책</h4>
         </div>
-        <p class="text-sm text-slate-600 dark:text-slate-400">
-          정책 분석 결과는 보조적 참고 자료입니다.
-          단독 정책 근거로 사용하지 않도록 안내합니다.
+        <p class="text-xs text-slate-600 dark:text-slate-400">
+          정책 분석은 보조적 참고 자료입니다. 단독 정책 근거로 사용하지 마세요.
         </p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Roadmap -->
-<section class="p-6 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 mb-6" id="roadmap">
-  <h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight px-4 pb-3 pt-5">Roadmap</h2>
-  <div class="px-4 space-y-4">
-
-    <div class="flex gap-4 items-start">
-      <div class="w-10 h-10 rounded-full bg-green-500 flex-shrink-0 flex items-center justify-center text-white text-sm font-bold">✓</div>
-      <div>
-        <h4 class="font-bold text-slate-800 dark:text-slate-100">v1.0 — Foundation</h4>
-        <p class="text-sm text-slate-600 dark:text-slate-400">
-          3D Globe · 실시간 PM2.5 · 68개국 정책 분석 · WAQI/OpenAQ/Earthdata 통합 · GH Actions 자동화
-        </p>
-      </div>
+<!-- ══════════════════════════════════════════════════ -->
+<!-- SECTION 6: Tech Stack                             -->
+<!-- ══════════════════════════════════════════════════ -->
+<section class="px-4 py-8 mb-6" id="tech-stack">
+  <h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight pb-4">
+    <span class="material-symbols-outlined text-primary align-middle mr-1">code</span>
+    6. Technology Stack
+  </h2>
+  <div class="grid grid-cols-[repeat(auto-fit,minmax(140px,1fr))] gap-3">
+    <div class="flex flex-1 gap-2 rounded-lg border border-gray-200/80 dark:border-white/10 bg-white/50 dark:bg-white/5 p-3 flex-col items-center text-center">
+      <span class="material-symbols-outlined text-primary text-2xl">view_in_ar</span>
+      <h3 class="text-gray-900 dark:text-white text-sm font-bold">Three.js</h3>
+      <p class="text-gray-600 dark:text-gray-400 text-xs">3D Globe + WebGL</p>
     </div>
-
-    <div class="flex gap-4 items-start">
-      <div class="w-10 h-10 rounded-full bg-green-500 flex-shrink-0 flex items-center justify-center text-white text-sm font-bold">✓</div>
-      <div>
-        <h4 class="font-bold text-slate-800 dark:text-slate-100">v2.0 — Modularization</h4>
-        <p class="text-sm text-slate-600 dark:text-slate-400">
-          Globe.js 6개 모듈 분할 · FusionService (통합 aggregator + DQSS-lite) · utils/ 모듈화
-        </p>
-      </div>
+    <div class="flex flex-1 gap-2 rounded-lg border border-gray-200/80 dark:border-white/10 bg-white/50 dark:bg-white/5 p-3 flex-col items-center text-center">
+      <span class="material-symbols-outlined text-primary text-2xl">language</span>
+      <h3 class="text-gray-900 dark:text-white text-sm font-bold">ES6+ Modules</h3>
+      <p class="text-gray-600 dark:text-gray-400 text-xs">59 files · 15K+ lines</p>
     </div>
-
-    <div class="flex gap-4 items-start">
-      <div class="w-10 h-10 rounded-full bg-primary flex-shrink-0 flex items-center justify-center text-slate-900 text-sm font-bold animate-pulse">⟳</div>
-      <div>
-        <h4 class="font-bold text-slate-800 dark:text-slate-100">v2.5 — Data Pipeline</h4>
-        <p class="text-sm text-slate-600 dark:text-slate-400">
-          country_year_panel 생성 · World Bank API 통합 · DID 고도화 (parallel trend, event study)
-        </p>
-      </div>
+    <div class="flex flex-1 gap-2 rounded-lg border border-gray-200/80 dark:border-white/10 bg-white/50 dark:bg-white/5 p-3 flex-col items-center text-center">
+      <span class="material-symbols-outlined text-primary text-2xl">insert_chart</span>
+      <h3 class="text-gray-900 dark:text-white text-sm font-bold">Chart.js</h3>
+      <p class="text-gray-600 dark:text-gray-400 text-xs">Trends &amp; Analytics</p>
     </div>
-
-    <div class="flex gap-4 items-start">
-      <div class="w-10 h-10 rounded-full bg-slate-300 dark:bg-slate-700 flex-shrink-0 flex items-center justify-center text-slate-600 dark:text-slate-300 text-sm font-bold">3.0</div>
-      <div>
-        <h4 class="font-bold text-slate-800 dark:text-slate-100">v3.0 — ML &amp; Mobile</h4>
-        <p class="text-sm text-slate-600 dark:text-slate-400">
-          AOD→PM2.5 예측 모델 · Quantile 예측(p10/p50/p90) · Bayesian Reliability · iOS 앱 전환
-        </p>
-      </div>
+    <div class="flex flex-1 gap-2 rounded-lg border border-gray-200/80 dark:border-white/10 bg-white/50 dark:bg-white/5 p-3 flex-col items-center text-center">
+      <span class="material-symbols-outlined text-primary text-2xl">terminal</span>
+      <h3 class="text-gray-900 dark:text-white text-sm font-bold">Python + Node</h3>
+      <p class="text-gray-600 dark:text-gray-400 text-xs">Data Pipeline</p>
     </div>
-
+    <div class="flex flex-1 gap-2 rounded-lg border border-gray-200/80 dark:border-white/10 bg-white/50 dark:bg-white/5 p-3 flex-col items-center text-center">
+      <span class="material-symbols-outlined text-primary text-2xl">cloud_sync</span>
+      <h3 class="text-gray-900 dark:text-white text-sm font-bold">GitHub Actions</h3>
+      <p class="text-gray-600 dark:text-gray-400 text-xs">CI/CD + Auto Fetch</p>
+    </div>
+    <div class="flex flex-1 gap-2 rounded-lg border border-gray-200/80 dark:border-white/10 bg-white/50 dark:bg-white/5 p-3 flex-col items-center text-center">
+      <span class="material-symbols-outlined text-primary text-2xl">css</span>
+      <h3 class="text-gray-900 dark:text-white text-sm font-bold">Tailwind CSS</h3>
+      <p class="text-gray-600 dark:text-gray-400 text-xs">Responsive UI</p>
+    </div>
   </div>
 </section>
 
-<!-- Contact / Open Source -->
+<!-- Open Source CTA -->
 <section class="px-4 py-8 text-center mb-6">
-  <h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight pb-3">Open Source</h2>
   <p class="text-slate-600 dark:text-slate-300 text-base max-w-2xl mx-auto mb-4">
-    AirLens는 오픈소스 프로젝트입니다. 모든 코드, 데이터 파이프라인, 분석 방법론이 공개되어 있습니다.
-    기여, 피드백, 협업을 환영합니다.
+    AirLens는 오픈소스 프로젝트입니다. 모든 코드, 데이터, 분석 방법론이 공개되어 있습니다.
   </p>
   <div class="flex flex-wrap gap-3 justify-center">
     <a href="https://github.com/joymin5655/Finedust_proj"
@@ -497,10 +614,10 @@ tailwind.config = {
       <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
       GitHub Repository
     </a>
-    <a href="research.html"
+    <a href="globe.html"
        class="inline-flex items-center gap-2 rounded-lg px-5 py-3 bg-primary text-slate-900 text-sm font-bold hover:opacity-90 transition-opacity">
-      <span class="material-symbols-outlined text-lg">science</span>
-      Research Details
+      <span class="material-symbols-outlined text-lg">public</span>
+      Try Live Globe
     </a>
   </div>
 </section>
@@ -529,7 +646,6 @@ tailwind.config = {
 <script src="js/theme-toggle.js"></script>
 <script src="js/main.js"></script>
 <script>
-// Dark mode auto-apply
 const html = document.documentElement;
 const currentTheme = localStorage.getItem('theme') || 'light';
 if (currentTheme === 'dark') html.classList.add('dark');

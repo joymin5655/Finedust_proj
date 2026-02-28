@@ -30,7 +30,6 @@ tailwind.config = {
 .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
 .stat-card { transition: transform 0.2s; }
 .stat-card:hover { transform: translateY(-2px); }
-.formula { font-family: 'Courier New', monospace; background: rgba(37,226,244,0.08); padding: 2px 8px; border-radius: 4px; }
 </style>
 </head>
 <body class="bg-background-light dark:bg-background-dark flex flex-col min-h-screen">
@@ -130,8 +129,7 @@ tailwind.config = {
         <div class="text-sm text-slate-700 dark:text-slate-300 space-y-1">
           <p><strong>수집 항목:</strong> 전 세계 150+ 도시 실시간 AQI / PM2.5</p>
           <p><strong>수집 주기:</strong> 매일 00:00 UTC (GitHub Actions)</p>
-          <p><strong>저장 위치:</strong> <span class="formula">app/data/waqi/latest.json</span></p>
-          <p><strong>사용처:</strong> Globe 마커, Today 카드, FusionService 입력</p>
+          <p><strong>사용처:</strong> Globe 마커, Today 카드, 데이터 융합 입력</p>
         </div>
         <a class="text-xs text-primary hover:underline mt-2 inline-block" href="https://aqicn.org" target="_blank" rel="noopener">aqicn.org →</a>
       </div>
@@ -148,7 +146,6 @@ tailwind.config = {
         <div class="text-sm text-slate-700 dark:text-slate-300 space-y-1">
           <p><strong>수집 항목:</strong> 정부 공식 관측소 PM2.5 (연간/일간 시계열)</p>
           <p><strong>수집 주기:</strong> 매주 일요일 02:00 UTC</p>
-          <p><strong>저장 위치:</strong> <span class="formula">app/data/openaq/pm25_years.json</span></p>
           <p><strong>사용처:</strong> 정책 전후 비교, 장기 추세 차트, 교차 검증</p>
         </div>
         <a class="text-xs text-primary hover:underline mt-2 inline-block" href="https://openaq.org" target="_blank" rel="noopener">openaq.org →</a>
@@ -166,7 +163,6 @@ tailwind.config = {
         <div class="text-sm text-slate-700 dark:text-slate-300 space-y-1">
           <p><strong>수집 항목:</strong> AOD(에어로졸 광학 두께) — 위성 기반 대기 입자 측정</p>
           <p><strong>수집 주기:</strong> 매주 일요일 02:00 UTC</p>
-          <p><strong>저장 위치:</strong> <span class="formula">app/data/earthdata/aod_samples.json</span></p>
           <p><strong>사용처:</strong> Globe AOD 레이어, PM2.5 추정 모델 입력</p>
         </div>
         <a class="text-xs text-primary hover:underline mt-2 inline-block" href="https://earthdata.nasa.gov" target="_blank" rel="noopener">earthdata.nasa.gov →</a>
@@ -222,16 +218,17 @@ tailwind.config = {
     <!-- Pipeline Diagram -->
     <div class="bg-slate-200/50 dark:bg-slate-800/50 p-4 rounded-lg font-mono text-xs sm:text-sm text-slate-700 dark:text-slate-300 overflow-x-auto">
 <pre class="whitespace-pre">
-External APIs                    GitHub Actions              Static JSON             Browser
+External APIs                    Automated Pipeline          Cached Data             Browser
 ─────────────                    ──────────────              ───────────             ───────
 WAQI API ──────┐
-OpenAQ API ────┤  ──→  scripts/  ──→  app/data/  ──→  FusionService.fuse()
-Earthdata API ─┤       • fetch-waqi-data.js          • waqi/latest.json       ↓
-Open-Meteo ────┘       • fetch_openaq.py             • openaq/pm25_years.json Multi-source
-                       • fetch_earthdata_aod.py      • earthdata/aod_*.json   merge + DQSS
-                       • build_policy_effect.py      • policy-impact/*.json        ↓
-                                                                              Globe / Today
-                                                                              Policy / Charts
+OpenAQ API ────┤                 GitHub Actions              Static JSON
+Earthdata API ─┤  ──→  Fetch &amp; Normalize  ──→  Store  ──→  FusionService
+Open-Meteo ────┘       (daily/weekly)         (per source)   ↓
+                                                             Multi-source
+                                                             merge + DQSS
+                                                                  ↓
+                                                             Globe / Today
+                                                             Policy / Charts
 </pre>
     </div>
 
@@ -274,8 +271,7 @@ Open-Meteo ────┘       • fetch_openaq.py             • openaq/pm25
   <div class="px-4 space-y-8">
 
     <p class="text-slate-700 dark:text-slate-300 text-base">
-      AirLens는 6개의 분석 엔진을 브라우저 내에서 실행합니다. 모든 모듈은 ES6 모듈로 구현되어
-      <span class="formula">app/js/analysis/</span>에서 관리됩니다.
+      AirLens는 6개의 분석 엔진을 브라우저 내에서 실행합니다.
     </p>
 
     <!-- Engine 1: DQSS -->
@@ -284,7 +280,6 @@ Open-Meteo ────┘       • fetch_openaq.py             • openaq/pm25
         <div class="w-8 h-8 bg-green-500 rounded-lg flex-shrink-0 flex items-center justify-center text-white text-sm font-bold">1</div>
         <div>
           <h3 class="font-bold text-slate-900 dark:text-white">DQSS — Data Quality Scoring System</h3>
-          <p class="text-xs text-slate-500 dark:text-slate-400">dqss-engine.js · 264줄</p>
         </div>
       </div>
       <p class="text-sm text-slate-700 dark:text-slate-300 mb-3">
@@ -328,7 +323,6 @@ Open-Meteo ────┘       • fetch_openaq.py             • openaq/pm25
         <div class="w-8 h-8 bg-indigo-500 rounded-lg flex-shrink-0 flex items-center justify-center text-white text-sm font-bold">2</div>
         <div>
           <h3 class="font-bold text-slate-900 dark:text-white">Bayesian Reliability Engine</h3>
-          <p class="text-xs text-slate-500 dark:text-slate-400">bayesian-reliability.js · 257줄</p>
         </div>
       </div>
       <p class="text-sm text-slate-700 dark:text-slate-300 mb-3">
@@ -350,7 +344,6 @@ Open-Meteo ────┘       • fetch_openaq.py             • openaq/pm25
         <div class="w-8 h-8 bg-purple-500 rounded-lg flex-shrink-0 flex items-center justify-center text-white text-sm font-bold">3</div>
         <div>
           <h3 class="font-bold text-slate-900 dark:text-white">AOD → PM2.5 Advanced Correction</h3>
-          <p class="text-xs text-slate-500 dark:text-slate-400">aod-correction.js · 289줄</p>
         </div>
       </div>
       <p class="text-sm text-slate-700 dark:text-slate-300 mb-3">
@@ -373,7 +366,6 @@ Open-Meteo ────┘       • fetch_openaq.py             • openaq/pm25
         <div class="w-8 h-8 bg-red-500 rounded-lg flex-shrink-0 flex items-center justify-center text-white text-sm font-bold">4</div>
         <div>
           <h3 class="font-bold text-slate-900 dark:text-white">Anomaly Detection</h3>
-          <p class="text-xs text-slate-500 dark:text-slate-400">anomaly-detection.js · 291줄</p>
         </div>
       </div>
       <p class="text-sm text-slate-700 dark:text-slate-300 mb-3">
@@ -408,7 +400,6 @@ Open-Meteo ────┘       • fetch_openaq.py             • openaq/pm25
         <div class="w-8 h-8 bg-amber-500 rounded-lg flex-shrink-0 flex items-center justify-center text-white text-sm font-bold">5</div>
         <div>
           <h3 class="font-bold text-slate-900 dark:text-white">Policy Impact Analysis — 3-Stage Pipeline</h3>
-          <p class="text-xs text-slate-500 dark:text-slate-400">synthetic-control.js · 721줄</p>
         </div>
       </div>
       <p class="text-sm text-slate-700 dark:text-slate-300 mb-3">
@@ -451,7 +442,6 @@ Open-Meteo ────┘       • fetch_openaq.py             • openaq/pm25
         <div class="w-8 h-8 bg-cyan-500 rounded-lg flex-shrink-0 flex items-center justify-center text-white text-sm font-bold">6</div>
         <div>
           <h3 class="font-bold text-slate-900 dark:text-white">H3 Hexagonal Spatial Indexing</h3>
-          <p class="text-xs text-slate-500 dark:text-slate-400">h3-spatial-index.js + h3-neighbors.js + h3-aggregation.js · 243줄</p>
         </div>
       </div>
       <p class="text-sm text-slate-700 dark:text-slate-300 mb-3">
@@ -459,10 +449,10 @@ Open-Meteo ────┘       • fetch_openaq.py             • openaq/pm25
         관측 데이터를 육각형 셀로 집계하고, 공간 스무딩과 핫스팟 탐지(Getis-Ord Gi*)를 수행합니다.
       </p>
       <div class="flex flex-wrap gap-2 text-xs">
-        <span class="px-2 py-1 rounded bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 font-medium">latLonToH3()</span>
-        <span class="px-2 py-1 rounded bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 font-medium">aggregateToH3()</span>
-        <span class="px-2 py-1 rounded bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 font-medium">h3SpatialSmooth()</span>
-        <span class="px-2 py-1 rounded bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 font-medium">detectHotspots()</span>
+        <span class="px-2 py-1 rounded bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 font-medium">좌표→셀 변환</span>
+        <span class="px-2 py-1 rounded bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 font-medium">셀 집계</span>
+        <span class="px-2 py-1 rounded bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 font-medium">공간 스무딩</span>
+        <span class="px-2 py-1 rounded bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 font-medium">핫스팟 탐지</span>
       </div>
     </div>
 
@@ -577,7 +567,7 @@ Open-Meteo ────┘       • fetch_openaq.py             • openaq/pm25
     <div class="flex flex-1 gap-2 rounded-lg border border-gray-200/80 dark:border-white/10 bg-white/50 dark:bg-white/5 p-3 flex-col items-center text-center">
       <span class="material-symbols-outlined text-primary text-2xl">language</span>
       <h3 class="text-gray-900 dark:text-white text-sm font-bold">ES6+ Modules</h3>
-      <p class="text-gray-600 dark:text-gray-400 text-xs">59 files · 15K+ lines</p>
+      <p class="text-gray-600 dark:text-gray-400 text-xs">Modular Architecture</p>
     </div>
     <div class="flex flex-1 gap-2 rounded-lg border border-gray-200/80 dark:border-white/10 bg-white/50 dark:bg-white/5 p-3 flex-col items-center text-center">
       <span class="material-symbols-outlined text-primary text-2xl">insert_chart</span>

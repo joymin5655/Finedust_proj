@@ -1,6 +1,6 @@
 {
   "name": "airlens",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "AirLens — Global Air Quality Intelligence Platform",
   "scripts": {
     "dev": "bash serve_local.sh",

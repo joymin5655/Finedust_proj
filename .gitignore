@@ -1,0 +1,45 @@
+# ===== 보안: 절대 커밋 금지 =====
+.env
+.env.*
+*.key
+*.pem
+*.secret
+**/secrets/
+**/credentials/
+
+# ===== 로컬 전용 (GitHub 미포함) =====
+/docs/
+/_archive/
+/analysis/
+
+# ===== OS / IDE =====
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ===== Node =====
+node_modules/
+npm-debug.log*
+
+# ===== Python =====
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# ===== ML 아티팩트 (대용량) =====
+*.pkl
+*.onnx
+*.h5
+*.pt
+*.pth
+models/*.bin
+
+# ===== 미구현 데이터 (fallback 처리됨) =====
+# app/data/predictions/
+# app/data/predicted_grid.json
+# app/data/data_quality.json

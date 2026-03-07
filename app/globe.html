@@ -1413,5 +1413,16 @@
 
     <!-- ⭐ Data Integration: OpenAQ + Earthdata AOD -->
     <script type="module" src="js/globe-data-integration.js"></script>
+
+    <!-- Footer (minimal for full-screen globe) -->
+    <footer style="position:fixed;bottom:0;left:0;right:0;text-align:center;padding:6px 0;background:rgba(16,33,34,0.7);z-index:10;pointer-events:none;">
+      <p style="color:rgba(255,255,255,0.4);font-size:0.7rem;margin:0;">
+        © <span class="footer-year"></span> AirLens
+        <span style="pointer-events:auto;">
+          · <a href="https://github.com/joymin5655/AirLens" style="color:#25e2f4;opacity:0.6;" target="_blank" rel="noopener">GitHub</a>
+        </span>
+      </p>
+    </footer>
+    <script>document.querySelectorAll('.footer-year').forEach(function(e){e.textContent=new Date().getFullYear()});</script>
 </body>
 </html>

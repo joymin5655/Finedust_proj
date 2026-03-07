@@ -228,86 +228,7 @@
       </div>
     </div>
 
-    <!-- ③ Plan & Pricing ── -->
-    <div class="settings-card rounded-2xl border border-gray-200 dark:border-white/10
-                bg-white dark:bg-black/20 p-6 shadow-sm">
-      <div class="mb-5">
-        <h2 class="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
-          <span class="material-symbols-outlined text-primary" style="font-size:1.1rem;">workspace_premium</span>
-          Plan &amp; Pricing
-        </h2>
-        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-          Upgrade to Plus for AI-powered reports and advanced features
-        </p>
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <!-- Free Plan -->
-        <div class="plan-card">
-          <div class="flex items-center justify-between mb-1">
-            <span class="text-base font-black text-gray-900 dark:text-white">Free</span>
-            <span class="text-xl font-black text-gray-600 dark:text-gray-300">$0</span>
-          </div>
-          <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">Essential air quality monitoring</p>
-          <div class="flex flex-col">
-            <div class="feat-row"><span class="ck">✓</span>Real-time station PM2.5 &amp; grade</div>
-            <div class="feat-row"><span class="ck">✓</span>Globe — city markers &amp; policy titles</div>
-            <div class="feat-row"><span class="ck">✓</span>Satellite PM estimate (basic)</div>
-            <div class="feat-row"><span class="ck">✓</span>Camera AI (pixel-based model)</div>
-            <div class="feat-row"><span class="ck">✓</span>Policy list &amp; PM trend charts</div>
-            <div class="feat-row dimmed"><span class="lk">🔒</span>AI report — 1×/day only</div>
-            <div class="feat-row dimmed"><span class="lk">🔒</span>Policy ΔPM effect analysis</div>
-            <div class="feat-row dimmed"><span class="lk">🔒</span>Personal 30-day exposure history</div>
-          </div>
-          <button disabled
-                  class="mt-5 w-full py-2.5 rounded-xl border-2 border-primary/40
-                         text-primary/60 font-bold text-sm cursor-default">
-            Current Plan
-          </button>
-        </div>
-        <!-- Plus Plan -->
-        <div class="plan-card featured relative pt-8">
-          <div class="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap">
-            <span class="plan-badge">✨ RECOMMENDED</span>
-          </div>
-          <div class="flex items-center justify-between mb-1">
-            <span class="text-base font-black text-gray-900 dark:text-white">Plus</span>
-            <div class="text-right leading-tight">
-              <span class="text-xl font-black text-primary">$4.99</span>
-              <span class="text-xs text-gray-400">/mo</span>
-            </div>
-          </div>
-          <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">Full AI-powered precision</p>
-          <div class="flex flex-col">
-            <div class="feat-row"><span class="ck">✓</span>Everything in Free</div>
-            <div class="feat-row font-semibold"><span class="ck">✓</span>OpenAI reports — unlimited</div>
-            <div class="feat-row"><span class="ck">✓</span>Advanced Camera CNN (ResNet/MobileNet)</div>
-            <div class="feat-row"><span class="ck">✓</span>3-source fusion + confidence %</div>
-            <div class="feat-row"><span class="ck">✓</span>Policy ΔPM &amp; group comparison</div>
-            <div class="feat-row"><span class="ck">✓</span>30-day personal exposure history</div>
-            <div class="feat-row"><span class="ck">✓</span>Monthly AI health report</div>
-            <div class="feat-row"><span class="ck">✓</span>Sensitive-group alerts (asthma etc.)</div>
-          </div>
-          <button class="mt-5 w-full py-2.5 rounded-xl bg-primary text-gray-900
-                         font-bold text-sm hover:opacity-90 transition-opacity">
-            Upgrade to Plus →
-          </button>
-        </div>
-      </div>
-      <!-- 쿼터 안내 -->
-      <div class="mt-4 rounded-xl bg-gray-50 dark:bg-white/5
-                  border border-gray-100 dark:border-white/8 p-3 flex items-start gap-2">
-        <span class="material-symbols-outlined text-primary flex-shrink-0 mt-0.5"
-              style="font-size:.9rem;">info</span>
-        <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
-          Free plan includes <strong class="text-gray-700 dark:text-gray-300">1 AI report/day</strong>.
-          AI reports use OpenAI to generate personalized 3-line summaries based on your
-          current PM2.5, location, and weather data.
-          Plus users get unlimited reports + monthly health summary.
-        </p>
-      </div>
-    </div>
-
-    <!-- ④ Model Info — config.js 기반 동적 표시 ── -->
+    <!-- ③ Model Info ── -->
     <div class="settings-card rounded-2xl border border-gray-200 dark:border-white/10
                 bg-white dark:bg-black/20 p-6 shadow-sm">
       <div class="mb-5">
@@ -321,9 +242,10 @@
         <div class="model-info-item rounded-xl border border-gray-100 dark:border-white/8 p-4">
           <h3 class="font-bold text-gray-800 dark:text-gray-200 text-sm mb-2">📷 Camera AI Model</h3>
           <div class="text-xs text-gray-500 dark:text-gray-400 space-y-1">
-            <p><strong class="text-gray-700 dark:text-gray-300">Input:</strong> Sky images (RGB)</p>
+            <p><strong class="text-gray-700 dark:text-gray-300">Purpose:</strong> Estimate air quality from sky photos — useful where no sensor exists nearby</p>
+            <p><strong class="text-gray-700 dark:text-gray-300">How:</strong> Deep learning classifies haze, visibility and color patterns in the sky</p>
             <p><strong class="text-gray-700 dark:text-gray-300">Output:</strong> 4-class AQ grade (Good / Moderate / Unhealthy / Very Unhealthy)</p>
-            <p><strong class="text-gray-700 dark:text-gray-300">Architecture:</strong> ResNet18 / MobileNet → ONNX (browser inference)</p>
+            <p><strong class="text-gray-700 dark:text-gray-300">Runs in:</strong> Browser (ONNX) — your photo never leaves your device</p>
             <p><strong class="text-gray-700 dark:text-gray-300">Status:</strong>
               <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 text-[10px] font-bold">
                 EXPERIMENTAL
@@ -332,11 +254,12 @@
           </div>
         </div>
         <div class="model-info-item rounded-xl border border-gray-100 dark:border-white/8 p-4">
-          <h3 class="font-bold text-gray-800 dark:text-gray-200 text-sm mb-2">🛰️ AOD → PM2.5 Regression</h3>
+          <h3 class="font-bold text-gray-800 dark:text-gray-200 text-sm mb-2">🛰️ AOD → PM2.5 Estimation</h3>
           <div class="text-xs text-gray-500 dark:text-gray-400 space-y-1">
-            <p><strong class="text-gray-700 dark:text-gray-300">Input:</strong> Satellite AOD, Temperature, Humidity, Wind Speed, Elevation, Month</p>
-            <p><strong class="text-gray-700 dark:text-gray-300">Output:</strong> Predicted PM2.5 (µg/m³) + uncertainty (RMSE)</p>
-            <p><strong class="text-gray-700 dark:text-gray-300">Model:</strong> RandomForest / XGBoost (Quantile)</p>
+            <p><strong class="text-gray-700 dark:text-gray-300">Purpose:</strong> Estimate ground-level PM2.5 in areas without air quality sensors, using satellite data</p>
+            <p><strong class="text-gray-700 dark:text-gray-300">Why:</strong> Over 90% of the world lacks ground-based PM2.5 monitoring — satellites fill this gap</p>
+            <p><strong class="text-gray-700 dark:text-gray-300">Inputs:</strong> Satellite AOD, Temperature, Humidity, Wind Speed, Elevation, Season</p>
+            <p><strong class="text-gray-700 dark:text-gray-300">Output:</strong> Predicted PM2.5 (µg/m³) with uncertainty range</p>
             <p><strong class="text-gray-700 dark:text-gray-300">Target:</strong>
               R² ≥ <span id="model-target-r2">--</span>,
               RMSE ≤ <span id="model-target-rmse">--</span> µg/m³
@@ -368,11 +291,11 @@
         </h2>
       </div>
       <div class="about-info text-xs text-gray-500 dark:text-gray-400 space-y-1.5">
-        <p><strong class="text-gray-700 dark:text-gray-300">Version:</strong> 2.0.0</p>
+        <p><strong class="text-gray-700 dark:text-gray-300">Version:</strong> 3.0.0</p>
         <p><strong class="text-gray-700 dark:text-gray-300">Plan:</strong>
           <span class="text-green-500 font-bold">Free (Open Source)</span>
         </p>
-        <p><strong class="text-gray-700 dark:text-gray-300">Last Updated:</strong> February 2026</p>
+        <p><strong class="text-gray-700 dark:text-gray-300">Last Updated:</strong> March 2026</p>
         <p><strong class="text-gray-700 dark:text-gray-300">License:</strong> MIT License</p>
         <p><strong class="text-gray-700 dark:text-gray-300">GitHub:</strong>
           <a href="https://github.com/joymin5655/AirLens" target="_blank"
@@ -391,8 +314,8 @@
   <!-- ── Footer ── -->
   <footer style="background:var(--color-bg-dark);color:var(--color-text-dark);padding:var(--space-5) 0;margin-top:auto;">
     <div class="container text-center">
-      <p style="color:var(--color-text-dark-secondary);" data-i18n="footer.copy">
-        © 2025 AirLens. Built with ❤️ for a cleaner planet.
+      <p style="color:var(--color-text-dark-secondary);">
+        © <span class="footer-year"></span> AirLens. Built with ❤️ for a cleaner planet.
       </p>
       <p style="color:var(--color-text-dark-secondary);font-size:.8rem;margin-top:.5rem;">
         <a href="https://github.com/joymin5655/AirLens" style="color:var(--color-primary);" target="_blank">
@@ -400,9 +323,8 @@
         </a>
       </p>
     </div>
+    <script>document.querySelectorAll('.footer-year').forEach(function(e){e.textContent=new Date().getFullYear()});</script>
   </footer>
-
-  <!-- Scripts -->
   <script src="js/i18n.js"></script>
   <script src="js/theme-toggle.js"></script>
   <script src="js/message-utils.js"></script>

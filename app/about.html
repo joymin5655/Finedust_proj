@@ -271,164 +271,26 @@ Open-Meteo ────┘       (daily/weekly)         (per source)   ↓
   <div class="px-4 space-y-8">
 
     <p class="text-slate-700 dark:text-slate-300 text-base">
-      AirLens는 6개의 분석 엔진을 브라우저 내에서 실행합니다.
+      AirLens는 6개의 분석 엔진을 통해 데이터 품질 평가, 예측, 정책 효과 분석을 수행합니다.
     </p>
 
-    <!-- Engine 1: DQSS -->
+    <!-- Engine 1: Policy Analysis -->
     <div class="p-5 rounded-lg bg-white/50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
       <div class="flex items-start gap-3 mb-3">
-        <div class="w-8 h-8 bg-green-500 rounded-lg flex-shrink-0 flex items-center justify-center text-white text-sm font-bold">1</div>
+        <div class="w-8 h-8 bg-amber-500 rounded-lg flex-shrink-0 flex items-center justify-center text-white text-sm font-bold">1</div>
         <div>
-          <h3 class="font-bold text-slate-900 dark:text-white">DQSS — Data Quality Scoring System</h3>
+          <h3 class="font-bold text-slate-900 dark:text-white">Policy Impact Analysis</h3>
+          <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-[10px] font-bold">✅ 68 COUNTRIES</span>
         </div>
       </div>
-      <p class="text-sm text-slate-700 dark:text-slate-300 mb-3">
-        각 관측소의 데이터 신뢰도를 0–100 점수로 평가합니다. 5개 컴포넌트의 가중 합산으로 계산됩니다.
+      <p class="text-sm text-slate-700 dark:text-slate-300 mb-2">
+        <strong>왜 필요한가:</strong> 정부가 대기질 개선 정책을 시행해도, 실제 효과를 수치로 검증하기 어렵습니다.
+        자연 변동, 기상 조건, 경제 변화 등 많은 요인이 얽혀 있어 단순 전후 비교로는 부족합니다.
       </p>
-      <div class="grid grid-cols-5 gap-2 text-center text-xs">
-        <div class="p-2 rounded bg-slate-200/50 dark:bg-slate-800/50">
-          <div class="font-bold text-primary">0–25</div>
-          <div class="text-slate-600 dark:text-slate-400">Freshness</div>
-          <div class="text-slate-500 dark:text-slate-500 text-[10px]">데이터 경과 시간</div>
-        </div>
-        <div class="p-2 rounded bg-slate-200/50 dark:bg-slate-800/50">
-          <div class="font-bold text-primary">0–20</div>
-          <div class="text-slate-600 dark:text-slate-400">Completeness</div>
-          <div class="text-slate-500 dark:text-slate-500 text-[10px]">24시간 가용률</div>
-        </div>
-        <div class="p-2 rounded bg-slate-200/50 dark:bg-slate-800/50">
-          <div class="font-bold text-primary">0–20</div>
-          <div class="text-slate-600 dark:text-slate-400">Consistency</div>
-          <div class="text-slate-500 dark:text-slate-500 text-[10px]">교차 소스 일치</div>
-        </div>
-        <div class="p-2 rounded bg-slate-200/50 dark:bg-slate-800/50">
-          <div class="font-bold text-primary">0–20</div>
-          <div class="text-slate-600 dark:text-slate-400">Stability</div>
-          <div class="text-slate-500 dark:text-slate-500 text-[10px]">시계열 안정성</div>
-        </div>
-        <div class="p-2 rounded bg-slate-200/50 dark:bg-slate-800/50">
-          <div class="font-bold text-primary">0–15</div>
-          <div class="text-slate-600 dark:text-slate-400">Residual</div>
-          <div class="text-slate-500 dark:text-slate-500 text-[10px]">모델 오차</div>
-        </div>
-      </div>
-      <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">
-        → Badge: <strong>High</strong> (≥75) · <strong>Medium</strong> (≥50) · <strong>Low</strong> (≥25) · <strong>Unreliable</strong> (&lt;25)
+      <p class="text-sm text-slate-700 dark:text-slate-300">
+        AirLens는 68개국의 환경 정책 시행 전후 대기질 변화를 통계적으로 비교하여, 정책이 실질적 효과가 있었는지 데이터 기반으로 평가합니다.
+        이중차분법(DID) 기반 분석으로 정책 외 다른 요인의 영향을 분리합니다.
       </p>
-    </div>
-
-    <!-- Engine 2: Bayesian -->
-    <div class="p-5 rounded-lg bg-white/50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
-      <div class="flex items-start gap-3 mb-3">
-        <div class="w-8 h-8 bg-indigo-500 rounded-lg flex-shrink-0 flex items-center justify-center text-white text-sm font-bold">2</div>
-        <div>
-          <h3 class="font-bold text-slate-900 dark:text-white">Bayesian Reliability Engine</h3>
-        </div>
-      </div>
-      <p class="text-sm text-slate-700 dark:text-slate-300 mb-3">
-        각 센서의 신뢰도를 Beta 분포로 모델링합니다. 관측이 쌓일수록 정확한 신뢰도가 추정됩니다.
-      </p>
-      <div class="bg-slate-200/50 dark:bg-slate-800/50 p-3 rounded-lg text-sm font-mono text-slate-700 dark:text-slate-300">
-        R<sub>i</sub> ~ Beta(α, β) &nbsp;|&nbsp; Prior: α₀=5, β₀=3 → E[R]=0.625<br>
-        관측마다: |obs − pred| ≤ τ → α+=1, 아니면 β+=1<br>
-        시간 감쇠: α,β × 0.995 (최근 관측 가중)
-      </div>
-      <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">
-        → DQSS에 Bayesian 보너스/감점(±5) 반영 · FusionService에서 품질가중 평균 산출
-      </p>
-    </div>
-
-    <!-- Engine 3: AOD Correction -->
-    <div class="p-5 rounded-lg bg-white/50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
-      <div class="flex items-start gap-3 mb-3">
-        <div class="w-8 h-8 bg-purple-500 rounded-lg flex-shrink-0 flex items-center justify-center text-white text-sm font-bold">3</div>
-        <div>
-          <h3 class="font-bold text-slate-900 dark:text-white">AOD → PM2.5 Advanced Correction</h3>
-        </div>
-      </div>
-      <p class="text-sm text-slate-700 dark:text-slate-300 mb-3">
-        위성 AOD 값을 지상 PM2.5로 변환합니다. 단순 선형 변환(AOD×120) 대신,
-        습도·대기경계층·계절·고도·풍속을 보정하는 물리 기반 모델을 적용합니다.
-      </p>
-      <div class="bg-slate-200/50 dark:bg-slate-800/50 p-3 rounded-lg text-sm font-mono text-slate-700 dark:text-slate-300">
-        PM2.5 = AOD × (baseCoeff / f(RH)) × g(PBLH) × seasonal × elevation × wind<br><br>
-        f(RH) = 1/(1 − RH/100)<sup>0.38</sup> &nbsp;— 흡습 성장 보정<br>
-        g(PBLH) = 1500/PBLH &nbsp;— 경계층 높이 보정
-      </div>
-      <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">
-        + GTWR-lite (지리적 시간 가중 회귀) 보간으로 공간-시간 보간 수행
-      </p>
-    </div>
-
-    <!-- Engine 4: Anomaly Detection -->
-    <div class="p-5 rounded-lg bg-white/50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
-      <div class="flex items-start gap-3 mb-3">
-        <div class="w-8 h-8 bg-red-500 rounded-lg flex-shrink-0 flex items-center justify-center text-white text-sm font-bold">4</div>
-        <div>
-          <h3 class="font-bold text-slate-900 dark:text-white">Anomaly Detection</h3>
-        </div>
-      </div>
-      <p class="text-sm text-slate-700 dark:text-slate-300 mb-3">
-        센서 오작동, 급격한 오염 변화, 데이터 오류를 4가지 방법으로 탐지합니다.
-      </p>
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-center">
-        <div class="p-2 rounded bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
-          <div class="font-bold text-red-600 dark:text-red-400">Z-Score</div>
-          <div class="text-slate-500 dark:text-slate-400">표준 편차 기반</div>
-        </div>
-        <div class="p-2 rounded bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
-          <div class="font-bold text-red-600 dark:text-red-400">MAD</div>
-          <div class="text-slate-500 dark:text-slate-400">로버스트 탐지</div>
-        </div>
-        <div class="p-2 rounded bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
-          <div class="font-bold text-red-600 dark:text-red-400">Isolation Forest</div>
-          <div class="text-slate-500 dark:text-slate-400">다변량 이상치</div>
-        </div>
-        <div class="p-2 rounded bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
-          <div class="font-bold text-red-600 dark:text-red-400">CUSUM</div>
-          <div class="text-slate-500 dark:text-slate-400">시계열 변화점</div>
-        </div>
-      </div>
-      <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">
-        → 이상치 감지 시 DQSS 점수 −20 감점 · Globe에서 경고 표시
-      </p>
-    </div>
-
-    <!-- Engine 5: Policy Analysis -->
-    <div class="p-5 rounded-lg bg-white/50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
-      <div class="flex items-start gap-3 mb-3">
-        <div class="w-8 h-8 bg-amber-500 rounded-lg flex-shrink-0 flex items-center justify-center text-white text-sm font-bold">5</div>
-        <div>
-          <h3 class="font-bold text-slate-900 dark:text-white">Policy Impact Analysis — 3-Stage Pipeline</h3>
-        </div>
-      </div>
-      <p class="text-sm text-slate-700 dark:text-slate-300 mb-3">
-        68개국의 대기질 정책 효과를 3단계 파이프라인으로 분석합니다.
-        데이터 가용성에 따라 자동으로 적절한 분석 단계가 선택됩니다.
-      </p>
-      <div class="space-y-3">
-        <div class="flex gap-3 items-start">
-          <div class="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/30 flex-shrink-0 flex items-center justify-center text-xs font-bold text-green-700 dark:text-green-300">1</div>
-          <div>
-            <div class="text-sm font-bold text-slate-800 dark:text-slate-100">Pre/Post Comparison</div>
-            <p class="text-xs text-slate-600 dark:text-slate-400">정책 시행 전후 3년 평균 비교 · Welch's t-test · Cohen's d 효과 크기</p>
-          </div>
-        </div>
-        <div class="flex gap-3 items-start">
-          <div class="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/30 flex-shrink-0 flex items-center justify-center text-xs font-bold text-blue-700 dark:text-blue-300">2</div>
-          <div>
-            <div class="text-sm font-bold text-slate-800 dark:text-slate-100">DID with Fixed Effects</div>
-            <p class="text-xs text-slate-600 dark:text-slate-400">국가·연도 고정효과 포함 이중차분법 · Parallel trend 검정</p>
-          </div>
-        </div>
-        <div class="flex gap-3 items-start">
-          <div class="w-6 h-6 rounded-full bg-purple-100 dark:bg-purple-900/30 flex-shrink-0 flex items-center justify-center text-xs font-bold text-purple-700 dark:text-purple-300">3</div>
-          <div>
-            <div class="text-sm font-bold text-slate-800 dark:text-slate-100">Synthetic Control Method</div>
-            <p class="text-xs text-slate-600 dark:text-slate-400">"정책이 없었을 경우의 가상 시나리오" 생성 · 대조군 자동 추천 · Placebo test (p-value)</p>
-          </div>
-        </div>
-      </div>
       <div class="mt-3 p-3 bg-amber-50 dark:bg-amber-900/15 border border-amber-200 dark:border-amber-800 rounded-lg">
         <p class="text-xs text-amber-800 dark:text-amber-200">
           ⚠️ 정책 분석 결과는 준실험적(approximate causal) 추정치입니다. 단독 정책 근거로 사용하지 마세요.
@@ -436,24 +298,93 @@ Open-Meteo ────┘       (daily/weekly)         (per source)   ↓
       </div>
     </div>
 
-    <!-- Engine 6: H3 Spatial -->
+    <!-- Engine 2: AOD → PM2.5 -->
     <div class="p-5 rounded-lg bg-white/50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
       <div class="flex items-start gap-3 mb-3">
-        <div class="w-8 h-8 bg-cyan-500 rounded-lg flex-shrink-0 flex items-center justify-center text-white text-sm font-bold">6</div>
+        <div class="w-8 h-8 bg-purple-500 rounded-lg flex-shrink-0 flex items-center justify-center text-white text-sm font-bold">2</div>
         <div>
-          <h3 class="font-bold text-slate-900 dark:text-white">H3 Hexagonal Spatial Indexing</h3>
+          <h3 class="font-bold text-slate-900 dark:text-white">Satellite → PM2.5 Estimation</h3>
+          <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-[10px] font-bold">🔬 DEVELOPING</span>
         </div>
       </div>
-      <p class="text-sm text-slate-700 dark:text-slate-300 mb-3">
-        Uber H3 육각형 인덱스를 사용하여 모든 인접 셀과의 거리를 일정하게 유지합니다.
-        관측 데이터를 육각형 셀로 집계하고, 공간 스무딩과 핫스팟 탐지(Getis-Ord Gi*)를 수행합니다.
+      <p class="text-sm text-slate-700 dark:text-slate-300 mb-2">
+        <strong>왜 필요한가:</strong> 전 세계 인구의 90% 이상이 대기질 측정소가 없는 지역에 살고 있습니다.
+        위성 데이터(AOD)는 전 지구를 커버하지만, 이를 지상 PM2.5 농도로 변환하려면 기상 조건과 지형 보정이 필수입니다.
       </p>
-      <div class="flex flex-wrap gap-2 text-xs">
-        <span class="px-2 py-1 rounded bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 font-medium">좌표→셀 변환</span>
-        <span class="px-2 py-1 rounded bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 font-medium">셀 집계</span>
-        <span class="px-2 py-1 rounded bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 font-medium">공간 스무딩</span>
-        <span class="px-2 py-1 rounded bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 font-medium">핫스팟 탐지</span>
+      <p class="text-sm text-slate-700 dark:text-slate-300">
+        AirLens는 위성 에어로졸 데이터에 기상 변수(온도, 습도, 풍속, 대기경계층 높이)와 지리 정보를 결합하여
+        센서 없는 지역의 PM2.5를 추정합니다. 모든 추정값에는 불확실성 범위가 함께 표시됩니다.
+      </p>
+    </div>
+
+    <!-- Engine 3: Camera AI -->
+    <div class="p-5 rounded-lg bg-white/50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
+      <div class="flex items-start gap-3 mb-3">
+        <div class="w-8 h-8 bg-teal-500 rounded-lg flex-shrink-0 flex items-center justify-center text-white text-sm font-bold">3</div>
+        <div>
+          <h3 class="font-bold text-slate-900 dark:text-white">Camera AI — Image-based AQ Classification</h3>
+          <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 text-[10px] font-bold">⚗️ EXPERIMENTAL</span>
+        </div>
       </div>
+      <p class="text-sm text-slate-700 dark:text-slate-300 mb-2">
+        <strong>왜 필요한가:</strong> 하늘 사진 한 장으로 대기질을 즉시 판단할 수 있다면, 누구나 스마트폰 하나로 자신의 대기 환경을 확인할 수 있습니다.
+        대기 오염 물질은 빛의 산란, 가시거리, 하늘 색상에 직접적인 영향을 미칩니다.
+      </p>
+      <p class="text-sm text-slate-700 dark:text-slate-300">
+        딥러닝 모델이 하늘 이미지에서 연무, 가시거리, 색상 패턴을 분석하여 대기질 등급을 분류합니다.
+        모든 추론은 브라우저 내에서 실행되며, 사진이 서버로 전송되지 않습니다.
+      </p>
+    </div>
+
+    <!-- Engine 4: DQSS -->
+    <div class="p-5 rounded-lg bg-white/50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
+      <div class="flex items-start gap-3 mb-3">
+        <div class="w-8 h-8 bg-green-500 rounded-lg flex-shrink-0 flex items-center justify-center text-white text-sm font-bold">4</div>
+        <div>
+          <h3 class="font-bold text-slate-900 dark:text-white">DQSS — Data Quality Scoring System</h3>
+          <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-[10px] font-bold">✅ ACTIVE</span>
+        </div>
+      </div>
+      <p class="text-sm text-slate-700 dark:text-slate-300 mb-2">
+        <strong>왜 필요한가:</strong> 모든 센서 데이터가 동일하게 신뢰할 수 있는 것은 아닙니다.
+        오래된 데이터, 결측이 많은 관측소, 다른 소스와 불일치하는 값은 그대로 사용하면 잘못된 결론을 낳습니다.
+      </p>
+      <p class="text-sm text-slate-700 dark:text-slate-300">
+        DQSS는 5가지 기준(신선도, 완전성, 일관성, 안정성, 모델 잔차)으로 각 관측소의 데이터를 0–100점으로 평가합니다.
+        높은 품질의 데이터에 더 큰 가중치를 부여하여 분석 신뢰도를 높입니다.
+      </p>
+    </div>
+
+    <!-- Engine 5: Bayesian Reliability -->
+    <div class="p-5 rounded-lg bg-white/50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
+      <div class="flex items-start gap-3 mb-3">
+        <div class="w-8 h-8 bg-indigo-500 rounded-lg flex-shrink-0 flex items-center justify-center text-white text-sm font-bold">5</div>
+        <div>
+          <h3 class="font-bold text-slate-900 dark:text-white">Bayesian Reliability Engine</h3>
+          <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 text-[10px] font-bold">📋 PLANNED</span>
+        </div>
+      </div>
+      <p class="text-sm text-slate-700 dark:text-slate-300">
+        <strong>왜 필요한가:</strong> 센서의 신뢰도는 시간에 따라 변합니다.
+        새 센서일 때는 정확하지만, 점차 드리프트가 발생할 수 있습니다.
+        관측 데이터가 쌓일수록 각 센서의 신뢰도를 학습하여 더 정확한 품질 평가를 제공할 예정입니다.
+      </p>
+    </div>
+
+    <!-- Engine 6: Anomaly Detection -->
+    <div class="p-5 rounded-lg bg-white/50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
+      <div class="flex items-start gap-3 mb-3">
+        <div class="w-8 h-8 bg-red-500 rounded-lg flex-shrink-0 flex items-center justify-center text-white text-sm font-bold">6</div>
+        <div>
+          <h3 class="font-bold text-slate-900 dark:text-white">Anomaly Detection</h3>
+          <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 text-[10px] font-bold">📋 PLANNED</span>
+        </div>
+      </div>
+      <p class="text-sm text-slate-700 dark:text-slate-300">
+        <strong>왜 필요한가:</strong> 센서 오작동, 갑작스런 환경 이벤트(산불, 황사), 데이터 전송 오류를 자동으로 식별해야 합니다.
+        이상치가 제거되지 않으면 평균값과 분석 결과를 왜곡시킵니다.
+        향후 시계열 패턴 분석과 다변량 이상치 탐지를 결합하여 자동 품질 관리를 수행할 예정입니다.
+      </p>
     </div>
 
   </div>
@@ -621,7 +552,7 @@ Open-Meteo ────┘       (daily/weekly)         (per source)   ↓
 <footer style="background: var(--color-bg-dark); color: var(--color-text-dark); padding: var(--space-5) 0; margin-top: auto;">
   <div class="container text-center">
     <p style="color: var(--color-text-dark-secondary);">
-      © 2025–2026 AirLens. Built with ❤️ for cleaner air.
+      © <span class="footer-year"></span> AirLens. Built with ❤️ for cleaner air.
     </p>
     <p style="color: var(--color-text-dark-secondary); font-size: var(--text-sm); margin-top: var(--space-4);">
       <a href="https://github.com/joymin5655/AirLens" style="color: var(--color-primary);" target="_blank" rel="noopener">
@@ -629,9 +560,8 @@ Open-Meteo ────┘       (daily/weekly)         (per source)   ↓
       </a>
     </p>
   </div>
+  <script>document.querySelectorAll('.footer-year').forEach(function(e){e.textContent=new Date().getFullYear()});</script>
 </footer>
-
-<script src="js/utils/config.js"></script>
 <script src="js/i18n.js"></script>
 <script src="js/theme-toggle.js"></script>
 <script src="js/main.js"></script>

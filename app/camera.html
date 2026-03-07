@@ -352,7 +352,7 @@ CNN-LSTM architecture analyzing sky conditions with TensorFlow.js
 <footer style="background: var(--color-bg-dark); color: var(--color-text-dark); padding: var(--space-5) 0; margin-top: auto;">
     <div class="container text-center">
         <p style="color: var(--color-text-dark-secondary);">
-            © 2025 AirLens. Built with ❤️ for a cleaner planet.
+            © <span class="footer-year"></span> AirLens. Built with ❤️ for a cleaner planet.
         </p>
         <p style="color: var(--color-text-dark-secondary); font-size: var(--text-sm); margin-top: var(--space-4);">
             <a href="https://github.com/joymin5655/AirLens" style="color: var(--color-primary);" target="_blank">
@@ -360,6 +360,7 @@ CNN-LSTM architecture analyzing sky conditions with TensorFlow.js
             </a>
         </p>
     </div>
+    <script>document.querySelectorAll('.footer-year').forEach(function(e){e.textContent=new Date().getFullYear()});</script>
 </footer>
 
 <style>

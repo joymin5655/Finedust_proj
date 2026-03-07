@@ -3,7 +3,6 @@
   "version": "3.0.0",
   "description": "AirLens — Global Air Quality Intelligence Platform",
   "scripts": {
-    "dev": "bash serve_local.sh",
     "fetch:waqi": "node scripts/fetch-waqi-data.js",
     "fetch:openaq": "python3 scripts/python/fetch_openaq.py",
     "fetch:earthdata": "python3 scripts/python/fetch_earthdata_aod.py",

@@ -1,6 +1,6 @@
 # 🌍 AirLens — Global Air Quality Intelligence Platform
 
-**Real-time PM2.5 visualization on a 3D globe · Policy impact analysis across 68 countries · Satellite-based air quality estimation**
+**Real-time PM2.5 visualization on a 3D globe · Policy impact analysis across 66 countries · Satellite-based air quality estimation**
 
 [![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Try_AirLens-2ea44f?style=for-the-badge)](https://joymin5655.github.io/AirLens/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
@@ -31,8 +31,8 @@ Measuring the real impact of environmental policies is surprisingly difficult:
 ### 🌐 3D Globe — See air quality everywhere, at a glance
 Interactive Three.js globe displaying real-time PM2.5 levels from monitoring stations worldwide. Satellite AOD data fills in the gaps where ground sensors don't exist. Click any location for detailed readings and trends.
 
-### 📊 Policy Impact Analysis — 68 countries, data-driven insights
-Compare air quality before and after policy implementation across 68 countries. Difference-in-Differences (DID) methodology helps separate policy effects from natural variation. Each country profile includes policy timeline, PM2.5 trends, and change metrics.
+### 📊 Policy Impact Analysis — 66 countries, data-driven insights
+Compare air quality before and after policy implementation across 66 countries. Difference-in-Differences (DID) methodology helps separate policy effects from natural variation. Each country profile includes policy timeline, PM2.5 trends, and change metrics.
 
 ### 📈 Today Dashboard — Your city, right now
 Real-time city-level air quality cards with EPA-standard color coding, hourly sparklines, and WHO guideline comparisons. Know instantly whether the air you're breathing is safe.
@@ -63,7 +63,7 @@ All data collection is fully automated via **GitHub Actions** — no manual inte
 
 | # | Model | Why | Status |
 |---|-------|-----|--------|
-| 1 | **Policy Impact Analysis** | Statistically separates policy effects from natural PM2.5 variation using DID methodology | ✅ 68 countries |
+| 1 | **Policy Impact Analysis** | Statistically separates policy effects from natural PM2.5 variation using DID methodology | ✅ 66 countries |
 | 2 | **Satellite → PM2.5** | Fills the global monitoring gap — 90%+ of the world lacks ground sensors | 🔬 Developing |
 | 3 | **Camera AI** | Enables anyone with a smartphone to estimate air quality from a sky photo | ⚗️ Experimental |
 | 4 | **Data Quality Score** | Not all sensor data is equally reliable — DQSS rates each source 0–100 | ✅ Active |

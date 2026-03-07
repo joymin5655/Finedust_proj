@@ -72,10 +72,10 @@ tailwind.config = {
 
 <!-- Hero -->
 <section class="flex flex-col gap-4 px-4 py-10 text-center">
-  <h1 class="text-slate-900 dark:text-white text-4xl font-black leading-tight tracking-[-0.033em] sm:text-5xl">
+  <h1 class="text-slate-900 dark:text-white text-4xl font-black leading-tight tracking-[-0.033em] sm:text-5xl" data-i18n="about.hero.title">
     How AirLens Works
   </h1>
-  <p class="text-slate-600 dark:text-slate-300 text-base max-w-3xl mx-auto">
+  <p class="text-slate-600 dark:text-slate-300 text-base max-w-3xl mx-auto" data-i18n="about.hero.sub">
     데이터 수집부터 분석 엔진, 시각화까지 — AirLens의 기술 구조를 설명합니다.
   </p>
 </section>
@@ -84,19 +84,19 @@ tailwind.config = {
 <section class="grid grid-cols-2 sm:grid-cols-4 gap-4 px-4 pb-8">
   <div class="stat-card text-center p-4 rounded-xl bg-white/60 dark:bg-white/5 border border-slate-200 dark:border-white/10">
     <div class="text-3xl font-black text-primary">4</div>
-    <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">Data Sources</div>
+    <div class="text-xs text-slate-500 dark:text-slate-400 mt-1" data-i18n="about.stat.sources">Data Sources</div>
   </div>
   <div class="stat-card text-center p-4 rounded-xl bg-white/60 dark:bg-white/5 border border-slate-200 dark:border-white/10">
-    <div class="text-3xl font-black text-primary">68</div>
-    <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">Countries Analyzed</div>
+    <div class="text-3xl font-black text-primary">66</div>
+    <div class="text-xs text-slate-500 dark:text-slate-400 mt-1" data-i18n="about.stat.countries">Countries Analyzed</div>
   </div>
   <div class="stat-card text-center p-4 rounded-xl bg-white/60 dark:bg-white/5 border border-slate-200 dark:border-white/10">
     <div class="text-3xl font-black text-primary">6</div>
-    <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">Analysis Engines</div>
+    <div class="text-xs text-slate-500 dark:text-slate-400 mt-1" data-i18n="about.stat.engines">Analysis Engines</div>
   </div>
   <div class="stat-card text-center p-4 rounded-xl bg-white/60 dark:bg-white/5 border border-slate-200 dark:border-white/10">
     <div class="text-3xl font-black text-primary">24/7</div>
-    <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">Auto Pipeline</div>
+    <div class="text-xs text-slate-500 dark:text-slate-400 mt-1" data-i18n="about.stat.pipeline">Auto Pipeline</div>
   </div>
 </section>
 
@@ -106,7 +106,7 @@ tailwind.config = {
 <section class="p-6 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 mb-6" id="data-sources">
   <h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight px-4 pb-3 pt-5">
     <span class="material-symbols-outlined text-primary align-middle mr-1">database</span>
-    1. Data Sources &amp; Collection
+    <span data-i18n="about.sec.sources">1. Data Sources &amp; Collection</span>
   </h2>
   <div class="px-4 space-y-6">
 
@@ -127,7 +127,7 @@ tailwind.config = {
           </div>
         </div>
         <div class="text-sm text-slate-700 dark:text-slate-300 space-y-1">
-          <p><strong>수집 항목:</strong> 전 세계 150+ 도시 실시간 AQI / PM2.5</p>
+          <p><strong>수집 항목:</strong> 전 세계 1,000+ 관측소 실시간 AQI / PM2.5</p>
           <p><strong>수집 주기:</strong> 매일 00:00 UTC (GitHub Actions)</p>
           <p><strong>사용처:</strong> Globe 마커, Today 카드, 데이터 융합 입력</p>
         </div>
@@ -206,7 +206,7 @@ tailwind.config = {
 <section class="p-6 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 mb-6" id="pipeline">
   <h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight px-4 pb-3 pt-5">
     <span class="material-symbols-outlined text-primary align-middle mr-1">sync</span>
-    2. Data Pipeline
+    <span data-i18n="about.sec.pipeline">2. Data Pipeline</span>
   </h2>
   <div class="px-4 space-y-4">
 
@@ -266,7 +266,7 @@ Open-Meteo ────┘       (daily/weekly)         (per source)   ↓
 <section class="p-6 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 mb-6" id="analysis-engines">
   <h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight px-4 pb-3 pt-5">
     <span class="material-symbols-outlined text-primary align-middle mr-1">analytics</span>
-    3. Analysis Engines
+    <span data-i18n="about.sec.engines">3. Analysis Engines</span>
   </h2>
   <div class="px-4 space-y-8">
 
@@ -280,7 +280,7 @@ Open-Meteo ────┘       (daily/weekly)         (per source)   ↓
         <div class="w-8 h-8 bg-amber-500 rounded-lg flex-shrink-0 flex items-center justify-center text-white text-sm font-bold">1</div>
         <div>
           <h3 class="font-bold text-slate-900 dark:text-white">Policy Impact Analysis</h3>
-          <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-[10px] font-bold">✅ 68 COUNTRIES</span>
+          <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-[10px] font-bold">✅ 66 COUNTRIES</span>
         </div>
       </div>
       <p class="text-sm text-slate-700 dark:text-slate-300 mb-2">
@@ -288,7 +288,7 @@ Open-Meteo ────┘       (daily/weekly)         (per source)   ↓
         자연 변동, 기상 조건, 경제 변화 등 많은 요인이 얽혀 있어 단순 전후 비교로는 부족합니다.
       </p>
       <p class="text-sm text-slate-700 dark:text-slate-300">
-        AirLens는 68개국의 환경 정책 시행 전후 대기질 변화를 통계적으로 비교하여, 정책이 실질적 효과가 있었는지 데이터 기반으로 평가합니다.
+        AirLens는 66개국의 환경 정책 시행 전후 대기질 변화를 통계적으로 비교하여, 정책이 실질적 효과가 있었는지 데이터 기반으로 평가합니다.
         이중차분법(DID) 기반 분석으로 정책 외 다른 요인의 영향을 분리합니다.
       </p>
       <div class="mt-3 p-3 bg-amber-50 dark:bg-amber-900/15 border border-amber-200 dark:border-amber-800 rounded-lg">
@@ -396,7 +396,7 @@ Open-Meteo ────┘       (daily/weekly)         (per source)   ↓
 <section class="p-6 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 mb-6" id="visualization">
   <h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight px-4 pb-3 pt-5">
     <span class="material-symbols-outlined text-primary align-middle mr-1">public</span>
-    4. Globe Visualization Layers
+    <span data-i18n="about.sec.globe">4. Globe Visualization Layers</span>
   </h2>
   <div class="px-4 space-y-4">
 
@@ -437,7 +437,7 @@ Open-Meteo ────┘       (daily/weekly)         (per source)   ↓
 <section class="p-6 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 mb-6" id="transparency">
   <h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight px-4 pb-3 pt-5">
     <span class="material-symbols-outlined text-primary align-middle mr-1">shield</span>
-    5. Transparency &amp; Limitations
+    <span data-i18n="about.sec.transparency">5. Transparency &amp; Limitations</span>
   </h2>
   <div class="px-4">
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -487,7 +487,7 @@ Open-Meteo ────┘       (daily/weekly)         (per source)   ↓
 <section class="px-4 py-8 mb-6" id="tech-stack">
   <h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight pb-4">
     <span class="material-symbols-outlined text-primary align-middle mr-1">code</span>
-    6. Technology Stack
+    <span data-i18n="about.sec.tech">6. Technology Stack</span>
   </h2>
   <div class="grid grid-cols-[repeat(auto-fit,minmax(140px,1fr))] gap-3">
     <div class="flex flex-1 gap-2 rounded-lg border border-gray-200/80 dark:border-white/10 bg-white/50 dark:bg-white/5 p-3 flex-col items-center text-center">

@@ -127,6 +127,18 @@ const TRANSLATIONS = {
 
     // About
     'about.title': 'About & Research',
+    'about.hero.title': 'How AirLens Works',
+    'about.hero.sub': 'From data collection to analysis engines to visualization — how AirLens delivers air quality intelligence.',
+    'about.stat.sources': 'Data Sources',
+    'about.stat.countries': 'Countries Analyzed',
+    'about.stat.engines': 'Analysis Engines',
+    'about.stat.pipeline': 'Auto Pipeline',
+    'about.sec.sources': '1. Data Sources & Collection',
+    'about.sec.pipeline': '2. Data Pipeline',
+    'about.sec.engines': '3. Analysis Engines',
+    'about.sec.globe': '4. Globe Visualization Layers',
+    'about.sec.transparency': '5. Transparency & Limitations',
+    'about.sec.tech': '6. Technology Stack',
 
     // Policy page
     'nav.policy':                'Policy',
@@ -253,6 +265,18 @@ const TRANSLATIONS = {
     'camera.view.satellite':   '위성 데이터 보기',
 
     'about.title': '소개 & 연구',
+    'about.hero.title': 'AirLens 작동 원리',
+    'about.hero.sub': '데이터 수집부터 분석 엔진, 시각화까지 — AirLens의 기술 구조를 설명합니다.',
+    'about.stat.sources': '데이터 소스',
+    'about.stat.countries': '분석 국가',
+    'about.stat.engines': '분석 엔진',
+    'about.stat.pipeline': '자동 파이프라인',
+    'about.sec.sources': '1. 데이터 소스 & 수집',
+    'about.sec.pipeline': '2. 데이터 파이프라인',
+    'about.sec.engines': '3. 분석 엔진',
+    'about.sec.globe': '4. Globe 시각화 레이어',
+    'about.sec.transparency': '5. 투명성 & 한계',
+    'about.sec.tech': '6. 기술 스택',
 
     // Policy page (Korean)
     'nav.policy':                '정책',
@@ -296,6 +320,10 @@ const TRANSLATIONS = {
     'conf.high': '高 ✅', 'conf.medium': '中 ⚠️', 'conf.low': '低 ❗',
     'settings.title': '設定', 'settings.subtitle': 'AirLensをカスタマイズ',
     'settings.lang.title': '🌍 言語', 'settings.saved': '言語を変更しました:',
+    'about.hero.title': 'AirLensの仕組み', 'about.hero.sub': 'データ収集から分析エンジン、可視化まで。',
+    'about.stat.sources': 'データソース', 'about.stat.countries': '分析国', 'about.stat.engines': '分析エンジン', 'about.stat.pipeline': '自動パイプライン',
+    'about.sec.sources': '1. データソースと収集', 'about.sec.pipeline': '2. データパイプライン', 'about.sec.engines': '3. 分析エンジン',
+    'about.sec.globe': '4. Globe可視化', 'about.sec.transparency': '5. 透明性と制限', 'about.sec.tech': '6. 技術スタック',
     'footer.copy': '© 2025 AirLens. より清潔な地球のために ❤️', 'footer.github': 'GitHubで見る',
   },
 
@@ -325,6 +353,10 @@ const TRANSLATIONS = {
     'conf.high': '高 ✅', 'conf.medium': '中 ⚠️', 'conf.low': '低 ❗',
     'settings.title': '设置', 'settings.subtitle': '自定义您的AirLens体验',
     'settings.lang.title': '🌍 语言', 'settings.saved': '语言已更新为:',
+    'about.hero.title': 'AirLens工作原理', 'about.hero.sub': '从数据收集到分析引擎到可视化——了解AirLens的技术架构。',
+    'about.stat.sources': '数据源', 'about.stat.countries': '分析国家', 'about.stat.engines': '分析引擎', 'about.stat.pipeline': '自动管道',
+    'about.sec.sources': '1. 数据源与收集', 'about.sec.pipeline': '2. 数据管道', 'about.sec.engines': '3. 分析引擎',
+    'about.sec.globe': '4. 地球仪可视化层', 'about.sec.transparency': '5. 透明度与局限性', 'about.sec.tech': '6. 技术栈',
     'footer.copy': '© 2025 AirLens. 为更清洁的地球而建 ❤️', 'footer.github': '在GitHub查看',
   },
 
@@ -355,6 +387,10 @@ const TRANSLATIONS = {
     'conf.high': 'Alta ✅', 'conf.medium': 'Media ⚠️', 'conf.low': 'Baja ❗',
     'settings.title': 'Configuración', 'settings.subtitle': 'Personaliza tu experiencia en AirLens',
     'settings.lang.title': '🌍 Idioma', 'settings.saved': 'Idioma actualizado a:',
+    'about.hero.title': 'Cómo funciona AirLens', 'about.hero.sub': 'Desde la recopilación de datos hasta los motores de análisis y la visualización.',
+    'about.stat.sources': 'Fuentes de datos', 'about.stat.countries': 'Países analizados', 'about.stat.engines': 'Motores de análisis', 'about.stat.pipeline': 'Pipeline automático',
+    'about.sec.sources': '1. Fuentes de datos', 'about.sec.pipeline': '2. Pipeline de datos', 'about.sec.engines': '3. Motores de análisis',
+    'about.sec.globe': '4. Capas del globo', 'about.sec.transparency': '5. Transparencia y limitaciones', 'about.sec.tech': '6. Stack tecnológico',
     'footer.copy': '© 2025 AirLens. Construido con ❤️ por un planeta más limpio.', 'footer.github': 'Ver en GitHub',
   },
 
@@ -385,6 +421,10 @@ const TRANSLATIONS = {
     'conf.high': 'Élevée ✅', 'conf.medium': 'Moyenne ⚠️', 'conf.low': 'Faible ❗',
     'settings.title': 'Paramètres', 'settings.subtitle': 'Personnalisez votre expérience AirLens',
     'settings.lang.title': '🌍 Langue', 'settings.saved': 'Langue mise à jour :',
+    'about.hero.title': 'Comment fonctionne AirLens', 'about.hero.sub': 'De la collecte de données aux moteurs d\'analyse et à la visualisation.',
+    'about.stat.sources': 'Sources de données', 'about.stat.countries': 'Pays analysés', 'about.stat.engines': 'Moteurs d\'analyse', 'about.stat.pipeline': 'Pipeline auto',
+    'about.sec.sources': '1. Sources de données', 'about.sec.pipeline': '2. Pipeline de données', 'about.sec.engines': '3. Moteurs d\'analyse',
+    'about.sec.globe': '4. Couches du globe', 'about.sec.transparency': '5. Transparence et limites', 'about.sec.tech': '6. Stack technique',
     'footer.copy': '© 2025 AirLens. Construit avec ❤️ pour une planète plus propre.', 'footer.github': 'Voir sur GitHub',
   }
 };

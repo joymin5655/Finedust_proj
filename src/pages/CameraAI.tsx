@@ -31,22 +31,22 @@ const CameraAI = () => {
     
     setSaving(true);
     try {
-      // 1. Upload image to Storage
-      const publicUrl = await uploadImage(file, user.id);
+      // 1. Upload image to PRIVATE Storage (Returns relative path)
+      const filePath = await uploadImage(file, user.id);
       
-      // 2. Save metadata to Database
+      // 2. Save path to Database
       await saveCapture({
         userId: user.id,
-        imageUrl: publicUrl,
+        imageUrl: filePath, // Storing path instead of full URL
         pm25Est: result.pm25,
         aqiClass: result.grade,
         confidence: result.confidence,
-        cityName: 'My Location', // This could be enhanced with reverse geocoding
+        cityName: 'My Location',
       });
       
       setSaved(true);
     } catch (err: any) {
-      alert('Failed to save: ' + err.message);
+      alert('Failed to save securely: ' + err.message);
     } finally {
       setSaving(false);
     }
@@ -62,11 +62,11 @@ const CameraAI = () => {
   return (
     <div className="pt-24 pb-16 max-w-2xl mx-auto px-4 flex flex-col gap-8">
       <div className="text-center">
-        <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">
-          Camera AI Sensing 📷
+        <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight italic">
+          Secure Camera Sensing 🔐
         </h1>
         <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">
-          Estimate PM2.5 levels directly from a photo of the sky.
+          Images are stored privately and only accessible by you.
         </p>
       </div>
 
@@ -110,15 +110,15 @@ const CameraAI = () => {
                       className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black uppercase transition-all ${
                         saved 
                         ? 'bg-emerald-500/10 text-emerald-500' 
-                        : 'bg-primary text-bg-dark hover:brightness-110 disabled:opacity-50'
+                        : 'bg-primary text-bg-dark hover:brightness-110 disabled:opacity-50 shadow-lg shadow-primary/20'
                       }`}
                     >
                       {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
-                      {saved ? 'Saved to Profile' : 'Save Result'}
+                      {saved ? 'Stored Privately' : 'Secure Save'}
                     </button>
                   ) : (
                     <Link to="/auth" className="text-[10px] font-black text-primary uppercase hover:underline">
-                      Sign in to save results
+                      Sign in to save securely
                     </Link>
                   )}
                 </div>
@@ -171,12 +171,12 @@ const CameraAI = () => {
         />
       </div>
 
-      <div className="bg-primary/5 rounded-2xl p-6 border border-primary/10 flex gap-4">
-        <AlertCircle className="text-primary shrink-0" size={20} />
+      <div className="bg-emerald-500/5 rounded-2xl p-6 border border-emerald-500/10 flex gap-4">
+        <AlertCircle className="text-emerald-500 shrink-0" size={20} />
         <div className="flex flex-col gap-1">
-          <p className="text-xs font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">Expert Tip</p>
+          <p className="text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">Privacy Protection</p>
           <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
-            For the best accuracy, take a photo of the clear sky during daylight. Avoid including too many buildings or trees in the frame, as they can interfere with the haze detection algorithm.
+            We use **Supabase Private Storage** and **Signed URLs**. Your photos are encrypted at rest and only you can see them. We do not use your personal images for public training data without explicit consent.
           </p>
         </div>
       </div>

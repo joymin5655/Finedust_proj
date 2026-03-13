@@ -1,181 +1,44 @@
-name: Update AirLens Data (Full Pipeline)
+name: Update Air Quality & Satellite Data
 
 on:
-  workflow_dispatch:
   schedule:
-    - cron: '0 0 * * *'   # 매일 00:00 UTC (WAQI)
-    - cron: '0 2 * * 0'   # 매주 일 02:00 UTC (OpenAQ + Earthdata)
+    - cron: '0 0 * * *' # Every day at midnight UTC
+  workflow_dispatch: # Manual trigger
 
 permissions:
   contents: write
 
-concurrency:
-  group: airdata-update
-  cancel-in-progress: false
-
 jobs:
-  # ─────────────────────────────────────────────────────────────────
-  # Job 1: WAQI 실시간 데이터 (Node.js)
-  # ─────────────────────────────────────────────────────────────────
-  update-waqi:
-    name: 'WAQI Realtime'
+  update-data:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          node-version: '20'
+          python-version: '3.10'
 
-      - name: Verify WAQI Token
+      - name: Install dependencies
         run: |
-          if [ -z "${{ secrets.WAQI_TOKEN }}" ]; then
-            echo "❌ WAQI_TOKEN not configured"
-            exit 1
-          fi
-          echo "✅ WAQI_TOKEN found"
-
-      - name: Install Node deps
-        run: npm install --no-save axios
-
-      - name: Create waqi data dir
-        run: mkdir -p app/data/waqi
-
-      - name: Fetch WAQI data
-        env:
-          WAQI_TOKEN: ${{ secrets.WAQI_TOKEN }}
-          SKIP_HISTORY: 'true'
-        run: node scripts/fetch-waqi-data.js
-        timeout-minutes: 10
-
-      - name: Commit & Push WAQI data
-        run: |
-          git config user.name "airlens-bot"
-          git config user.email "airlens-bot@users.noreply.github.com"
-          git add app/data/waqi/
-          if ! git diff --staged --quiet; then
-            git commit -m "📊 Update WAQI data [$(date +'%Y-%m-%d %H:%M UTC')]"
-            for i in 1 2 3; do
-              git pull --rebase origin main && git push origin main && echo "✅ WAQI data pushed" && exit 0
-              echo "⏳ Push attempt $i failed, retrying in 5s..."
-              sleep 5
-            done
-            echo "❌ Failed to push after 3 attempts"
-            exit 1
-          else
-            echo "ℹ️  No WAQI changes"
-          fi
-
-  # ─────────────────────────────────────────────────────────────────
-  # Job 2: OpenAQ PM2.5 시계열 (주 1회 또는 수동)
-  # ─────────────────────────────────────────────────────────────────
-  update-openaq:
-    name: 'OpenAQ PM2.5 Timeseries'
-    needs: update-waqi
-    runs-on: ubuntu-latest
-    if: >
-      github.event_name == 'workflow_dispatch' ||
-      (github.event_name == 'schedule' && startsWith(github.event.schedule, '0 2'))
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: main
-          fetch-depth: 0
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install Python deps
-        run: pip install requests --break-system-packages
-
-      - name: Verify OpenAQ Key
-        run: |
-          if [ -z "${{ secrets.OPENAQ_API_KEY }}" ]; then
-            echo "❌ OPENAQ_API_KEY not configured"
-            exit 1
-          fi
-          echo "✅ OPENAQ_API_KEY found"
-
-      - name: Create openaq data dir
-        run: mkdir -p app/data/openaq
-
-      - name: Fetch OpenAQ timeseries
-        env:
-          OPENAQ_API_KEY: ${{ secrets.OPENAQ_API_KEY }}
-        run: python3 scripts/python/fetch_openaq.py
-        timeout-minutes: 20
-
-      - name: Build policy effects
-        run: python3 scripts/python/build_policy_effect.py
-
-      - name: Commit & Push OpenAQ data
-        run: |
-          git config user.name "airlens-bot"
-          git config user.email "airlens-bot@users.noreply.github.com"
-          git add app/data/openaq/ app/data/policy-impact/
-          if ! git diff --staged --quiet; then
-            git commit -m "📈 Update OpenAQ + policy effect data [$(date +'%Y-%m-%d')]"
-            for i in 1 2 3; do
-              git pull --rebase origin main && git push origin main && echo "✅ OpenAQ data pushed" && exit 0
-              echo "⏳ Push attempt $i failed, retrying in 5s..."
-              sleep 5
-            done
-            echo "❌ Failed to push after 3 attempts"
-            exit 1
-          else
-            echo "ℹ️  No OpenAQ changes"
-          fi
-
-  # ─────────────────────────────────────────────────────────────────
-  # Job 3: NASA Earthdata AOD (주 1회 또는 수동)
-  # ─────────────────────────────────────────────────────────────────
-  update-earthdata:
-    name: 'NASA Earthdata AOD'
-    needs: update-openaq
-    runs-on: ubuntu-latest
-    if: >
-      always() &&
-      (github.event_name == 'workflow_dispatch' ||
-       (github.event_name == 'schedule' && startsWith(github.event.schedule, '0 2')))
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: main
-          fetch-depth: 0
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install Python deps
-        run: pip install requests --break-system-packages
-
-      - name: Create earthdata dir
-        run: mkdir -p app/data/earthdata
+          python -m pip install --upgrade pip
+          pip install requests
 
       - name: Fetch Earthdata AOD
         env:
-          EARTHDATA_TOKEN: ${{ secrets.EARTHDATA_TOKEN }}
-        run: python3 scripts/python/fetch_earthdata_aod.py
-        timeout-minutes: 30
+          EARTHDATA_USER: ${{ secrets.EARTHDATA_USER }}
+          EARTHDATA_PASS: ${{ secrets.EARTHDATA_PASS }}
+        run: python AirLens/scripts/python/fetch_earthdata_aod.py
 
-      - name: Commit & Push Earthdata
+      - name: Fetch OpenAQ & WAQI
         run: |
-          git config user.name "airlens-bot"
-          git config user.email "airlens-bot@users.noreply.github.com"
-          git add app/data/earthdata/
-          if ! git diff --staged --quiet; then
-            git commit -m "🛰️  Update Earthdata AOD [$(date +'%Y-%m-%d')]"
-            for i in 1 2 3; do
-              git pull --rebase origin main && git push origin main && echo "✅ Earthdata pushed" && exit 0
-              echo "⏳ Push attempt $i failed, retrying in 5s..."
-              sleep 5
-            done
-            echo "❌ Failed to push after 3 attempts"
-            exit 1
-          else
-            echo "ℹ️  No Earthdata changes"
-          fi
+          # If other scripts are ready, run them here
+          python AirLens/scripts/python/fetch_openaq.py || echo "OpenAQ script failed but continuing..."
+
+      - name: Commit and Push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/data/
+          git diff --quiet && git diff --staged --quiet || (git commit -m "data: periodic update of satellite and air quality data [skip ci]" && git push)

@@ -29,7 +29,8 @@ EARTHDATA_USER  = os.environ.get("EARTHDATA_USER", "").strip()
 EARTHDATA_PASS  = os.environ.get("EARTHDATA_PASS", "").strip()
 
 APPEEARS_BASE = "https://appeears.earthdatacloud.nasa.gov/api"
-OUT_DIR = Path(__file__).resolve().parents[2] / "app" / "data" / "earthdata"
+# Project Root의 public/data로 경로 변경
+OUT_DIR = Path(__file__).resolve().parents[3] / "public" / "data" / "earthdata"
 
 # ── 주요 도시 좌표 ─────────────────────────────────────────────────
 SAMPLE_CITIES = [

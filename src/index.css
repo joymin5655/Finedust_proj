@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #25e2f4;
+  --color-bg-dark: #102122;
+}
+
+body {
+  @apply bg-gray-50 text-gray-900 antialiased min-h-screen flex flex-col;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    @apply bg-bg-dark text-white;
+  }
+}
+
+#root {
+  @apply min-h-screen flex flex-col;
+}

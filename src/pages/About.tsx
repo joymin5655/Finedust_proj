@@ -1,171 +1,65 @@
-import { ShieldCheck, Zap, Layers, Globe, Database, Github, Satellite, LineChart } from 'lucide-react';
+import { BookOpen, Server, Cpu, Github } from 'lucide-react';
 
 const About = () => {
-  const stats = [
-    { label: 'Data Sources', value: '4', desc: 'Station, Satellite, Camera, Weather' },
-    { label: 'Countries Analyzed', value: '66', desc: 'Policy effect tracking' },
-    { label: 'Analysis Engines', value: '6', desc: 'SDID, PARAAD, CORN, etc.' },
-    { label: 'Auto Pipeline', value: '24/7', desc: 'Continuous data collection' },
-  ];
-
-  const sources = [
-    { 
-      name: 'WAQI', 
-      fullname: 'World Air Quality Index', 
-      icon: <Globe className="text-blue-500" />,
-      desc: 'Real-time AQI/PM2.5 from 1,000+ stations worldwide.',
-      usage: 'Globe markers, Today dashboard'
-    },
-    { 
-      name: 'OpenAQ', 
-      fullname: 'Open Air Quality Data', 
-      icon: <Database className="text-emerald-500" />,
-      desc: 'Historical PM2.5 time-series for 66 countries.',
-      usage: 'Policy impact analysis (SDID)'
-    },
-    { 
-      name: 'NASA Earthdata', 
-      fullname: 'MAIAC MODIS AOD', 
-      icon: <Satellite className="text-primary" />,
-      desc: 'Satellite aerosol optical depth for gap-filling.',
-      usage: 'Remote sensing estimation'
-    },
-    { 
-      name: 'Open-Meteo', 
-      fullname: 'Weather Forecast API', 
-      icon: <Zap className="text-amber-500" />,
-      desc: 'PBL height, humidity, and temperature covariates.',
-      usage: 'ML model correction'
-    },
-  ];
-
   return (
-    <div className="pt-32 pb-24 max-w-5xl mx-auto px-4 flex flex-col gap-20">
-      {/* Hero Section */}
+    <div className="pt-32 pb-24 max-w-5xl mx-auto px-6 flex flex-col gap-20">
+      {/* Vision */}
       <section className="text-center flex flex-col gap-6">
-        <div className="inline-flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-full border border-primary/20 self-center">
-          <Zap className="text-primary w-4 h-4 fill-primary" />
-          <span className="text-[10px] font-black text-primary uppercase tracking-widest">How AirLens Works</span>
+        <div className="inline-flex items-center gap-2 bg-sage px-4 py-2 rounded-full border border-soft-green/20 self-center">
+          <BookOpen className="text-forest w-4 h-4" />
+          <span className="text-[10px] font-bold text-forest uppercase tracking-widest font-sans">v3.0 Scientific Integrity</span>
         </div>
-        <h1 className="text-5xl md:text-6xl font-black text-gray-900 dark:text-white tracking-tighter leading-tight">
-          From data collection to <br />
-          <span className="text-primary">causal intelligence.</span>
-        </h1>
-        <p className="text-gray-500 dark:text-gray-400 text-lg max-w-3xl mx-auto leading-relaxed">
-          AirLens isn't just a visualization tool. It's a comprehensive pipeline that fuses physical station data, 
-          satellite remote sensing, and computer vision to deliver high-fidelity air quality insights.
-        </p>
+        <h1 className="text-5xl md:text-6xl font-semibold text-earth-brown tracking-tight leading-tight">Physics-Informed, <br/><span className="text-forest italic">Human-Centered.</span></h1>
+        <p className="text-clay text-lg max-w-3xl mx-auto leading-relaxed font-serif italic">"데이터는 보여주는 것이 아니라, 증명하는 것입니다."</p>
       </section>
 
-      {/* Stats Grid */}
-      <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {stats.map((s) => (
-          <div key={s.label} className="bg-white dark:bg-white/5 p-6 rounded-3xl border border-gray-200 dark:border-white/10 text-center flex flex-col gap-1">
-            <span className="text-4xl font-black text-primary">{s.value}</span>
-            <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest">{s.label}</span>
-            <p className="text-[10px] text-gray-500 dark:text-gray-500 mt-1">{s.desc}</p>
-          </div>
-        ))}
-      </section>
-
-      {/* Data Sources Section */}
+      {/* 6 Intelligence Engines */}
       <section className="flex flex-col gap-10">
-        <div className="flex flex-col gap-2">
-          <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight uppercase">1. Data Sources & Collection</h2>
-          <p className="text-gray-500 dark:text-gray-400 text-sm">
-            We automate the ingestion of air quality, meteorological, and satellite data from 4 major public sources.
-          </p>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {sources.map((src) => (
-            <div key={src.name} className="bg-white dark:bg-black/20 p-8 rounded-[32px] border border-gray-200 dark:border-white/10 flex flex-col gap-4 group hover:border-primary/30 transition-all">
-              <div className="flex items-center gap-4">
-                <div className="bg-gray-50 dark:bg-white/5 w-14 h-14 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
-                  {src.icon}
-                </div>
-                <div>
-                  <h3 className="font-black text-xl text-gray-900 dark:text-white">{src.name}</h3>
-                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{src.fullname}</p>
-                </div>
-              </div>
-              <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{src.desc}</p>
-              <div className="pt-4 border-t border-gray-100 dark:border-white/5">
-                <p className="text-[10px] font-bold text-gray-400 uppercase">Primary Usage:</p>
-                <p className="text-xs text-primary font-bold mt-1">{src.usage}</p>
-              </div>
+        <h2 className="text-2xl font-bold text-earth-brown uppercase tracking-tight flex items-center gap-3"><Cpu className="text-forest"/> 6 Analysis Engines</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[
+            { name: 'XGBoost-GTWR', desc: 'AOD 위성 데이터를 지상 PM2.5 농도로 정밀 보정하는 공간-시계열 회귀 엔진' },
+            { name: 'Synthetic DID', desc: '68개국 환경 정책의 순수 효과를 추출하는 인과 추론 엔진' },
+            { name: 'DINOv2-PINN', desc: '물리 법칙을 강제한 시각 지능 기반 헤이즈 분석 엔진' },
+            { name: 'PARAAD DQSS', desc: 'Bi-LSTM 기반의 실시간 데이터 품질 및 신뢰도 측정 엔진' },
+            { name: 'Bayesian BNN', desc: 'p10~p90 불확실성 구간을 산출하는 확률론적 예측 엔진' },
+            { name: 'Deep iForest', desc: 'LSTM-AE 기반의 다차원 이상치 탐지 및 필터링 엔진' }
+          ].map((engine, i) => (
+            <div key={i} className="narrative-card group !p-6 border-forest/5 hover:border-forest/20">
+              <h3 className="font-bold text-forest text-sm mb-2">{engine.name}</h3>
+              <p className="text-[11px] text-clay leading-relaxed font-sans">{engine.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Analysis Engines Section */}
-      <section className="bg-bg-dark text-white rounded-[40px] overflow-hidden p-8 md:p-16 relative border border-white/5">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2"></div>
-        
-        <div className="relative z-10 flex flex-col gap-12">
-          <div className="flex flex-col gap-4 max-w-2xl">
-            <h2 className="text-3xl font-black tracking-tight uppercase italic text-primary">2. Analysis Engines</h2>
-            <p className="text-white/60 leading-relaxed text-sm">
-              Our backend processes raw data through 6 specialized engines to ensure accuracy, 
-              quantify uncertainty, and extract causal relationships.
-            </p>
+      {/* Data Pipeline */}
+      <section className="bg-forest text-warm-cream rounded-[40px] p-8 md:p-16 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-[120px] rounded-full"></div>
+        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="space-y-6">
+            <h2 className="text-3xl font-bold tracking-tight italic text-soft-green flex items-center gap-3"><Server/> Automated Pipeline</h2>
+            <p className="text-warm-cream/70 text-sm leading-relaxed font-sans font-light">매 30분마다 WAQI, OpenAQ, NASA Earthdata로부터 데이터를 수집하고, GitHub Actions를 통해 무중단으로 ML 분석을 수행합니다.</p>
+            <div className="flex gap-4">
+              <span className="px-3 py-1 bg-white/10 rounded-full text-[10px] font-bold border border-white/10">30m Cycle</span>
+              <span className="px-3 py-1 bg-white/10 rounded-full text-[10px] font-bold border border-white/10">CI/CD Deploy</span>
+            </div>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-2">
-                <LineChart size={18} className="text-primary" />
-                <span className="font-black text-xs uppercase tracking-widest">Synthetic DID</span>
-              </div>
-              <p className="text-xs text-white/40 leading-relaxed">
-                Separates policy-driven changes from natural fluctuations using counterfactual control groups.
-              </p>
-            </div>
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-2">
-                <Layers size={18} className="text-primary" />
-                <span className="font-black text-xs uppercase tracking-widest">PARAAD Engine</span>
-              </div>
-              <p className="text-xs text-white/40 leading-relaxed">
-                Bi-LSTM based anomaly detection to identify and filter faulty station readings in real-time.
-              </p>
-            </div>
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-2">
-                <ShieldCheck size={18} className="text-primary" />
-                <span className="font-black text-xs uppercase tracking-widest">DQSS Scoring</span>
-              </div>
-              <p className="text-xs text-white/40 leading-relaxed">
-                Calculates a Data Quality Security Score based on 5 parameters: completeness, freshness, consistency, etc.
-              </p>
-            </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="p-4 glass-panel !bg-white/5 border-white/10"><p className="text-[10px] font-bold text-soft-green mb-1 uppercase">GitHub Pages</p><p className="text-xs">Frontend Hosting</p></div>
+            <div className="p-4 glass-panel !bg-white/5 border-white/10"><p className="text-[10px] font-bold text-soft-green mb-1 uppercase">Cloud Run</p><p className="text-xs">FastAPI Backend</p></div>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="flex flex-col md:flex-row items-center justify-between gap-10 bg-gray-50 dark:bg-white/5 p-10 rounded-[40px] border border-gray-100 dark:border-white/5">
+      {/* CTA */}
+      <section className="flex flex-col md:flex-row items-center justify-between gap-10 bg-sage/30 p-10 rounded-[40px] border border-soft-green/10">
         <div className="flex flex-col gap-2">
-          <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Open Source & Community</h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Join our mission to democratize environmental intelligence.</p>
+          <h2 className="text-2xl font-bold text-earth-brown tracking-tight">Open Intelligence Mission</h2>
+          <p className="text-sm text-clay font-sans">누구나 재현 가능한 투명한 환경 데이터를 지향합니다.</p>
         </div>
         <div className="flex gap-4">
-          <a 
-            href="https://github.com/joymin5655/AirLens" 
-            target="_blank" 
-            className="flex items-center gap-2 bg-gray-900 text-white px-6 py-3 rounded-2xl font-bold text-sm hover:bg-gray-800 transition-all"
-          >
-            <Github size={18} />
-            GitHub Repository
-          </a>
-          <a 
-            href="/globe" 
-            className="flex items-center gap-2 bg-primary text-bg-dark px-6 py-3 rounded-2xl font-black text-sm hover:brightness-110 transition-all shadow-lg shadow-primary/20"
-          >
-            <Globe size={18} />
-            Try Live Globe
-          </a>
+          <a href="https://github.com/joymin5655/AirLens" target="_blank" className="flex items-center gap-2 bg-earth-brown text-warm-cream px-6 py-3 rounded-2xl font-bold text-sm hover:bg-earth-brown/90 transition-all font-sans"><Github size={18} /> Source Code</a>
         </div>
       </section>
     </div>

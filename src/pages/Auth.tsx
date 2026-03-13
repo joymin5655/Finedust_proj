@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { supabase } from '../logic/supabase';
-import { Mail, Lock, LogIn, UserPlus, Github, Chrome, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Mail, Lock, LogIn, UserPlus, Github, Chrome, AlertCircle, CheckCircle2, ShieldCheck, Zap, Database } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const Auth = () => {
-  const [isLogin, setIsOpen] = useState(true);
+  const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -37,7 +37,12 @@ const Auth = () => {
 
   const handleSocialLogin = async (provider: 'google' | 'github') => {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({ provider });
+      const { error } = await supabase.auth.signInWithOAuth({ 
+        provider,
+        options: {
+          redirectTo: window.location.origin
+        }
+      });
       if (error) throw error;
     } catch (err: any) {
       setError(err.message);
@@ -45,126 +50,166 @@ const Auth = () => {
   };
 
   return (
-    <div className="pt-32 pb-24 max-w-md mx-auto px-4">
-      <div className="bg-white rounded-[40px] border border-earth-brown/5 p-10 shadow-2xl overflow-hidden relative">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-forest/5 blur-3xl rounded-full"></div>
+    <div className="min-h-screen pt-32 pb-24 flex flex-col items-center px-4 bg-warm-cream/30">
+      <div className="max-w-4xl w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         
-        <div className="relative z-10 flex flex-col gap-8">
-          <div className="text-center flex flex-col gap-2">
-            <h1 className="text-3xl font-bold text-earth-brown tracking-tight uppercase font-sans">
-              {isLogin ? 'Welcome Back' : 'Join AirLens'}
+        {/* Left Side: Value Proposition */}
+        <div className="hidden lg:flex flex-col gap-8 pr-12">
+          <div className="space-y-4">
+            <span className="bg-forest/10 text-forest text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">v1.0 Citizen Science</span>
+            <h1 className="text-5xl font-bold text-earth-brown leading-tight">
+              Unlock Your <br/>
+              <span className="text-forest italic">Personal Atmosphere.</span>
             </h1>
-            <p className="text-clay text-xs font-bold uppercase tracking-widest font-sans">
-              {isLogin ? 'Log in to your environmental HQ' : 'Start your citizen science journey'}
-            </p>
+            <p className="text-clay text-lg font-serif">로그인하여 당신만의 공기질 지도를 만들고, 인공지능 분석 리포트를 안전하게 보관하세요.</p>
           </div>
 
-          {success ? (
-            <div className="flex flex-col items-center gap-6 py-8 animate-in fade-in zoom-in duration-500 text-center">
-              <div className="bg-sage p-4 rounded-full">
-                <CheckCircle2 size={48} className="text-forest" />
+          <div className="space-y-6">
+            {[
+              { icon: <Database size={20}/>, title: 'Private Vault', desc: '분석한 모든 사진과 수치를 Supabase 클라우드에 암호화하여 저장합니다.' },
+              { icon: <ShieldCheck size={20}/>, title: 'Verified Accuracy', desc: '개인 측정 데이터를 기반으로 더 정교한 지역별 DQSS 점수를 제공받으세요.' },
+              { icon: <Zap size={20}/>, title: 'AI Insights', desc: 'DINOv2 모델을 통해 우리 동네의 헤이즈 패턴을 실시간으로 추적합니다.' },
+            ].map((feature, i) => (
+              <div key={i} className="flex gap-4 items-start">
+                <div className="bg-white p-2 rounded-xl shadow-sm text-forest">{feature.icon}</div>
+                <div>
+                  <h4 className="text-sm font-bold text-earth-brown">{feature.title}</h4>
+                  <p className="text-xs text-clay leading-relaxed">{feature.desc}</p>
+                </div>
               </div>
-              <div className="space-y-2">
-                <h2 className="text-xl font-bold text-earth-brown">Verification Sent!</h2>
-                <p className="text-sm text-clay leading-relaxed">
-                  We've sent a magic link to <br/><strong>{email}</strong>.<br/>
-                  Please confirm your email to start sensing.
-                </p>
-              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Right Side: Auth Card */}
+        <div className="bg-white rounded-[40px] border border-earth-brown/5 p-8 md:p-12 shadow-2xl relative overflow-hidden w-full max-w-md mx-auto">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-forest/5 blur-3xl rounded-full"></div>
+          
+          <div className="relative z-10 flex flex-col gap-8">
+            {/* Tab Switcher */}
+            <div className="bg-sage/20 p-1 rounded-2xl flex relative">
+              <div 
+                className={`absolute inset-1 w-1/2 bg-white rounded-xl shadow-sm transition-all duration-300 transform ${isLogin ? 'translate-x-0' : 'translate-x-full'}`}
+              ></div>
               <button 
-                onClick={() => setIsOpen(true)}
-                className="text-forest font-bold text-xs uppercase tracking-widest hover:underline"
+                onClick={() => setIsLogin(true)}
+                className={`flex-1 py-2.5 text-xs font-bold uppercase tracking-widest relative z-10 transition-colors ${isLogin ? 'text-forest' : 'text-clay hover:text-earth-brown'}`}
               >
-                Back to Login
+                Sign In
+              </button>
+              <button 
+                onClick={() => setIsLogin(false)}
+                className={`flex-1 py-2.5 text-xs font-bold uppercase tracking-widest relative z-10 transition-colors ${!isLogin ? 'text-forest' : 'text-clay hover:text-earth-brown'}`}
+              >
+                Sign Up
               </button>
             </div>
-          ) : (
-            <form onSubmit={handleAuth} className="flex flex-col gap-4">
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-bold text-clay uppercase tracking-widest ml-1 font-sans">Email Address</label>
-                <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-clay w-4 h-4" />
-                  <input 
-                    type="email" 
-                    required
-                    placeholder="name@example.com"
-                    className="w-full pl-12 pr-4 py-3.5 bg-sage/10 border-none rounded-2xl text-sm focus:ring-2 focus:ring-forest/50 text-earth-brown transition-all font-sans"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
+
+            <div className="text-center space-y-1">
+              <h2 className="text-2xl font-bold text-earth-brown tracking-tight font-sans">
+                {isLogin ? 'Welcome Back' : 'Create Account'}
+              </h2>
+              <p className="text-clay text-[10px] font-bold uppercase tracking-[0.2em] font-sans">
+                {isLogin ? 'Log in to your workspace' : 'Join the global sensing network'}
+              </p>
+            </div>
+
+            {success ? (
+              <div className="flex flex-col items-center gap-6 py-8 animate-in fade-in zoom-in duration-500 text-center">
+                <div className="bg-sage p-4 rounded-full">
+                  <CheckCircle2 size={48} className="text-forest" />
                 </div>
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-bold text-clay uppercase tracking-widest ml-1 font-sans">Password</label>
-                <div className="relative">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-clay w-4 h-4" />
-                  <input 
-                    type="password" 
-                    required
-                    placeholder="••••••••"
-                    className="w-full pl-12 pr-4 py-3.5 bg-sage/10 border-none rounded-2xl text-sm focus:ring-2 focus:ring-forest/50 text-earth-brown transition-all font-sans"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
+                <div className="space-y-2">
+                  <h3 className="text-lg font-bold text-earth-brown">Verification Sent!</h3>
+                  <p className="text-xs text-clay leading-relaxed">
+                    <strong>{email}</strong>로 확인 메일을 보냈습니다.<br/>
+                    메일함의 링크를 클릭하면 가입이 완료됩니다.
+                  </p>
                 </div>
-              </div>
-
-              {error && (
-                <div className="flex items-center gap-2 text-red-600 bg-red-50 p-3 rounded-xl text-xs font-bold border border-red-100 font-sans">
-                  <AlertCircle size={16} />
-                  {error}
-                </div>
-              )}
-
-              <button 
-                type="submit" 
-                disabled={loading}
-                className="mt-2 w-full bg-forest text-warm-cream py-4 rounded-2xl font-bold text-sm uppercase tracking-widest hover:bg-forest/90 active:scale-95 transition-all flex items-center justify-center gap-2 disabled:opacity-50 shadow-lg shadow-forest/20 font-sans"
-              >
-                {loading ? (
-                  <div className="w-5 h-5 border-2 border-warm-cream/30 border-t-warm-cream rounded-full animate-spin"></div>
-                ) : (
-                  <>
-                    {isLogin ? <LogIn size={18} /> : <UserPlus size={18} />}
-                    {isLogin ? 'Sign In' : 'Create Account'}
-                  </>
-                )}
-              </button>
-            </form>
-          )}
-
-          {!success && (
-            <>
-              <div className="flex items-center gap-4">
-                <div className="flex-1 h-px bg-earth-brown/5"></div>
-                <span className="text-[10px] font-bold text-clay uppercase tracking-widest font-sans">Or continue with</span>
-                <div className="flex-1 h-px bg-earth-brown/5"></div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
                 <button 
-                  onClick={() => handleSocialLogin('google')}
-                  className="flex items-center justify-center gap-2 py-3.5 border border-earth-brown/10 rounded-2xl hover:bg-sage/10 transition-all text-xs font-bold text-earth-brown font-sans"
+                  onClick={() => setIsLogin(true)}
+                  className="bg-forest text-warm-cream px-8 py-3 rounded-xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-forest/20"
                 >
-                  <Chrome size={16} /> Google
-                </button>
-                <button 
-                  onClick={() => handleSocialLogin('github')}
-                  className="flex items-center justify-center gap-2 py-3.5 border border-earth-brown/10 rounded-2xl hover:bg-sage/10 transition-all text-xs font-bold text-earth-brown font-sans"
-                >
-                  <Github size={16} /> GitHub
+                  Go to Login
                 </button>
               </div>
+            ) : (
+              <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                {/* Social Login Section */}
+                <div className="flex flex-col gap-3">
+                  <button 
+                    onClick={() => handleSocialLogin('google')}
+                    className="w-full flex items-center justify-center gap-3 py-3.5 bg-white border border-earth-brown/10 rounded-2xl hover:bg-sage/10 transition-all text-xs font-bold text-earth-brown shadow-sm group font-sans"
+                  >
+                    <div className="bg-white p-1 rounded-md border border-gray-100 group-hover:scale-110 transition-transform">
+                      <Chrome size={16} className="text-[#4285F4]" />
+                    </div>
+                    Continue with Google
+                  </button>
+                </div>
 
-              <button 
-                onClick={() => setIsOpen(!isLogin)}
-                className="text-center text-xs font-bold text-forest hover:underline transition-all font-sans"
-              >
-                {isLogin ? "Don't have an account? Sign Up" : "Already have an account? Sign In"}
-              </button>
-            </>
-          )}
+                <div className="flex items-center gap-4">
+                  <div className="flex-1 h-px bg-earth-brown/5"></div>
+                  <span className="text-[9px] font-black text-clay/40 uppercase tracking-widest">Or use email</span>
+                  <div className="flex-1 h-px bg-earth-brown/5"></div>
+                </div>
+
+                <form onSubmit={handleAuth} className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[10px] font-bold text-clay uppercase tracking-widest ml-1 font-sans">Email Address</label>
+                    <div className="relative">
+                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-clay/40 w-4 h-4" />
+                      <input 
+                        type="email" 
+                        required
+                        placeholder="name@example.com"
+                        className="w-full pl-12 pr-4 py-3.5 bg-sage/5 border border-earth-brown/5 rounded-2xl text-sm focus:ring-2 focus:ring-forest/30 text-earth-brown transition-all font-sans outline-none"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[10px] font-bold text-clay uppercase tracking-widest ml-1 font-sans">Password</label>
+                    <div className="relative">
+                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-clay/40 w-4 h-4" />
+                      <input 
+                        type="password" 
+                        required
+                        placeholder="••••••••"
+                        className="w-full pl-12 pr-4 py-3.5 bg-sage/5 border border-earth-brown/5 rounded-2xl text-sm focus:ring-2 focus:ring-forest/30 text-earth-brown transition-all font-sans outline-none"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  {error && (
+                    <div className="flex items-center gap-2 text-red-600 bg-red-50 p-3 rounded-xl text-[11px] font-bold border border-red-100 font-sans">
+                      <AlertCircle size={14} className="shrink-0" />
+                      {error}
+                    </div>
+                  )}
+
+                  <button 
+                    type="submit" 
+                    disabled={loading}
+                    className="mt-4 w-full bg-forest text-warm-cream py-4 rounded-2xl font-bold text-sm uppercase tracking-widest hover:bg-forest/90 active:scale-95 transition-all flex items-center justify-center gap-2 disabled:opacity-50 shadow-xl shadow-forest/20 font-sans"
+                  >
+                    {loading ? (
+                      <div className="w-5 h-5 border-2 border-warm-cream/30 border-t-warm-cream rounded-full animate-spin"></div>
+                    ) : (
+                      <>
+                        {isLogin ? <LogIn size={18} /> : <UserPlus size={18} />}
+                        {isLogin ? 'Sign In' : 'Get Started'}
+                      </>
+                    )}
+                  </button>
+                </form>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

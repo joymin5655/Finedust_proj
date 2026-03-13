@@ -28,7 +28,7 @@ const Root = () => {
 
   return (
     <StrictMode>
-      <BrowserRouter basename={import.meta.env.BASE_URL}>
+      <BrowserRouter>
         <App />
       </BrowserRouter>
     </StrictMode>

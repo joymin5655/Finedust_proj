@@ -28,10 +28,27 @@ const CameraAI = () => {
     if (!user || !result || !file) return;
     setSaving(true);
     try {
+      // 1. Upload image to private storage
       const filePath = await uploadImage(file, user.id);
-      await saveCapture({ userId: user.id, imageUrl: filePath, pm25Est: result.pm25, aqiClass: result.grade, confidence: result.confidence, cityName: 'Local Sensing' });
+      
+      // 2. Save metadata to DB
+      await saveCapture({ 
+        userId: user.id, 
+        imageUrl: filePath, 
+        pm25Est: result.pm25, 
+        aqiClass: result.grade, 
+        confidence: result.confidence, 
+        cityName: 'Local Sensing' 
+      });
+      
       setSaved(true);
-    } catch (err) { alert('Save failed'); } finally { setSaving(false); }
+      console.log('✅ Capture stored securely in Supabase');
+    } catch (err: any) { 
+      console.error('Supabase Storage Error:', err.message);
+      alert(`Save failed: ${err.message}. Please check your connection or RLS policies.`); 
+    } finally { 
+      setSaving(false); 
+    }
   };
 
   return (

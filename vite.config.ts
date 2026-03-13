@@ -2,10 +2,22 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
-export default defineConfig({
-  base: '/AirLens/',
-  plugins: [
-    react(),
-    tailwindcss(),
-  ],
+// https://vitejs.dev/config/
+export default defineConfig(({ command, mode }) => {
+  // GitHub Pages deployment uses /AirLens/ base path.
+  // Cloudflare Pages or local dev usually uses / (root).
+  // We check an environment variable or mode to decide.
+  const isGithubPages = process.env.DEPLOY_TARGET === 'github';
+  
+  return {
+    base: isGithubPages ? '/AirLens/' : '/',
+    plugins: [
+      react(),
+      tailwindcss(),
+    ],
+    build: {
+      outDir: 'dist',
+      sourcemap: true,
+    }
+  }
 })

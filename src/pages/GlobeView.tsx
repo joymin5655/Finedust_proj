@@ -1,11 +1,18 @@
 import { Canvas } from '@react-three/fiber';
-import { Suspense } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import Globe from '../components/Globe';
 import AirQualityMarkers from '../components/AirQualityMarkers';
 import { Globe as GlobeIcon, Info, Layers, ShieldCheck, ChevronLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { fetchAodSamples } from '../logic/airQualityService';
 
 const GlobeView = () => {
+  const [aodData, setAodData] = useState<any>(null);
+
+  useEffect(() => {
+    fetchAodSamples().then(setAodData);
+  }, []);
+
   return (
     <div className="h-screen w-full relative bg-[#000005] overflow-hidden">
       <Suspense fallback={<div className="absolute inset-0 flex items-center justify-center text-white/50 bg-[#000005]">Initializing Earth...</div>}>

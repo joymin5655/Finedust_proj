@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Wind, ShieldCheck, Activity, ArrowRight, Camera, Globe as GlobeIcon, History, User } from 'lucide-react';
+import { Wind, ShieldCheck, Activity, ArrowRight, Camera, Globe as GlobeIcon, History } from 'lucide-react';
 import { useAuthStore } from '../logic/useAuthStore';
 
 const Dashboard = () => {

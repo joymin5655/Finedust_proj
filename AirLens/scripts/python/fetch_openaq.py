@@ -4,12 +4,8 @@ fetch_openaq.py — OpenAQ v3 PM2.5 timeseries collector
 -------------------------------------------------------
 GitHub Actions에서 OPENAQ_API_KEY 시크릿을 사용해 실행
 결과물:
-  app/data/openaq/pm25_years.json   — 국가/도시별 연평균
-  app/data/openaq/pm25_days.json    — 최근 365일 일평균
-  app/data/openaq/stations.json     — 측정소 메타
-
-Usage:
-  OPENAQ_API_KEY=xxx python3 scripts/python/fetch_openaq.py
+  public/data/openaq/pm25_years.json   — 국가/도시별 연평균
+  public/data/openaq/pm25_days.json    — 최근 365일 일평균
 """
 
 import os, json, time, sys
@@ -24,30 +20,21 @@ except ImportError:
 
 # ── 설정 ──────────────────────────────────────────────────────────────
 API_KEY = os.environ.get("OPENAQ_API_KEY", "").strip()
-if not API_KEY:
-    print("❌ OPENAQ_API_KEY not set")
-    sys.exit(1)
-
 BASE_URL = "https://api.openaq.org"
 HEADERS  = {"X-API-Key": API_KEY, "Accept": "application/json"}
-OUT_DIR  = Path(__file__).resolve().parents[2] / "app" / "data" / "openaq"
+# Project Root의 public/data로 경로 변경
+OUT_DIR  = Path(__file__).resolve().parents[3] / "public" / "data" / "openaq"
 
-# ── 수집 대상 도시 (좌표 기반 검색) ──────────────────────────────
+# ── 수집 대상 도시 ─────────────────────────────────────────────────
 TARGET_CITIES = [
     {"city": "Seoul",        "country": "KR", "lat": 37.5665, "lon": 126.978},
-    {"city": "Busan",        "country": "KR", "lat": 35.1796, "lon": 129.076},
-    {"city": "Incheon",      "country": "KR", "lat": 37.4563, "lon": 126.706},
     {"city": "Beijing",      "country": "CN", "lat": 39.9042, "lon": 116.407},
-    {"city": "Shanghai",     "country": "CN", "lat": 31.2304, "lon": 121.474},
-    {"city": "Tokyo",        "country": "JP", "lat": 35.6762, "lon": 139.650},
-    {"city": "Osaka",        "country": "JP", "lat": 34.6937, "lon": 135.502},
     {"city": "Delhi",        "country": "IN", "lat": 28.7041, "lon": 77.1025},
-    {"city": "Mumbai",       "country": "IN", "lat": 19.0760, "lon": 72.8777},
+    {"city": "Tokyo",        "country": "JP", "lat": 35.6762, "lon": 139.650},
     {"city": "Bangkok",      "country": "TH", "lat": 13.7563, "lon": 100.502},
-    {"city": "Singapore",    "country": "SG", "lat": 1.3521,  "lon": 103.820},
-    {"city": "Taipei",       "country": "TW", "lat": 25.0330, "lon": 121.565},
-    {"city": "Jakarta",      "country": "ID", "lat": -6.2088, "lon": 106.846},
     {"city": "London",       "country": "GB", "lat": 51.5074, "lon": -0.1278},
+    {"city": "New York",     "lat": 40.7128, "lon": -74.0060, "country": "US"},
+]
     {"city": "Paris",        "country": "FR", "lat": 48.8566, "lon": 2.3522},
     {"city": "Berlin",       "country": "DE", "lat": 52.5200, "lon": 13.405},
     {"city": "Madrid",       "country": "ES", "lat": 40.4168, "lon": -3.7038},

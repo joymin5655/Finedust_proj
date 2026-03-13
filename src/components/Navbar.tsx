@@ -7,7 +7,7 @@ import { supabase } from '../logic/supabase';
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
-  const { user, isAdmin } = useAuthStore();
+  const { user, isAdmin, loading } = useAuthStore();
 
   const links = [
     { name: 'Our Story', path: '/' },
@@ -45,7 +45,9 @@ const Navbar = () => {
       </div>
 
       <div className="flex items-center gap-4">
-        {user ? (
+        {loading ? (
+          <div className="w-5 h-5 border-2 border-forest/30 border-t-forest rounded-full animate-spin"></div>
+        ) : user ? (
           <div className="flex items-center gap-4 animate-in fade-in duration-500">
             <div className="flex flex-col items-end">
               <span className="text-[10px] font-sans font-bold text-clay uppercase tracking-widest leading-none mb-1">

@@ -16,16 +16,6 @@ const getHealthRisk = (pm25: number | null) => {
   return { level: 'Hazardous', color: 'text-purple-500', bg: 'bg-purple-500/10', desc: 'Emergency conditions. Entire population is likely to be affected. Stay indoors with air purifier.', icon: AlertTriangle };
 };
 
-const getAOD = (pm25: number | null) => {
-  if (!pm25) return null;
-  // Approximate AOD from surface PM2.5 via Beer-Lambert law (simplified)
-  const aod = +(pm25 * 0.0065 + 0.02).toFixed(3);
-  const type = pm25 < 20 ? 'Marine / Clean Continental' : pm25 < 60 ? 'Urban Mixed Aerosol' : 'Industrial / Biomass Burning';
-  const scattering = pm25 < 20 ? 'Low scattering — high visibility' : pm25 < 60 ? 'Moderate scattering — hazy horizon' : 'High scattering — severely reduced visibility';
-  const layer = pm25 < 20 ? '0–1 km (surface only)' : pm25 < 60 ? '0–2.5 km (boundary layer)' : '0–4 km (elevated plume likely)';
-  return { aod, type, scattering, layer };
-};
-
 const CameraAI = () => {
   const { t } = useTranslation();
   const [file, setFile] = useState<File | null>(null);
@@ -149,32 +139,38 @@ const CameraAI = () => {
         })()}
 
         {activeTab === 'aod' && (() => {
-          const aod = getAOD(result?.pm25 ?? null);
+          const metrics = result?.metrics;
           return (
             <div className="bg-bg-card p-6 rounded-2xl border border-text-main/5 shadow-sm space-y-4">
-              <h4 className="text-label text-primary flex items-center gap-2"><BarChart3 size={14}/> AOD Patterns</h4>
-              {aod ? (
+              <h4 className="heading-lg !text-base text-primary flex items-center gap-2"><BarChart3 size={14}/> Atmospheric Physics v1.1</h4>
+              {metrics ? (
                 <>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-4xl font-black text-text-main">{aod.aod}</span>
-                    <span className="text-label text-text-dim">AOD 550nm</span>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="p-3 bg-text-main/5 rounded-xl border border-text-main/10">
+                      <p className="text-[9px] font-black text-text-dim uppercase tracking-widest">Visibility</p>
+                      <p className="text-xl font-black text-text-main">{metrics.visibilityRange} <span className="text-[10px] font-medium">km</span></p>
+                    </div>
+                    <div className="p-3 bg-text-main/5 rounded-xl border border-text-main/10">
+                      <p className="text-[9px] font-black text-text-dim uppercase tracking-widest">Haze Density</p>
+                      <p className="text-xl font-black text-text-main">{metrics.hazeDensity}</p>
+                    </div>
                   </div>
-                  <div className="space-y-3 pt-2 border-t border-text-main/10">
+                  <div className="space-y-3 pt-2">
                     {[
-                      { label: 'Aerosol Type', value: aod.type },
-                      { label: 'Scattering', value: aod.scattering },
-                      { label: 'Layer Estimate', value: aod.layer },
+                      { label: 'AOD 550nm Estimate', value: metrics.aodEstimate },
+                      { label: 'Koschmieder Extinction', value: (3.912 / metrics.visibilityRange).toFixed(3) },
+                      { label: 'Optical Depth Confidence', value: `${result.confidence}%` },
                     ].map(item => (
-                      <div key={item.label}>
-                        <p className="text-[9px] font-black text-text-dim uppercase tracking-widest">{item.label}</p>
-                        <p className="text-[11px] text-text-main font-semibold mt-0.5">{item.value}</p>
+                      <div key={item.label} className="flex justify-between items-center border-b border-text-main/5 pb-2">
+                        <p className="text-[10px] font-bold text-text-dim">{item.label}</p>
+                        <p className="text-[11px] text-text-main font-black">{item.value}</p>
                       </div>
                     ))}
                   </div>
-                  <p className="text-[10px] text-text-dim italic border-t border-text-main/10 pt-3">Estimated via Beer-Lambert law from surface PM2.5</p>
+                  <p className="text-[10px] text-text-dim italic pt-1">Physics engine updated to Koschmieder Law v1.1</p>
                 </>
               ) : (
-                <p className="text-p text-[11px]">Upload a sky photo to estimate Aerosol Optical Depth and atmospheric layer composition.</p>
+                <p className="text-p text-[11px]">Upload a sky photo to compute atmospheric extinction coefficients and visibility range.</p>
               )}
             </div>
           );

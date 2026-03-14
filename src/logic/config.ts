@@ -16,7 +16,7 @@ const getEnv = (key: string, fallback?: string): string => {
 // Initial static configuration
 export const APP_CONFIG = {
   APP_NAME: 'AirLens',
-  VERSION: '1.0.0',
+  VERSION: '1.1.0',
   GITHUB_URL: 'https://github.com/joymin5655/AirLens',
   
   // API Configuration
@@ -77,13 +77,18 @@ export const loadRemoteConfig = async () => {
     if (error) throw error;
 
     if (data) {
-      data.forEach((setting: { key: string; value: any }) => {
+      data.forEach((setting: { key: string; value: Record<string, unknown> }) => {
         if (setting.key in APP_CONFIG) {
-          (APP_CONFIG as any)[setting.key] = {
-            ...(APP_CONFIG as any)[setting.key],
-            ...setting.value
-          };
-          console.log(`✅ Remote config applied for: ${setting.key}`);
+          const configKey = setting.key as keyof typeof APP_CONFIG;
+          const currentValue = APP_CONFIG[configKey];
+          
+          if (typeof currentValue === 'object' && currentValue !== null) {
+            (APP_CONFIG as Record<string, unknown>)[configKey] = {
+              ...currentValue,
+              ...setting.value
+            };
+            console.log(`✅ Remote config applied for: ${setting.key}`);
+          }
         }
       });
     }

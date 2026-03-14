@@ -67,21 +67,21 @@ const HeroProfile = () => {
 
   if (loading) {
     return (
-      <section className="min-w-[100vw] h-full flex items-center justify-center snap-center bg-bg-base">
+      <section className="w-full min-h-screen lg:min-w-[100vw] lg:h-screen flex items-center justify-center snap-center bg-bg-base">
         <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
       </section>
     );
   }
 
   return (
-    <section className="min-w-[100vw] h-full flex items-center justify-center snap-center px-8 md:px-24 relative overflow-hidden bg-bg-base transition-colors duration-500">
+    <section className="w-full min-h-screen lg:min-w-[100vw] lg:h-screen flex items-center justify-center snap-center px-6 sm:px-10 lg:px-24 py-28 lg:py-0 relative overflow-hidden bg-bg-base transition-colors duration-500">
       {/* Dynamic Background Elements */}
       <div className="absolute inset-0 opacity-40 pointer-events-none">
         <div className="absolute top-1/4 -left-20 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[160px] animate-float"></div>
         <div className="absolute bottom-1/4 -right-20 w-[500px] h-[500px] bg-soft-green/10 rounded-full blur-[140px] animate-float" style={{ animationDelay: '2s' }}></div>
       </div>
 
-      <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 gap-20 items-center relative z-10">
+      <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-20 items-center relative z-10">
 
         <div className="lg:col-span-7 space-y-12">
           <motion.div 
@@ -102,7 +102,7 @@ const HeroProfile = () => {
                   initial={{ opacity: 0, x: -50 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ type: "spring", stiffness: 100 }}
-                  className="heading-xl !text-7xl md:!text-[110px]"
+                  className="heading-xl !text-4xl sm:!text-6xl md:!text-7xl lg:!text-[110px]"
                 >
                   {t('HERO.WELCOME_A')} <br />
                   <span className="text-primary italic font-serif font-light">Insight</span>
@@ -148,7 +148,7 @@ const HeroProfile = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4 }}
-                className="text-2xl leading-relaxed text-text-dim max-w-xl font-serif font-light"
+                className="text-lg sm:text-xl md:text-2xl leading-relaxed text-text-dim max-w-xl font-serif font-light"
               >
                 {t('HERO.DESCRIPTION')}
               </motion.p>
@@ -158,7 +158,7 @@ const HeroProfile = () => {
                 transition={{ delay: 0.6 }}
                 className="flex gap-6 pt-8"
               >
-                <Link to="/auth" className="btn-main !rounded-full px-14 py-6 flex items-center gap-4 group">
+                <Link to="/auth" className="btn-main !rounded-full px-8 sm:px-14 py-4 sm:py-6 flex items-center gap-4 group">
                   {t('LABELS.GET_STARTED')} <ArrowRight size={22} className="text-primary group-hover:translate-x-2 transition-transform" />
                 </Link>
               </motion.div>
@@ -202,7 +202,7 @@ const HeroProfile = () => {
                   </button>
                 </div>
 
-                <div className="pt-20 pb-12 px-12 space-y-8">
+                <div className="pt-20 pb-8 px-6 sm:px-10 space-y-8">
                   <AnimatePresence mode="wait">
                     {isEditing ? (
                       <motion.div 
@@ -296,7 +296,7 @@ const HeroProfile = () => {
           ) : (
             <div className="relative group cursor-pointer perspective-1000">
               <div className="absolute -inset-14 bg-primary/10 rounded-full blur-[120px] group-hover:bg-primary/20 transition-all duration-1000 animate-pulse"></div>
-              <img alt="Atmosphere" className="relative rounded-[72px] shadow-deep border-[12px] border-bg-card object-cover h-[650px] w-full group-hover:rotate-y-12 group-hover:scale-[1.03] transition-all duration-1000" src={APP_CONFIG.PLACEHOLDER_HERO_IMAGE} />
+              <img alt="Atmosphere" className="relative rounded-[40px] sm:rounded-[72px] shadow-deep border-[8px] sm:border-[12px] border-bg-card object-cover h-[300px] sm:h-[450px] lg:h-[600px] w-full group-hover:scale-[1.03] transition-all duration-1000" src={APP_CONFIG.PLACEHOLDER_HERO_IMAGE} />
               <div className="absolute inset-0 bg-gradient-to-t from-text-main/60 to-transparent rounded-[72px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
               <div className="absolute bottom-12 left-12 right-12 bg-bg-card/80 backdrop-blur-3xl p-10 rounded-[48px] border border-white/20 shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-1000 translate-y-20 group-hover:translate-y-0">
                  <p className="text-text-main font-serif italic text-xl text-center leading-relaxed">"Science is the atmospheric lens through which we decipher the invisible flux of our planet."</p>

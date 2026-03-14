@@ -77,7 +77,7 @@ const CameraAI = () => {
   };
 
   return (
-    <main className="flex flex-1 p-6 gap-6 flex-col lg:flex-row max-w-[1600px] mx-auto w-full mt-20">
+    <main className="flex flex-1 p-4 sm:p-6 gap-6 flex-col lg:flex-row max-w-[1600px] mx-auto w-full mt-16 sm:mt-20">
       <aside className="flex w-full lg:w-72 flex-col gap-6">
         <div className="bg-bg-card p-6 rounded-2xl shadow-sm border border-text-main/5">
           <div className="flex items-center justify-between mb-4">

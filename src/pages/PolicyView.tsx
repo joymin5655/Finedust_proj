@@ -132,7 +132,7 @@ const PolicyView = () => {
   })).filter(ds => ds.data.length > 0);
 
   return (
-    <div className="pt-32 pb-24 max-w-7xl mx-auto px-8 flex flex-col gap-12 transition-colors duration-500">
+    <div className="pt-28 pb-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-10 lg:gap-12 transition-colors duration-500">
       <Helmet>
         <title>Policy Lab | AirLens Causal Intelligence</title>
         <meta name="description" content="Decode the pure policy effect on air quality using Synthetic Diff-in-Diff analysis." />
@@ -168,13 +168,13 @@ const PolicyView = () => {
           <div className="flex gap-2 p-1.5 bg-bg-base rounded-[24px] w-fit border border-border-subtle backdrop-blur-xl shadow-inner">
             <button 
               onClick={() => setViewMode('analysis')}
-              className={`flex items-center gap-3 px-8 py-3 rounded-[20px] text-label transition-all duration-500 ${viewMode === 'analysis' ? 'bg-bg-card text-text-main shadow-xl border border-white/10' : 'text-text-dim hover:bg-bg-card/40'}`}
+              className={`flex items-center gap-2 px-4 sm:px-8 py-3 rounded-[20px] text-label transition-all duration-500 ${viewMode === 'analysis' ? 'bg-bg-card text-text-main shadow-xl border border-white/10' : 'text-text-dim hover:bg-bg-card/40'}`}
             >
               <Layout size={16} className={viewMode === 'analysis' ? 'text-primary' : ''} /> Matrix Analysis
             </button>
             <button 
               onClick={() => setViewMode('comparison')}
-              className={`flex items-center gap-3 px-8 py-3 rounded-[20px] text-label transition-all duration-500 ${viewMode === 'comparison' ? 'bg-bg-card text-text-main shadow-xl border border-white/10' : 'text-text-dim hover:bg-bg-card/40'}`}
+              className={`flex items-center gap-2 px-4 sm:px-8 py-3 rounded-[20px] text-label transition-all duration-500 ${viewMode === 'comparison' ? 'bg-bg-card text-text-main shadow-xl border border-white/10' : 'text-text-dim hover:bg-bg-card/40'}`}
             >
               <GitCompare size={16} className={viewMode === 'comparison' ? 'text-primary' : ''} /> Cross-Border
             </button>

@@ -14,12 +14,12 @@ const PlatformHub = () => {
   ];
 
   return (
-    <section className="min-w-[100vw] h-full flex items-center justify-center snap-center px-8 md:px-24 bg-bg-base/50 relative overflow-hidden transition-colors duration-500">
+    <section className="w-full min-h-screen lg:min-w-[100vw] lg:h-screen flex items-center justify-center snap-center px-6 sm:px-10 lg:px-24 py-28 lg:py-0 bg-bg-base/50 relative overflow-hidden transition-colors duration-500">
       <div className="absolute inset-0 opacity-10 pointer-events-none">
          <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-primary/20 rounded-full blur-[150px]"></div>
       </div>
 
-      <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-20 items-center relative z-10">
+      <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20 items-center relative z-10">
         <div className="space-y-16">
           <div className="space-y-8">
             <motion.div 
@@ -32,7 +32,7 @@ const PlatformHub = () => {
               </div>
               <span className="text-label !text-primary">Platform Intelligence Modules</span>
             </motion.div>
-            <h2 className="heading-xl !text-6xl md:!text-8xl">
+            <h2 className="heading-xl !text-4xl sm:!text-5xl md:!text-6xl lg:!text-8xl">
               Atmospheric <br/><span className="italic font-serif font-light text-primary">Ecosystem</span>
             </h2>
           </div>
@@ -65,7 +65,7 @@ const PlatformHub = () => {
 
         <motion.div 
           whileHover={{ scale: 1.02 }}
-          className="bg-text-main text-bg-base p-16 rounded-[64px] shadow-deep relative overflow-hidden group perspective-1000"
+          className="bg-text-main text-bg-base p-8 sm:p-12 lg:p-16 rounded-[40px] lg:rounded-[64px] shadow-deep relative overflow-hidden group perspective-1000"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
           <div className="absolute top-0 right-0 p-16 opacity-5 group-hover:scale-125 group-hover:rotate-12 transition-all duration-1000">

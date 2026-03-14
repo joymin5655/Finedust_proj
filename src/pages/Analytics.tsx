@@ -73,7 +73,7 @@ const Analytics = () => {
   ];
 
   return (
-    <div className="pt-32 pb-24 max-w-7xl mx-auto px-8 space-y-16">
+    <div className="pt-28 pb-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 lg:space-y-16">
       <Helmet>
         <title>Analytics | AirLens Global Matrix</title>
         <meta name="description" content="Real-time global trends and comparative policy effectiveness across 66 countries." />

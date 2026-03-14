@@ -15,7 +15,7 @@ const IntelligenceEngines = () => {
   ];
 
   return (
-    <section className="min-w-[100vw] h-full flex items-center justify-center snap-center px-8 md:px-24 bg-bg-base/30 relative overflow-hidden transition-colors duration-500">
+    <section className="w-full min-h-screen lg:min-w-[100vw] lg:h-screen flex items-center justify-center snap-center px-6 sm:px-10 lg:px-24 py-28 lg:py-0 bg-bg-base/30 relative overflow-hidden transition-colors duration-500">
       <div className="absolute top-0 right-0 w-full h-full opacity-5 pointer-events-none">
          <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/20 rounded-full blur-[200px]"></div>
       </div>
@@ -30,7 +30,7 @@ const IntelligenceEngines = () => {
               <TrendingUp size={16} className="text-primary" />
               <span className="text-label !text-text-main">{t('LABELS.SCIENTIFIC_INTEGRITY')}</span>
             </motion.div>
-            <h2 className="heading-xl !text-6xl md:!text-8xl">
+            <h2 className="heading-xl !text-4xl sm:!text-5xl md:!text-6xl lg:!text-8xl">
               Glass-box <span className="italic font-serif font-light text-primary">Intelligence</span>
             </h2>
           </div>

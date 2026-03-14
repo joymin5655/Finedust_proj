@@ -71,12 +71,12 @@ const LocalSensing = () => {
   };
 
   return (
-    <section className="min-w-[100vw] h-full flex items-center justify-center snap-center px-8 md:px-24 bg-bg-base/50 relative overflow-hidden transition-colors duration-500">
+    <section className="w-full min-h-screen lg:min-w-[100vw] lg:h-screen flex items-center justify-center snap-center px-6 sm:px-10 lg:px-24 py-28 lg:py-0 bg-bg-base/50 relative overflow-hidden transition-colors duration-500">
       <div className="absolute inset-0 opacity-10 pointer-events-none">
          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_center,rgba(37,226,244,0.1)_0,transparent_70%)]"></div>
       </div>
 
-      <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 gap-20 items-start relative z-10">
+      <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-20 items-start relative z-10">
         <div className="lg:col-span-4 space-y-12">
           <div className="space-y-8">
             <motion.div 
@@ -89,7 +89,7 @@ const LocalSensing = () => {
               </div>
               <span className="text-label !text-primary">Local Intelligence Hub</span>
             </motion.div>
-            <h2 className="heading-xl !text-6xl md:!text-8xl">
+            <h2 className="heading-xl !text-4xl sm:!text-5xl md:!text-6xl lg:!text-8xl">
               Real-time <br/><span className="italic font-serif font-light text-primary">Sensing</span>
             </h2>
 

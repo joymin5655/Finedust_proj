@@ -133,7 +133,7 @@ const Pricing = () => {
         ))}
       </div>
 
-      <div className="mt-20 narrative-card !bg-primary/5 border-dashed border-2 border-primary/20 p-16 text-center flex flex-col items-center gap-8">
+      <div className="mt-20 narrative-card !bg-primary/5 border-dashed border-2 border-primary/20 p-8 sm:p-12 lg:p-16 text-center flex flex-col items-center gap-8">
         <div className="p-5 bg-bg-card rounded-full shadow-glow border border-primary/20">
           <ShieldCheck className="text-primary" size={48} />
         </div>

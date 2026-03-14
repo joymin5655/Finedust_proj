@@ -45,9 +45,10 @@ const CameraAI = () => {
       
       setSaved(true);
       console.log('✅ Capture stored securely in Supabase');
-    } catch (err: any) { 
-      console.error('Supabase Storage Error:', err.message);
-      alert(`Save failed: ${err.message}. Please check your connection or RLS policies.`); 
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      console.error('Supabase Storage Error:', errorMessage);
+      alert(`Save failed: ${errorMessage}. Please check your connection or RLS policies.`);
     } finally { 
       setSaving(false); 
     }

@@ -1,34 +1,122 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #2e7d32; /* Forest */
+  /* Unified Brand Colors */
+  --color-primary: #25e2f4;
+  --color-primary-glow: rgba(37, 226, 244, 0.4);
   --color-forest: #2e7d32;
-  --color-earth-brown: #5d4037;
+  --color-earth-brown: #102122;
   --color-sage: #e8f5e9;
-  --color-warm-cream: #fffbf2;
-  --color-clay: #a1887f;
-  --color-soft-green: #81c784;
+  --color-warm-cream: #f8fafc;
+  --color-clay: #64748b;
+  --color-soft-green: #10b981;
+
+  /* Semantic Theme Variables */
+  --color-bg-base: var(--bg-base);
+  --color-bg-card: var(--bg-card);
+  --color-text-main: var(--text-main);
+  --color-text-dim: var(--text-dim);
+  --color-border-subtle: var(--border-subtle);
 
   --font-serif: "Crimson Pro", serif;
   --font-sans: "Inter", sans-serif;
+  
+  --shadow-deep: 0 12px 48px -12px rgba(16, 33, 34, 0.12);
+  --shadow-glow: 0 0 20px var(--color-primary-glow);
 }
 
-body {
-  background-color: #fffbf2;
-  background-image: radial-gradient(#e8f5e9 1px, transparent 1px);
-  background-size: 40px 40px;
-  @apply font-serif text-earth-brown antialiased selection:bg-soft-green/30;
+:root {
+  --bg-base: #f8fafc;
+  --bg-card: rgba(255, 255, 255, 0.7);
+  --text-main: #102122;
+  --text-dim: #64748b;
+  --border-subtle: rgba(16, 33, 34, 0.08);
+  --noise-opacity: 0.02;
+}
+
+.dark {
+  --bg-base: #0a0f12;
+  --bg-card: rgba(16, 33, 34, 0.6);
+  --text-main: #f8fafc;
+  --text-dim: #94a3b8;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --noise-opacity: 0.04;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-bg-base);
+    background-image: radial-gradient(circle at 2px 2px, var(--border-subtle) 1px, transparent 0);
+    background-size: 48px 48px;
+    @apply font-sans text-text-main antialiased selection:bg-primary/30 overflow-x-hidden transition-colors duration-500;
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    opacity: var(--noise-opacity);
+    z-index: 9999;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  }
+
+  #root {
+    @apply min-h-screen flex flex-col;
+  }
 }
 
 @layer utilities {
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  
   .narrative-card {
-    @apply bg-white/60 backdrop-blur-sm border border-earth-brown/10 shadow-sm rounded-3xl p-6 transition-all duration-500 hover:shadow-xl hover:bg-white/80;
+    @apply bg-bg-card backdrop-blur-xl border border-white/10 dark:border-white/5 shadow-deep rounded-[40px] p-8 transition-all duration-700 hover:shadow-glow hover:bg-white/10 dark:hover:bg-white/5 hover:-translate-y-1;
   }
+  
   .glass-panel {
-    @apply bg-white/40 backdrop-blur-md border border-white/20 rounded-2xl shadow-sm;
+    @apply bg-bg-card backdrop-blur-2xl border border-white/20 dark:border-white/10 rounded-3xl shadow-sm;
+  }
+
+  .glass-island {
+    @apply bg-bg-card/80 backdrop-blur-3xl border border-white/30 dark:border-white/10 rounded-full shadow-2xl;
+  }
+
+  .text-glow {
+    text-shadow: 0 0 10px var(--color-primary-glow);
+  }
+
+  .bg-atmospheric {
+    background: linear-gradient(135deg, var(--bg-base) 0%, var(--border-subtle) 100%);
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  /* Unified Typography */
+  .heading-xl {
+    @apply font-sans font-black text-4xl sm:text-6xl tracking-tighter leading-[0.9] text-text-main;
+  }
+
+  .heading-lg {
+    @apply font-sans font-black text-2xl sm:text-4xl tracking-tight leading-tight text-text-main;
+  }
+
+  .text-p {
+    @apply font-sans text-sm sm:text-base leading-relaxed text-text-dim;
+  }
+
+  .text-label {
+    @apply font-sans text-[10px] font-black uppercase tracking-[0.2em] text-text-dim;
   }
 }
 
-#root { @apply min-h-screen flex flex-col; }
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}

@@ -9,6 +9,7 @@ import {
   Legend,
   Filler,
 } from 'chart.js';
+import type { TooltipItem } from 'chart.js';
 import annotationPlugin from 'chartjs-plugin-annotation';
 import { Line } from 'react-chartjs-2';
 import type { TimelineEvent } from '../logic/types';
@@ -35,10 +36,9 @@ const PolicyTimelineChart = ({ timeline, implementationDate }: PolicyTimelineCha
     labels: timeline.map(t => t.date),
     datasets: [
       {
-        label: 'PM2.5 (µg/m³)',
+        label: 'Actual PM2.5',
         data: timeline.map(t => t.pm25),
-        fill: true,
-        backgroundColor: 'rgba(37, 226, 244, 0.1)',
+        fill: false,
         borderColor: '#25e2f4',
         borderWidth: 3,
         pointBackgroundColor: '#25e2f4',
@@ -46,6 +46,19 @@ const PolicyTimelineChart = ({ timeline, implementationDate }: PolicyTimelineCha
         pointHoverBackgroundColor: '#fff',
         pointHoverBorderColor: '#25e2f4',
         tension: 0.4,
+        zIndex: 2,
+      },
+      {
+        label: 'Synthetic Counterfactual',
+        data: timeline.map(t => t.syntheticPM25 || null),
+        fill: true,
+        backgroundColor: 'rgba(156, 163, 175, 0.05)',
+        borderColor: 'rgba(156, 163, 175, 0.4)',
+        borderWidth: 2,
+        borderDash: [5, 5],
+        pointRadius: 0,
+        tension: 0.4,
+        zIndex: 1,
       },
     ],
   };
@@ -55,19 +68,29 @@ const PolicyTimelineChart = ({ timeline, implementationDate }: PolicyTimelineCha
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        display: false,
+        display: true,
+        position: 'top' as const,
+        align: 'end' as const,
+        labels: {
+          usePointStyle: true,
+          pointStyle: 'circle',
+          padding: 20,
+          font: { size: 10, weight: 'bold' as const, family: 'Inter' },
+          color: '#64748b',
+        }
       },
       tooltip: {
         backgroundColor: 'rgba(16, 33, 34, 0.9)',
         titleFont: { size: 12, weight: 'bold' as const },
         bodyFont: { size: 14 },
         padding: 12,
-        cornerRadius: 8,
-        displayColors: false,
+        cornerRadius: 12,
+        displayColors: true,
         callbacks: {
-          afterBody: (context: any) => {
+          afterBody: (context: TooltipItem<"line">[]) => {
             const index = context[0].dataIndex;
-            return `Event: ${timeline[index].event}`;
+            const event = timeline[index].event;
+            return event ? `Event: ${event}` : '';
           }
         }
       },
@@ -82,12 +105,26 @@ const PolicyTimelineChart = ({ timeline, implementationDate }: PolicyTimelineCha
             borderDash: [6, 6],
             label: {
               display: true,
-              content: 'Implementation',
-              position: 'start' as const,
-              backgroundColor: '#f97316',
+              content: 'Policy Implementation',
+              position: 'center' as const,
+              backgroundColor: 'rgba(249, 115, 22, 0.9)',
               color: '#fff',
               font: { size: 10, weight: 'bold' as const },
-              padding: 4,
+              padding: 6,
+              borderRadius: 4,
+            }
+          },
+          box1: {
+            type: 'box' as const,
+            xMin: implementationDate,
+            backgroundColor: 'rgba(37, 226, 244, 0.03)',
+            borderWidth: 0,
+            label: {
+              display: true,
+              content: 'POST-POLICY EFFECT',
+              position: 'start' as const,
+              color: 'rgba(37, 226, 244, 0.4)',
+              font: { size: 9, weight: 'bold' as const, family: 'Inter' },
             }
           }
         }
@@ -95,13 +132,14 @@ const PolicyTimelineChart = ({ timeline, implementationDate }: PolicyTimelineCha
     },
     scales: {
       y: {
-        beginAtZero: true,
+        beginAtZero: false,
         grid: {
-          color: 'rgba(156, 163, 175, 0.1)',
+          color: 'rgba(156, 163, 175, 0.05)',
         },
         ticks: {
           color: '#9ca3af',
           font: { size: 10 },
+          callback: (value: string | number) => `${value} µg/m³`,
         }
       },
       x: {
@@ -113,14 +151,14 @@ const PolicyTimelineChart = ({ timeline, implementationDate }: PolicyTimelineCha
           font: { size: 10 },
           maxRotation: 0,
           autoSkip: true,
-          maxTicksLimit: 6,
+          maxTicksLimit: 8,
         }
       }
     }
   };
 
   return (
-    <div className="h-[300px] w-full">
+    <div className="h-full w-full p-4">
       <Line data={data} options={options} />
     </div>
   );

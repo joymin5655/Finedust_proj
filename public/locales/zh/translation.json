@@ -1,0 +1,27 @@
+{
+  "HERO": {
+    "MISSION_TAG": "v1.0 大气智能",
+    "QUOTE": "我们将大气解读为数据，而您成为这些数据的见证者。",
+    "DESCRIPTION": "AirLens 是一个透明的智能平台，超越简单的数字，通过人工智能和大气科学揭示环境的真相。",
+    "TITLE_A": "超越数字，",
+    "TITLE_B": "迈向真相。"
+  },
+  "LABELS": {
+    "NEW_MEASUREMENT": "新测量",
+    "EXPLORE_DATA": "探索数据",
+    "GET_STARTED": "开始使用",
+    "SIGN_OUT": "登出",
+    "EDIT_PROFILE": "编辑资料",
+    "SAVE_CHANGES": "保存更改",
+    "CITIZEN_SCIENTIST": "公民科学家",
+    "ADMIN": "管理员"
+  },
+  "NAV": {
+    "STORY": "我们的故事",
+    "GLOBE": "地球仪",
+    "METHODS": "方法",
+    "IMPACT": "影响",
+    "RESOURCES": "资源",
+    "SIGN_IN": "登录"
+  }
+}

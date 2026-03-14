@@ -64,7 +64,7 @@ serve(async (req) => {
     // based on the granule's existence, or use a simplified NASA API if OPeNDAP is complex to auth in Deno.
     
     // Extracting the direct download URL as a fallback/reference
-    const downloadLink = latestGranule.links.find((l: any) => l.rel === "http://esipfed.org/ns/fedsearch/1.1/data#" && l.href.endsWith('.hdf'))?.href
+    const downloadLink = latestGranule.links.find((l: Record<string, string>) => l.rel === "http://esipfed.org/ns/fedsearch/1.1/data#" && l.href.endsWith('.hdf'))?.href
 
     // 3. Process AOD (Simulated direct processing for the proof of concept)
     // Real direct processing would involve:
@@ -96,9 +96,9 @@ serve(async (req) => {
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
     )
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: error instanceof Error ? error.message : String(error) }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
     )
   }

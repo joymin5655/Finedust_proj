@@ -1,0 +1,52 @@
+{
+  "HERO": {
+    "MISSION_TAG": "v1.0 大気インテリジェンス",
+    "QUOTE": "私たちは大気をデータとして読み解き、あなたはそのデータの目격者となります。",
+    "DESCRIPTION": "AirLensは、単純な数字を超え、AIと大気科学を通じて環境の真実を明らかにする透明なインテ리ジェンスプラットフォームです。",
+    "TITLE_A": "数字を超えて、",
+    "TITLE_B": "真実へ。",
+    "WELCOME_A": "あなたの",
+    "WELCOME_B": "パーソナルハブへようこそ。"
+  },
+  "DASHBOARD": {
+    "ENGINE_AOD_DESC": "XGBoost-GTWRモデルを使用して、衛星AODを地上のPM2.5に精密に校正します。",
+    "ENGINE_SDID_DESC": "Synthetic DIDを使用して、68カ国の政策効果を分析し、因果関係を証明します。",
+    "ENGINE_DQSS_DESC": "5つのパラメータにわたるデータ品質をスコアリングし、不確実性を開示します。",
+    "EMPTY_VAULT": "最初の空気質測定を開始し、独自の透明なマップを完成させてください。",
+    "NO_CAPTURES": "保管庫に測定記録が見つかりません。"
+  },
+  "CAMERA": {
+    "PHYSICS_ENGINE_DESC": "Beer-Lambert法を強制するPINN構造により、霧とPM2.5を区別します。DINOv2ベースの自己教師ありモデルがヘイズパターンを抽出します。"
+  },
+  "LABELS": {
+    "NEW_MEASUREMENT": "新規測定",
+    "EXPLORE_DATA": "データを探索",
+    "GET_STARTED": "今すぐ始める",
+    "SIGN_OUT": "サインアウト",
+    "EDIT_PROFILE": "プロフィール編集",
+    "SAVE_CHANGES": "変更を保存",
+    "SAVING": "保存中...",
+    "CANCEL": "キャンセル",
+    "CITIZEN_SCIENTIST": "市民科学者",
+    "INTEL_MANAGER": "AirLens インテリジェンスマネージャー",
+    "ADMIN": "管理者",
+    "METHODS": "メソッド",
+    "OPEN_PIPELINE": "オープンパイプライン",
+    "GLOBAL_FLUX": "グローバルフラックス",
+    "VISION_SENSING": "ビジョンセンシング",
+    "IMPACT_LAB": "インパクトラボ",
+    "ADMIN_CONSOLE": "管理コンソール",
+    "SYTEM_MONITORING": "システムモニタリング",
+    "SCIENTIFIC_INTEGRITY": "科学的完全性",
+    "PURPOSE": "私たちは「見せる」だけでは終わりません。衛星データで測定のギャップを埋め、AIモデルの信頼区間をp10〜p90として透明に開示することで、科学的完全性を維持します。"
+  },
+  "NAV": {
+    "STORY": "ストーリー",
+    "GLOBE": "地球儀",
+    "METHODS": "メソッド",
+    "IMPACT": "インパクト",
+    "RESOURCES": "リソース",
+    "SIGN_IN": "サインイン",
+    "SIGN_OUT": "サインアウト"
+  }
+}

@@ -2,25 +2,30 @@ import { APP_CONFIG } from '../logic/config';
 
 const Footer = () => {
   return (
-    <footer className="bg-warm-cream border-t border-earth-brown/10 py-8 mt-auto">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-forest text-xs font-sans font-bold uppercase tracking-widest">
-            © {new Date().getFullYear()} {APP_CONFIG.APP_NAME}. Data powered by {APP_CONFIG.APP_NAME} Intelligence.
-          </p>
-          <div className="flex gap-6 items-center">
-             <div className="flex items-center gap-2 bg-sage/50 px-3 py-1.5 rounded-full border border-soft-green/10">
-              <span className="w-2 h-2 rounded-full bg-forest shadow-[0_0_8px_rgba(46,125,50,0.5)] animate-pulse"></span>
-              <span className="font-bold text-forest text-[10px] font-sans uppercase tracking-tight">Environmental Sensing Network Active</span>
-            </div>
+    <footer className="bg-bg-base border-t border-text-main/10 py-12 mt-auto transition-colors duration-500">
+      <div className="max-w-7xl mx-auto px-8 text-center flex flex-col md:flex-row justify-between items-center gap-8">
+        <p className="text-label !text-text-dim/60">
+          © {new Date().getFullYear()} {APP_CONFIG.APP_NAME}. Data powered by <span className="text-primary italic">Atmospheric Matrix</span>.
+        </p>
+        
+        <div className="flex flex-col sm:flex-row gap-8 items-center">
+          <div className="flex items-center gap-3 bg-text-main/5 px-5 py-2.5 rounded-full border border-text-main/10 backdrop-blur-xl">
+            <span className="w-1.5 h-1.5 rounded-full bg-primary shadow-glow animate-pulse"></span>
+            <span className="text-label !text-text-main !tracking-tight">Environmental Sensing Matrix v1.1 Active</span>
+          </div>
+          
+          <div className="flex gap-8 items-center">
             <a
               href={APP_CONFIG.GITHUB_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-forest hover:text-forest/80 text-[10px] font-bold uppercase tracking-widest font-sans border-b border-forest/20"
+              className="text-label !text-text-dim hover:!text-primary transition-all duration-300 relative group"
             >
-              GitHub
+              Intelligence Base
+              <span className="absolute -bottom-1 left-0 w-0 h-px bg-primary transition-all duration-300 group-hover:w-full"></span>
             </a>
+            <span className="w-1 h-1 rounded-full bg-text-dim/20"></span>
+            <span className="text-label !text-text-dim/40 italic">Decoding the Invisible</span>
           </div>
         </div>
       </div>

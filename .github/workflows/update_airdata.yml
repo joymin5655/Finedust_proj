@@ -29,12 +29,15 @@ jobs:
         env:
           EARTHDATA_USER: ${{ secrets.EARTHDATA_USER }}
           EARTHDATA_PASS: ${{ secrets.EARTHDATA_PASS }}
-        run: python AirLens/scripts/python/fetch_earthdata_aod.py
+        run: python legacy-vanilla/scripts/python/fetch_earthdata_aod.py
 
-      - name: Fetch OpenAQ & WAQI
+      - name: Sync to Supabase
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
         run: |
-          # If other scripts are ready, run them here
-          python AirLens/scripts/python/fetch_openaq.py || echo "OpenAQ script failed but continuing..."
+          node scripts/sync-to-supabase.js || echo "Supabase Sync failed but continuing..."
 
       - name: Commit and Push changes
         run: |

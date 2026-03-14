@@ -1,0 +1,27 @@
+{
+  "HERO": {
+    "MISSION_TAG": "v1.0 Intelligence Atmosphérique",
+    "QUOTE": "Nous lisons l'atmosphère comme des données, et vous devenez le témoin de ces données.",
+    "DESCRIPTION": "AirLens est une plateforme d'intelligence transparente qui va au-delà des simples chiffres pour découvrir la vérité sur l'environnement grâce à l'IA et à la science atmosphérique.",
+    "TITLE_A": "Au-delà des chiffres,",
+    "TITLE_B": "Vers la vérité."
+  },
+  "LABELS": {
+    "NEW_MEASUREMENT": "Nouvelle Mesure",
+    "EXPLORE_DATA": "Explorer les Données",
+    "GET_STARTED": "Commencer",
+    "SIGN_OUT": "Déconnexion",
+    "EDIT_PROFILE": "Modifier le Profil",
+    "SAVE_CHANGES": "Enregistrer",
+    "CITIZEN_SCIENTIST": "Citoyen Scientifique",
+    "ADMIN": "Admin"
+  },
+  "NAV": {
+    "STORY": "Notre Histoire",
+    "GLOBE": "Globe",
+    "METHODS": "Méthodes",
+    "IMPACT": "Impact",
+    "RESOURCES": "Ressources",
+    "SIGN_IN": "Se Connecter"
+  }
+}

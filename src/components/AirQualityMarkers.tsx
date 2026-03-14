@@ -17,7 +17,7 @@ const latLonToVector3 = (lat: number, lon: number, radius: number) => {
 };
 
 const AirQualityMarkers = () => {
-  const [stations, setStations] = useState<any[]>([]);
+  const [stations, setStations] = useState<Record<string, unknown>[]>([]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -35,7 +35,7 @@ const AirQualityMarkers = () => {
 
   return (
     <group>
-      {stations.map((station, idx) => {
+      {stations.map((station: any, idx) => {
         const [lat, lon] = station.location.geo;
         const position = latLonToVector3(lat, lon, 1.005); // Slightly above globe surface
         const pm25 = station.pollutants.pm25 || 0;

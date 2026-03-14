@@ -22,7 +22,7 @@ export const fetchPolicyIndex = async (): Promise<PolicyIndexEntry[]> => {
   }
 
   // 기존 PolicyIndexEntry 타입에 맞춰 데이터 가공
-  return (data as any[]).map(item => ({
+  return (data as unknown[]).map((item: any) => ({
     country: item.country,
     countryCode: item.countryCode,
     region: item.region,
@@ -36,13 +36,8 @@ export const fetchPolicyIndex = async (): Promise<PolicyIndexEntry[]> => {
 /**
  * 특정 국가의 정책 데이터 가져오기 (Supabase countries + policies 조인)
  */
-export const fetchCountryPolicy = async (countryCodeOrFile: string): Promise<CountryPolicy> => {
-  // 파일명(예: 'china.json')이 넘어오는 경우와 국가 코드가 넘어오는 경우 모두 처리
-  const lookupValue = countryCodeOrFile.includes('.json') 
-    ? countryCodeOrFile.split('.')[0].replace(/-/g, ' ')
-    : countryCodeOrFile;
-
-  const query = supabase
+export const fetchCountryPolicy = async (countryCode: string): Promise<CountryPolicy> => {
+  const { data, error } = await supabase
     .from('countries')
     .select(`
       country:name,
@@ -51,12 +46,9 @@ export const fetchCountryPolicy = async (countryCodeOrFile: string): Promise<Cou
       flag,
       coordinates,
       policies (*)
-    `);
-
-  // 코드(2글자)인지 이름인지에 따라 쿼리 분기
-  const { data, error } = lookupValue.length === 2 
-    ? await query.eq('code', lookupValue.toUpperCase()).single()
-    : await query.ilike('name', `%${lookupValue}%`).single();
+    `)
+    .eq('code', countryCode.toUpperCase())
+    .single();
 
   if (error) {
     console.error('Error fetching country policy:', error);

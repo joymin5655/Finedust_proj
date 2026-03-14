@@ -1,3 +1,10 @@
+# ===== AI / 작업 기록 (GitHub 미포함) =====
+GEMINI.md
+blueprint.md
+/home/user/.gemini/
+.gemini/
+docs/*.md
+
 # ===== 보안: 절대 커밋 금지 =====
 .env
 .env.*

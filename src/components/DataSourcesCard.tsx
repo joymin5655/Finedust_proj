@@ -1,5 +1,6 @@
-import { Radio, Satellite, ShieldCheck, Database } from 'lucide-react';
+import { Radio, Satellite, ShieldCheck, Database, Cpu, Network } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { motion } from 'framer-motion';
 
 interface DataSourcesCardProps {
   sources: string[];
@@ -11,72 +12,96 @@ const DataSourcesCard = ({ sources, dqss, loading }: DataSourcesCardProps) => {
   const { t } = useTranslation();
 
   return (
-    <div className="rounded-[2.5rem] border border-earth-brown/10 bg-white/80 dark:bg-black/40 p-8 shadow-xl backdrop-blur-md relative overflow-hidden group">
-      <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:scale-110 transition-transform">
-        <Database size={100} />
+    <motion.div 
+      whileHover={{ y: -5 }}
+      className="narrative-card !p-8 shadow-2xl relative overflow-hidden group transition-colors duration-500"
+    >
+      <div className="absolute top-0 right-0 p-8 text-primary/5 group-hover:scale-125 group-hover:rotate-12 transition-all duration-1000">
+        <Network size={120} />
       </div>
 
       <div className="flex items-center justify-between mb-8 relative z-10">
-        <div className="flex items-center gap-3">
-          <div className="bg-forest/10 p-2 rounded-xl">
-            <ShieldCheck className="text-forest w-5 h-5" />
+        <div className="flex items-center gap-4">
+          <div className="bg-primary/20 p-3 rounded-2xl shadow-glow">
+            <ShieldCheck className="text-primary w-6 h-6" />
           </div>
           <div>
-            <p className="text-[10px] uppercase tracking-widest text-clay font-black">{t('LABELS.INTEGRITY_SCORE')}</p>
-            <h3 className="text-xl font-bold text-earth-brown">DQSS: {loading ? '--' : dqss}</h3>
+            <p className="text-label !text-text-dim">{t('LABELS.INTEGRITY_SCORE')}</p>
+            <h3 className="heading-lg !text-2xl !text-text-main">DQSS: {loading ? '--' : dqss}</h3>
           </div>
+        </div>
+        <div className="flex flex-col items-end">
+           <div className="w-2 h-2 rounded-full bg-primary animate-ping"></div>
+           <span className="text-[8px] font-black uppercase tracking-widest text-primary mt-1">Active</span>
         </div>
       </div>
 
       <div className="space-y-6 relative z-10">
-        <p className="text-xs font-bold text-clay uppercase tracking-widest border-b border-earth-brown/5 pb-2">
-          {t('LABELS.ACTIVE_PIPELINES')}
-        </p>
+        <div className="flex items-center justify-between pb-3">
+           <p className="text-label !text-text-dim">
+            {t('LABELS.ACTIVE_PIPELINES')}
+           </p>
+           <span className="text-[9px] font-black text-primary uppercase">{sources.length} Nodes</span>
+        </div>
         
         <div className="grid grid-cols-1 gap-4">
           {loading ? (
-            <div className="animate-pulse flex gap-4 items-center">
-              <div className="w-10 h-10 bg-sage/20 rounded-xl"></div>
-              <div className="flex-1 space-y-2">
-                <div className="h-2 bg-sage/20 rounded w-1/2"></div>
-                <div className="h-2 bg-sage/20 rounded w-1/4"></div>
+            Array(2).fill(0).map((_, i) => (
+              <div key={i} className="animate-pulse flex gap-4 items-center p-4 bg-text-main/5 rounded-2xl">
+                <div className="w-10 h-10 bg-text-main/10 rounded-xl"></div>
+                <div className="flex-1 space-y-2">
+                  <div className="h-2.5 bg-text-main/10 rounded w-1/2"></div>
+                  <div className="h-2 bg-text-main/10 rounded w-1/4"></div>
+                </div>
               </div>
-            </div>
+            ))
           ) : (
             sources.map((source, idx) => (
-              <div key={idx} className="flex items-center gap-4 p-3 bg-sage/10 rounded-2xl border border-soft-green/5 hover:border-forest/20 transition-all">
-                <div className="p-2 bg-white rounded-xl shadow-sm">
+              <motion.div 
+                key={idx} 
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: idx * 0.1 }}
+                className="flex items-center gap-4 p-4 bg-bg-base/50 rounded-[24px] border border-text-main/10 hover:border-primary/30 hover:bg-bg-base transition-all duration-500 shadow-sm group/item"
+              >
+                <div className="p-3 bg-text-main/5 rounded-xl group-hover/item:bg-primary/10 transition-colors shadow-inner">
                   {source.includes('NASA') || source.includes('MAIAC') ? (
-                    <Satellite size={18} className="text-forest" />
+                    <Satellite size={20} className="text-primary" />
                   ) : (
-                    <Radio size={18} className="text-blue-500" />
+                    <Radio size={20} className="text-emerald-500" />
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-earth-brown truncate">{source}</p>
-                  <p className="text-[10px] text-clay uppercase font-black tracking-tighter">
-                    {source.includes('NASA') ? 'Direct Earthdata (1km)' : 'Ground Station (REST)'}
-                  </p>
+                  <p className="text-sm font-black text-text-main truncate tracking-tight">{source}</p>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <Cpu size={10} className="text-text-dim/60" />
+                    <p className="text-[9px] text-text-dim font-black uppercase tracking-widest">
+                      {source.includes('NASA') ? 'Earthdata Fusion (1km)' : 'Ground Matrix (v4.0)'}
+                    </p>
+                  </div>
                 </div>
                 {source.includes('NASA') && (
-                  <div className="bg-forest text-warm-cream text-[8px] px-2 py-0.5 rounded-full font-black uppercase animate-pulse">
+                  <div className="bg-primary/20 text-primary text-[8px] px-2.5 py-1 rounded-full font-black uppercase tracking-tighter border border-primary/20">
                     Live
                   </div>
                 )}
-              </div>
+              </motion.div>
             ))
           )}
         </div>
       </div>
 
-      <div className="mt-8 pt-6 border-t border-earth-brown/5 flex items-center justify-between relative z-10">
-        <div className="flex items-center gap-2">
-          <div className={`w-2 h-2 rounded-full ${dqss > 80 ? 'bg-soft-green' : 'bg-amber-400'}`}></div>
-          <span className="text-[10px] font-bold text-clay uppercase">{dqss > 80 ? 'High Confidence' : 'Hybrid Estimating'}</span>
+      <div className="mt-8 pt-6 border-t border-text-main/5 flex items-center justify-between relative z-10">
+        <div className="flex items-center gap-3">
+          <div className={`w-2.5 h-2.5 rounded-full shadow-lg ${dqss > 80 ? 'bg-primary shadow-glow' : 'bg-amber-400 shadow-amber-400/20'}`}></div>
+          <span className="text-label !text-text-main">{dqss > 80 ? 'High Confidence' : 'Hybrid Estimating'}</span>
         </div>
-        <span className="text-[10px] text-clay/40 font-serif italic">v4.0 Edge Pipeline</span>
+        <div className="flex items-center gap-2 opacity-40 text-text-dim">
+           <Database size={12}/>
+           <span className="text-label !tracking-tight">Edge Matrix v1.1</span>
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

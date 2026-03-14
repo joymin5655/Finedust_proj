@@ -50,8 +50,8 @@ const About = () => {
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <div className="p-4 glass-panel !bg-white/5 border-white/10"><p className="text-[10px] font-bold text-soft-green mb-1 uppercase">GitHub Pages</p><p className="text-xs">Frontend Hosting</p></div>
-            <div className="p-4 glass-panel !bg-white/5 border-white/10"><p className="text-[10px] font-bold text-soft-green mb-1 uppercase">Cloud Run</p><p className="text-xs">FastAPI Backend</p></div>
+            <div className="p-4 glass-panel !bg-white/5 border-white/10"><p className="text-[10px] font-bold text-soft-green mb-1 uppercase">Firebase</p><p className="text-xs">CDN & Hosting</p></div>
+            <div className="p-4 glass-panel !bg-white/5 border-white/10"><p className="text-[10px] font-bold text-soft-green mb-1 uppercase">Supabase</p><p className="text-xs">Edge Functions</p></div>
           </div>
         </div>
       </section>

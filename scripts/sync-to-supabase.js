@@ -9,26 +9,33 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const supabase = createClient(
-  process.env.VITE_SUPABASE_URL,
-  process.env.VITE_SUPABASE_ANON_KEY
-);
+const supabaseUrl = process.env.VITE_SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
 
-async function migrate() {
-  console.log('🚀 Starting migration...');
+if (!supabaseUrl || !supabaseServiceKey) {
+  console.error('❌ Missing Supabase credentials. Ensure VITE_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are set.');
+  process.exit(1);
+}
 
-  // 1. Load index.json
-  const indexPath = path.join(__dirname, 'public/data/index.json');
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+async function sync() {
+  console.log('🚀 Starting synchronization to Supabase...');
+
+  const dataDir = path.join(process.cwd(), 'public/data');
+  const indexPath = path.join(dataDir, 'index.json');
+
   if (!fs.existsSync(indexPath)) {
-    console.error('index.json not found at', indexPath);
+    console.error(`❌ index.json not found at ${indexPath}`);
     return;
   }
+
   const indexData = JSON.parse(fs.readFileSync(indexPath, 'utf8'));
 
   for (const entry of indexData.countries) {
-    console.log(`\n🌍 Processing ${entry.country}...`);
+    console.log(`\n🌍 Syncing ${entry.country} (${entry.countryCode})...`);
 
-    // 2. Upsert Country
+    // 1. Upsert Country
     const { data: countryData, error: countryError } = await supabase
       .from('countries')
       .upsert({
@@ -36,20 +43,21 @@ async function migrate() {
         code: entry.countryCode,
         region: entry.region,
         flag: entry.flag,
-        coordinates: entry.coordinates
+        coordinates: entry.coordinates,
+        updated_at: new Date().toISOString()
       }, { onConflict: 'code' })
       .select()
       .single();
 
     if (countryError) {
-      console.error(`Error upserting country ${entry.country}:`, countryError.message);
+      console.error(`❌ Error upserting country ${entry.country}:`, countryError.message);
       continue;
     }
 
-    // 3. Load Country Detail JSON
-    const detailPath = path.join(__dirname, 'public/data', entry.dataFile);
+    // 2. Load Country Detail JSON
+    const detailPath = path.join(dataDir, entry.dataFile);
     if (!fs.existsSync(detailPath)) {
-      console.warn(`Detail file ${entry.dataFile} not found. Skipping policies.`);
+      console.warn(`⚠️ Detail file ${entry.dataFile} not found. Skipping policies.`);
       continue;
     }
 
@@ -75,14 +83,14 @@ async function migrate() {
         .upsert(policiesToInsert, { onConflict: 'id' });
 
       if (policyError) {
-        console.error(`Error inserting policies for ${entry.country}:`, policyError.message);
+        console.error(`❌ Error inserting policies for ${entry.country}:`, policyError.message);
       } else {
-        console.log(`✅ Successfully migrated ${policiesToInsert.length} policies for ${entry.country}.`);
+        console.log(`✅ Successfully synced ${policiesToInsert.length} policies for ${entry.country}.`);
       }
     }
   }
 
-  console.log('\n✨ Migration completed!');
+  console.log('\n✨ Synchronization completed!');
 }
 
-migrate();
+sync();

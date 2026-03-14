@@ -1,18 +1,25 @@
-import { Activity, TrendingDown, ShieldAlert, Download, PlayCircle, BarChart2, Layers, Loader2 } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import { Activity, TrendingDown, ShieldAlert, Download, PlayCircle, BarChart2, Layers, Loader2, GitCompare, Layout, Plus, X, Sparkles, Zap } from 'lucide-react';
 import CountrySelector from '../components/CountrySelector';
 import PolicyTimelineChart from '../components/PolicyTimelineChart';
 import PolicyImpactCard from '../components/PolicyImpactCard';
+import ComparisonChart from '../components/ComparisonChart';
 import { useState, useEffect } from 'react';
 import { fetchPolicyIndex, fetchCountryPolicy } from '../logic/policyService';
 import type { PolicyIndexEntry, CountryPolicy } from '../logic/types';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Helmet } from 'react-helmet-async';
 
 const PolicyView = () => {
-  const { t } = useTranslation();
   const [countries, setCountries] = useState<PolicyIndexEntry[]>([]);
   const [selectedCountry, setSelectedCountry] = useState<PolicyIndexEntry | null>(null);
   const [policyData, setPolicyData] = useState<CountryPolicy | null>(null);
   const [loading, setLoading] = useState(true);
+  
+  // Comparison state
+  const [viewMode, setViewMode] = useState<'analysis' | 'comparison'>('analysis');
+  const [compareList, setCompareList] = useState<PolicyIndexEntry[]>([]);
+  const [compareData, setCompareData] = useState<Record<string, CountryPolicy>>({});
+  const [compareLoading, setCompareLoading] = useState(false);
 
   useEffect(() => {
     const init = async () => {
@@ -29,114 +36,371 @@ const PolicyView = () => {
       }
     };
     init();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSelect = async (country: PolicyIndexEntry) => {
-    setSelectedCountry(country);
-    setLoading(true);
-    try {
-      const data = await fetchCountryPolicy(country.dataFile);
-      setPolicyData(data);
-    } catch {
-      console.error('Failed to load country policy');
-    } finally {
-      setLoading(false);
+    if (viewMode === 'analysis') {
+      setSelectedCountry(country);
+      setLoading(true);
+      try {
+        const data = await fetchCountryPolicy(country.countryCode);
+        setPolicyData(data);
+      } catch {
+        console.error('Failed to load country policy');
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      // Comparison mode: Add to list if not already there
+      if (!compareList.find(c => c.countryCode === country.countryCode)) {
+        if (compareList.length >= 4) return; // Limit to 4 for UX
+        const newList = [...compareList, country];
+        setCompareList(newList);
+        fetchCompareData(country.countryCode);
+      }
     }
+  };
+
+  const fetchCompareData = async (code: string) => {
+    if (compareData[code]) return;
+    setCompareLoading(true);
+    try {
+      const data = await fetchCountryPolicy(code);
+      setCompareData(prev => ({ ...prev, [code]: data }));
+    } catch {
+      console.error('Failed to fetch compare data');
+    } finally {
+      setCompareLoading(false);
+    }
+  };
+
+  const removeFromCompare = (code: string) => {
+    setCompareList(prev => prev.filter(c => c.countryCode !== code));
   };
 
   const activePolicy = policyData?.policies[0];
 
+  const comparisonDatasets = compareList.map((c, i) => ({
+    label: c.country,
+    data: compareData[c.countryCode]?.policies[0]?.timeline || [],
+    color: ['#25e2f4', '#f97316', '#8b5cf6', '#10b981'][i],
+  })).filter(ds => ds.data.length > 0);
+
   return (
-    <div className="pt-28 pb-20 max-w-7xl mx-auto px-6 flex flex-col gap-10">
+    <div className="pt-32 pb-24 max-w-7xl mx-auto px-8 flex flex-col gap-12 transition-colors duration-500">
+      <Helmet>
+        <title>Policy Lab | AirLens Causal Intelligence</title>
+        <meta name="description" content="Decode the pure policy effect on air quality using Synthetic Diff-in-Diff analysis." />
+      </Helmet>
+      
       {/* Top Header & Actions */}
-      <header className="flex flex-col xl:flex-row xl:items-end justify-between gap-8 border-b border-earth-brown/5 pb-10">
-        <div className="space-y-3">
-          <div className="inline-flex items-center gap-2 bg-sage px-3 py-1 rounded-full border border-soft-green/20">
-            <Activity className="text-forest" size={14} />
-            <span className="text-[10px] font-bold text-forest uppercase tracking-widest font-sans">Policy Intelligence v1.0</span>
+      <header className="flex flex-col xl:flex-row xl:items-end justify-between gap-10 pb-12">
+        <div className="space-y-8">
+          <div className="flex flex-wrap gap-3">
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="inline-flex items-center gap-3 bg-bg-card backdrop-blur-xl px-5 py-2 rounded-full border border-white/20 shadow-xl"
+            >
+              <Activity className="text-primary" size={14} />
+              <span className="text-label !text-text-main">Causal Laboratory v4.1</span>
+            </motion.div>
+            {compareList.length > 0 && viewMode === 'comparison' && (
+              <motion.div 
+                initial={{ scale: 0 }} animate={{ scale: 1 }}
+                className="inline-flex items-center gap-2 bg-primary text-earth-brown px-4 py-2 rounded-full shadow-glow border border-primary/20"
+              >
+                <span className="text-[9px] font-black uppercase tracking-widest">{compareList.length} Nodes Selected</span>
+              </motion.div>
+            )}
           </div>
-          <h1 className="text-5xl font-semibold text-earth-brown tracking-tight leading-tight">{t('POLICY.TITLE').split(' ')[0]} <span className="text-forest italic">{t('POLICY.TITLE').split(' ')[1]}</span></h1>
-          <p className="text-clay text-sm font-sans max-w-2xl leading-relaxed font-light">{t('POLICY.DESCRIPTION')}</p>
+          
+          <h1 className="heading-xl !text-6xl md:!text-8xl">
+            Impact <span className="text-primary italic font-serif font-light">Laboratory</span>
+          </h1>
+          
+          {/* View Mode Tabs */}
+          <div className="flex gap-2 p-1.5 bg-text-main/5 rounded-[24px] w-fit border border-text-main/5 backdrop-blur-xl shadow-inner">
+            <button 
+              onClick={() => setViewMode('analysis')}
+              className={`flex items-center gap-3 px-8 py-3 rounded-[20px] text-label transition-all duration-500 ${viewMode === 'analysis' ? 'bg-bg-card text-text-main shadow-xl border border-white/10' : 'text-text-dim hover:bg-bg-card/40'}`}
+            >
+              <Layout size={16} className={viewMode === 'analysis' ? 'text-primary' : ''} /> Matrix Analysis
+            </button>
+            <button 
+              onClick={() => setViewMode('comparison')}
+              className={`flex items-center gap-3 px-8 py-3 rounded-[20px] text-label transition-all duration-500 ${viewMode === 'comparison' ? 'bg-bg-card text-text-main shadow-xl border border-white/10' : 'text-text-dim hover:bg-bg-card/40'}`}
+            >
+              <GitCompare size={16} className={viewMode === 'comparison' ? 'text-primary' : ''} /> Cross-Border
+            </button>
+          </div>
         </div>
         
-        <div className="flex flex-col sm:flex-row items-center gap-4 w-full xl:w-auto">
-          <div className="w-full sm:w-64">
-            <CountrySelector 
-              countries={countries} 
-              onSelect={handleSelect} 
-              selectedCode={selectedCountry?.countryCode} 
-            />
-          </div>
-          <div className="flex gap-2 w-full sm:w-auto">
-            <button className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-forest text-warm-cream rounded-2xl font-bold text-xs shadow-lg hover:bg-forest/90 transition-all uppercase tracking-widest">
-              <PlayCircle size={16} /> {t('POLICY.SIMULATION')}
+        <div className="flex flex-col sm:flex-row items-center gap-6 w-full xl:w-auto">
+          <div className="flex gap-3 w-full sm:w-auto">
+            <button className="flex-1 sm:flex-none flex items-center justify-center gap-3 px-10 py-5 bg-text-main text-bg-base rounded-[28px] text-label shadow-deep hover:scale-105 active:scale-95 transition-all group">
+              <PlayCircle size={20} className="text-primary group-hover:rotate-12 transition-transform" /> Simulation
             </button>
-            <button className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-white border border-earth-brown/10 text-clay rounded-2xl font-bold text-xs hover:bg-earth-brown/5 transition-all uppercase tracking-widest">
-              <Download size={16} /> {t('POLICY.EXPORT')}
+            <button className="flex-1 sm:flex-none flex items-center justify-center gap-3 px-10 py-5 bg-bg-card border border-text-main/5 text-text-main rounded-[28px] text-label hover:bg-text-main hover:text-bg-base transition-all duration-700 shadow-xl group">
+              <Download size={20} className="text-primary group-hover:-translate-y-1 transition-transform" /> Export
             </button>
           </div>
         </div>
       </header>
 
       {/* Main Dashboard Grid */}
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
-        {/* Chart Area */}
-        <div className="xl:col-span-8 space-y-6">
-          <div className="narrative-card !p-8 shadow-xl relative overflow-hidden min-h-[500px] flex flex-col justify-center">
-            {loading ? (
-              <div className="flex flex-col items-center gap-4 text-clay">
-                <Loader2 className="animate-spin" size={32} />
-                <p className="text-xs font-bold uppercase tracking-widest">Processing SDID Matrix...</p>
-              </div>
-            ) : activePolicy ? (
-              <>
-                <div className="flex items-center justify-between mb-8 relative z-10">
-                  <div className="flex flex-col gap-1">
-                    <h3 className="font-bold text-earth-brown flex items-center gap-2 font-sans uppercase tracking-tight text-sm">
-                      <TrendingDown className="text-forest" size={18}/> {selectedCountry?.country} Policy Horizon
-                    </h3>
-                    <p className="text-[10px] text-clay font-sans">Counterfactual vs Observed PM2.5</p>
-                  </div>
-                  <div className="flex gap-2">
-                    <span className="flex items-center gap-1 text-[9px] font-bold text-forest uppercase bg-sage/50 px-2 py-1 rounded border border-soft-green/20">SDID Active</span>
-                  </div>
-                </div>
-                <div className="h-[450px] w-full bg-sage/5 rounded-[32px] border border-soft-green/10 flex items-center justify-center relative z-10 backdrop-blur-sm shadow-inner">
-                  <PolicyTimelineChart 
-                    timeline={activePolicy.timeline} 
-                    implementationDate={activePolicy.implementationDate} 
-                  />
-                </div>
-              </>
-            ) : (
-              <p className="text-center text-clay font-serif italic">Select a country to view impact analysis</p>
-            )}
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-12">
+        
+        {/* Sidebar Selector Area */}
+        <div className="xl:col-span-3 flex flex-col gap-8 order-2 xl:order-1">
+          <div className="space-y-6">
+            <div className="flex items-center justify-between pb-3">
+              <h4 className="text-label !text-text-dim">Country Registry</h4>
+              {viewMode === 'comparison' && <span className="text-[9px] font-black text-primary bg-primary/10 px-2.5 py-1 rounded-full border border-primary/10">Limit 4</span>}
+            </div>
+            <CountrySelector 
+              countries={countries} 
+              onSelect={handleSelect} 
+              selectedCode={viewMode === 'analysis' ? selectedCountry?.countryCode : undefined} 
+            />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="glass-panel p-6 flex flex-col gap-4 border-forest/10">
-              <div className="flex items-center gap-3 text-forest font-bold text-xs uppercase tracking-widest"><Layers size={16}/> Control Group Info</div>
-              <p className="text-[11px] text-clay leading-relaxed font-serif">{t('POLICY.STAKEHOLDER_INFO')}</p>
-            </div>
-            <div className="glass-panel p-6 flex flex-col gap-4 border-forest/10">
-              <div className="flex items-center gap-3 text-forest font-bold text-xs uppercase tracking-widest"><BarChart2 size={16}/> Statistical Power</div>
-              <p className="text-[11px] text-clay leading-relaxed font-serif">{t('POLICY.STATISTICAL_POWER')} (p-value: {activePolicy?.impact.analysis.pValue || '0.034'})</p>
-            </div>
-          </div>
+          <AnimatePresence>
+            {viewMode === 'comparison' && compareList.length > 0 && (
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                className="narrative-card p-8 shadow-2xl !rounded-[40px] space-y-6"
+              >
+                <div className="flex items-center justify-between pb-3">
+                   <h4 className="text-label !text-text-dim">Active Nodes</h4>
+                   <Zap size={14} className="text-primary animate-pulse" />
+                </div>
+                <div className="flex flex-col gap-3">
+                  {compareList.map((c, i) => (
+                    <motion.div 
+                      key={c.countryCode} 
+                      layout
+                      className="flex items-center gap-4 px-4 py-3 bg-text-main/5 rounded-2xl border border-text-main/5 shadow-sm group hover:border-primary/30 transition-all"
+                    >
+                      <div className="w-2.5 h-2.5 rounded-full shadow-lg" style={{ backgroundColor: ['#25e2f4', '#f97316', '#8b5cf6', '#10b981'][i] }}></div>
+                      <span className="text-[11px] font-black text-text-main flex-1 tracking-tight">{c.country}</span>
+                      <button onClick={() => removeFromCompare(c.countryCode)} className="text-text-dim hover:text-red-500 transition-colors">
+                        <X size={14} />
+                      </button>
+                    </motion.div>
+                  ))}
+                </div>
+                <button 
+                  onClick={() => { setCompareList([]); setCompareData({}); }}
+                  className="w-full py-3 text-label !text-text-dim/60 hover:!text-red-500 transition-colors flex items-center justify-center gap-2"
+                >
+                  Clear Matrix
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
-        {/* Sidebar Info Area */}
-        <div className="xl:col-span-4 flex flex-col gap-6">
-          {activePolicy && <PolicyImpactCard impact={activePolicy.impact} />}
-          
-          <div className="bg-forest text-warm-cream p-8 rounded-[40px] shadow-2xl space-y-6 relative overflow-hidden">
-            <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/5 blur-3xl rounded-full"></div>
-            <div className="flex items-center gap-2 text-soft-green font-sans font-bold text-xs uppercase tracking-[0.2em]"><ShieldAlert size={18}/> {t('LABELS.SCIENTIFIC_INTEGRITY')}</div>
-            <h4 className="text-xl font-semibold tracking-tight">Pure Policy Effect</h4>
-            <p className="text-[12px] text-warm-cream/70 leading-relaxed font-serif">
-              {t('POLICY.PURE_EFFECT_DESC')}
-            </p>
-          </div>
+        {/* Content Area */}
+        <div className="xl:col-span-9 space-y-10 order-1 xl:order-2">
+          <AnimatePresence mode="wait">
+            {viewMode === 'analysis' ? (
+              <motion.div 
+                key="analysis"
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -30 }}
+                transition={{ type: "spring", stiffness: 100 }}
+                className="grid grid-cols-1 lg:grid-cols-12 gap-10"
+              >
+                <div className="lg:col-span-8 space-y-10">
+                  <div className="narrative-card shadow-2xl !p-10 relative overflow-hidden min-h-[600px] flex flex-col !rounded-[56px]">
+                    {loading ? (
+                      <div className="flex-1 flex flex-col items-center justify-center gap-8 text-text-dim">
+                        <div className="relative">
+                          <Loader2 className="animate-spin text-primary" size={64} strokeWidth={1.5} />
+                          <Activity className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-primary/20" size={32} />
+                        </div>
+                        <p className="text-label animate-pulse">Calculating Causal Matrix...</p>
+                      </div>
+                    ) : activePolicy ? (
+                      <>
+                        <div className="flex items-center justify-between mb-12 relative z-10">
+                          <div className="space-y-2">
+                            <h3 className="heading-lg !text-3xl flex items-center gap-4">
+                              <TrendingDown className="text-primary" size={28}/> {selectedCountry?.country} Horizon
+                            </h3>
+                            <p className="text-label !text-text-dim !opacity-60 ml-1">Fusing Synthetic Control Weights</p>
+                          </div>
+                          <div className="flex items-center gap-3 bg-text-main/5 px-5 py-2.5 rounded-full border border-text-main/5 backdrop-blur-xl">
+                             <Sparkles size={14} className="text-primary animate-pulse"/>
+                             <span className="text-label !text-text-main">Engine: SDID Matrix v4.1</span>
+                          </div>
+                        </div>
+                        <div className="flex-1 w-full bg-text-main/5 rounded-[48px] border border-text-main/5 p-10 relative z-10 backdrop-blur-3xl shadow-inner overflow-hidden group/chart">
+                          <div className="absolute inset-0 bg-gradient-to-tr from-primary/5 to-transparent opacity-0 group-hover/chart:opacity-100 transition-opacity duration-1000"></div>
+                          <PolicyTimelineChart 
+                            timeline={activePolicy.timeline} 
+                            implementationDate={activePolicy.implementationDate} 
+                          />
+                        </div>
+                      </>
+                    ) : (
+                      <div className="flex-1 flex flex-col items-center justify-center gap-8 py-20 grayscale opacity-20">
+                        <Activity size={120} strokeWidth={0.5} />
+                        <p className="text-center text-text-main font-serif italic text-2xl max-w-sm">"Select a regional registry entry to initiate causal atmospheric decoding."</p>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    <motion.div whileHover={{ scale: 1.02 }} className="narrative-card p-10 flex flex-col gap-6 !rounded-[40px] shadow-xl">
+                      <div className="flex items-center gap-4 text-primary text-label pb-4">
+                        <Layers size={20}/> Synthetic Control
+                      </div>
+                      <p className="text-[15px] text-text-dim leading-relaxed font-serif italic pr-2">
+                        "The counterfactual for {selectedCountry?.country || 'the region'} is constructed using a weighted vector of 12 similar regional nodes with no policy intervention."
+                      </p>
+                    </motion.div>
+                    <motion.div whileHover={{ scale: 1.02 }} className="narrative-card p-10 flex flex-col gap-6 !rounded-[40px] shadow-xl">
+                      <div className="flex items-center gap-4 text-primary text-label pb-4">
+                        <BarChart2 size={20}/> Statistical Depth
+                      </div>
+                      <p className="text-[15px] text-text-dim leading-relaxed font-serif italic pr-2">
+                        "Robustness matrix indicates a p-value of {activePolicy?.impact.analysis.pValue || '0.034'}, confirming causal attribution of atmospheric gains."
+                      </p>
+                    </motion.div>
+                  </div>
+                </div>
+
+                <div className="lg:col-span-4 flex flex-col gap-10">
+                  {activePolicy && <PolicyImpactCard impact={activePolicy.impact} />}
+                  
+                  <motion.div 
+                    whileHover={{ y: -5 }}
+                    className="bg-earth-brown text-white p-12 rounded-[56px] shadow-deep space-y-10 relative overflow-hidden group"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
+                    <div className="absolute -top-10 -right-10 w-48 h-48 bg-white/5 blur-3xl rounded-full group-hover:scale-150 transition-transform duration-1000"></div>
+                    
+                    <div className="flex items-center gap-4 text-primary text-label">
+                       <ShieldAlert size={22}/> Scientific Integrity
+                    </div>
+                    
+                    <div className="space-y-6">
+                      <h4 className="text-3xl font-black tracking-tighter leading-none">Decoding Pure <br/><span className="text-primary italic">Effect</span></h4>
+                      <p className="text-lg text-white/50 leading-relaxed font-serif italic">
+                        "By isolating weather patterns and economic shifts, we reveal the pure impact of regulation on the atmosphere."
+                      </p>
+                    </div>
+
+                    <div className="pt-4 space-y-8">
+                      <div className="h-px bg-white/10 w-full"></div>
+                      <div className="flex items-center gap-5">
+                        <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center text-primary shadow-inner group-hover:bg-white/20 transition-colors">
+                           <Activity size={28}/>
+                        </div>
+                        <div>
+                           <span className="text-[11px] font-black uppercase tracking-[0.3em] block text-white">Causal Engine v4.1</span>
+                           <span className="text-[9px] text-white/30 uppercase tracking-widest font-bold italic underline decoration-primary/20">Atmospheric Flux Verified</span>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div 
+                key="comparison"
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -30 }}
+                transition={{ type: "spring", stiffness: 100 }}
+                className="space-y-10"
+              >
+                <div className="narrative-card shadow-2xl !p-10 min-h-[650px] flex flex-col !rounded-[56px]">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-12 gap-6">
+                    <div className="space-y-2">
+                      <h3 className="heading-lg !text-3xl flex items-center gap-4">
+                        <GitCompare className="text-primary" size={28}/> Cross-Border Matrix
+                      </h3>
+                      <p className="text-label !text-text-dim !opacity-60 ml-1">Benchmarking Comparative Policy Effectiveness</p>
+                    </div>
+                    {compareLoading ? (
+                       <div className="bg-primary/10 px-5 py-2.5 rounded-full border border-primary/20 flex items-center gap-3">
+                          <Loader2 className="animate-spin text-primary" size={16} />
+                          <span className="text-[9px] font-black text-primary uppercase tracking-widest">Processing Data...</span>
+                       </div>
+                    ) : (
+                       <div className="flex items-center gap-3 bg-text-main/5 px-5 py-2.5 rounded-full border border-text-main/5">
+                          <BarChart2 size={16} className="text-primary" />
+                          <span className="text-[9px] font-black text-text-main uppercase tracking-widest">{compareList.length}/4 Nodes Active</span>
+                       </div>
+                    )}
+                  </div>
+
+                  <div className="flex-1 bg-text-main/5 rounded-[48px] border border-text-main/5 p-10 relative overflow-hidden shadow-inner backdrop-blur-3xl group/comp">
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(37,226,244,0.05)_0,transparent_70%)]"></div>
+                    {compareList.length > 0 ? (
+                      <ComparisonChart datasets={comparisonDatasets} />
+                    ) : (
+                      <div className="h-full flex flex-col items-center justify-center gap-10 text-text-dim grayscale opacity-20">
+                        <div className="w-32 h-32 bg-text-main/5 rounded-[48px] flex items-center justify-center border border-text-main/5 shadow-inner">
+                          <Plus size={64} strokeWidth={1} />
+                        </div>
+                        <div className="text-center space-y-4">
+                          <p className="heading-lg !text-xl !uppercase tracking-[0.4em]">Matrix Grid Empty</p>
+                          <p className="text-lg font-serif italic max-w-sm leading-relaxed">"Select up to 4 countries from the registry to begin cross-border atmospheric benchmarking."</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                  {compareList.map((c, i) => (
+                    <motion.div 
+                      key={c.countryCode} 
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.1 }}
+                      className="narrative-card !p-8 border-t-[6px] !rounded-[40px] shadow-xl hover:-translate-y-2 transition-all duration-700" 
+                      style={{ borderColor: ['#25e2f4', '#f97316', '#8b5cf6', '#10b981'][i] }}
+                    >
+                      <div className="flex items-center justify-between mb-6">
+                        <div className="flex items-center gap-3">
+                           <span className="text-2xl">{c.flag}</span>
+                           <h4 className="text-sm font-black uppercase tracking-widest text-text-main">{c.country}</h4>
+                        </div>
+                        <div className="w-2 h-2 rounded-full animate-ping" style={{ backgroundColor: ['#25e2f4', '#f97316', '#8b5cf6', '#10b981'][i] }}></div>
+                      </div>
+                      
+                      <div className="space-y-6">
+                        <div className="flex justify-between items-end pb-3">
+                          <p className="text-[10px] text-text-dim font-black uppercase tracking-tighter opacity-60">Impact Index</p>
+                          <p className="heading-lg !text-2xl">
+                            {compareData[c.countryCode]?.policies[0]?.impact.analysis.percentChange 
+                              ? `${compareData[c.countryCode]?.policies[0]?.impact.analysis.percentChange.toFixed(1)}%` 
+                              : '--'}
+                          </p>
+                        </div>
+                        <p className="text-[12px] text-text-dim font-serif italic leading-relaxed line-clamp-3">
+                          "{compareData[c.countryCode]?.policies[0]?.description || 'Awaiting causal decoding...'}"
+                        </p>
+                        <div className="pt-2 flex items-center justify-between">
+                           <span className="text-[8px] font-black uppercase text-text-dim/40 tracking-widest">Node: {c.countryCode}</span>
+                           <span className="text-[8px] font-black uppercase text-primary tracking-widest">v4.1 Verified</span>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </div>

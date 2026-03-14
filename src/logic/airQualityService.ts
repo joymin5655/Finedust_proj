@@ -1,45 +1,25 @@
 import axios from 'axios';
-import { supabase } from './supabase';
-import type { AirQualityData } from './types';
 import { APP_CONFIG } from './config';
 import { fetchMaiacAodFromEdge, calculateSatellitePM25 } from './satelliteService';
-
-// 런타임에 업데이트될 수 있는 설정값들
-let dynamicParams = {
-  AQI_THRESHOLDS: APP_CONFIG.AQI_THRESHOLDS,
-  DQSS: APP_CONFIG.DQSS
-};
+import type { AirQualityData } from './types';
 
 /**
- * Supabase에서 원격 설정(Remote Config)을 가져와 dynamicParams를 업데이트합니다.
+ * 공기질 등급(Grade)을 PM2.5 농도에 따라 반환합니다.
+ * APP_CONFIG.AQI_THRESHOLDS 값을 기반으로 하며, 이 값은 Supabase에서 동적으로 업데이트될 수 있습니다.
  */
-export const fetchRemoteSettings = async () => {
-  try {
-    const { data, error } = await supabase
-      .from('app_settings')
-      .select('value')
-      .eq('key', 'scientific_params')
-      .single();
-    
-    if (!error && data) {
-      dynamicParams = data.value;
-      console.log('✅ Remote settings applied:', dynamicParams);
-    }
-  } catch {
-    console.warn('Failed to fetch remote settings, using local fallback.');
-  }
-};
-
 export const getAQIGrade = (pm25: number): AirQualityData['grade'] => {
-  const { GOOD, MODERATE, UNHEALTHY } = dynamicParams.AQI_THRESHOLDS;
+  const { GOOD, MODERATE, UNHEALTHY } = APP_CONFIG.AQI_THRESHOLDS;
   if (pm25 <= GOOD) return 'Good';
   if (pm25 <= MODERATE) return 'Moderate';
   if (pm25 <= UNHEALTHY) return 'Unhealthy';
   return 'Very Unhealthy';
 };
 
+/**
+ * PM2.5 농도에 따른 마커 색상을 반환합니다.
+ */
 export const getMarkerColor = (pm25: number) => {
-  const { GOOD, MODERATE, UNHEALTHY } = dynamicParams.AQI_THRESHOLDS;
+  const { GOOD, MODERATE, UNHEALTHY } = APP_CONFIG.AQI_THRESHOLDS;
   if (pm25 <= GOOD) return '#10b981';
   if (pm25 <= MODERATE) return '#f59e0b';
   if (pm25 <= UNHEALTHY) return '#f97316';
@@ -48,14 +28,14 @@ export const getMarkerColor = (pm25: number) => {
 
 /**
  * v1.0 DQSS (Data Quality Security Score)
- * Evaluates reliability based on freshness, source count, and variance.
+ * Freshness, source count, variance를 기반으로 데이터 신뢰도를 평가합니다.
  */
 export const calculateDQSS = (data: {
   lastUpdated: string;
   sourceCount: number;
   variance?: number;
 }) => {
-  const { BASE_SCORE, FRESHNESS_MAX, SOURCE_MULTIPLICITY_MAX, VARIANCE_PENALTY_MAX } = dynamicParams.DQSS;
+  const { BASE_SCORE, FRESHNESS_MAX, SOURCE_MULTIPLICITY_MAX, VARIANCE_PENALTY_MAX } = APP_CONFIG.DQSS;
   let score = BASE_SCORE;
 
   // 1. Freshness (Max +FRESHNESS_MAX)
@@ -111,7 +91,7 @@ export const fetchIntegratedAirQuality = async (lat: number, lon: number) => {
     const openaqResults = await fetchNearbyOpenAQ(lat, lon);
     
     // 3. 데이터 소스 다양성 확인 (Source Multiplicity)
-    const uniqueSources = new Set(openaqResults.map((r: any) => r.sourceName));
+    const uniqueSources = new Set(openaqResults.map((r: Record<string, unknown>) => r.sourceName));
     uniqueSources.add('WAQI');
     
     // 4. NASA Satellite AOD Fetch (MCD19A2 High-Res via Edge Function)
@@ -149,21 +129,8 @@ export const fetchIntegratedAirQuality = async (lat: number, lon: number) => {
 };
 
 /**
- * (Legacy Fallback) Fetches pre-processed Satellite AOD samples.
- * Now primarily used for historical comparison or fallback.
- */
-export const fetchAodSamples = async () => {
-  try {
-    const res = await axios.get(`${APP_CONFIG.BASE_DATA_URL}/earthdata/aod_samples.json`);
-    return res.data;
-  } catch {
-    return null;
-  }
-};
-
-/**
  * Advanced Satellite PM2.5 Estimation
- * Fuses station data with AOD physics (Legacy, use calculateSatellitePM25 instead).
+ * Fuses station data with AOD physics.
  */
 export const estimateSatPM25 = (stationPM: number, aodValue: number | null = null) => {
   if (stationPM == null) return null;

@@ -16,7 +16,7 @@ const latLonToVector3 = (lat: number, lon: number, radius: number) => {
 };
 
 const CityMarkers = () => {
-  const [cities, setCities] = useState<any[]>([]);
+  const [cities, setCities] = useState<Record<string, unknown>[]>([]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -32,7 +32,7 @@ const CityMarkers = () => {
 
   return (
     <group>
-      {cities.map((city, idx) => {
+      {cities.map((city: any, idx) => {
         const position = latLonToVector3(city.lat, city.lon, 1.005);
         
         return (

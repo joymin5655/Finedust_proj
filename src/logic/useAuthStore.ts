@@ -9,9 +9,10 @@ interface AuthStore {
   setUser: (user: User | null) => void;
   setLoading: (loading: boolean) => void;
   checkAdminStatus: (userId: string) => Promise<void>;
+  signOut: () => Promise<void>;
 }
 
-export const useAuthStore = create<AuthStore>((set) => ({
+export const useAuthStore = create<AuthStore>((set, get) => ({
   user: null,
   isAdmin: false,
   loading: true,
@@ -22,6 +23,11 @@ export const useAuthStore = create<AuthStore>((set) => ({
     );
     
     set({ user, isAdmin, loading: false });
+    
+    // 만약 유저가 로그인했는데 isAdmin이 아직 false라면 DB 재확인
+    if (user && !isAdmin) {
+      get().checkAdminStatus(user.id);
+    }
   },
   setLoading: (loading) => set({ loading }),
   
@@ -40,7 +46,21 @@ export const useAuthStore = create<AuthStore>((set) => ({
         set({ isAdmin: data.role === 'admin' });
       }
     } catch (err) {
-      console.error('Failed to check admin status:', err);
+      console.warn('Failed to check admin status or profile not found:', err);
+    }
+  },
+
+  /**
+   * 로그아웃 처리
+   */
+  signOut: async () => {
+    set({ loading: true });
+    try {
+      await supabase.auth.signOut();
+      set({ user: null, isAdmin: false, loading: false });
+    } catch (err) {
+      console.error('Logout error:', err);
+      set({ loading: false });
     }
   }
 }));

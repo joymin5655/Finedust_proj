@@ -3,11 +3,14 @@
 export interface AirQualityData {
   pm25: number;
   aqi: number;
-  city: string;
+  city: string | { name: string };
   station: string;
   source: string;
+  sources?: string[];
   lastUpdated: string;
   grade: 'Good' | 'Moderate' | 'Unhealthy' | 'Very Unhealthy';
+  dqss?: number;
+  iaqi?: any;
 }
 
 export interface PolicyImpact {
@@ -38,6 +41,7 @@ export interface TimelineEvent {
   date: string;
   event: string;
   pm25: number;
+  syntheticPM25?: number; // SDID Synthetic Counterfactual
 }
 
 export interface Policy {

@@ -38,21 +38,28 @@ function App() {
 
     // 1. Initial Session Check
     const initAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user ?? null);
-      setLoading(false);
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        console.log('Initial Auth Check:', !!session);
+        setUser(session?.user ?? null);
+      } catch (err) {
+        console.error('Initial Auth Error:', err);
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
     };
     initAuth();
 
     // 2. Continuous State Listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log('Auth State Changed:', _event, !!session);
+      console.log('Auth Event:', _event, 'User:', !!session?.user);
       setUser(session?.user ?? null);
       setLoading(false);
     });
 
     return () => subscription.unsubscribe();
-  }, [setUser, setLoading]);
+  }, [setUser, setLoading, theme]);
 
   return (
     <Suspense fallback={<PageLoader />}>

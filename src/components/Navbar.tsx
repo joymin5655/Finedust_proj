@@ -144,7 +144,7 @@ const Navbar = () => {
           ) : (
             <Link 
               to="/auth"
-              className="bg-earth-brown text-white px-7 py-3 rounded-2xl text-label shadow-2xl hover:scale-105 hover:-translate-y-0.5 active:scale-95 transition-all flex items-center gap-2"
+              className="bg-text-main text-bg-base px-7 py-3 rounded-2xl text-label shadow-2xl hover:scale-105 hover:-translate-y-0.5 active:scale-95 transition-all flex items-center gap-2"
             >
               <User size={16} className="text-primary" />
               {t('NAV.SIGN_IN')}
@@ -185,7 +185,7 @@ const Navbar = () => {
                 <Link 
                   to="/auth"
                   onClick={() => setIsOpen(false)}
-                  className="bg-earth-brown text-white p-5 rounded-[24px] text-center shadow-2xl font-black tracking-widest"
+                  className="bg-text-main text-bg-base p-5 rounded-[24px] text-center shadow-2xl font-black tracking-widest"
                 >
                   {t('NAV.SIGN_IN')}
                 </Link>

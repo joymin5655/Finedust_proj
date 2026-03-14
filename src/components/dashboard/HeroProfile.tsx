@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const HeroProfile = () => {
   const { t } = useTranslation();
-  const { user, isAdmin } = useAuthStore();
+  const { user, isAdmin, loading } = useAuthStore();
   const [isEditing, setIsEditing] = useState(false);
   const [bio, setBio] = useState('');
   const [fullName, setFullName] = useState('');
@@ -55,6 +55,14 @@ const HeroProfile = () => {
 
   const defaultBio = isAdmin ? t('DEFAULT_BIO.ADMIN') : t('DEFAULT_BIO.USER');
   const userRole = isAdmin ? t('LABELS.INTEL_MANAGER') : t('LABELS.CITIZEN_SCIENTIST');
+
+  if (loading) {
+    return (
+      <section className="min-w-[100vw] h-full flex items-center justify-center snap-center bg-bg-base">
+        <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+      </section>
+    );
+  }
 
   return (
     <section className="min-w-[100vw] h-full flex items-center justify-center snap-center px-8 md:px-24 relative overflow-hidden bg-bg-base transition-colors duration-500">

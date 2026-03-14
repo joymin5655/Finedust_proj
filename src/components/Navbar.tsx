@@ -1,20 +1,23 @@
 import { Link, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Menu, X, User, LogOut, Award } from 'lucide-react';
 import { useState } from 'react';
 import { useAuthStore } from '../logic/useAuthStore';
 import { supabase } from '../logic/supabase';
+import { APP_CONFIG } from '../logic/config';
 
 const Navbar = () => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const { user, isAdmin, loading } = useAuthStore();
 
   const links = [
-    { name: 'Our Story', path: '/' },
-    { name: 'Globe', path: '/globe' },
-    { name: 'Methods', path: '/camera' },
-    { name: 'Impact', path: '/policy' },
-    { name: 'Resources', path: '/about' },
+    { name: t('NAV.STORY'), path: '/' },
+    { name: t('NAV.GLOBE'), path: '/globe' },
+    { name: t('NAV.METHODS'), path: '/camera' },
+    { name: t('NAV.IMPACT'), path: '/policy' },
+    { name: t('NAV.RESOURCES'), path: '/about' },
   ];
 
   const handleSignOut = async () => {
@@ -26,14 +29,14 @@ const Navbar = () => {
       <div className="flex items-center gap-2">
         <span className="material-symbols-outlined text-forest text-3xl">eco</span>
         <Link to="/" className="font-sans font-bold text-2xl tracking-tight text-forest flex items-baseline">
-          AirLens
+          {APP_CONFIG.APP_NAME}
         </Link>
       </div>
       
       <div className="hidden md:flex items-center gap-10 font-sans text-xs font-semibold uppercase tracking-widest text-clay">
         {links.map((link) => (
           <Link
-            key={link.name}
+            key={link.path}
             to={link.path}
             className={`transition-colors hover:text-forest ${
               location.pathname === link.path ? 'text-forest border-b-2 border-forest pb-1' : ''
@@ -67,7 +70,7 @@ const Navbar = () => {
               className="bg-earth-brown text-warm-cream px-5 py-2 rounded-full font-sans font-bold text-xs shadow-lg hover:bg-earth-brown/90 transition-all flex items-center gap-2"
             >
               <LogOut size={14} />
-              <span className="hidden sm:inline">Sign Out</span>
+              <span className="hidden sm:inline">{t('NAV.SIGN_OUT')}</span>
             </button>
           </div>
         ) : (
@@ -76,7 +79,7 @@ const Navbar = () => {
             className="bg-forest text-warm-cream px-6 py-2 rounded-full font-sans font-bold text-sm shadow-lg hover:bg-forest/90 transition-all flex items-center gap-2"
           >
             <User size={16} />
-            Sign In
+            {t('NAV.SIGN_IN')}
           </Link>
         )}
         
@@ -90,7 +93,7 @@ const Navbar = () => {
           <div className="flex flex-col gap-6 font-sans text-sm font-semibold uppercase tracking-widest text-clay">
             {links.map((link) => (
               <Link
-                key={link.name}
+                key={link.path}
                 to={link.path}
                 onClick={() => setIsOpen(false)}
                 className={`${location.pathname === link.path ? 'text-forest' : ''}`}
@@ -103,7 +106,7 @@ const Navbar = () => {
                 onClick={() => { handleSignOut(); setIsOpen(false); }}
                 className="text-left text-red-500 font-bold uppercase tracking-widest text-xs"
               >
-                Sign Out
+                {t('NAV.SIGN_OUT')}
               </button>
             )}
           </div>

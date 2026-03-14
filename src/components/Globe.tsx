@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Sphere, Stars, OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
+import { APP_CONFIG } from '../logic/config';
 
 const Globe = () => {
   const globeRef = useRef<THREE.Mesh>(null);
@@ -28,8 +29,8 @@ const Globe = () => {
       {/* Main Earth Sphere */}
       <Sphere ref={globeRef} args={[1, 64, 64]}>
         <meshPhongMaterial
-          color="#1a3a5a"
-          emissive="#001122"
+          color={APP_CONFIG.GLOBE_THEME.EARTH_COLOR}
+          emissive={APP_CONFIG.GLOBE_THEME.EMISSIVE_COLOR}
           specular="#333333"
           shininess={5}
         />
@@ -38,7 +39,7 @@ const Globe = () => {
       {/* Clouds Layer */}
       <Sphere ref={cloudsRef} args={[1.015, 64, 64]}>
         <meshPhongMaterial
-          color="#ffffff"
+          color={APP_CONFIG.GLOBE_THEME.CLOUDS_COLOR}
           transparent
           opacity={0.15}
           depthWrite={false}
@@ -48,7 +49,7 @@ const Globe = () => {
       {/* Atmosphere Glow */}
       <Sphere args={[1.1, 64, 64]}>
         <meshPhongMaterial
-          color="#25e2f4"
+          color={APP_CONFIG.GLOBE_THEME.ATMOSPHERE_COLOR}
           transparent
           opacity={0.05}
           side={THREE.BackSide}

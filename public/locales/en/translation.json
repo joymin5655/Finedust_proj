@@ -1,0 +1,127 @@
+{
+  "HERO": {
+    "MISSION_TAG": "v1.0 Atmospheric Intelligence",
+    "QUOTE": "We read the atmosphere as data, and you become the witness of that data.",
+    "DESCRIPTION": "AirLens is a transparent intelligence platform that goes beyond simple numbers to uncover the truth of the environment through AI and atmospheric science.",
+    "TITLE_A": "Beyond Numbers,",
+    "TITLE_B": "Towards Truth.",
+    "WELCOME_A": "Welcome to Your",
+    "WELCOME_B": "Personal Hub."
+  },
+  "DASHBOARD": {
+    "ENGINE_AOD_DESC": "Precisely calibrates satellite AOD to ground PM2.5 using XGBoost-GTWR model.",
+    "ENGINE_SDID_DESC": "Proves causality by analyzing policy effects in 68 countries using Synthetic DID.",
+    "ENGINE_DQSS_DESC": "Discloses uncertainty by scoring data quality across 5 parameters.",
+    "EMPTY_VAULT": "Start your first air quality measurement and complete your own transparent map.",
+    "NO_CAPTURES": "No measurement records found in your vault."
+  },
+  "CAMERA": {
+    "PHYSICS_ENGINE_DESC": "Distinguishes fog and PM2.5 with a PINN structure enforcing Beer-Lambert law. DINOv2-based self-supervised model extracts haze patterns."
+  },
+  "LABELS": {
+    "NEW_MEASUREMENT": "New Measurement",
+    "EXPLORE_DATA": "Explore Data",
+    "GET_STARTED": "Get Started",
+    "SIGN_OUT": "Sign Out",
+    "EDIT_PROFILE": "Edit Profile",
+    "SAVE_CHANGES": "Save Changes",
+    "SAVING": "Saving...",
+    "CANCEL": "Cancel",
+    "CITIZEN_SCIENTIST": "Citizen Scientist",
+    "INTEL_MANAGER": "AirLens Intelligence Manager",
+    "ADMIN": "Admin",
+    "METHODS": "Methods",
+    "OPEN_PIPELINE": "Open Pipeline",
+    "GLOBAL_FLUX": "Global Flux",
+    "VISION_SENSING": "Vision Sensing",
+    "IMPACT_LAB": "Impact Lab",
+    "ADMIN_CONSOLE": "Admin Console",
+    "SYTEM_MONITORING": "System Monitoring",
+    "SCIENTIFIC_INTEGRITY": "Scientific Integrity",
+    "PURPOSE": "We do not stop at 'showing'. We fill measurement gaps with satellite data and maintain scientific integrity by transparently disclosing the confidence intervals of AI models as p10~p90."
+  },
+  "ADVICE": {
+    "GOOD": "Perfect day for fresh air. Outdoor activities recommended.",
+    "MODERATE": "Sensitive groups should reduce prolonged outdoor activities.",
+    "UNHEALTHY": "Masks are essential. Avoid outdoor exercise.",
+    "VERY_UNHEALTHY": "Avoid outdoor activities. Dangerously unhealthy levels.",
+    "ANALYZING": "Analyzing air quality data..."
+  },
+  "DEFAULT_BIO": {
+    "ADMIN": "Oversees the integrity of the AirLens system and analyzes global environmental data.",
+    "USER": "A citizen scientist who collects air quality data and contributes to AI analysis."
+  },
+  "POLICY": {
+    "TITLE": "Impact Lab",
+    "DESCRIPTION": "Measures the causal effects of environmental policies in 68 countries using Synthetic DID models. It separates pure improvement by isolating external weather factors from policy implementation factors.",
+    "SIMULATION": "Run Simulation",
+    "EXPORT": "Export PDF",
+    "STAKE_HOLDER_INFO": "Meteorological and GDP data from neighboring countries were weighted and summed to create a Synthetic Control for the currently selected country.",
+    "STATISTICAL_POWER": "The significance of the policy effect has been verified within a 95% confidence interval.",
+    "PURE_EFFECT_DESC": "Simple time-series comparisons fail to reflect natural atmospheric circulation and weather changes. Impact Lab simulates 'what-if scenarios' had the policy not existed through ASCM."
+  },
+  "GLOBE": {
+    "INITIALIZING": "Initializing Earth...",
+    "TITLE": "Atmospheric Intelligence",
+    "AOD_LAYER": "AOD Layer",
+    "DQSS_OVERLAY": "DQSS Overlay",
+    "CONFIDENCE_NOTE": "Orange rings represent uncertainty regions where the p10~p90 confidence interval exceeds the threshold."
+  },
+  "LOCATION": {
+    "DETECTING": "Detecting your location...",
+    "DENIED": "Location Access Denied",
+    "DEFAULT_FALLBACK": "Using default location (Seoul)",
+    "MONITORING": "Real-time GPS Monitoring"
+  },
+  "AQI_CARD": {
+    "LABEL": "Combined PM2.5",
+    "ANALYZING": "Analyzing...",
+    "CONFIDENCE": "Confidence Level"
+  },
+  "AUTH": {
+    "TITLE_A": "Unlock Your",
+    "TITLE_B": "Personal Atmosphere.",
+    "SUBTITLE": "Sign in to create your own air quality map and securely store your AI analysis reports.",
+    "VAULT_TITLE": "Private Vault",
+    "VAULT_DESC": "All analyzed photos and figures are encrypted and stored in the Supabase cloud.",
+    "ACCURACY_TITLE": "Verified Accuracy",
+    "ACCURACY_DESC": "Receive more sophisticated regional DQSS scores based on your personal measurement data.",
+    "INSIGHTS_TITLE": "AI Insights",
+    "INSIGHTS_DESC": "Track local haze patterns in real-time through the DINOv2 model.",
+    "SIGN_IN": "Sign In",
+    "SIGN_UP": "Sign Up",
+    "WELCOME_BACK": "Welcome Back",
+    "CREATE_ACCOUNT": "Create Account",
+    "VERIFICATION_SENT": "Verification Sent!",
+    "VERIFICATION_DESC": "Verification email sent. Click the link in your inbox to complete registration."
+  },
+  "ABOUT": {
+    "TAG": "Scientific Integrity",
+    "TITLE_A": "Physics-Informed,",
+    "TITLE_B": "Human-Centered.",
+    "QUOTE": "\"Data is not just for showing, it's for proving.\"",
+    "ENGINES_TITLE": "6 Analysis Engines",
+    "ENGINE_XGBOOST": "Spatio-temporal regression engine precisely calibrating satellite AOD to ground PM2.5 concentrations.",
+    "ENGINE_SDID": "Causal inference engine extracting pure effects of environmental policies in 68 countries.",
+    "ENGINE_DINOV2": "Visual intelligence-based haze analysis engine enforcing physical laws.",
+    "ENGINE_DQSS": "Bi-LSTM based real-time data quality and reliability measurement engine.",
+    "ENGINE_BNN": "Probabilistic prediction engine calculating p10-p90 uncertainty intervals.",
+    "ENGINE_IFOREST": "LSTM-AE based multi-dimensional outlier detection and filtering engine.",
+    "PIPELINE_TITLE": "Automated Pipeline",
+    "PIPELINE_DESC": "Collects data from WAQI, OpenAQ, and NASA Earthdata every 30 minutes, performing uninterrupted ML analysis via GitHub Actions.",
+    "PIPELINE_CYCLE": "30m Cycle",
+    "PIPELINE_DEPLOY": "CI/CD Deploy",
+    "MISSION_TITLE": "Open Intelligence Mission",
+    "MISSION_DESC": "Aiming for transparent environmental data reproducible by anyone.",
+    "SOURCE_CODE": "Source Code"
+  },
+  "NAV": {
+    "STORY": "Our Story",
+    "GLOBE": "Globe",
+    "METHODS": "Methods",
+    "IMPACT": "Impact",
+    "RESOURCES": "Resources",
+    "SIGN_IN": "Sign In",
+    "SIGN_OUT": "Sign Out"
+  }
+}

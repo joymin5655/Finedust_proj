@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 interface AQICardProps {
   pm25: number;
   grade: string;
@@ -21,11 +23,12 @@ const getGradeStyles = (grade: string) => {
 };
 
 const AQICard = ({ pm25, grade, loading, confScore = 92 }: AQICardProps) => {
+  const { t } = useTranslation();
   const styles = getGradeStyles(grade);
 
   return (
     <div className={`rounded-3xl border-2 p-8 shadow-xl bg-gradient-to-br transition-all duration-700 text-center ${styles}`}>
-      <p className="text-xs uppercase tracking-widest font-bold opacity-60 mb-2">Combined PM2.5</p>
+      <p className="text-xs uppercase tracking-widest font-bold opacity-60 mb-2">{t('AQI_CARD.LABEL')}</p>
       <div className="flex items-end justify-center gap-2 mb-2">
         <span className="text-8xl font-black tracking-tighter">
           {loading ? '--' : pm25}
@@ -33,13 +36,13 @@ const AQICard = ({ pm25, grade, loading, confScore = 92 }: AQICardProps) => {
         <span className="text-2xl font-bold opacity-60 pb-3">µg/m³</span>
       </div>
       <div className="text-3xl font-black uppercase tracking-tight italic">
-        {loading ? 'Analyzing...' : grade}
+        {loading ? t('AQI_CARD.ANALYZING') : grade}
       </div>
       
       {!loading && (
         <div className="mt-6 pt-6 border-t border-black/5 dark:border-white/5 flex flex-col gap-2">
           <div className="flex justify-between text-xs font-bold opacity-60">
-            <span>Confidence Level</span>
+            <span>{t('AQI_CARD.CONFIDENCE')}</span>
             <span>{confScore}%</span>
           </div>
           <div className="h-2 w-full bg-black/5 dark:bg-white/5 rounded-full overflow-hidden">

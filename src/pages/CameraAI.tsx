@@ -1,10 +1,12 @@
 import { useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Upload, RefreshCw, Save, Loader2, HeartPulse, BarChart3, Eye, Zap } from 'lucide-react';
 import { useCameraAI } from '../logic/useCameraAI';
 import { useAuthStore } from '../logic/useAuthStore';
 import { uploadImage, saveCapture } from '../logic/captureService';
 
 const CameraAI = () => {
+  const { t } = useTranslation();
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -70,7 +72,7 @@ const CameraAI = () => {
         </div>
         <div className="bg-sage/30 p-6 rounded-2xl border border-soft-green/20">
           <h4 className="font-bold text-xs font-sans uppercase mb-4 text-forest flex items-center gap-2"><Zap size={14}/> Physics Engine</h4>
-          <p className="text-[11px] text-clay leading-relaxed font-serif">Beer-Lambert 법칙을 강제한 PINN 구조로 안개와 미세먼지를 구분합니다. DINOv2 기반의 자기지도학습 모델이 헤이즈 패턴을 추출합니다.</p>
+          <p className="text-[11px] text-clay leading-relaxed font-serif">{t('CAMERA.PHYSICS_ENGINE_DESC')}</p>
         </div>
       </aside>
 

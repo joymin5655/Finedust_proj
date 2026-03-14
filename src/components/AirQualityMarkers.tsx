@@ -1,5 +1,8 @@
-import { useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import * as THREE from 'three';
+import axios from 'axios';
+import { APP_CONFIG } from '../logic/config';
+import { getMarkerColor } from '../logic/airQualityService';
 
 // Helper to convert lat/lon to 3D Cartesian coordinates
 const latLonToVector3 = (lat: number, lon: number, radius: number) => {
@@ -14,39 +17,48 @@ const latLonToVector3 = (lat: number, lon: number, radius: number) => {
 };
 
 const AirQualityMarkers = () => {
-  // Sample data
-  const stations = useMemo(() => [
-    { id: 1, lat: 37.5665, lon: 126.9780, pm25: 12, city: 'Seoul' },
-    { id: 2, lat: 35.6762, lon: 139.6503, pm25: 25, city: 'Tokyo' },
-    { id: 3, lat: 40.7128, lon: -74.0060, pm25: 8, city: 'New York' },
-    { id: 4, lat: 51.5074, lon: -0.1278, pm25: 45, city: 'London' },
-    { id: 5, lat: -33.8688, lon: 151.2093, pm25: 5, city: 'Sydney' },
-    { id: 6, lat: 39.9042, lon: 116.4074, pm25: 110, city: 'Beijing' },
-    { id: 7, lat: 19.4326, lon: -99.1332, pm25: 65, city: 'Mexico City' },
-  ], []);
+  const [stations, setStations] = useState<any[]>([]);
 
-  const getMarkerColor = (pm25: number) => {
-    if (pm25 <= 15) return '#10b981';
-    if (pm25 <= 35) return '#f59e0b';
-    if (pm25 <= 75) return '#f97316';
-    return '#ef4444';
-  };
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const res = await axios.get(`${APP_CONFIG.BASE_DATA_URL}/waqi/latest.json`);
+        if (res.data && res.data.cities) {
+          setStations(res.data.cities);
+        }
+      } catch (err) {
+        console.error('Failed to load global station markers:', err);
+      }
+    };
+    loadData();
+  }, []);
 
   return (
     <group>
-      {stations.map((station) => {
-        const position = latLonToVector3(station.lat, station.lon, 1);
-        const color = getMarkerColor(station.pm25);
+      {stations.map((station, idx) => {
+        const [lat, lon] = station.location.geo;
+        const position = latLonToVector3(lat, lon, 1.005); // Slightly above globe surface
+        const pm25 = station.pollutants.pm25 || 0;
+        const color = getMarkerColor(pm25);
         
         return (
-          <mesh key={station.id} position={position}>
-            <sphereGeometry args={[0.012, 16, 16]} />
-            <meshBasicMaterial color={color} transparent opacity={0.8} />
+          <group key={idx} position={position}>
+            {/* Core Point */}
             <mesh>
-              <sphereGeometry args={[0.02, 16, 16]} />
-              <meshBasicMaterial color={color} transparent opacity={0.2} />
+              <sphereGeometry args={[0.008, 16, 16]} />
+              <meshBasicMaterial color={color} />
             </mesh>
-          </mesh>
+            {/* Outer Glow */}
+            <mesh>
+              <sphereGeometry args={[0.015, 16, 16]} />
+              <meshBasicMaterial color={color} transparent opacity={0.3} />
+            </mesh>
+            {/* Atmosphere Spike (Optional, represents PM2.5 height) */}
+            <mesh position={[0, 0, 0]} rotation={[0, 0, 0]}>
+               <boxGeometry args={[0.002, 0.002, Math.max(0.01, pm25 / 1000)]} />
+               <meshBasicMaterial color={color} transparent opacity={0.6} />
+            </mesh>
+          </group>
         );
       })}
     </group>

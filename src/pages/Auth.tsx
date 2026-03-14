@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../logic/supabase';
 import { Mail, Lock, LogIn, UserPlus, Chrome, AlertCircle, CheckCircle2, ShieldCheck, Zap, Database } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const Auth = () => {
+  const { t } = useTranslation();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -37,10 +39,8 @@ const Auth = () => {
 
   const handleSocialLogin = async (provider: 'google' | 'github') => {
     try {
-      // Get the absolute URL including the base path (e.g., /AirLens/)
       const getURL = () => {
         let url = window.location.origin + import.meta.env.BASE_URL;
-        // Make sure to remove trailing slash if any and ensure it ends with /
         url = url.replace(/\/$/, "") + "/";
         return url;
       };
@@ -66,17 +66,17 @@ const Auth = () => {
           <div className="space-y-4">
             <span className="bg-forest/10 text-forest text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">v1.0 Citizen Science</span>
             <h1 className="text-5xl font-bold text-earth-brown leading-tight">
-              Unlock Your <br/>
-              <span className="text-forest italic">Personal Atmosphere.</span>
+              {t('AUTH.TITLE_A')} <br/>
+              <span className="text-forest italic">{t('AUTH.TITLE_B')}</span>
             </h1>
-            <p className="text-clay text-lg font-serif">로그인하여 당신만의 공기질 지도를 만들고, 인공지능 분석 리포트를 안전하게 보관하세요.</p>
+            <p className="text-clay text-lg font-serif">{t('AUTH.SUBTITLE')}</p>
           </div>
 
           <div className="space-y-6">
             {[
-              { icon: <Database size={20}/>, title: 'Private Vault', desc: '분석한 모든 사진과 수치를 Supabase 클라우드에 암호화하여 저장합니다.' },
-              { icon: <ShieldCheck size={20}/>, title: 'Verified Accuracy', desc: '개인 측정 데이터를 기반으로 더 정교한 지역별 DQSS 점수를 제공받으세요.' },
-              { icon: <Zap size={20}/>, title: 'AI Insights', desc: 'DINOv2 모델을 통해 우리 동네의 헤이즈 패턴을 실시간으로 추적합니다.' },
+              { icon: <Database size={20}/>, title: t('AUTH.VAULT_TITLE'), desc: t('AUTH.VAULT_DESC') },
+              { icon: <ShieldCheck size={20}/>, title: t('AUTH.ACCURACY_TITLE'), desc: t('AUTH.ACCURACY_DESC') },
+              { icon: <Zap size={20}/>, title: t('AUTH.INSIGHTS_TITLE'), desc: t('AUTH.INSIGHTS_DESC') },
             ].map((feature, i) => (
               <div key={i} className="flex gap-4 items-start">
                 <div className="bg-white p-2 rounded-xl shadow-sm text-forest">{feature.icon}</div>
@@ -103,19 +103,19 @@ const Auth = () => {
                 onClick={() => setIsLogin(true)}
                 className={`flex-1 py-2.5 text-xs font-bold uppercase tracking-widest relative z-10 transition-colors ${isLogin ? 'text-forest' : 'text-clay hover:text-earth-brown'}`}
               >
-                Sign In
+                {t('AUTH.SIGN_IN')}
               </button>
               <button 
                 onClick={() => setIsLogin(false)}
                 className={`flex-1 py-2.5 text-xs font-bold uppercase tracking-widest relative z-10 transition-colors ${!isLogin ? 'text-forest' : 'text-clay hover:text-earth-brown'}`}
               >
-                Sign Up
+                {t('AUTH.SIGN_UP')}
               </button>
             </div>
 
             <div className="text-center space-y-1">
               <h2 className="text-2xl font-bold text-earth-brown tracking-tight font-sans">
-                {isLogin ? 'Welcome Back' : 'Create Account'}
+                {isLogin ? t('AUTH.WELCOME_BACK') : t('AUTH.CREATE_ACCOUNT')}
               </h2>
               <p className="text-clay text-[10px] font-bold uppercase tracking-[0.2em] font-sans">
                 {isLogin ? 'Log in to your workspace' : 'Join the global sensing network'}
@@ -128,10 +128,9 @@ const Auth = () => {
                   <CheckCircle2 size={48} className="text-forest" />
                 </div>
                 <div className="space-y-2">
-                  <h3 className="text-lg font-bold text-earth-brown">Verification Sent!</h3>
+                  <h3 className="text-lg font-bold text-earth-brown">{t('AUTH.VERIFICATION_SENT')}</h3>
                   <p className="text-xs text-clay leading-relaxed">
-                    <strong>{email}</strong>로 확인 메일을 보냈습니다.<br/>
-                    메일함의 링크를 클릭하면 가입이 완료됩니다.
+                    <strong>{email}</strong>{t('AUTH.VERIFICATION_DESC')}
                   </p>
                 </div>
                 <button 
@@ -210,7 +209,7 @@ const Auth = () => {
                     ) : (
                       <>
                         {isLogin ? <LogIn size={18} /> : <UserPlus size={18} />}
-                        {isLogin ? 'Sign In' : 'Get Started'}
+                        {isLogin ? t('AUTH.SIGN_IN') : t('AUTH.SIGN_UP')}
                       </>
                     )}
                   </button>

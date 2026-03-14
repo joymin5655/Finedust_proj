@@ -2,6 +2,7 @@ import { StrictMode, useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import './index.css'
+import './logic/i18n' // i18n 설정 임포트
 import App from './App.tsx'
 import { supabase } from './logic/supabase'
 import { useAuthStore } from './logic/useAuthStore'

@@ -1,27 +1,34 @@
 import { Canvas } from '@react-three/fiber';
-import { Suspense, useEffect } from 'react';
+import { Suspense, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import Globe from '../components/Globe';
 import AirQualityMarkers from '../components/AirQualityMarkers';
-import { Globe as GlobeIcon, Info, Layers, ShieldCheck, ChevronLeft } from 'lucide-react';
+import CityMarkers from '../components/CityMarkers';
+import { Globe as GlobeIcon, Info, Layers, ShieldCheck, ChevronLeft, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { fetchAodSamples } from '../logic/airQualityService';
 
 const GlobeView = () => {
+  const { t } = useTranslation();
+  const [showStations, setShowStations] = useState(true);
+  const [showCities, setShowCities] = useState(false);
+
   useEffect(() => {
     fetchAodSamples().then(data => console.log('AOD Samples loaded:', !!data));
   }, []);
 
   return (
     <div className="h-screen w-full relative bg-[#000005] overflow-hidden">
-      <Suspense fallback={<div className="absolute inset-0 flex items-center justify-center text-white/50 bg-[#000005]">Initializing Earth...</div>}>
+      <Suspense fallback={<div className="absolute inset-0 flex items-center justify-center text-white/50 bg-[#000005]">{t('GLOBE.INITIALIZING')}</div>}>
         <Canvas camera={{ position: [0, 0, 2.5], fov: 50 }} gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}>
           <color attach="background" args={['#000005']} />
           <Globe />
-          <AirQualityMarkers />
+          {showStations && <AirQualityMarkers />}
+          {showCities && <CityMarkers />}
         </Canvas>
       </Suspense>
 
-      {/* Header Overlay - Adjusted for Navbar visibility */}
+      {/* Header Overlay */}
       <div className="absolute top-24 left-6 z-10 max-w-xs flex flex-col gap-4">
         <Link to="/" className="flex items-center gap-2 text-white/40 hover:text-white transition-colors mb-2 group">
           <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
@@ -31,22 +38,33 @@ const GlobeView = () => {
         <div className="bg-white/10 backdrop-blur-xl border border-white/10 p-6 rounded-[32px] shadow-2xl">
           <div className="flex items-center gap-2 mb-2">
             <GlobeIcon className="text-forest w-5 h-5" />
-            <span className="font-sans font-bold text-soft-green uppercase tracking-[0.2em] text-[10px]">Global Flux v1.0</span>
+            <span className="font-sans font-bold text-soft-green uppercase tracking-[0.2em] text-[10px]">Global Flux v1.5</span>
           </div>
-          <h1 className="text-2xl font-semibold text-white tracking-tight leading-tight">Atmospheric <br/><span className="italic text-soft-green">Intelligence</span></h1>
+          <h1 className="text-2xl font-semibold text-white tracking-tight leading-tight">{t('GLOBE.TITLE').split(' ')[0]} <br/><span className="italic text-soft-green">{t('GLOBE.TITLE').split(' ')[1]}</span></h1>
           
           <div className="mt-6 space-y-3">
-            <button className="w-full flex items-center justify-between p-3 bg-forest/20 rounded-xl border border-forest/30 transition-all">
-              <div className="flex items-center gap-2 text-white/80 text-[10px] font-bold uppercase"><Layers size={14}/> AOD Layer</div>
-              <div className="w-2 h-2 bg-soft-green rounded-full shadow-[0_0_8px_#81c784]"></div>
+            <button 
+              onClick={() => setShowStations(!showStations)}
+              className={`w-full flex items-center justify-between p-3 rounded-xl border transition-all ${showStations ? 'bg-forest/20 border-forest/30' : 'bg-white/5 border-white/5 opacity-50'}`}
+            >
+              <div className="flex items-center gap-2 text-white/80 text-[10px] font-bold uppercase"><Layers size={14}/> {t('GLOBE.AOD_LAYER')}</div>
+              <div className={`w-2 h-2 rounded-full ${showStations ? 'bg-soft-green shadow-[0_0_8px_#81c784]' : 'bg-white/20'}`}></div>
             </button>
-            <button className="w-full flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5 opacity-50 hover:bg-white/10 transition-all">
-              <div className="flex items-center gap-2 text-white/80 text-[10px] font-bold uppercase"><ShieldCheck size={14}/> DQSS Overlay</div>
-              <div className="w-2 h-2 bg-white/20 rounded-full"></div>
+            <button 
+              onClick={() => setShowCities(!showCities)}
+              className={`w-full flex items-center justify-between p-3 rounded-xl border transition-all ${showCities ? 'bg-blue-500/20 border-blue-500/30' : 'bg-white/5 border-white/5 opacity-50'}`}
+            >
+              <div className="flex items-center gap-2 text-white/80 text-[10px] font-bold uppercase"><MapPin size={14}/> Major Cities</div>
+              <div className={`w-2 h-2 rounded-full ${showCities ? 'bg-blue-400 shadow-[0_0_8px_#60a5fa]' : 'bg-white/20'}`}></div>
+            </button>
+            <button className="w-full flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5 opacity-30 cursor-not-allowed">
+              <div className="flex items-center gap-2 text-white/80 text-[10px] font-bold uppercase"><ShieldCheck size={14}/> {t('GLOBE.DQSS_OVERLAY')}</div>
+              <div className="w-2 h-2 bg-white/10 rounded-full"></div>
             </button>
           </div>
         </div>
       </div>
+...
 
       {/* Legend & Stats Overlay - Bottom Left */}
       <div className="absolute bottom-10 left-6 z-10">
@@ -72,7 +90,7 @@ const GlobeView = () => {
             <Info size={14} className="text-soft-green"/>
             <span className="text-[9px] font-bold uppercase tracking-widest">Confidence Interval</span>
           </div>
-          <p className="text-[10px] text-white/50 leading-relaxed font-serif">오렌지색 링은 p10~p90 신뢰 구간이 임계치를 초과한 불확실성 지역을 나타냅니다.</p>
+          <p className="text-[10px] text-white/50 leading-relaxed font-serif">{t('GLOBE.CONFIDENCE_NOTE')}</p>
         </div>
       </div>
     </div>

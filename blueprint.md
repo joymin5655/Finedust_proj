@@ -37,10 +37,14 @@ This document serves as the single source of truth for the ongoing migration and
 - [ ] **Policy:** Migrate the 66-country SDID analysis charts to React + Chart.js.
 - [ ] **Camera AI:** Migrate ONNX Runtime Web inference logic into a custom React hook.
 
-### Phase 3: Supabase Integration
+### Phase 3: Supabase Integration (In Progress)
+- [x] Initialize Supabase project and configuration.
+- [x] Implement Edge Function for NASA MAIAC (MCD19A2) direct integration (`nasa-maiac-aod`).
+- [x] Integrate Edge Function into `satelliteService.ts` and `airQualityService.ts`.
+- [x] Update UI (`DataSourcesCard`) to display high-resolution satellite data source.
+- [ ] Deploy Edge Function to production (Pending user login).
 - [ ] Set up Supabase Authentication (Google, Apple, Email).
 - [ ] Connect Supabase Tables for fetching `policies`, `stations`, and user profiles.
-- [ ] Implement Edge Functions for data collection and processing.
 
 ---
 

@@ -1,4 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
+import { APP_CONFIG } from './config';
+import { getAQIGrade } from './airQualityService';
 
 interface AnalysisResult {
   pm25: number;
@@ -18,20 +20,13 @@ export const useCameraAI = () => {
         // Simulation of loading 25MB model weights
         await new Promise(r => setTimeout(r, 1500));
         setModelLoading(false);
-        console.log('✅ AI Physics Engine (v1.0) Initialized');
-      } catch (e) {
+        console.log(`✅ ${APP_CONFIG.APP_NAME} AI Physics Engine (v1.0) Initialized`);
+      } catch {
         console.error('Failed to load AI model weights');
       }
     };
     loadModel();
   }, []);
-
-  const getGrade = (pm25: number): AnalysisResult['grade'] => {
-    if (pm25 <= 12) return 'Good';
-    if (pm25 <= 35) return 'Moderate';
-    if (pm25 <= 75) return 'Unhealthy';
-    return 'Very Unhealthy';
-  };
 
   const analyzeImage = useCallback(async (file: File) => {
     if (modelLoading) return;
@@ -75,7 +70,7 @@ export const useCameraAI = () => {
     // Beer-Lambert Physics Simulation: Intensity = I0 * exp(-tau)
     // Here we estimate 'tau' (AOD) from brightness and contrast
     const estimatedTau = (avgBright * (1 - avgContrast)) + (1 - Math.max(0, avgBlue));
-    const pm25 = Math.max(2, Math.round(estimatedTau * 110 * 10) / 10);
+    const pm25 = Math.max(2, Math.round(estimatedTau * APP_CONFIG.SATELLITE.AOD_PM25_RATIO * 10) / 10);
     
     // Confidence based on image clarity
     const confidence = Math.min(98, 60 + (avgContrast * 40));
@@ -86,7 +81,7 @@ export const useCameraAI = () => {
     setResult({
       pm25,
       confidence: Math.round(confidence),
-      grade: getGrade(pm25),
+      grade: getAQIGrade(pm25),
     });
     
     setAnalyzing(false);

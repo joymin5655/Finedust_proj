@@ -1,0 +1,127 @@
+{
+  "HERO": {
+    "MISSION_TAG": "v1.0 Atmospheric Intelligence",
+    "QUOTE": "우리는 대기를 데이터로 읽고, 당신은 그 데이터의 증인이 됩니다.",
+    "DESCRIPTION": "AirLens는 단순한 수치 확인을 넘어, 인공지능과 대기 과학으로 환경의 진실을 파헤치는 투명한 지능형 플랫폼입니다.",
+    "TITLE_A": "Beyond Numbers,",
+    "TITLE_B": "Towards Truth.",
+    "WELCOME_A": "Welcome to Your",
+    "WELCOME_B": "Personal Hub."
+  },
+  "DASHBOARD": {
+    "ENGINE_AOD_DESC": "XGBoost-GTWR 모델로 위성 AOD를 지상 PM2.5 수치로 정밀 보정합니다.",
+    "ENGINE_SDID_DESC": "68개국 정책 효과를 Synthetic DID 모델로 분석해 인과관계를 증명합니다.",
+    "ENGINE_DQSS_DESC": "5가지 파라미터로 데이터 품질을 점수화하여 불확실성을 공시합니다.",
+    "EMPTY_VAULT": "첫 번째 공기질 측정을 시작하고 당신만의 투명한 지도를 완성해보세요.",
+    "NO_CAPTURES": "보관함에 저장된 측정 기록이 없습니다."
+  },
+  "CAMERA": {
+    "PHYSICS_ENGINE_DESC": "Beer-Lambert 법칙을 강제한 PINN 구조로 안개와 미세먼지를 구분합니다. DINOv2 기반의 자기지도학습 모델이 헤이즈 패턴을 추출합니다."
+  },
+  "LABELS": {
+    "NEW_MEASUREMENT": "New Measurement",
+    "EXPLORE_DATA": "Explore Data",
+    "GET_STARTED": "Get Started",
+    "SIGN_OUT": "Sign Out",
+    "EDIT_PROFILE": "Edit Profile",
+    "SAVE_CHANGES": "Save Changes",
+    "SAVING": "저장 중...",
+    "CANCEL": "Cancel",
+    "CITIZEN_SCIENTIST": "Citizen Scientist",
+    "INTEL_MANAGER": "AirLens Intelligence Manager",
+    "ADMIN": "Admin",
+    "METHODS": "Methods",
+    "OPEN_PIPELINE": "Open Pipeline",
+    "GLOBAL_FLUX": "Global Flux",
+    "VISION_SENSING": "Vision Sensing",
+    "IMPACT_LAB": "Impact Lab",
+    "ADMIN_CONSOLE": "Admin Console",
+    "SYTEM_MONITORING": "System Monitoring",
+    "SCIENTIFIC_INTEGRITY": "Scientific Integrity",
+    "PURPOSE": "우리는 \"보여주는 것\"에 그치지 않습니다. 측정 공백을 위성 데이터로 메우고, AI 모델의 신뢰 구간을 p10~p90으로 투명하게 공개하여 과학적 무결성을 유지합니다."
+  },
+  "ADVICE": {
+    "GOOD": "맑은 공기를 즐기기에 완벽한 날입니다. 야외 활동을 권장합니다.",
+    "MODERATE": "민감한 분들은 장시간 실외 활동을 줄이는 것이 좋습니다.",
+    "UNHEALTHY": "마스크 착용이 필수적입니다. 실외 운동을 자제하세요.",
+    "VERY_UNHEALTHY": "실외 활동을 피하고 공기청정기를 가동하세요. 위험한 수준입니다.",
+    "ANALYZING": "공기질 데이터를 분석 중입니다."
+  },
+  "DEFAULT_BIO": {
+    "ADMIN": "AirLens 시스템의 무결성을 감독하며, 글로벌 환경 데이터를 분석합니다.",
+    "USER": "공기질 데이터를 수집하고 AI 분석에 기여하는 시민 과학자입니다."
+  },
+  "POLICY": {
+    "TITLE": "Impact Lab",
+    "DESCRIPTION": "Synthetic DID 모델을 사용하여 전 세계 68개국 환경 정책의 인과적 효과를 측정합니다. 외부 기상 요인과 정책 실행 요인을 분리하여 순수 개선도를 산출합니다.",
+    "SIMULATION": "Run Simulation",
+    "EXPORT": "Export PDF",
+    "STAKEHOLDER_INFO": "현재 선택된 국가의 합성 대조군(Synthetic Control) 생성을 위해 인접 국가들의 기상 및 GDP 데이터가 가중치 합산되었습니다.",
+    "STATISTICAL_POWER": "95% 신뢰 구간 내에서 정책 효과의 유의성이 검증되었습니다.",
+    "PURE_EFFECT_DESC": "단순 시계열 비교는 자연적인 대기 순환과 기상 변화를 반영하지 못합니다. Impact Lab은 ASCM을 통해 정책이 없었을 경우의 '가상 시나리오'를 시뮬레이션합니다."
+  },
+  "GLOBE": {
+    "INITIALIZING": "Initializing Earth...",
+    "TITLE": "Atmospheric Intelligence",
+    "AOD_LAYER": "AOD Layer",
+    "DQSS_OVERLAY": "DQSS Overlay",
+    "CONFIDENCE_NOTE": "오렌지색 링은 p10~p90 신뢰 구간이 임계치를 초과한 불확실성 지역을 나타냅니다."
+  },
+  "LOCATION": {
+    "DETECTING": "Detecting your location...",
+    "DENIED": "Location Access Denied",
+    "DEFAULT_FALLBACK": "Using default location (Seoul)",
+    "MONITORING": "Real-time GPS Monitoring"
+  },
+  "AQI_CARD": {
+    "LABEL": "Combined PM2.5",
+    "ANALYZING": "Analyzing...",
+    "CONFIDENCE": "Confidence Level"
+  },
+  "AUTH": {
+    "TITLE_A": "Unlock Your",
+    "TITLE_B": "Personal Atmosphere.",
+    "SUBTITLE": "로그인하여 당신만의 공기질 지도를 만들고, 인공지능 분석 리포트를 안전하게 보관하세요.",
+    "VAULT_TITLE": "Private Vault",
+    "VAULT_DESC": "분석한 모든 사진과 수치를 Supabase 클라우드에 암호화하여 저장합니다.",
+    "ACCURACY_TITLE": "Verified Accuracy",
+    "ACCURACY_DESC": "개인 측정 데이터를 기반으로 더 정교한 지역별 DQSS 점수를 제공받으세요.",
+    "INSIGHTS_TITLE": "AI Insights",
+    "INSIGHTS_DESC": "DINOv2 모델을 통해 우리 동네의 헤이즈 패턴을 실시간으로 추적합니다.",
+    "SIGN_IN": "Sign In",
+    "SIGN_UP": "Sign Up",
+    "WELCOME_BACK": "Welcome Back",
+    "CREATE_ACCOUNT": "Create Account",
+    "VERIFICATION_SENT": "Verification Sent!",
+    "VERIFICATION_DESC": "확인 메일을 보냈습니다. 메일함의 링크를 클릭하면 가입이 완료됩니다."
+  },
+  "ABOUT": {
+    "TAG": "Scientific Integrity",
+    "TITLE_A": "Physics-Informed,",
+    "TITLE_B": "Human-Centered.",
+    "QUOTE": "\"데이터는 보여주는 것이 아니라, 증명하는 것입니다.\"",
+    "ENGINES_TITLE": "6 Analysis Engines",
+    "ENGINE_XGBOOST": "AOD 위성 데이터를 지상 PM2.5 농도로 정밀 보정하는 공간-시계열 회귀 엔진",
+    "ENGINE_SDID": "68개국 환경 정책의 순수 효과를 추출하는 인과 추론 엔진",
+    "ENGINE_DINOV2": "물리 법칙을 강제한 시각 지능 기반 헤이즈 분석 엔진",
+    "ENGINE_DQSS": "Bi-LSTM 기반의 실시간 데이터 품질 및 신뢰도 측정 엔진",
+    "ENGINE_BNN": "p10~p90 불확실성 구간을 산출하는 확률론적 예측 엔진",
+    "ENGINE_IFOREST": "LSTM-AE 기반의 다차원 이상치 탐지 및 필터링 엔진",
+    "PIPELINE_TITLE": "Automated Pipeline",
+    "PIPELINE_DESC": "매 30분마다 WAQI, OpenAQ, NASA Earthdata로부터 데이터를 수집하고, GitHub Actions를 통해 무중단으로 ML 분석을 수행합니다.",
+    "PIPELINE_CYCLE": "30m Cycle",
+    "PIPELINE_DEPLOY": "CI/CD Deploy",
+    "MISSION_TITLE": "Open Intelligence Mission",
+    "MISSION_DESC": "누구나 재현 가능한 투명한 환경 데이터를 지향합니다.",
+    "SOURCE_CODE": "소스 코드"
+  },
+  "NAV": {
+    "STORY": "Our Story",
+    "GLOBE": "Globe",
+    "METHODS": "Methods",
+    "IMPACT": "Impact",
+    "RESOURCES": "Resources",
+    "SIGN_IN": "Sign In",
+    "SIGN_OUT": "Sign Out"
+  }
+}
